@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'pages/todolist_page.dart';
+import 'pages/new_word_input_page.dart';
 
 // ctrl + shift + p: launch command line
 // win + end: to launch emulator (custom binding)
@@ -18,8 +18,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: ToDoListPage(),
-        theme: ThemeData(primarySwatch: Colors.yellow));
+        debugShowCheckedModeBanner: false, home: NewWordInputPage());
   }
 }
