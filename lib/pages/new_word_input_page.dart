@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
 import 'package:first_project/word.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
 
   List<Word> words = [];
 
-  WordType selectedWordType = WordType.noun;
+  WordType? selectedWordType = WordType.noun;
 
   void addNewWord() {
     String dutchWordInput = dutchWordTextInputController.text;
@@ -29,9 +30,10 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     });
   }
 
-  void updateSelectedWordType(String? newValue) {
+  void updateSelectedWordType(WordType? newValue) {
     setState(() {
-      selectedWordType = WordType.values.firstWhere((e) => e.name == newValue);
+      //selectedWordType = WordType.values.firstWhere((e) => e.name == newValue);
+      selectedWordType = newValue;
     });
   }
 
@@ -61,7 +63,12 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                 ),
               ),
               SizedBox(height: 20), // Add some spacing
-              WordTypeDropdownMenu(onValueChanged: updateSelectedWordType),
+              GenericDropdownMenu<WordType>(
+                  dropdownValues: WordType.values.toList(),
+                  onValueChanged: updateSelectedWordType,
+                  displayString: (WordType? value) {
+                    return value?.name ?? "";
+                  }),
               SizedBox(height: 10), // Add some spacing
               ElevatedButton(onPressed: addNewWord, child: Text("Add")),
               SizedBox(height: 20), // Add some spacing
@@ -71,6 +78,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                   itemCount: words.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+                      visualDensity: VisualDensity(vertical: -4.0),
                       title: Text(
                           "[${words[index].type.name}] ${words[index].dutchWord}: ${words[index].englishWord}"),
                     );
@@ -81,43 +89,6 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class WordTypeDropdownMenu extends StatefulWidget {
-  final ValueChanged<String?> onValueChanged;
-
-  const WordTypeDropdownMenu({required this.onValueChanged});
-
-  @override
-  State<WordTypeDropdownMenu> createState() => _WordTypeDropdownMenuState();
-}
-
-class _WordTypeDropdownMenuState extends State<WordTypeDropdownMenu> {
-  List<String> dropdownValues = WordType.values.map((e) => e.name).toList();
-  String? selectedValue;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedValue = dropdownValues.first;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownMenu<String>(
-      initialSelection: dropdownValues.first,
-      onSelected: (String? value) {
-        setState(() {
-          selectedValue = value!;
-          widget.onValueChanged(selectedValue);
-        });
-      },
-      dropdownMenuEntries:
-          dropdownValues.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value);
-      }).toList(),
     );
   }
 }
