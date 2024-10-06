@@ -1,14 +1,24 @@
+import 'package:first_project/core/de_het_type.dart';
+import 'package:first_project/core/word_type.dart';
+
 class Word {
   final String dutchWord;
   final String englishWord;
   final WordType type;
   final bool isPhrase;
-  DeHetType? deHet;
+  DeHetType deHet = DeHetType.none;
   String? pluralForm;
   String? tag;
 
-  Word(this.dutchWord, this.englishWord, this.type, this.isPhrase);
-
+  Word(
+    this.dutchWord,
+    this.englishWord,
+    this.type,
+    this.isPhrase, {
+    this.deHet = DeHetType.none,
+    this.pluralForm,
+    this.tag,
+  });
   Word.fromJson(Map<String, dynamic> json)
       : dutchWord = json['dutchWord'] as String,
         englishWord = json['englishWord'] as String,
@@ -30,11 +40,3 @@ class Word {
 }
 
 class WordList {}
-
-enum WordType {
-  noun,
-  adjective,
-  verb,
-}
-
-enum DeHetType { de, het }

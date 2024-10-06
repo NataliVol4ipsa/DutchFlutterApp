@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:first_project/core/word_type.dart';
+import 'package:first_project/models/db_context.dart';
 import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
 import 'package:first_project/word.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NewWordInputPage extends StatefulWidget {
   const NewWordInputPage({super.key});
@@ -19,12 +22,17 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
 
   WordType? selectedWordType = WordType.noun;
 
-  void addNewWord() {
+  Future<void> addNewWord() async {
     String dutchWordInput = dutchWordTextInputController.text;
     String englishWordInput = englishWordTextInputController.text;
+    var newWord =
+        Word(dutchWordInput, englishWordInput, selectedWordType!, false);
+    var dbContext = context.read<DbContext>();
+    await dbContext.addWordAsync(newWord);
+    var dbWords = await dbContext.getWordsAsync();
     setState(() {
-      words.add(
-          Word(dutchWordInput, englishWordInput, selectedWordType!, false));
+      //words.add(newWord);
+      words = dbWords;
       dutchWordTextInputController.text = "";
       englishWordTextInputController.text = "";
     });
@@ -34,6 +42,20 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     setState(() {
       //selectedWordType = WordType.values.firstWhere((e) => e.name == newValue);
       selectedWordType = newValue;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWords();
+  }
+
+  Future<void> _fetchWords() async {
+    var dbContext = context.read<DbContext>();
+    var dbWords = await dbContext.getWordsAsync();
+    setState(() {
+      words = dbWords;
     });
   }
 
