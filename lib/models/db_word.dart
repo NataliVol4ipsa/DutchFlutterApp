@@ -12,7 +12,6 @@ class DbWord {
   late String englishWord;
   @enumerated
   late WordType type;
-  late bool isPhrase;
   @enumerated
   late DeHetType deHet;
   late String? pluralForm;

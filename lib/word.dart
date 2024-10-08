@@ -5,7 +5,6 @@ class Word {
   final String dutchWord;
   final String englishWord;
   final WordType type;
-  final bool isPhrase;
   DeHetType deHet = DeHetType.none;
   String? pluralForm;
   String? tag;
@@ -13,8 +12,7 @@ class Word {
   Word(
     this.dutchWord,
     this.englishWord,
-    this.type,
-    this.isPhrase, {
+    this.type, {
     this.deHet = DeHetType.none,
     this.pluralForm,
     this.tag,
@@ -23,7 +21,6 @@ class Word {
       : dutchWord = json['dutchWord'] as String,
         englishWord = json['englishWord'] as String,
         type = json['type'] as WordType,
-        isPhrase = json['isPhrase'] as bool,
         deHet = json['deHet'] as DeHetType,
         pluralForm = json['pluralForm'] as String,
         tag = json['tag'] as String;
@@ -32,7 +29,6 @@ class Word {
         'dutchWord': dutchWord,
         'englishWord': englishWord,
         'type': type,
-        'isPhrase': isPhrase,
         'deHet': deHet,
         'pluralForm': pluralForm,
         'tag': tag,

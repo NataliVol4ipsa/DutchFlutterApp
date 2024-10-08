@@ -3,4 +3,6 @@ enum WordType {
   noun,
   adjective,
   verb,
+
+  phrase,
 }

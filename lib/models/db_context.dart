@@ -17,7 +17,6 @@ class DbContext {
     newWord.dutchWord = word.dutchWord;
     newWord.englishWord = word.englishWord;
     newWord.type = word.type;
-    newWord.isPhrase = word.isPhrase;
     newWord.deHet = word.deHet;
     newWord.pluralForm = word.pluralForm;
     newWord.tag = word.tag;
@@ -34,7 +33,6 @@ class DbContext {
               dbWord.dutchWord,
               dbWord.englishWord,
               dbWord.type,
-              dbWord.isPhrase,
               deHet: dbWord.deHet,
               pluralForm: dbWord.pluralForm,
               tag: dbWord.tag,
@@ -52,7 +50,6 @@ class DbContext {
       dbWord.dutchWord,
       dbWord.englishWord,
       dbWord.type,
-      dbWord.isPhrase,
       deHet: dbWord.deHet,
       pluralForm: dbWord.pluralForm,
       tag: dbWord.tag,

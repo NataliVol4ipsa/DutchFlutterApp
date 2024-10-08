@@ -48,7 +48,9 @@ class _GenericDropdownMenuState<T extends Enum>
           );
         }).toList(),
         decoration: InputDecoration(
-          border: OutlineInputBorder(), // Matching the TextField style
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: 8.0, horizontal: 12.0), // Matching the TextField style
         ),
       ),
     );

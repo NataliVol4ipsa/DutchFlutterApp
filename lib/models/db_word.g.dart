@@ -101,7 +101,6 @@ void _dbWordSerialize(
   writer.writeByte(offsets[0], object.deHet.index);
   writer.writeString(offsets[1], object.dutchWord);
   writer.writeString(offsets[2], object.englishWord);
-  writer.writeBool(offsets[3], object.isPhrase);
   writer.writeString(offsets[4], object.pluralForm);
   writer.writeString(offsets[5], object.tag);
   writer.writeByte(offsets[6], object.type.index);
@@ -119,7 +118,6 @@ DbWord _dbWordDeserialize(
   object.dutchWord = reader.readString(offsets[1]);
   object.englishWord = reader.readString(offsets[2]);
   object.id = id;
-  object.isPhrase = reader.readBool(offsets[3]);
   object.pluralForm = reader.readStringOrNull(offsets[4]);
   object.tag = reader.readStringOrNull(offsets[5]);
   object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[6])] ??
