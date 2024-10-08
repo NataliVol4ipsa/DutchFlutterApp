@@ -53,13 +53,13 @@ class HomePage extends StatelessWidget {
         onTap: (int index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/newword');
+              Navigator.pushNamed(context, '/practice');
               break;
             case 1:
               Navigator.pushNamed(context, '/wordlist');
               break;
             case 2:
-              Navigator.pushNamed(context, '/practice');
+              Navigator.pushNamed(context, '/newword');
               break;
           }
         },

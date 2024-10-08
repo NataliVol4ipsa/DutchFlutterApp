@@ -59,6 +59,11 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     });
   }
 
+  String capitalizeEnum(WordType wordType) {
+    final word = wordType.name;
+    return '${word[0].toUpperCase()}${word.substring(1)}'; // Capitalize the first letter
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +74,11 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              GenericDropdownMenu(
+                  onValueChanged: updateSelectedWordType,
+                  dropdownValues: WordType.values.toList(),
+                  displayStringFunc: capitalizeEnum),
+              SizedBox(height: 10), // Add some spacing
               TextField(
                 controller: dutchWordTextInputController,
                 decoration: InputDecoration(
@@ -84,14 +94,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                   hintText: "English word",
                 ),
               ),
-              SizedBox(height: 20), // Add some spacing
-              GenericDropdownMenu<WordType>(
-                  dropdownValues: WordType.values.toList(),
-                  onValueChanged: updateSelectedWordType,
-                  displayString: (WordType? value) {
-                    return value?.name ?? "";
-                  }),
               SizedBox(height: 10), // Add some spacing
+
               ElevatedButton(onPressed: addNewWord, child: Text("Add")),
               SizedBox(height: 20), // Add some spacing
               // Wrap ListView.builder in Expanded to provide height
