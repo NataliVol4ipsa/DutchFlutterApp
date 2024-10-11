@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:first_project/core/de_het_type.dart';
-import 'package:first_project/core/word_type.dart';
-import 'package:first_project/models/db_context.dart';
+import 'package:first_project/core/types/de_het_type.dart';
+import 'package:first_project/core/types/word_type.dart';
+import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
-import 'package:first_project/word.dart';
+import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
+import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
+import 'package:first_project/core/models/word.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +24,6 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
       TextEditingController();
   TextEditingController dutchPluralFormTextInputController =
       TextEditingController();
-
   FocusNode dutchWordFocusNode =
       FocusNode(); // To switch focus to dutch input field after clicking Add
 
@@ -47,8 +48,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     var dbWords = await dbContext.getWordsAsync();
 
     setState(() {
+      _formKey.currentState!.reset(); //todo
       words = dbWords;
-      _formKey.currentState!.reset();
       dutchWordTextInputController.text = "";
       englishWordTextInputController.text = "";
       dutchPluralFormTextInputController.text = "";
@@ -96,12 +97,21 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     return selectedWordType == WordType.noun;
   }
 
+  void onDeHetToggleChanged(DeHetType? selectedValue) {
+    selectedValue ??= DeHetType.none;
+    setState(() {
+      selectedDeHetType = selectedValue;
+    });
+  }
+
   @override
   void dispose() {
     // Be sure to dispose the FocusNode when the widget is removed from the tree
     dutchWordFocusNode.dispose();
     super.dispose();
   }
+
+  Widget customPadding() => SizedBox(height: 10);
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +134,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                     onValueChanged: updateSelectedWordType,
                     dropdownValues: WordType.values.toList(),
                     displayStringFunc: capitalizeEnum),
-                SizedBox(height: 10),
+                customPadding(),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: InputLabel(
@@ -148,7 +158,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                customPadding(),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: InputLabel(
@@ -171,63 +181,23 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                customPadding(),
                 if (shouldDisplayDeHetInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
                       child: InputLabel(
                         "De/Het type",
                       )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Radio<DeHetType>(
-                            value: DeHetType.de,
-                            groupValue: selectedDeHetType,
-                            onChanged: (DeHetType? value) {
-                              setState(() {
-                                selectedDeHetType = value!;
-                              });
-                            },
-                          ),
-                          Text('De'),
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                      Row(
-                        children: [
-                          Radio<DeHetType>(
-                            value: DeHetType.het,
-                            groupValue: selectedDeHetType,
-                            onChanged: (DeHetType? value) {
-                              setState(() {
-                                selectedDeHetType = value!;
-                              });
-                            },
-                          ),
-                          Text('Het'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Radio<DeHetType>(
-                            value: DeHetType.none,
-                            groupValue: selectedDeHetType,
-                            onChanged: (DeHetType? value) {
-                              setState(() {
-                                selectedDeHetType = value!;
-                              });
-                            },
-                          ),
-                          Text('None'),
-                        ],
-                      ),
-                      SizedBox(width: 10),
+                  OptionalToggleButtons<DeHetType?>(
+                    items: [
+                      ToggleButtonItem(label: 'De', value: DeHetType.de),
+                      ToggleButtonItem(label: 'Het', value: DeHetType.het),
                     ],
+                    onChanged: onDeHetToggleChanged,
+                    selectedValue: selectedDeHetType,
                   ),
                 ],
+                customPadding(),
                 if (shouldDisplayPluralFormInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
@@ -244,7 +214,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                     ),
                   ),
                 ],
-                ElevatedButton(onPressed: addNewWord, child: Text("Add words")),
+                customPadding(),
+                ElevatedButton(onPressed: addNewWord, child: Text("Add word")),
                 SizedBox(height: 20),
                 // Wrap ListView.builder in Expanded to provide height
                 Expanded(

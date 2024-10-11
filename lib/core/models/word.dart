@@ -1,5 +1,5 @@
-import 'package:first_project/core/de_het_type.dart';
-import 'package:first_project/core/word_type.dart';
+import 'package:first_project/core/types/de_het_type.dart';
+import 'package:first_project/core/types/word_type.dart';
 
 class Word {
   final String dutchWord;

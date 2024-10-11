@@ -1,5 +1,5 @@
-import 'package:first_project/models/db_word.dart';
-import 'package:first_project/word.dart';
+import 'package:first_project/core/models/word.dart';
+import 'package:first_project/local_db/entities/db_word.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 

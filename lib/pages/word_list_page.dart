@@ -1,5 +1,5 @@
-import 'package:first_project/models/db_context.dart';
-import 'package:first_project/word.dart';
+import 'package:first_project/local_db/db_context.dart';
+import 'package:first_project/core/models/word.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
