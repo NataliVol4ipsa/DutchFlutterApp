@@ -7,6 +7,8 @@ import 'package:first_project/word.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../reusable_widgets/input_label.dart';
+
 class NewWordInputPage extends StatefulWidget {
   const NewWordInputPage({super.key});
 
@@ -28,7 +30,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
 
   List<Word> words = [];
 
-  WordType? selectedWordType = WordType.noun;
+  WordType? selectedWordType = WordType.none;
   DeHetType? selectedDeHetType = DeHetType.none;
 
   Future<void> addNewWord() async {
@@ -115,9 +117,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
               children: [
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Word type:",
-                      textScaler: TextScaler.linear(1.1),
+                    child: InputLabel(
+                      "Word type",
                     )),
                 GenericDropdownMenu(
                     onValueChanged: updateSelectedWordType,
@@ -126,9 +127,9 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                 SizedBox(height: 10),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Dutch:",
-                      textScaler: TextScaler.linear(1.1),
+                    child: InputLabel(
+                      "Dutch",
+                      isRequired: true,
                     )),
                 TextFormField(
                   controller: dutchWordTextInputController,
@@ -150,9 +151,9 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                 SizedBox(height: 10),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "English:",
-                      textScaler: TextScaler.linear(1.1),
+                    child: InputLabel(
+                      "English",
+                      isRequired: true,
                     )),
                 TextFormField(
                   controller: englishWordTextInputController,
@@ -174,9 +175,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                 if (shouldDisplayDeHetInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        "De/Het type:",
-                        textScaler: TextScaler.linear(1.1),
+                      child: InputLabel(
+                        "De/Het type",
                       )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -231,9 +231,8 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                 if (shouldDisplayPluralFormInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Dutch plural form:",
-                        textScaler: TextScaler.linear(1.1),
+                      child: InputLabel(
+                        "Dutch plural form",
                       )),
                   TextField(
                     controller: dutchPluralFormTextInputController,
