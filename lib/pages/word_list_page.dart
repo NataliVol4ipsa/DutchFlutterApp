@@ -30,29 +30,60 @@ class _WordListPageState extends State<WordListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Word list')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: words.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      visualDensity: VisualDensity(vertical: -4.0),
-                      title: Text(
-                          "[${words[index].type.name}] ${words[index].dutchWord}: ${words[index].englishWord}"),
+        appBar: AppBar(title: const Text('Word list')),
+        body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Table(
+                border:
+                    TableBorder.all(), // Adds border around the table and cells
+                columnWidths: const {
+                  0: FlexColumnWidth(2),
+                  1: FlexColumnWidth(10),
+                  2: FlexColumnWidth(10),
+                },
+                children: [
+                  const TableRow(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('#',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Dutch',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('English',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                  ...words.asMap().entries.map((entry) {
+                    int index = entry.key + 1;
+                    Word word = entry.value;
+                    return TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(index.toString()),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(word.dutchWord),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(word.englishWord),
+                        ),
+                      ],
                     );
-                  },
-                ),
+                  }).toList(),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            )));
   }
 }
