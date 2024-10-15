@@ -11,6 +11,8 @@ class WordListPage extends StatefulWidget {
 }
 
 class _WordListPageState extends State<WordListPage> {
+  bool _isLoading = true;
+
   List<Word> words = [];
   List<bool> selectedRows = [];
   bool isMultiselectModeEnabled = false;
@@ -19,16 +21,48 @@ class _WordListPageState extends State<WordListPage> {
   @override
   void initState() {
     super.initState();
-    _fetchWords();
+    _loadData();
   }
 
-  Future<void> _fetchWords() async {
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await _fetchWordsAsync();
+
+    postWordsFetchInit();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _fetchWordsAsync() async {
     var dbContext = context.read<DbContext>();
     var dbWords = await dbContext.getWordsAsync();
     setState(() {
       words = dbWords;
     });
     postWordsFetchInit();
+  }
+
+  Future<void> _deleteWordsAsync() async {
+    var dbContext = context.read<DbContext>();
+    var selectedWordsIds = getSelectedWordsIds();
+    var numOfDeleted = await dbContext.deleteBatchAsync(selectedWordsIds);
+  }
+
+  List<int> getSelectedWordsIds() {
+    List<int> selectedIds = [];
+
+    for (int i = 0; i < words.length; i++) {
+      if (selectedRows[i] && words[i].id != null) {
+        selectedIds.add(words[i].id!);
+      }
+    }
+
+    return selectedIds;
   }
 
   void postWordsFetchInit() {
@@ -97,6 +131,7 @@ class _WordListPageState extends State<WordListPage> {
     return result;
   }
 
+// DOM
   generateTableColWidths() {
     if (isMultiselectModeEnabled) {
       return {
@@ -113,20 +148,28 @@ class _WordListPageState extends State<WordListPage> {
     };
   }
 
-  AppBar createViewAppBar() {
+  AppBar createAppBar() {
     if (!isMultiselectModeEnabled) {
-      return AppBar(
-        title: const Text('Word list'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: onMultiselectModeButtonPressed,
-            icon: Icon(isMultiselectModeEnabled
-                ? Icons.library_add_check
-                : Icons.library_add_check_outlined),
-          ),
-        ],
-      );
+      return createNormalAppBar();
     }
+    return createMultiselectAppBar();
+  }
+
+  AppBar createNormalAppBar() {
+    return AppBar(
+      title: const Text('Word list'),
+      actions: <Widget>[
+        IconButton(
+          onPressed: onMultiselectModeButtonPressed,
+          icon: Icon(isMultiselectModeEnabled
+              ? Icons.library_add_check
+              : Icons.library_add_check_outlined),
+        ),
+      ],
+    );
+  }
+
+  AppBar createMultiselectAppBar() {
     var numOfSelectedItems = calculateNumOfSelectedItems();
     String appBarText;
     switch (numOfSelectedItems) {
@@ -150,111 +193,218 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
+// Modal
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete following items?'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('This action is permanent.'),
+            ],
+          ),
+          actions: <Widget>[
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('CANCEL'),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                      child: VerticalDivider(thickness: 1, color: Colors.grey),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _onDeletePressed(context);
+                      },
+                      child: const Text('DELETE',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onDeletePressed(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      await _deleteWordsAsync();
+    } catch (e) {
+      print('Error during deletion: $e');
+    } finally {
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+      await _loadData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: createViewAppBar(),
+      appBar: createAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Table(
-            border: TableBorder.all(), // Adds border around the table and cells
-            columnWidths: generateTableColWidths(),
-            children: [
-              TableRow(
-                children: [
-                  const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        '#',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Dutch',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.middle,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'English',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  if (isMultiselectModeEnabled) ...[
-                    TableCell(
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                      child: SizedBox(
-                        width: 24.0,
-                        height: 24.0,
-                        child: Checkbox(
-                          tristate: true,
-                          value: selectAllCheckboxValue,
-                          onChanged: onSelectAllCheckboxValueChanged,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              ...words.asMap().entries.map((entry) {
-                int index = entry.key + 1;
-                Word word = entry.value;
-                return TableRow(
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Table(
+                  border: TableBorder.all(),
+                  columnWidths: generateTableColWidths(),
                   children: [
-                    TableCell(
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(index.toString()),
-                      ),
-                    ),
-                    TableCell(
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(word.dutchWord),
-                      ),
-                    ),
-                    TableCell(
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(word.englishWord),
-                      ),
-                    ),
-                    if (isMultiselectModeEnabled) ...[
-                      TableCell(
+                    TableRow(
+                      children: [
+                        const TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: SizedBox(
-                            width: 24.0,
-                            height: 24.0,
-                            child: Checkbox(
-                              value: selectedRows[entry.key],
-                              onChanged: (isSelected) =>
-                                  onRowCheckboxChanged(entry.key, isSelected),
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              '#',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          )),
-                    ],
+                          ),
+                        ),
+                        const TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Dutch',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        const TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'English',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        if (isMultiselectModeEnabled) ...[
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: SizedBox(
+                              width: 24.0,
+                              height: 24.0,
+                              child: Checkbox(
+                                tristate: true,
+                                value: selectAllCheckboxValue,
+                                onChanged: onSelectAllCheckboxValueChanged,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    ...words.asMap().entries.map((entry) {
+                      int index = entry.key + 1;
+                      Word word = entry.value;
+                      return TableRow(
+                        children: [
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(index.toString()),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(word.dutchWord),
+                            ),
+                          ),
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(word.englishWord),
+                            ),
+                          ),
+                          if (isMultiselectModeEnabled) ...[
+                            TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: SizedBox(
+                                  width: 24.0,
+                                  height: 24.0,
+                                  child: Checkbox(
+                                    value: selectedRows[entry.key],
+                                    onChanged: (isSelected) =>
+                                        onRowCheckboxChanged(
+                                            entry.key, isSelected),
+                                  ),
+                                )),
+                          ],
+                        ],
+                      );
+                    }),
                   ],
-                );
-              }),
-            ],
-          ),
-        ),
+                ),
+              ),
       ),
+      bottomNavigationBar: isMultiselectModeEnabled
+          ? BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: zeroCheckboxesSelected()
+                        ? const Icon(Icons.school_outlined)
+                        : const Icon(Icons.school),
+                    label: 'Practice'),
+                BottomNavigationBarItem(
+                  icon: zeroCheckboxesSelected()
+                      ? const Icon(Icons.delete_outline)
+                      : const Icon(Icons.delete),
+                  label: 'Delete',
+                ),
+              ],
+              onTap: (int index) {
+                if (zeroCheckboxesSelected()) return;
+                switch (index) {
+                  case 0:
+                    break;
+                  case 1: // Delete
+                    _showDeleteDialog(context);
+                    break;
+                }
+              },
+            )
+          : null,
     );
   }
 }

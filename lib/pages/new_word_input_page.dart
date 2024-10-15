@@ -40,7 +40,9 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     String englishWordInput = englishWordTextInputController.text;
     String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
 
-    var newWord = Word(dutchWordInput, englishWordInput, selectedWordType!,
+// todo use newWord model instead?
+    var newWord = Word(
+        null, dutchWordInput, englishWordInput, selectedWordType!,
         deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
     var dbContext = context.read<DbContext>();

@@ -2,6 +2,7 @@ import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 
 class Word {
+  final int? id;
   final String dutchWord;
   final String englishWord;
   final WordType type;
@@ -10,6 +11,7 @@ class Word {
   String? tag;
 
   Word(
+    this.id,
     this.dutchWord,
     this.englishWord,
     this.type, {
@@ -18,7 +20,8 @@ class Word {
     this.tag,
   });
   Word.fromJson(Map<String, dynamic> json)
-      : dutchWord = json['dutchWord'] as String,
+      : id = null,
+        dutchWord = json['dutchWord'] as String,
         englishWord = json['englishWord'] as String,
         type = json['type'] as WordType,
         deHet = json['deHet'] as DeHetType,

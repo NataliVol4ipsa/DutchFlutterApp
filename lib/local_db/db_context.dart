@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 class DbContext {
   static late Isar isar;
 
-  // Initialize
   static Future<void> initialize() async {
     final appDir = await getApplicationDocumentsDirectory();
     isar = await Isar.open([DbWordSchema], directory: appDir.path);
@@ -30,6 +29,7 @@ class DbContext {
     List<DbWord> dbWords = await isar.dbWords.where().findAll();
     List<Word> words = dbWords
         .map((dbWord) => Word(
+              dbWord.id,
               dbWord.dutchWord,
               dbWord.englishWord,
               dbWord.type,
@@ -47,6 +47,7 @@ class DbContext {
     if (dbWord == null) return null;
 
     return Word(
+      dbWord.id,
       dbWord.dutchWord,
       dbWord.englishWord,
       dbWord.type,
@@ -56,7 +57,11 @@ class DbContext {
     );
   }
 
-  Future<void> deleteAsync(int id) async {
-    await isar.writeTxn(() => isar.dbWords.delete(id));
+  Future<bool> deleteAsync(int id) async {
+    return await isar.writeTxn(() => isar.dbWords.delete(id));
+  }
+
+  Future<int> deleteBatchAsync(List<int> ids) async {
+    return await isar.writeTxn(() => isar.dbWords.deleteAll(ids));
   }
 }
