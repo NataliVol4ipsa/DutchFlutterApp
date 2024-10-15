@@ -42,7 +42,14 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   void onSelectAllCheckboxValueChanged(bool? isSelected) {
-    bool newValue = isSelected == false ? true : false;
+    bool newValue;
+    if (selectAllCheckboxValue == null) {
+      newValue = true;
+    } else if (isSelected == null) {
+      newValue = false;
+    } else {
+      newValue = isSelected;
+    }
     setState(() {
       selectAllCheckboxValue = newValue;
       selectedRows = List.generate(words.length, (index) => newValue);
