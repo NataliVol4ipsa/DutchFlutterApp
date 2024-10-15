@@ -13,7 +13,7 @@ class WordListPage extends StatefulWidget {
 class _WordListPageState extends State<WordListPage> {
   List<Word> words = [];
   List<bool> selectedRows = [];
-  bool showSelectColumn = false;
+  bool isMultiselectModeEnabled = false;
   bool? selectAllCheckboxValue = false;
 
   @override
@@ -37,7 +37,7 @@ class _WordListPageState extends State<WordListPage> {
 
   void onMultiselectModeButtonPressed() {
     setState(() {
-      showSelectColumn = !showSelectColumn;
+      isMultiselectModeEnabled = !isMultiselectModeEnabled;
     });
   }
 
@@ -79,8 +79,19 @@ class _WordListPageState extends State<WordListPage> {
     return true;
   }
 
+  int calculateNumOfSelectedItems() {
+    int result = 0;
+    for (int i = 0; i < words.length; i++) {
+      if (selectedRows[i] == true) {
+        result++;
+      }
+    }
+
+    return result;
+  }
+
   generateTableColWidths() {
-    if (showSelectColumn) {
+    if (isMultiselectModeEnabled) {
       return {
         0: const FlexColumnWidth(2),
         1: const FlexColumnWidth(10),
@@ -95,20 +106,47 @@ class _WordListPageState extends State<WordListPage> {
     };
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+  AppBar createViewAppBar() {
+    if (!isMultiselectModeEnabled) {
+      return AppBar(
         title: const Text('Word list'),
         actions: <Widget>[
           IconButton(
             onPressed: onMultiselectModeButtonPressed,
-            icon: Icon(showSelectColumn
+            icon: Icon(isMultiselectModeEnabled
                 ? Icons.library_add_check
                 : Icons.library_add_check_outlined),
           ),
         ],
-      ),
+      );
+    }
+    var numOfSelectedItems = calculateNumOfSelectedItems();
+    String appBarText;
+    switch (numOfSelectedItems) {
+      case 0:
+        appBarText = "None selected";
+      case 1:
+        appBarText = "1 item selected";
+      default:
+        appBarText = "$numOfSelectedItems items selected";
+    }
+    return AppBar(
+      title: Text(appBarText),
+      actions: <Widget>[
+        IconButton(
+          onPressed: onMultiselectModeButtonPressed,
+          icon: Icon(isMultiselectModeEnabled
+              ? Icons.library_add_check
+              : Icons.library_add_check_outlined),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: createViewAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
@@ -148,7 +186,7 @@ class _WordListPageState extends State<WordListPage> {
                       ),
                     ),
                   ),
-                  if (showSelectColumn) ...[
+                  if (isMultiselectModeEnabled) ...[
                     TableCell(
                       verticalAlignment: TableCellVerticalAlignment.middle,
                       child: SizedBox(
@@ -190,7 +228,7 @@ class _WordListPageState extends State<WordListPage> {
                         child: Text(word.englishWord),
                       ),
                     ),
-                    if (showSelectColumn) ...[
+                    if (isMultiselectModeEnabled) ...[
                       TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: SizedBox(
