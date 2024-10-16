@@ -25,6 +25,31 @@ class DbContext {
     return id;
   }
 
+  Future<bool> updateWordAsync(Word updatedWord) async {
+    if (updatedWord.id == null) {
+      throw Exception(
+          "Called word update, but word Id is null. Please refactor this code to rich domain model!");
+    }
+
+    final dbWord = await isar.dbWords.get(updatedWord.id!);
+
+    if (dbWord == null) {
+      throw Exception(
+          "Tried to update word ${updatedWord.id}, but it was not found in database.");
+    }
+
+    dbWord.dutchWord = updatedWord.dutchWord;
+    dbWord.englishWord = updatedWord.englishWord;
+    dbWord.type = updatedWord.type;
+    dbWord.deHet = updatedWord.deHet;
+    dbWord.pluralForm = updatedWord.pluralForm;
+    dbWord.tag = updatedWord.tag;
+
+    await isar.writeTxn(() => isar.dbWords.put(dbWord));
+
+    return true;
+  }
+
   Future<List<Word>> getWordsAsync() async {
     List<DbWord> dbWords = await isar.dbWords.where().findAll();
     List<Word> words = dbWords

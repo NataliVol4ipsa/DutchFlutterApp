@@ -11,14 +11,15 @@ import 'package:provider/provider.dart';
 
 import '../reusable_widgets/input_label.dart';
 
-class NewWordInputPage extends StatefulWidget {
-  const NewWordInputPage({super.key});
+class WordEditorPage extends StatefulWidget {
+  final Word? existingWord;
+  const WordEditorPage({super.key, this.existingWord});
 
   @override
-  State<NewWordInputPage> createState() => _NewWordInputPageState();
+  State<WordEditorPage> createState() => _WordEditorPageState();
 }
 
-class _NewWordInputPageState extends State<NewWordInputPage> {
+class _WordEditorPageState extends State<WordEditorPage> {
   TextEditingController dutchWordTextInputController = TextEditingController();
   TextEditingController englishWordTextInputController =
       TextEditingController();
@@ -29,35 +30,87 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<Word> words = [];
-
-  WordType? selectedWordType = WordType.none;
+  WordType? selectedWordType;
   DeHetType? selectedDeHetType = DeHetType.none;
 
-  Future<void> addNewWord() async {
+  bool isNewWord = false;
+
+  List<WordType> wordTypeDropdownValues = WordType.values.toList();
+
+  @override
+  void initState() {
+    super.initState();
+    isNewWord = widget.existingWord == null;
+    if (!isNewWord) {
+      initializeWithExistingWord(widget.existingWord!);
+    }
+    selectedWordType ??= WordType.none;
+  }
+
+  void initializeWithExistingWord(Word word) {
+    selectedWordType = word.type;
+    dutchWordTextInputController.text = word.dutchWord;
+    englishWordTextInputController.text = word.englishWord;
+    dutchPluralFormTextInputController.text = word.pluralForm ?? "";
+    selectedDeHetType = word.deHet;
+  }
+
+  Future<void> submitChangesAsync() async {
     if (!_formKey.currentState!.validate()) return;
+    if (isNewWord) {
+      await createWordAsync();
+    } else {
+      await updateWordAsync();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  Future<void> createWordAsync() async {
     String dutchWordInput = dutchWordTextInputController.text;
     String englishWordInput = englishWordTextInputController.text;
     String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
 
-// todo use newWord model instead?
     var newWord = Word(
         null, dutchWordInput, englishWordInput, selectedWordType!,
         deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
     var dbContext = context.read<DbContext>();
     await dbContext.addWordAsync(newWord);
-    var dbWords = await dbContext.getWordsAsync();
 
     setState(() {
       _formKey.currentState!.reset(); //todo
-      words = dbWords;
       dutchWordTextInputController.text = "";
       englishWordTextInputController.text = "";
       dutchPluralFormTextInputController.text = "";
       selectedDeHetType = DeHetType.none;
       dutchWordFocusNode.requestFocus();
     });
+  }
+
+  Future<void> updateWordAsync() async {
+    String dutchWordInput = dutchWordTextInputController.text;
+    String englishWordInput = englishWordTextInputController.text;
+    String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
+
+    var updatedWord = Word(widget.existingWord!.id, dutchWordInput,
+        englishWordInput, selectedWordType!,
+        deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
+
+    var dbContext = context.read<DbContext>();
+    await dbContext.updateWordAsync(updatedWord);
+//todo make this an input method - what to do when action is complete. Accept new or close the page.
+  }
+
+  String getAppBarLabel() {
+    if (isNewWord) return 'Add new word';
+    return 'Edit word';
+  }
+
+  String getSubmitButtonLabel() {
+    if (isNewWord) return 'Add word';
+    return 'Save changes';
   }
 
   void updateSelectedWordType(WordType? newValue) {
@@ -72,23 +125,9 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchWords();
-  }
-
-  Future<void> _fetchWords() async {
-    var dbContext = context.read<DbContext>();
-    var dbWords = await dbContext.getWordsAsync();
-    setState(() {
-      words = dbWords;
-    });
-  }
-
   String capitalizeEnum(Enum value) {
     final word = value.name;
-    return '${word[0].toUpperCase()}${word.substring(1)}'; // Capitalize the first letter
+    return '${word[0].toUpperCase()}${word.substring(1)}';
   }
 
   bool shouldDisplayDeHetInput() {
@@ -108,7 +147,6 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
 
   @override
   void dispose() {
-    // Be sure to dispose the FocusNode when the widget is removed from the tree
     dutchWordFocusNode.dispose();
     super.dispose();
   }
@@ -118,14 +156,13 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add new word')),
+      appBar: AppBar(title: Text(getAppBarLabel())),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                     alignment: Alignment.centerLeft,
@@ -133,8 +170,9 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                       "Word type",
                     )),
                 GenericDropdownMenu(
+                    initialValue: selectedWordType,
                     onValueChanged: updateSelectedWordType,
-                    dropdownValues: WordType.values.toList(),
+                    dropdownValues: wordTypeDropdownValues,
                     displayStringFunc: capitalizeEnum),
                 customPadding(),
                 Container(
@@ -145,7 +183,7 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                     )),
                 TextFormField(
                   controller: dutchWordTextInputController,
-                  focusNode: dutchWordFocusNode, // Attach FocusNode
+                  focusNode: dutchWordFocusNode,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Dutch word",
@@ -217,21 +255,10 @@ class _NewWordInputPageState extends State<NewWordInputPage> {
                   ),
                 ],
                 customPadding(),
-                ElevatedButton(onPressed: addNewWord, child: Text("Add word")),
+                ElevatedButton(
+                    onPressed: submitChangesAsync,
+                    child: Text(getSubmitButtonLabel())),
                 SizedBox(height: 20),
-                // Wrap ListView.builder in Expanded to provide height
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: words.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        visualDensity: VisualDensity(vertical: -4.0),
-                        title: Text(
-                            "[${words[index].type.name}] ${words[index].dutchWord}: ${words[index].englishWord}"),
-                      );
-                    },
-                  ),
-                ),
               ],
             ),
           ),

@@ -6,7 +6,7 @@ import 'package:first_project/pages/word_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/new_word_input_page.dart';
+import 'pages/word_editor_page.dart';
 import 'pages/home_page.dart';
 
 // ctrl + shift + p: launch command line
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         home: HomePage(),
         routes: {
           '/home': (context) => HomePage(),
-          '/newword': (context) => NewWordInputPage(),
+          '/newword': (context) => WordEditorPage(),
           '/wordlist': (context) => WordListPage(),
           '/practice': (context) => PracticePage(),
         });

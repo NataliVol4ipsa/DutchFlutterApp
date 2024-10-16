@@ -1,5 +1,6 @@
 import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/core/models/word.dart';
+import 'package:first_project/pages/word_editor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +19,23 @@ class _WordListPageState extends State<WordListPage> {
   bool isMultiselectModeEnabled = false;
   bool? selectAllCheckboxValue = false;
 
+  late ScrollController _scrollController;
+  double _scrollPosition = 0.0;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      _scrollPosition = _scrollController.position.pixels;
+    });
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -35,6 +49,13 @@ class _WordListPageState extends State<WordListPage> {
 
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  Future<void> _reloadDataAsync() async {
+    await _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollPosition); // Restore the scroll position
     });
   }
 
@@ -263,25 +284,28 @@ class _WordListPageState extends State<WordListPage> {
     }
   }
 
-  void _onRowTap(BuildContext context, Word word) {
+  void _onTableRowTap(BuildContext context, Word word) async {
     if (isMultiselectModeEnabled) return;
-    showModalBottomSheet(
+
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.9,
-          child: WordDetailsPage(word: word),
+          child: WordEditorPage(existingWord: word),
         );
       },
     );
+
+    await _reloadDataAsync();
   }
 
   GestureDetector createTappableTableCell(
       BuildContext context, Word word, String value) {
     return GestureDetector(
       onTap: () {
-        _onRowTap(context, word);
+        _onTableRowTap(context, word);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -301,6 +325,7 @@ class _WordListPageState extends State<WordListPage> {
                 child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
+                controller: _scrollController,
                 child: Table(
                   border: TableBorder.all(),
                   columnWidths: generateTableColWidths(),
