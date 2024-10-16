@@ -50,7 +50,7 @@ class _WordListPageState extends State<WordListPage> {
   Future<void> _deleteWordsAsync() async {
     var dbContext = context.read<DbContext>();
     var selectedWordsIds = getSelectedWordsIds();
-    var numOfDeleted = await dbContext.deleteBatchAsync(selectedWordsIds);
+    await dbContext.deleteBatchAsync(selectedWordsIds);
   }
 
   List<int> getSelectedWordsIds() {
@@ -263,6 +263,33 @@ class _WordListPageState extends State<WordListPage> {
     }
   }
 
+  void _onRowTap(BuildContext context, Word word) {
+    if (isMultiselectModeEnabled) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: WordDetailsPage(word: word),
+        );
+      },
+    );
+  }
+
+  GestureDetector createTappableTableCell(
+      BuildContext context, Word word, String value) {
+    return GestureDetector(
+      onTap: () {
+        _onRowTap(context, word);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(value),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -335,26 +362,20 @@ class _WordListPageState extends State<WordListPage> {
                           TableCell(
                             verticalAlignment:
                                 TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(index.toString()),
-                            ),
+                            child: createTappableTableCell(
+                                context, word, index.toString()),
                           ),
                           TableCell(
                             verticalAlignment:
                                 TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(word.dutchWord),
-                            ),
+                            child: createTappableTableCell(
+                                context, word, word.dutchWord),
                           ),
                           TableCell(
                             verticalAlignment:
                                 TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(word.englishWord),
-                            ),
+                            child: createTappableTableCell(
+                                context, word, word.englishWord),
                           ),
                           if (isMultiselectModeEnabled) ...[
                             TableCell(
@@ -405,6 +426,29 @@ class _WordListPageState extends State<WordListPage> {
               },
             )
           : null,
+    );
+  }
+}
+
+class WordDetailsPage extends StatelessWidget {
+  final Word word;
+
+  WordDetailsPage({required this.word});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Center(
+        child: Text("Dutch : ${word.dutchWord}"),
+      ),
     );
   }
 }

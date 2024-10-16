@@ -11,7 +11,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Practice page')),
+      appBar: AppBar(title: const Text('Practice page')),
       body: const Center(
         child: Padding(
           padding: EdgeInsets.all(25.0),
