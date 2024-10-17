@@ -1,5 +1,6 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/pages/word_editor_page.dart';
+import 'package:first_project/pages/word_list/word_list_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -334,101 +335,15 @@ class _WordListPageState extends State<WordListPage> {
               )
             : SingleChildScrollView(
                 controller: _scrollController,
-                child: Table(
-                  border: TableBorder.all(),
-                  columnWidths: generateTableColWidths(),
-                  children: [
-                    TableRow(
-                      children: [
-                        const TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              '#',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        const TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Dutch',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        const TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'English',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        if (isMultiselectModeEnabled) ...[
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: SizedBox(
-                              width: 24.0,
-                              height: 24.0,
-                              child: Checkbox(
-                                tristate: true,
-                                value: selectAllCheckboxValue,
-                                onChanged: onSelectAllCheckboxValueChanged,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    ...words.asMap().entries.map((entry) {
-                      int index = entry.key + 1;
-                      Word word = entry.value;
-                      return TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: createTappableTableCell(
-                                context, word, index.toString()),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: createTappableTableCell(
-                                context, word, word.dutchWord),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: createTappableTableCell(
-                                context, word, word.englishWord),
-                          ),
-                          if (isMultiselectModeEnabled) ...[
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: SizedBox(
-                                  width: 24.0,
-                                  height: 24.0,
-                                  child: Checkbox(
-                                    value: selectedRows[entry.key],
-                                    onChanged: (isSelected) =>
-                                        onRowCheckboxChanged(
-                                            entry.key, isSelected),
-                                  ),
-                                )),
-                          ],
-                        ],
-                      );
-                    }),
-                  ],
+                child: WordTable(
+                  words: words,
+                  selectedRows: selectedRows,
+                  isMultiselectModeEnabled: isMultiselectModeEnabled,
+                  selectAllCheckboxValue: selectAllCheckboxValue,
+                  onRowCheckboxChanged: onRowCheckboxChanged,
+                  onSelectAllCheckboxValueChanged:
+                      onSelectAllCheckboxValueChanged,
+                  onRowTap: (Word word) => _onTableRowTap(context, word),
                 ),
               ),
       ),
