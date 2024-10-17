@@ -1,6 +1,6 @@
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/pages/word_editor_page.dart';
 import 'package:first_project/pages/word_list/delete_word_dialog.dart';
+import 'package:first_project/pages/word_list/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class _WordListPageState extends State<WordListPage> {
   Future<void> _reloadDataAsync() async {
     await _loadData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.jumpTo(_scrollPosition); // Restore the scroll position
+      _scrollController.jumpTo(_scrollPosition);
     });
   }
 
@@ -262,18 +262,40 @@ class _WordListPageState extends State<WordListPage> {
   void _onTableRowTap(BuildContext context, Word word) async {
     if (isMultiselectModeEnabled) return;
 
-    await showModalBottomSheet(
+    await WordEditorModal.show(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child: WordEditorPage(existingWord: word),
-        );
-      },
+      word: word,
     );
 
     await _reloadDataAsync();
+  }
+
+  BottomNavigationBar createMultiselectBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: zeroCheckboxesSelected()
+                ? const Icon(Icons.school_outlined)
+                : const Icon(Icons.school),
+            label: 'Practice'),
+        BottomNavigationBarItem(
+          icon: zeroCheckboxesSelected()
+              ? const Icon(Icons.delete_outline)
+              : const Icon(Icons.delete),
+          label: 'Delete',
+        ),
+      ],
+      onTap: (int index) {
+        if (zeroCheckboxesSelected()) return;
+        switch (index) {
+          case 0:
+            break;
+          case 1: // Delete
+            _showDeleteDialog(context);
+            break;
+        }
+      },
+    );
   }
 
   GestureDetector createTappableTableCell(
@@ -316,34 +338,6 @@ class _WordListPageState extends State<WordListPage> {
       bottomNavigationBar: isMultiselectModeEnabled
           ? createMultiselectBottomNavBar(context)
           : null,
-    );
-  }
-
-  BottomNavigationBar createMultiselectBottomNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-            icon: zeroCheckboxesSelected()
-                ? const Icon(Icons.school_outlined)
-                : const Icon(Icons.school),
-            label: 'Practice'),
-        BottomNavigationBarItem(
-          icon: zeroCheckboxesSelected()
-              ? const Icon(Icons.delete_outline)
-              : const Icon(Icons.delete),
-          label: 'Delete',
-        ),
-      ],
-      onTap: (int index) {
-        if (zeroCheckboxesSelected()) return;
-        switch (index) {
-          case 0:
-            break;
-          case 1: // Delete
-            _showDeleteDialog(context);
-            break;
-        }
-      },
     );
   }
 }
