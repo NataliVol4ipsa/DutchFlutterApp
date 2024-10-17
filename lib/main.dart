@@ -2,10 +2,11 @@
 
 import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/pages/practice_page.dart';
-import 'package:first_project/pages/word_list_page.dart';
+import 'package:first_project/pages/word_list/word_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'local_db/repositories/words_repository.dart';
 import 'pages/word_editor_page.dart';
 import 'pages/home_page.dart';
 
@@ -21,8 +22,10 @@ void main() async {
   await DbContext.initialize();
   runApp(
     MultiProvider(providers: [
-      Provider<DbContext>(
-          create: (_) => DbContext()), // Ensure DbContext is provided
+      Provider<DbContext>(create: (_) => DbContext()),
+      ProxyProvider<DbContext, WordsRepository>(
+        update: (_, dbContext, __) => WordsRepository(dbContext: dbContext),
+      ),
     ], child: MyApp()),
   );
 }

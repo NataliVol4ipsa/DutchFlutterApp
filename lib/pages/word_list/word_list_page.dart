@@ -1,8 +1,9 @@
-import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/pages/word_editor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../local_db/repositories/words_repository.dart';
 
 class WordListPage extends StatefulWidget {
   const WordListPage({super.key});
@@ -22,6 +23,8 @@ class _WordListPageState extends State<WordListPage> {
   late ScrollController _scrollController;
   double _scrollPosition = 0.0;
 
+  late WordsRepository wordsRepository;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,7 @@ class _WordListPageState extends State<WordListPage> {
     _scrollController.addListener(() {
       _scrollPosition = _scrollController.position.pixels;
     });
+    wordsRepository = context.read<WordsRepository>();
     _loadData();
   }
 
@@ -49,6 +53,7 @@ class _WordListPageState extends State<WordListPage> {
 
     setState(() {
       _isLoading = false;
+      selectAllCheckboxValue = false;
     });
   }
 
@@ -60,8 +65,8 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> _fetchWordsAsync() async {
-    var dbContext = context.read<DbContext>();
-    var dbWords = await dbContext.getWordsAsync();
+    var dbWords = await wordsRepository.fetchWordsAsync();
+
     setState(() {
       words = dbWords;
     });
@@ -69,9 +74,8 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> _deleteWordsAsync() async {
-    var dbContext = context.read<DbContext>();
     var selectedWordsIds = getSelectedWordsIds();
-    await dbContext.deleteBatchAsync(selectedWordsIds);
+    await wordsRepository.deleteWordsAsync(selectedWordsIds);
   }
 
   List<int> getSelectedWordsIds() {
@@ -95,6 +99,8 @@ class _WordListPageState extends State<WordListPage> {
       isMultiselectModeEnabled = !isMultiselectModeEnabled;
     });
   }
+
+  void onExportPressed() {}
 
   void onSelectAllCheckboxValueChanged(bool? isSelected) {
     bool newValue;
@@ -180,6 +186,8 @@ class _WordListPageState extends State<WordListPage> {
     return AppBar(
       title: const Text('Word list'),
       actions: <Widget>[
+        IconButton(
+            onPressed: onExportPressed, icon: const Icon(Icons.file_download)),
         IconButton(
           onPressed: onMultiselectModeButtonPressed,
           icon: Icon(isMultiselectModeEnabled
@@ -425,55 +433,36 @@ class _WordListPageState extends State<WordListPage> {
               ),
       ),
       bottomNavigationBar: isMultiselectModeEnabled
-          ? BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: zeroCheckboxesSelected()
-                        ? const Icon(Icons.school_outlined)
-                        : const Icon(Icons.school),
-                    label: 'Practice'),
-                BottomNavigationBarItem(
-                  icon: zeroCheckboxesSelected()
-                      ? const Icon(Icons.delete_outline)
-                      : const Icon(Icons.delete),
-                  label: 'Delete',
-                ),
-              ],
-              onTap: (int index) {
-                if (zeroCheckboxesSelected()) return;
-                switch (index) {
-                  case 0:
-                    break;
-                  case 1: // Delete
-                    _showDeleteDialog(context);
-                    break;
-                }
-              },
-            )
+          ? createMultiselectBottomNavBar(context)
           : null,
     );
   }
-}
 
-class WordDetailsPage extends StatelessWidget {
-  final Word word;
-
-  WordDetailsPage({required this.word});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+  BottomNavigationBar createMultiselectBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: zeroCheckboxesSelected()
+                ? const Icon(Icons.school_outlined)
+                : const Icon(Icons.school),
+            label: 'Practice'),
+        BottomNavigationBarItem(
+          icon: zeroCheckboxesSelected()
+              ? const Icon(Icons.delete_outline)
+              : const Icon(Icons.delete),
+          label: 'Delete',
         ),
-      ),
-      body: Center(
-        child: Text("Dutch : ${word.dutchWord}"),
-      ),
+      ],
+      onTap: (int index) {
+        if (zeroCheckboxesSelected()) return;
+        switch (index) {
+          case 0:
+            break;
+          case 1: // Delete
+            _showDeleteDialog(context);
+            break;
+        }
+      },
     );
   }
 }

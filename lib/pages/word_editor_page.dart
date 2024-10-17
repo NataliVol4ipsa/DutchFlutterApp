@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/local_db/db_context.dart';
+import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
 import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
 import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
@@ -37,9 +37,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
   List<WordType> wordTypeDropdownValues = WordType.values.toList();
 
+  late WordsRepository wordsRepository;
+
   @override
   void initState() {
     super.initState();
+    wordsRepository = context.read<WordsRepository>();
     isNewWord = widget.existingWord == null;
     if (!isNewWord) {
       initializeWithExistingWord(widget.existingWord!);
@@ -76,8 +79,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
         null, dutchWordInput, englishWordInput, selectedWordType!,
         deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
-    var dbContext = context.read<DbContext>();
-    await dbContext.addWordAsync(newWord);
+    await wordsRepository.addWordAsync(newWord);
 
     setState(() {
       _formKey.currentState!.reset(); //todo
@@ -98,8 +100,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
         englishWordInput, selectedWordType!,
         deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
-    var dbContext = context.read<DbContext>();
-    await dbContext.updateWordAsync(updatedWord);
+    await wordsRepository.updateWordAsync(updatedWord);
 //todo make this an input method - what to do when action is complete. Accept new or close the page.
   }
 
