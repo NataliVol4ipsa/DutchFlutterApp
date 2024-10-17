@@ -1,5 +1,6 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/pages/word_editor_page.dart';
+import 'package:first_project/pages/word_list/delete_word_dialog.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -228,43 +229,8 @@ class _WordListPageState extends State<WordListPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete following items?'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('This action is permanent.'),
-            ],
-          ),
-          actions: <Widget>[
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('CANCEL'),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                      child: VerticalDivider(thickness: 1, color: Colors.grey),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _onDeletePressed(context);
-                      },
-                      child: const Text('DELETE',
-                          style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+        return DeleteWordDialog(
+          onDeletePressed: () => _onDeletePressed(context),
         );
       },
     );
