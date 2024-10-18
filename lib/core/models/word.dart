@@ -31,11 +31,9 @@ class Word {
   Map<String, dynamic> toJson() => {
         'dutchWord': dutchWord,
         'englishWord': englishWord,
-        'type': type,
-        'deHet': deHet,
+        'type': type.toString(),
+        'deHet': deHet.toString(),
         'pluralForm': pluralForm,
         'tag': tag,
       };
 }
-
-class WordList {}

@@ -1,4 +1,5 @@
 import 'package:first_project/core/models/word.dart';
+import 'package:first_project/core/services/words_io_json_service.dart';
 import 'package:first_project/pages/word_list/delete_word_dialog.dart';
 import 'package:first_project/pages/word_list/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
@@ -55,12 +56,14 @@ class _WordListPageState extends State<WordListPage> {
 
     setState(() {
       _isLoading = false;
-      selectAllCheckboxValue = false;
     });
   }
 
   Future<void> _reloadDataAsync() async {
     await _loadData();
+    setState(() {
+      selectAllCheckboxValue = false;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.jumpTo(_scrollPosition);
     });
@@ -102,7 +105,16 @@ class _WordListPageState extends State<WordListPage> {
     });
   }
 
-  void onExportPressed() {}
+  void onExportPressed(BuildContext context) async {
+    String path = await WordsIoJsonService().exportV1(words, "test");
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successfully exported ${words.length} words to $path'),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   void onSelectAllCheckboxValueChanged(bool? isSelected) {
     bool newValue;
@@ -172,7 +184,8 @@ class _WordListPageState extends State<WordListPage> {
       title: const Text('Word list'),
       actions: <Widget>[
         IconButton(
-            onPressed: onExportPressed, icon: const Icon(Icons.file_download)),
+            onPressed: () => onExportPressed(context),
+            icon: const Icon(Icons.file_download)),
         IconButton(
           onPressed: onMultiselectModeButtonPressed,
           icon: Icon(isMultiselectModeEnabled
