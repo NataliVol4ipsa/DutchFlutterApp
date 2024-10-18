@@ -37,10 +37,12 @@ class WordDto implements BaseWord {
   WordDto.fromJson(Map<String, dynamic> json)
       : dutchWord = json['dutchWord'] as String,
         englishWord = json['englishWord'] as String,
-        wordType = json['type'] as WordType,
-        deHetType = json['deHet'] as DeHetType,
-        pluralForm = json['pluralForm'] as String,
-        tag = json['tag'] as String;
+        wordType =
+            WordType.values.firstWhere((e) => e.toString() == json['type']),
+        deHetType =
+            DeHetType.values.firstWhere((e) => e.toString() == json['deHet']),
+        pluralForm = json['pluralForm'] as String?,
+        tag = json['tag'] as String?;
 
   Map<String, dynamic> toJson() => {
         'dutchWord': dutchWord,

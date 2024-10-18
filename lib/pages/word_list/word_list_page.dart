@@ -1,5 +1,7 @@
+import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/services/words_io_json_service.dart';
+import 'package:first_project/core/services/words_io_json_v1_service.dart';
+import 'package:first_project/core/services/words_storage_service.dart';
 import 'package:first_project/pages/word_list/delete_word_dialog.dart';
 import 'package:first_project/pages/word_list/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
@@ -106,11 +108,28 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   void onExportPressed(BuildContext context) async {
-    String path = await WordsIoJsonService().exportV1(words, "test");
+    String path = await WordsIoJsonV1Service().exportAsync(words, "test");
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Successfully exported ${words.length} words to $path'),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void onImportPressed(BuildContext context) async {
+    WordsCollectionDtoV1 importedWords =
+        await WordsIoJsonV1Service().importAsync("test");
+    List<int> newWordsIds =
+        await WordsStorageService(wordsRepository: wordsRepository)
+            .storeInDatabaseAsync(importedWords);
+
+    await _reloadDataAsync();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successfully imported ${newWordsIds.length} words.'),
         duration: const Duration(seconds: 3),
       ),
     );
@@ -187,6 +206,9 @@ class _WordListPageState extends State<WordListPage> {
             onPressed: () => onExportPressed(context),
             icon: const Icon(Icons.file_download)),
         IconButton(
+            onPressed: () => onImportPressed(context),
+            icon: const Icon(Icons.upload_file)),
+        IconButton(
           onPressed: onMultiselectModeButtonPressed,
           icon: Icon(isMultiselectModeEnabled
               ? Icons.library_add_check
@@ -220,7 +242,6 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
-// Modal
   void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,

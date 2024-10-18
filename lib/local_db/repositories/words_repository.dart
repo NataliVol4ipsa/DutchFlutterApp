@@ -10,6 +10,10 @@ class WordsRepository {
     return await dbContext.addWordAsync(word);
   }
 
+  Future<List<int>> addWordsAsync(List<Word> words) async {
+    return await dbContext.addWordsAsync(words);
+  }
+
   Future<List<Word>> fetchWordsAsync() async {
     return await dbContext.getWordsAsync();
   }

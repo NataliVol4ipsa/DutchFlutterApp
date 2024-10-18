@@ -1,5 +1,6 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/local_db/entities/db_word.dart';
+import 'package:first_project/local_db/mapping/words_mapper.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -12,17 +13,18 @@ class DbContext {
   }
 
   Future<int> addWordAsync(Word word) async {
-    final newWord = DbWord();
-    newWord.dutchWord = word.dutchWord;
-    newWord.englishWord = word.englishWord;
-    newWord.type = word.wordType;
-    newWord.deHet = word.deHetType;
-    newWord.pluralForm = word.pluralForm;
-    newWord.tag = word.tag;
-
+    final newWord = WordsMapper().mapToEntity(word);
     final int id = await isar.writeTxn(() => isar.dbWords.put(newWord));
-
     return id;
+  }
+
+  Future<List<int>> addWordsAsync(List<Word> words) async {
+    final newWords = WordsMapper().mapToEntityList(words);
+
+    final List<int> ids =
+        await isar.writeTxn(() => isar.dbWords.putAll(newWords));
+
+    return ids;
   }
 
   Future<bool> updateWordAsync(Word updatedWord) async {
