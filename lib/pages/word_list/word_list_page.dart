@@ -160,23 +160,6 @@ class _WordListPageState extends State<WordListPage> {
     return result;
   }
 
-// DOM
-  generateTableColWidths() {
-    if (isMultiselectModeEnabled) {
-      return {
-        0: const FlexColumnWidth(2),
-        1: const FlexColumnWidth(10),
-        2: const FlexColumnWidth(10),
-        3: const FlexColumnWidth(2),
-      };
-    }
-    return {
-      0: const FlexColumnWidth(2),
-      1: const FlexColumnWidth(10),
-      2: const FlexColumnWidth(10),
-    };
-  }
-
   AppBar createAppBar() {
     if (!isMultiselectModeEnabled) {
       return createNormalAppBar();
