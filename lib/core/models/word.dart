@@ -5,8 +5,8 @@ class Word {
   final int? id;
   final String dutchWord;
   final String englishWord;
-  final WordType type;
-  DeHetType deHet = DeHetType.none;
+  final WordType wordType;
+  DeHetType deHetType;
   String? pluralForm;
   String? tag;
 
@@ -14,26 +14,9 @@ class Word {
     this.id,
     this.dutchWord,
     this.englishWord,
-    this.type, {
-    this.deHet = DeHetType.none,
+    this.wordType, {
+    this.deHetType = DeHetType.none,
     this.pluralForm,
     this.tag,
   });
-  Word.fromJson(Map<String, dynamic> json)
-      : id = null,
-        dutchWord = json['dutchWord'] as String,
-        englishWord = json['englishWord'] as String,
-        type = json['type'] as WordType,
-        deHet = json['deHet'] as DeHetType,
-        pluralForm = json['pluralForm'] as String,
-        tag = json['tag'] as String;
-
-  Map<String, dynamic> toJson() => {
-        'dutchWord': dutchWord,
-        'englishWord': englishWord,
-        'type': type.toString(),
-        'deHet': deHet.toString(),
-        'pluralForm': pluralForm,
-        'tag': tag,
-      };
 }

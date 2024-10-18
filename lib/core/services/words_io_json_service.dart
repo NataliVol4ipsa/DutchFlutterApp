@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:first_project/core/dtos/word_dto.dart';
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/models/words_collection_v1.dart';
+import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/services/io_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
@@ -11,7 +12,8 @@ class WordsIoJsonService {
   Future<String> exportV1(List<Word> words, String fileName) async {
     Directory directory = await getExportDirectory();
 
-    var dataToSerialize = WordsCollectionV1(words);
+    var dataToSerialize = WordsCollectionDtoV1(
+        words.map((word) => WordDto.fromWord(word)).toList());
     String jsonString = jsonEncode(dataToSerialize);
 
     final path = '${directory.path}/$fileName.json';

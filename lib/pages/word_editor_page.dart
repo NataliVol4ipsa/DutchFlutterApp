@@ -51,11 +51,11 @@ class _WordEditorPageState extends State<WordEditorPage> {
   }
 
   void initializeWithExistingWord(Word word) {
-    selectedWordType = word.type;
+    selectedWordType = word.wordType;
     dutchWordTextInputController.text = word.dutchWord;
     englishWordTextInputController.text = word.englishWord;
     dutchPluralFormTextInputController.text = word.pluralForm ?? "";
-    selectedDeHetType = word.deHet;
+    selectedDeHetType = word.deHetType;
   }
 
   Future<void> submitChangesAsync() async {
@@ -77,7 +77,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
     var newWord = Word(
         null, dutchWordInput, englishWordInput, selectedWordType!,
-        deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
+        deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
     await wordsRepository.addWordAsync(newWord);
 
@@ -98,7 +98,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
     var updatedWord = Word(widget.existingWord!.id, dutchWordInput,
         englishWordInput, selectedWordType!,
-        deHet: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
+        deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
     await wordsRepository.updateWordAsync(updatedWord);
 //todo make this an input method - what to do when action is complete. Accept new or close the page.
