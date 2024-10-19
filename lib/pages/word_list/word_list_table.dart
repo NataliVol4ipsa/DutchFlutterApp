@@ -1,3 +1,4 @@
+import 'package:first_project/pages/word_list/word_list_table_row.dart';
 import 'package:flutter/material.dart';
 import 'package:first_project/core/models/word.dart';
 
@@ -9,6 +10,7 @@ class WordTable extends StatelessWidget {
   final Function(int, bool?) onRowCheckboxChanged;
   final Function(bool?) onSelectAllCheckboxValueChanged;
   final Function(Word) onRowTap;
+  final ScrollController scrollController;
 
   const WordTable({
     super.key,
@@ -19,131 +21,88 @@ class WordTable extends StatelessWidget {
     required this.onRowCheckboxChanged,
     required this.onSelectAllCheckboxValueChanged,
     required this.onRowTap,
+    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      border: TableBorder.all(),
-      columnWidths: generateTableColWidths(),
+    return Column(
       children: [
-        TableRow(
-          children: [
-            const TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  '#',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Dutch',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'English',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            if (isMultiselectModeEnabled) ...[
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SizedBox(
-                  width: 24.0,
-                  height: 24.0,
-                  child: Checkbox(
-                    tristate: true,
-                    value: selectAllCheckboxValue,
-                    onChanged: onSelectAllCheckboxValueChanged,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        ...words.asMap().entries.map((entry) {
-          int index = entry.key + 1;
-          Word word = entry.value;
-          return TableRow(
+        Container(
+          color: Colors.grey[300],
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: () => onRowTap(word),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(index.toString()),
+              Container(
+                width: 50,
+                padding: const EdgeInsets.all(4.0),
+                child: const Text(
+                  "No.",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(4.0),
+                  child: const Text(
+                    "Dutch Word",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: () => onRowTap(word),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(word.dutchWord),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(4.0),
+                  child: const Text(
+                    "English Word",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-              TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: GestureDetector(
-                  onTap: () => onRowTap(word),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(word.englishWord),
-                  ),
-                ),
-              ),
-              if (isMultiselectModeEnabled) ...[
-                TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
+              if (isMultiselectModeEnabled)
+                Container(
+                  width: 50,
+                  padding: const EdgeInsets.all(4.0),
+                  alignment: Alignment.center,
                   child: SizedBox(
-                    width: 24.0,
-                    height: 24.0,
+                    width: 20.0,
+                    height: 20.0,
                     child: Checkbox(
-                      value: selectedRows[entry.key],
-                      onChanged: (isSelected) =>
-                          onRowCheckboxChanged(entry.key, isSelected),
+                      value: selectAllCheckboxValue,
+                      tristate: true,
+                      onChanged: onSelectAllCheckboxValueChanged,
                     ),
                   ),
                 ),
-              ],
             ],
-          );
-        }),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: words.length,
+            itemBuilder: (context, index) {
+              final word = words[index];
+              return WordTableRow(
+                color: index.isEven ? Colors.grey[200] : Colors.white,
+                // final theme = Theme.of(context);
+                // ? theme.colorScheme.onTertiary
+                // : theme.colorScheme.background,
+                index: index,
+                word: word,
+                isSelected: selectedRows[index],
+                isMultiselectModeEnabled: isMultiselectModeEnabled,
+                onRowCheckboxChanged: (value) =>
+                    onRowCheckboxChanged(index, value),
+                onRowTap: () => onRowTap(word),
+              );
+            },
+          ),
+        ),
       ],
     );
-  }
-
-  Map<int, TableColumnWidth> generateTableColWidths() {
-    if (isMultiselectModeEnabled) {
-      return {
-        0: const FlexColumnWidth(2),
-        1: const FlexColumnWidth(10),
-        2: const FlexColumnWidth(10),
-        3: const FlexColumnWidth(2),
-      };
-    }
-    return {
-      0: const FlexColumnWidth(2),
-      1: const FlexColumnWidth(10),
-      2: const FlexColumnWidth(10),
-    };
   }
 }

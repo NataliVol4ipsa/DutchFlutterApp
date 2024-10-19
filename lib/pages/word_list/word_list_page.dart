@@ -34,9 +34,6 @@ class _WordListPageState extends State<WordListPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      _scrollPosition = _scrollController.position.pixels;
-    });
     wordsRepository = context.read<WordsRepository>();
     _loadData();
   }
@@ -62,13 +59,22 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> _reloadDataAsync() async {
+    _captureScrollPosition();
     await _loadData();
     setState(() {
       selectAllCheckboxValue = false;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _restoreScrollPosition();
+  }
+
+  void _captureScrollPosition() {
+    _scrollPosition = _scrollController.position.pixels;
+  }
+
+  void _restoreScrollPosition() {
+    if (_scrollController.hasClients) {
       _scrollController.jumpTo(_scrollPosition);
-    });
+    }
   }
 
   Future<void> _fetchWordsAsync() async {
@@ -101,7 +107,7 @@ class _WordListPageState extends State<WordListPage> {
     selectedRows = List.generate(words.length, (index) => false);
   }
 
-  void onMultiselectModeButtonPressed() {
+  void toggleMultiSelectMode() {
     setState(() {
       isMultiselectModeEnabled = !isMultiselectModeEnabled;
     });
@@ -133,21 +139,6 @@ class _WordListPageState extends State<WordListPage> {
         duration: const Duration(seconds: 3),
       ),
     );
-  }
-
-  void onSelectAllCheckboxValueChanged(bool? isSelected) {
-    bool newValue;
-    if (selectAllCheckboxValue == null) {
-      newValue = true;
-    } else if (isSelected == null) {
-      newValue = false;
-    } else {
-      newValue = isSelected;
-    }
-    setState(() {
-      selectAllCheckboxValue = newValue;
-      selectedRows = List.generate(words.length, (index) => newValue);
-    });
   }
 
   void onRowCheckboxChanged(int index, bool? isSelected) {
@@ -209,7 +200,7 @@ class _WordListPageState extends State<WordListPage> {
             onPressed: () => onImportPressed(context),
             icon: const Icon(Icons.upload_file)),
         IconButton(
-          onPressed: onMultiselectModeButtonPressed,
+          onPressed: toggleMultiSelectMode,
           icon: Icon(isMultiselectModeEnabled
               ? Icons.library_add_check
               : Icons.library_add_check_outlined),
@@ -231,9 +222,13 @@ class _WordListPageState extends State<WordListPage> {
     }
     return AppBar(
       title: Text(appBarText),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: toggleMultiSelectMode,
+      ),
       actions: <Widget>[
         IconButton(
-          onPressed: onMultiselectModeButtonPressed,
+          onPressed: toggleMultiSelectMode,
           icon: Icon(isMultiselectModeEnabled
               ? Icons.library_add_check
               : Icons.library_add_check_outlined),
@@ -254,6 +249,11 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   void _onDeletePressed(BuildContext context) async {
+    showDeleteWordDialog();
+    await processWordDeletionAsync(context);
+  }
+
+  void showDeleteWordDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -263,7 +263,9 @@ class _WordListPageState extends State<WordListPage> {
         );
       },
     );
+  }
 
+  Future<void> processWordDeletionAsync(BuildContext context) async {
     try {
       await _deleteWordsAsync();
     } catch (e) {
@@ -272,7 +274,7 @@ class _WordListPageState extends State<WordListPage> {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
-      await _loadData();
+      await _reloadDataAsync();
     }
   }
 
@@ -315,17 +317,33 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
-  GestureDetector createTappableTableCell(
-      BuildContext context, Word word, String value) {
-    return GestureDetector(
-      onTap: () {
-        _onTableRowTap(context, word);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(value),
-      ),
-    );
+// If new item is selected - check if selectAll value should change to select all, none or some
+  void updateSelectAllCheckboxValue() {
+    if (selectedRows.every((isSelected) => isSelected)) {
+      selectAllCheckboxValue = true;
+    } else if (selectedRows.every((isSelected) => !isSelected)) {
+      selectAllCheckboxValue = false;
+    } else {
+      selectAllCheckboxValue = null;
+    }
+  }
+
+// If someone clicks on select all checkbox - update state accordingly
+  void onSelectAllCheckboxValueChanged2(bool? isSelected) {
+    bool newValue;
+
+    if (selectAllCheckboxValue == null) {
+      newValue = true;
+    } else if (isSelected == null) {
+      newValue = false;
+    } else {
+      newValue = isSelected;
+    }
+
+    setState(() {
+      selectAllCheckboxValue = newValue;
+      selectedRows = List.generate(words.length, (index) => newValue);
+    });
   }
 
   @override
@@ -338,18 +356,23 @@ class _WordListPageState extends State<WordListPage> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : SingleChildScrollView(
-                controller: _scrollController,
-                child: WordTable(
-                  words: words,
-                  selectedRows: selectedRows,
-                  isMultiselectModeEnabled: isMultiselectModeEnabled,
-                  selectAllCheckboxValue: selectAllCheckboxValue,
-                  onRowCheckboxChanged: onRowCheckboxChanged,
-                  onSelectAllCheckboxValueChanged:
-                      onSelectAllCheckboxValueChanged,
-                  onRowTap: (Word word) => _onTableRowTap(context, word),
-                ),
+            : WordTable(
+                words: words,
+                selectedRows: selectedRows,
+                isMultiselectModeEnabled: isMultiselectModeEnabled,
+                selectAllCheckboxValue: selectAllCheckboxValue,
+                scrollController: _scrollController,
+                onRowCheckboxChanged: (index, value) {
+                  setState(() {
+                    selectedRows[index] = value!;
+                    updateSelectAllCheckboxValue();
+                  });
+                },
+                onSelectAllCheckboxValueChanged:
+                    onSelectAllCheckboxValueChanged2,
+                onRowTap: (word) {
+                  _onTableRowTap(context, word);
+                },
               ),
       ),
       bottomNavigationBar: isMultiselectModeEnabled
