@@ -46,7 +46,7 @@ class WordTableRow extends StatelessWidget {
                 child: Text(
                   word.dutchWord,
                   style: const TextStyle(fontSize: 14),
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
                 ),
               ),
             ),
@@ -57,7 +57,7 @@ class WordTableRow extends StatelessWidget {
                 child: Text(
                   word.englishWord,
                   style: const TextStyle(fontSize: 14),
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
                 ),
               ),
             ),
