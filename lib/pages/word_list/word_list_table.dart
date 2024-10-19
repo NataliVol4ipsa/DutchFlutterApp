@@ -9,8 +9,9 @@ class WordTable extends StatelessWidget {
   final bool? selectAllCheckboxValue;
   final Function(int, bool?) onRowCheckboxChanged;
   final Function(bool?) onSelectAllCheckboxValueChanged;
-  final Function(Word) onRowTap;
+  final Function(int, Word) onRowTap;
   final ScrollController scrollController;
+  final Function(int)? onRowLongPress;
 
   const WordTable({
     super.key,
@@ -22,6 +23,7 @@ class WordTable extends StatelessWidget {
     required this.onSelectAllCheckboxValueChanged,
     required this.onRowTap,
     required this.scrollController,
+    this.onRowLongPress,
   });
 
   @override
@@ -97,7 +99,8 @@ class WordTable extends StatelessWidget {
                 isMultiselectModeEnabled: isMultiselectModeEnabled,
                 onRowCheckboxChanged: (value) =>
                     onRowCheckboxChanged(index, value),
-                onRowTap: () => onRowTap(word),
+                onRowTap: () => onRowTap(index, word),
+                onRowLongPress: onRowLongPress,
               );
             },
           ),

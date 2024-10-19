@@ -8,6 +8,7 @@ class WordTableRow extends StatelessWidget {
   final bool isMultiselectModeEnabled;
   final Function(bool?) onRowCheckboxChanged;
   final Function() onRowTap;
+  final Function(int)? onRowLongPress;
   final Color? color;
 
   const WordTableRow({
@@ -18,6 +19,7 @@ class WordTableRow extends StatelessWidget {
     required this.isMultiselectModeEnabled,
     required this.onRowCheckboxChanged,
     required this.onRowTap,
+    this.onRowLongPress,
     this.color,
   });
 
@@ -25,6 +27,9 @@ class WordTableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onRowTap,
+      onLongPress: () => {
+        if (onRowLongPress != null) {onRowLongPress!(index)}
+      },
       child: Container(
         color: color,
         padding: const EdgeInsets.symmetric(vertical: 4.0),

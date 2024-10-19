@@ -209,6 +209,13 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
+  toggleRowCheckbox(index, value) {
+    setState(() {
+      selectedRows[index] = value!;
+      updateSelectAllCheckboxValue();
+    });
+  }
+
   AppBar createMultiselectAppBar() {
     var numOfSelectedItems = calculateNumOfSelectedItems();
     String appBarText;
@@ -278,9 +285,15 @@ class _WordListPageState extends State<WordListPage> {
     }
   }
 
-  void _onTableRowTap(BuildContext context, Word word) async {
-    if (isMultiselectModeEnabled) return;
+  void _onTableRowTap(BuildContext context, int index, Word word) async {
+    if (isMultiselectModeEnabled) {
+      toggleRowCheckbox(index, !selectedRows[index]);
+    } else {
+      await showWordEditor(context, word);
+    }
+  }
 
+  Future<void> showWordEditor(BuildContext context, Word word) async {
     await WordEditorModal.show(
       context: context,
       word: word,
@@ -362,16 +375,20 @@ class _WordListPageState extends State<WordListPage> {
                 isMultiselectModeEnabled: isMultiselectModeEnabled,
                 selectAllCheckboxValue: selectAllCheckboxValue,
                 scrollController: _scrollController,
-                onRowCheckboxChanged: (index, value) {
-                  setState(() {
-                    selectedRows[index] = value!;
-                    updateSelectAllCheckboxValue();
-                  });
-                },
+                onRowCheckboxChanged: toggleRowCheckbox,
                 onSelectAllCheckboxValueChanged:
                     onSelectAllCheckboxValueChanged2,
-                onRowTap: (word) {
-                  _onTableRowTap(context, word);
+                onRowTap: (index, word) {
+                  _onTableRowTap(context, index, word);
+                },
+                onRowLongPress: (int ind) {
+                  if (!isMultiselectModeEnabled) {
+                    setState(() {
+                      isMultiselectModeEnabled = true;
+                    });
+                  }
+
+                  toggleRowCheckbox(ind, true);
                 },
               ),
       ),
