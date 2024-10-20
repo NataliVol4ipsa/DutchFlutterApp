@@ -2,8 +2,10 @@ import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/services/words_io_json_v1_service.dart';
 import 'package:first_project/core/services/words_storage_service.dart';
-import 'package:first_project/pages/word_list/delete_word_dialog.dart';
-import 'package:first_project/pages/word_list/word_editor_modal.dart';
+import 'package:first_project/pages/word_list/dialogs/delete_word_dialog.dart';
+import 'package:first_project/pages/word_list/dialogs/export_words_dialog.dart';
+import 'package:first_project/pages/word_list/snackbars/snackbar_shower.dart';
+import 'package:first_project/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -113,15 +115,26 @@ class _WordListPageState extends State<WordListPage> {
     });
   }
 
-  void onExportPressed(BuildContext context) async {
-    String path = await WordsIoJsonV1Service().exportAsync(words, "test");
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Successfully exported ${words.length} words to $path'),
-        duration: const Duration(seconds: 3),
-      ),
+  void onExportButtonPressed(BuildContext context) async {
+    showExportDialog(context);
+  }
+
+  void showExportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ExportWordsDialog(
+          onExportPressed: exportWordsAsync,
+        );
+      },
     );
+  }
+
+  Future<void> exportWordsAsync(BuildContext context, String fileName) async {
+    String path = await WordsIoJsonV1Service().exportAsync(words, fileName);
+    if (!context.mounted) return;
+    SnackbarShower.show(
+        context, 'Successfully exported ${words.length} words to $path');
   }
 
   void onImportPressed(BuildContext context) async {
@@ -133,12 +146,8 @@ class _WordListPageState extends State<WordListPage> {
 
     await _reloadDataAsync();
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Successfully imported ${newWordsIds.length} words.'),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    SnackbarShower.show(
+        context, 'Successfully imported ${newWordsIds.length} words.');
   }
 
   void onRowCheckboxChanged(int index, bool? isSelected) {
@@ -194,7 +203,7 @@ class _WordListPageState extends State<WordListPage> {
       title: const Text('Word list'),
       actions: <Widget>[
         IconButton(
-            onPressed: () => onExportPressed(context),
+            onPressed: () => onExportButtonPressed(context),
             icon: const Icon(Icons.file_download)),
         IconButton(
             onPressed: () => onImportPressed(context),
@@ -361,40 +370,50 @@ class _WordListPageState extends State<WordListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: createAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : WordTable(
-                words: words,
-                selectedRows: selectedRows,
-                isMultiselectModeEnabled: isMultiselectModeEnabled,
-                selectAllCheckboxValue: selectAllCheckboxValue,
-                scrollController: _scrollController,
-                onRowCheckboxChanged: toggleRowCheckbox,
-                onSelectAllCheckboxValueChanged:
-                    onSelectAllCheckboxValueChanged2,
-                onRowTap: (index, word) {
-                  _onTableRowTap(context, index, word);
-                },
-                onRowLongPress: (int ind) {
-                  if (!isMultiselectModeEnabled) {
-                    setState(() {
-                      isMultiselectModeEnabled = true;
-                    });
-                  }
+    // PopScope Allows to override back button behavior
+    return PopScope(
+      canPop: false,
+      onPopInvoked: onPopAsync,
+      child: Scaffold(
+        appBar: createAppBar(),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : WordTable(
+                  words: words,
+                  selectedRows: selectedRows,
+                  isMultiselectModeEnabled: isMultiselectModeEnabled,
+                  selectAllCheckboxValue: selectAllCheckboxValue,
+                  scrollController: _scrollController,
+                  onRowCheckboxChanged: toggleRowCheckbox,
+                  onSelectAllCheckboxValueChanged:
+                      onSelectAllCheckboxValueChanged2,
+                  onRowTap: (index, word) {
+                    _onTableRowTap(context, index, word);
+                  },
+                  onRowLongPress: (int ind) {
+                    if (!isMultiselectModeEnabled) {
+                      toggleMultiSelectMode();
+                    }
 
-                  toggleRowCheckbox(ind, true);
-                },
-              ),
+                    toggleRowCheckbox(ind, true);
+                  },
+                ),
+        ),
+        bottomNavigationBar: isMultiselectModeEnabled
+            ? createMultiselectBottomNavBar(context)
+            : null,
       ),
-      bottomNavigationBar: isMultiselectModeEnabled
-          ? createMultiselectBottomNavBar(context)
-          : null,
     );
+  }
+
+  Future<void> onPopAsync(bool didPop) async {
+    if (isMultiselectModeEnabled) {
+      toggleMultiSelectMode();
+      return;
+    }
   }
 }
