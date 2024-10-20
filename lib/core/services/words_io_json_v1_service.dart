@@ -35,13 +35,9 @@ class WordsIoJsonV1Service {
     }
   }
 
-  Future<WordsCollectionDtoV1> importAsync(String fileName) async {
-    Directory directory = await getExportDirectoryAsync();
-    final path = '${directory.path}/$fileName.json';
-    final file = File(path);
-
+  Future<WordsCollectionDtoV1> importAsync(File file) async {
     if (!await file.exists()) {
-      throw Exception("File not found: $path");
+      throw Exception("File not found: ${file.path}");
     }
 
     String jsonString = await file.readAsString();

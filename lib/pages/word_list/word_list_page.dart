@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/services/words_io_json_v1_service.dart';
@@ -138,8 +141,14 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   void onImportPressed(BuildContext context) async {
-    WordsCollectionDtoV1 importedWords =
-        await WordsIoJsonV1Service().importAsync("test");
+    final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ["json"]);
+    if (result == null) return null;
+
+    WordsCollectionDtoV1 importedWords = await WordsIoJsonV1Service()
+        .importAsync(File(result.files.first.path!));
     List<int> newWordsIds =
         await WordsStorageService(wordsRepository: wordsRepository)
             .storeInDatabaseAsync(importedWords);
@@ -372,7 +381,7 @@ class _WordListPageState extends State<WordListPage> {
   Widget build(BuildContext context) {
     // PopScope Allows to override back button behavior
     return PopScope(
-      canPop: false,
+      canPop: true,
       onPopInvoked: onPopAsync,
       child: Scaffold(
         appBar: createAppBar(),
