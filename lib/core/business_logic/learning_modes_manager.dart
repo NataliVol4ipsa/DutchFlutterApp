@@ -6,6 +6,17 @@ class LearningModesManager {
   final List<Word> words;
 
   LearningModesManager(this.learningModes, this.words);
+
+  List<BaseLearningModeData> generateExcercises() {
+    List<Word> supportedWords = words
+        .where((w) => FlipCardLearningModeData.isSupportedWord(w))
+        .toList();
+
+    List<FlipCardLearningModeData> flipCardDataList =
+        supportedWords.map((word) => FlipCardLearningModeData(word)).toList();
+
+    return flipCardDataList;
+  }
 }
 
 abstract class BaseLearningModeData {
@@ -19,19 +30,18 @@ abstract class BaseLearningModeData {
       this.learningModeType,
       this.isDutchEnglishDirectionSupported,
       this.isEnglishDutchDirectionSupported);
-
-  bool isSupportedWord(Word word);
 }
 
 // from pool of words, select words that are isSupportedWord
 // pick numOfRequiredWords from the relevant pool and create modes for them
-class SimpleLearningModeData extends BaseLearningModeData {
-  SimpleLearningModeData(int numOfRequiredWords)
-      : super(numOfRequiredWords, LearningModeType.flipCard, true, true);
+class FlipCardLearningModeData extends BaseLearningModeData {
+  static const int requiredWords = 1;
+  static const LearningModeType type = LearningModeType.flipCard;
+  final Word word;
 
-  @override
-  bool isSupportedWord(Word word) {
-    // TODO: implement isSupportedWord
-    throw UnimplementedError();
+  FlipCardLearningModeData(this.word) : super(requiredWords, type, true, true);
+
+  static bool isSupportedWord(Word word) {
+    return true;
   }
 }
