@@ -20,7 +20,7 @@ class _ExportWordsDialogState extends State<ExportWordsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Exporting word list:'),
+      title: const Text('Exporting word list'),
       content: Form(
         key: _formKey,
         child: Column(

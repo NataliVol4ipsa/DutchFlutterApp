@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:first_project/local_db/db_context.dart';
-import 'package:first_project/pages/practice_page.dart';
+import 'package:first_project/pages/learning_modes/learning_modes_page.dart';
 import 'package:first_project/pages/word_list/word_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => HomePage(),
           '/newword': (context) => WordEditorPage(),
           '/wordlist': (context) => WordListPage(),
-          '/practice': (context) => PracticePage(),
+          '/practice': (context) => LearningModesPage(),
         });
   }
 }
