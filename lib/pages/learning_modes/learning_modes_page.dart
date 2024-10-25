@@ -35,6 +35,10 @@ class _LearningModesPageState extends State<LearningModesPage> {
                     children: [
                       ListTile(
                         title: Text(mode.label),
+                        subtitle: Text(
+                          mode.explanation,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                         tileColor: isSelected
                             ? colorScheme.primary.withOpacity(0.3)
                             : colorScheme.surface,
