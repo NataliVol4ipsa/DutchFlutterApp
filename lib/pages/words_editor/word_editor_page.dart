@@ -146,6 +146,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
     });
   }
 
+// =============================== search online section
+
+  onSearchWordOnlineClicked() => {print('object')};
+
+// ===============================
+
   @override
   void dispose() {
     dutchWordFocusNode.dispose();
@@ -200,6 +206,20 @@ class _WordEditorPageState extends State<WordEditorPage> {
                   },
                 ),
                 customPadding(),
+                if (isNewWord) ...{
+                  ValueListenableBuilder(
+                    valueListenable: dutchWordTextInputController,
+                    builder: (context, TextEditingValue value, child) {
+                      return ElevatedButton(
+                        onPressed: value.text.trim() == ""
+                            ? null
+                            : onSearchWordOnlineClicked,
+                        child: Text("Search word online"),
+                      );
+                    },
+                  ),
+                  customPadding(),
+                },
                 Container(
                     alignment: Alignment.centerLeft,
                     child: InputLabel(
