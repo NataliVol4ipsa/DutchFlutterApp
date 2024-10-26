@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:first_project/core/http_clients/get_word_online_response.dart';
-import 'package:first_project/core/http_clients/woordenlijst_client.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
+import 'package:first_project/pages/words_editor/online_word_search_section.dart';
 import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
 import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
 import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
@@ -36,6 +35,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
   DeHetType? selectedDeHetType = DeHetType.none;
 
   bool isNewWord = false;
+  bool resetSearchTrigger = false;
 
   List<WordType> wordTypeDropdownValues = WordType.values.toList();
 
@@ -64,12 +64,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
     if (!_formKey.currentState!.validate()) return;
     if (isNewWord) {
       await createWordAsync();
+      resetSearchTrigger = !resetSearchTrigger;
     } else {
       await updateWordAsync();
       if (mounted) {
         Navigator.of(context).pop();
       }
-      resetSearchComplete();
     }
   }
 
@@ -149,42 +149,13 @@ class _WordEditorPageState extends State<WordEditorPage> {
     });
   }
 
-// =============================== search online section
-
-  bool searchComplete = false;
-
-  List<GetWordOnlineResponse>? onlineWordOptions;
-
-  onSearchWordOnlineClicked() async {
-    setState(() {
-      searchComplete = false;
-    });
-    var response = await WoordenlijstClient().findAsync(
-        dutchWordTextInputController.text,
-        wordType: selectedWordType);
-
-    onlineWordOptions = response.onlineWords;
-    setState(() {
-      searchComplete = true;
-    });
-  }
-
-  void resetSearchComplete() {
-    setState(() {
-      searchComplete = false;
-    });
-  }
-
-// ===============================
-
   void onApplyOnlineWordPressed(GetWordOnlineResponse wordOption) {
-    resetSearchComplete();
     setState(() {
+      resetSearchTrigger = !resetSearchTrigger;
       selectedWordType = wordOption.partOfSpeech ?? WordType.none;
       dutchPluralFormTextInputController.text = wordOption.pluralForm ?? "";
       selectedDeHetType = wordOption.gender ?? DeHetType.none;
     });
-    onlineWordOptions = null;
   }
 
   @override
@@ -193,7 +164,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
     super.dispose();
   }
 
-  Widget customPadding() => SizedBox(height: 10);
+  Widget customPadding() => const SizedBox(height: 10);
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +179,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
               children: [
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: InputLabel(
+                    child: const InputLabel(
                       "Word type",
                     )),
                 GenericDropdownMenu(
@@ -219,14 +190,14 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 customPadding(),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: InputLabel(
+                    child: const InputLabel(
                       "Dutch",
                       isRequired: true,
                     )),
                 TextFormField(
                   controller: dutchWordTextInputController,
                   focusNode: dutchWordFocusNode,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Dutch word",
                     contentPadding:
@@ -242,112 +213,22 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 ),
                 customPadding(),
                 if (isNewWord) ...{
-                  if (searchComplete) ...{
-                    if (onlineWordOptions == null ||
-                        onlineWordOptions!.isEmpty) ...{
-                      Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(children: [
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              color: Colors.red[50],
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.error, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "Failed to find word online",
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ])),
-                      customPadding(),
-                    },
-                    if (onlineWordOptions != null &&
-                        onlineWordOptions!.isNotEmpty) ...{
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics:
-                            NeverScrollableScrollPhysics(), // Disable internal scrolling to avoid conflicts
-                        itemCount: onlineWordOptions?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final wordOption = onlineWordOptions![index];
-                          return Card(
-                            elevation: 3,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    wordOption.word,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 8),
-                                  if (wordOption.note != null &&
-                                      wordOption.note != "")
-                                    Text('Note: ${wordOption.note}'),
-                                  if (wordOption.partOfSpeech != null &&
-                                      wordOption.partOfSpeech != WordType.none)
-                                    Text(
-                                        'Part of Speech: ${capitalizeEnum(wordOption.partOfSpeech!)}'),
-                                  if (wordOption.gender != null &&
-                                      wordOption.gender != DeHetType.none)
-                                    Text(
-                                        'De/Het: ${capitalizeEnum(wordOption.gender!)}'),
-                                  if (wordOption.pluralForm != null)
-                                    Text('Plural: ${wordOption.pluralForm}'),
-                                  if (wordOption.diminutive != null)
-                                    Text(
-                                        'Diminutive: ${wordOption.diminutive}'),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        onApplyOnlineWordPressed(wordOption);
-                                      },
-                                      child: Text('Apply'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    }
-                  },
-                  ValueListenableBuilder(
-                    valueListenable: dutchWordTextInputController,
-                    builder: (context, TextEditingValue value, child) {
-                      return ElevatedButton(
-                        onPressed: value.text.trim() == ""
-                            ? null
-                            : onSearchWordOnlineClicked,
-                        child: Text("Search word online"),
-                      );
-                    },
+                  OnlineWordSearchSection(
+                    dutchWordTextInputController: dutchWordTextInputController,
+                    selectedWordType: selectedWordType,
+                    onApplyOnlineWordPressed: onApplyOnlineWordPressed,
+                    resetTrigger: resetSearchTrigger,
                   ),
-                  customPadding(),
                 },
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: InputLabel(
+                    child: const InputLabel(
                       "English",
                       isRequired: true,
                     )),
                 TextFormField(
                   controller: englishWordTextInputController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "English word",
                     contentPadding:
@@ -365,7 +246,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 if (shouldDisplayDeHetInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
-                      child: InputLabel(
+                      child: const InputLabel(
                         "De/Het type",
                       )),
                   OptionalToggleButtons<DeHetType?>(
@@ -381,12 +262,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 if (shouldDisplayPluralFormInput()) ...[
                   Container(
                       alignment: Alignment.centerLeft,
-                      child: InputLabel(
+                      child: const InputLabel(
                         "Dutch plural form",
                       )),
                   TextField(
                     controller: dutchPluralFormTextInputController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: "Dutch plural form",
                       contentPadding:
@@ -398,7 +279,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 ElevatedButton(
                     onPressed: submitChangesAsync,
                     child: Text(getSubmitButtonLabel())),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
