@@ -77,15 +77,12 @@ class WoordenlijstClient {
     if (value == null) {
       return WordType.none;
     }
-    RegExp regExp = RegExp(r'^(\w+-\w+)');
-    Match? match = regExp.firstMatch(value);
-
-    if (match != null) {
-      String speechPartCode = match.group(0)!;
-      return toWordType(speechPartCode);
-    } else {
+    String result = value.replaceAll(RegExp(r'\(.*$'), '');
+    if (result.trim() == "") {
       return WordType.none;
     }
+
+    return toWordType(result);
   }
 
   WordType toWordType(String woordenlijstPartOfSpeechCode) {

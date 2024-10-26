@@ -283,10 +283,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 8),
-                                  if (wordOption.partOfSpeech != null)
+                                  if (wordOption.partOfSpeech != null &&
+                                      wordOption.partOfSpeech != WordType.none)
                                     Text(
                                         'Part of Speech: ${capitalizeEnum(wordOption.partOfSpeech!)}'),
-                                  if (wordOption.gender != null)
+                                  if (wordOption.gender != null &&
+                                      wordOption.gender != DeHetType.none)
                                     Text(
                                         'De/Het: ${capitalizeEnum(wordOption.gender!)}'),
                                   if (wordOption.pluralForm != null)
