@@ -177,6 +177,16 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
 // ===============================
 
+  void onApplyOnlineWordPressed(GetWordOnlineResponse wordOption) {
+    resetSearchComplete();
+    setState(() {
+      selectedWordType = wordOption.partOfSpeech ?? WordType.none;
+      dutchPluralFormTextInputController.text = wordOption.pluralForm ?? "";
+      selectedDeHetType = wordOption.gender ?? DeHetType.none;
+    });
+    onlineWordOptions = null;
+  }
+
   @override
   void dispose() {
     dutchWordFocusNode.dispose();
@@ -300,7 +310,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
                                     alignment: Alignment.bottomRight,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        // Handle Apply button press
+                                        onApplyOnlineWordPressed(wordOption);
                                       },
                                       child: Text('Apply'),
                                     ),
