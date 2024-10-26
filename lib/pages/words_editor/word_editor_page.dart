@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:first_project/core/http_clients/get_word_online_response.dart';
 import 'package:first_project/core/http_clients/woordenlijst_client.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
@@ -68,6 +69,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
       if (mounted) {
         Navigator.of(context).pop();
       }
+      resetSearchComplete();
     }
   }
 
@@ -149,9 +151,28 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
 // =============================== search online section
 
+  bool searchComplete = false;
+
+  List<GetWordOnlineResponse>? onlineWordOptions;
+
   onSearchWordOnlineClicked() async {
-    await WoordenlijstClient()
-        .findAsync(dutchWordTextInputController.text, partOfSpeech: "NOU");
+    setState(() {
+      searchComplete = false;
+    });
+    var response = await WoordenlijstClient().findAsync(
+        dutchWordTextInputController.text,
+        wordType: selectedWordType);
+
+    onlineWordOptions = response.onlineWords;
+    setState(() {
+      searchComplete = true;
+    });
+  }
+
+  void resetSearchComplete() {
+    setState(() {
+      searchComplete = false;
+    });
   }
 
 // ===============================
@@ -168,11 +189,11 @@ class _WordEditorPageState extends State<WordEditorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(getAppBarLabel())),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Form(
-            key: _formKey,
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
@@ -211,6 +232,85 @@ class _WordEditorPageState extends State<WordEditorPage> {
                 ),
                 customPadding(),
                 if (isNewWord) ...{
+                  if (searchComplete) ...{
+                    if (onlineWordOptions == null ||
+                        onlineWordOptions!.isEmpty) ...{
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(children: [
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              color: Colors.red[50],
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.error, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Failed to find word online",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ])),
+                      customPadding(),
+                    },
+                    if (onlineWordOptions != null &&
+                        onlineWordOptions!.isNotEmpty) ...{
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics:
+                            NeverScrollableScrollPhysics(), // Disable internal scrolling to avoid conflicts
+                        itemCount: onlineWordOptions?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final wordOption = onlineWordOptions![index];
+                          return Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    wordOption.word,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 8),
+                                  if (wordOption.partOfSpeech != null)
+                                    Text(
+                                        'Part of Speech: ${capitalizeEnum(wordOption.partOfSpeech!)}'),
+                                  if (wordOption.gender != null)
+                                    Text(
+                                        'De/Het: ${capitalizeEnum(wordOption.gender!)}'),
+                                  if (wordOption.pluralForm != null)
+                                    Text('Plural: ${wordOption.pluralForm}'),
+                                  if (wordOption.diminutive != null)
+                                    Text(
+                                        'Diminutive: ${wordOption.diminutive}'),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Handle Apply button press
+                                      },
+                                      child: Text('Apply'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    }
+                  },
                   ValueListenableBuilder(
                     valueListenable: dutchWordTextInputController,
                     builder: (context, TextEditingValue value, child) {

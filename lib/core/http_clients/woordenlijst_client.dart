@@ -1,4 +1,5 @@
 import 'package:first_project/core/http_clients/get_word_online_response.dart';
+import 'package:first_project/core/http_clients/get_words_online_response.dart';
 import 'package:first_project/core/http_clients/xml_extensions.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
@@ -6,14 +7,15 @@ import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
 
 class WoordenlijstClient {
-  Future<GetWordOnlineResponse?> findAsync(String word,
-      {String? partOfSpeech}) async {
-    if (partOfSpeech == null) throw Exception("not supported");
-
-    final uri = Uri.parse(
-        'https://woordenlijst.org/MolexServe/lexicon/find_wordform'
-        '?database=gig_pro_wrdlst&wordform=$word&part_of_speech=$partOfSpeech'
-        '&onlyvalid=true&regex=false&diminutive=true&paradigm=true');
+  Future<GetWordsOnlineResponse> findAsync(String word,
+      {WordType? wordType}) async {
+    String? partOfSpeech = toPartOfSpeechCode(wordType);
+    String partOfSpeechQueryParam =
+        partOfSpeech == null ? "" : "&part_of_speech=$partOfSpeech";
+    final uri =
+        Uri.parse('https://woordenlijst.org/MolexServe/lexicon/find_wordform'
+            '?database=gig_pro_wrdlst&wordform=$word$partOfSpeechQueryParam'
+            '&onlyvalid=true&regex=false&diminutive=true&paradigm=true');
 
     final response = await http.get(uri);
 
@@ -24,12 +26,18 @@ class WoordenlijstClient {
     }
   }
 
-  GetWordOnlineResponse? parseResponse(String searchText, String xmlString) {
-    xml.XmlElement? section = identifyWordSection(searchText, xmlString);
-    if (section == null) {
-      return null;
+  GetWordsOnlineResponse parseResponse(String searchText, String xmlString) {
+    var sections = identifyWordSection(searchText, xmlString);
+    var response = GetWordsOnlineResponse();
+    for (var section in sections) {
+      GetWordOnlineResponse wordResponse = processSection(searchText, section);
+      response.onlineWords.add(wordResponse);
     }
+    return response;
+  }
 
+  GetWordOnlineResponse processSection(
+      String searchText, xml.XmlElement section) {
     var result = GetWordOnlineResponse(searchText);
     result.diminutive = findDiminutive(section);
     result.pluralForm = findPluralForm(section);
@@ -39,11 +47,11 @@ class WoordenlijstClient {
     return result;
   }
 
-  xml.XmlElement? identifyWordSection(String searchText, String xmlString) {
+  List<xml.XmlElement> identifyWordSection(
+      String searchText, String xmlString) {
     var document = xml.XmlDocument.parse(xmlString);
 
-    return document.findFirstWithChildText(
-        'found_lemmata', 'lemma', searchText);
+    return document.findAllWithChildText('found_lemmata', 'lemma', searchText);
   }
 
   String? findDiminutive(xml.XmlElement section) {
@@ -106,6 +114,38 @@ class WoordenlijstClient {
       case "RES":
       default:
         return WordType.none;
+    }
+  }
+
+  String? toPartOfSpeechCode(WordType? wordType) {
+    if (wordType == null) {
+      return null;
+    }
+
+    switch (wordType) {
+      case WordType.adjective:
+        return "AA";
+      case WordType.adverb:
+        return "ADV";
+      case WordType.preposition:
+        return "ADP";
+      case WordType.noun:
+        return "NOU-C|NOU-P";
+      case WordType.interjection:
+        return "INT";
+      case WordType.conjuction:
+        return "CONJ";
+      case WordType.fixedConjuction:
+        return "COLL";
+      case WordType.pronoun:
+        return "PD";
+      case WordType.numeral:
+        return "NUM";
+      case WordType.verb:
+        return "VRB";
+      case WordType.none:
+      default:
+        return null;
     }
   }
 

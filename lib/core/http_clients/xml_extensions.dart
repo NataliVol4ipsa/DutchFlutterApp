@@ -58,14 +58,20 @@ extension XmlExtensions on xml.XmlElement {
 extension XmlDocumentExtensions on xml.XmlDocument {
   xml.XmlElement? findFirstWithChildText(
       String sectionName, String childSectionName, String childSectionValue) {
-    var sections = findAllElements(sectionName);
-    var filteredSections = sections
-        .where((element) =>
-            element.findFirstText(childSectionName) == childSectionValue)
-        .toList();
+    var filteredSections =
+        findAllWithChildText(sectionName, childSectionName, childSectionValue);
     if (filteredSections.isEmpty) {
       return null;
     }
     return filteredSections.first;
+  }
+
+  List<xml.XmlElement> findAllWithChildText(
+      String sectionName, String childSectionName, String childSectionValue) {
+    var sections = findAllElements(sectionName);
+    return sections
+        .where((element) =>
+            element.findFirstText(childSectionName) == childSectionValue)
+        .toList();
   }
 }
