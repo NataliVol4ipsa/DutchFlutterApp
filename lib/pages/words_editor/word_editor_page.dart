@@ -9,7 +9,7 @@ import 'package:first_project/core/models/word.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../reusable_widgets/input_label.dart';
+import '../../reusable_widgets/input_label.dart';
 
 class WordEditorPage extends StatefulWidget {
   final Word? existingWord;
