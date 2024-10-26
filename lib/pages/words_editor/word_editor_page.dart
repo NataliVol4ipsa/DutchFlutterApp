@@ -293,6 +293,9 @@ class _WordEditorPageState extends State<WordEditorPage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 8),
+                                  if (wordOption.note != null &&
+                                      wordOption.note != "")
+                                    Text('Note: ${wordOption.note}'),
                                   if (wordOption.partOfSpeech != null &&
                                       wordOption.partOfSpeech != WordType.none)
                                     Text(

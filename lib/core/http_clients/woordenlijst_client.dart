@@ -44,6 +44,7 @@ class WoordenlijstClient {
     var additionalInfo = findAdditionalProperties(section);
     result.partOfSpeech = parseAdditionalInfoIntoSpeech(additionalInfo);
     result.gender = parseAdditionalInfoIntoGender(additionalInfo);
+    result.note = findNote(section);
     return result;
   }
 
@@ -66,6 +67,10 @@ class WoordenlijstClient {
         .findFirst('paradigm')
         .findFirstWithChildText('paradigm', 'label', 'meervoud')
         .findFirstText('wordform');
+  }
+
+  String? findNote(xml.XmlElement section) {
+    return section.findFirstText('gloss');
   }
 
   String? findAdditionalProperties(xml.XmlElement section) {

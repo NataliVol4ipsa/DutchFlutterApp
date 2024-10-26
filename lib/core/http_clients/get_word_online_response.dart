@@ -7,6 +7,7 @@ class GetWordOnlineResponse {
   late DeHetType? gender;
   late String? pluralForm;
   late String? diminutive;
+  late String? note;
 
   GetWordOnlineResponse(this.word);
 }
