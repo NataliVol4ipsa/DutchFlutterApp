@@ -3,6 +3,13 @@ enum WordType {
   noun,
   adjective,
   verb,
+  adverb,
+  preposition,
+  interjection,
+  conjuction,
+  fixedConjuction,
+  pronoun,
+  numeral,
 
   phrase,
 }

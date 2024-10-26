@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:first_project/core/http_clients/woordenlijst_client.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
@@ -148,7 +149,10 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
 // =============================== search online section
 
-  onSearchWordOnlineClicked() => {print('object')};
+  onSearchWordOnlineClicked() async {
+    await WoordenlijstClient()
+        .findAsync(dutchWordTextInputController.text, partOfSpeech: "NOU");
+  }
 
 // ===============================
 
