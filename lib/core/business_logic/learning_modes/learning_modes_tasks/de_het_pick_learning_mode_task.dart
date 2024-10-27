@@ -4,6 +4,8 @@ import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 import 'package:first_project/core/types/word_type.dart';
+import 'package:first_project/pages/learning/learning_tasks/de_het_pick_learning_task_widget.dart';
+import 'package:flutter/material.dart';
 
 class DeHetPickLearningModeTask extends BaseLearningModeTask {
   static const int requiredWords = 1;
@@ -40,5 +42,20 @@ class DeHetPickLearningModeTask extends BaseLearningModeTask {
 
   bool showAgain() {
     return answerSummary.totalCorrectAnswers == 0;
+  }
+
+  @override
+  Widget buildWidget({Key? key}) {
+    return DeHetPickLearningTaskWidget(
+      this,
+      dutchWord,
+      key: key,
+    );
+  }
+
+  @override
+  bool isAnswered() {
+    return answerSummary.totalCorrectAnswers > 0 ||
+        answerSummary.totalWrongAnswers > 0;
   }
 }

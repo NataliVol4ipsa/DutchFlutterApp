@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   child: const Text("See words")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/practice');
+                    Navigator.pushNamed(context, '/learningmodesselector');
                   },
                   child: const Text("Practice")),
             ],
@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
         onTap: (int index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/practice');
+              Navigator.pushNamed(context, '/learningmodesselector');
               break;
             case 1:
               Navigator.pushNamed(context, '/wordlist');

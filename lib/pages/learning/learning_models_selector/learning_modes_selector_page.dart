@@ -1,18 +1,49 @@
+import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
+import 'package:first_project/local_db/repositories/words_repository.dart';
+import 'package:first_project/pages/learning/learning_flow/learning_flow_manager.dart';
+import 'package:first_project/pages/learning/learning_flow/learning_flow_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class LearningModesPage extends StatefulWidget {
-  const LearningModesPage({super.key});
+class LearningModesSelectorPage extends StatefulWidget {
+  const LearningModesSelectorPage({super.key});
 
   @override
-  State<LearningModesPage> createState() => _LearningModesPageState();
+  State<LearningModesSelectorPage> createState() =>
+      _LearningModesSelectorPageState();
 }
 
 Widget customPadding() => const SizedBox(height: 10);
 
-class _LearningModesPageState extends State<LearningModesPage> {
+class _LearningModesSelectorPageState extends State<LearningModesSelectorPage> {
+  late WordsRepository wordsRepository;
+
   List<LearningModeType> learningModes = LearningModeType.values.toList();
   final Set<LearningModeType> selectedModes = {};
+
+  @override
+  void initState() {
+    super.initState();
+    wordsRepository = context.read<WordsRepository>();
+  }
+
+  void onStartButtonClick() async {
+    List<Word> words = await wordsRepository.fetchWordsAsync();
+    var flowManager = LearningFlowManager(selectedModes.toList(), words);
+    if (!mounted) return;
+    navigateToLearningTaskPage(context, flowManager);
+  }
+
+  void navigateToLearningTaskPage(
+      BuildContext context, LearningFlowManager flowManager) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LearningFlowPage(flowManager: flowManager),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +97,7 @@ class _LearningModesPageState extends State<LearningModesPage> {
               child: ElevatedButton(
                 onPressed: selectedModes.isNotEmpty
                     ? () {
-                        // Handle the start action with selected modes
-                        print('Selected Modes: $selectedModes');
+                        onStartButtonClick();
                       }
                     : null,
                 child: const Text('Start'),
