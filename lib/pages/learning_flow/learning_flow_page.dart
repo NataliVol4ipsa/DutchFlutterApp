@@ -1,5 +1,5 @@
-import 'package:first_project/pages/learning/learning_flow/learning_flow_manager.dart';
-import 'package:first_project/pages/learning/learning_flow/learning_task_answered_notifier.dart';
+import 'package:first_project/pages/learning_flow/learning_flow_manager.dart';
+import 'package:first_project/pages/learning_flow/learning_task_answered_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

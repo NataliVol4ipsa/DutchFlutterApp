@@ -1,13 +1,13 @@
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_tasks/de_het_pick_learning_mode_task.dart';
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_tasks/base_learning_mode_task.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/de_het/de_het_pick_learning_mode_task.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/base_learning_mode_task.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 
-class LearningModesGenerator {
+class LearningTasksGenerator {
   final List<LearningModeType> learningModes;
   final List<Word> words;
 
-  LearningModesGenerator(this.learningModes, this.words);
+  LearningTasksGenerator(this.learningModes, this.words);
 
   List<BaseLearningModeTask> generateExcercises() {
     List<Word> supportedWords = words

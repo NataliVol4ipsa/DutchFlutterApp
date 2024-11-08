@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:first_project/core/http_clients/get_word_online_response.dart';
-import 'package:first_project/core/http_clients/woordenlijst_client.dart';
+import 'package:first_project/http_clients/get_word_online_response.dart';
+import 'package:first_project/http_clients/woordenlijst_client.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 

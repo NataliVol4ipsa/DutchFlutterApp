@@ -1,5 +1,5 @@
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_generator.dart';
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_tasks/base_learning_mode_task.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/learning_tasks_generator.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/base_learning_mode_task.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 
@@ -12,7 +12,7 @@ class LearningFlowManager {
   late int totalTasks;
 
   LearningFlowManager(this.learningModes, this.words) {
-    tasks = LearningModesGenerator(learningModes, words).generateExcercises();
+    tasks = LearningTasksGenerator(learningModes, words).generateExcercises();
     totalTasks = tasks.length;
   }
   BaseLearningModeTask get currentTask => tasks[currentTaskIndex];

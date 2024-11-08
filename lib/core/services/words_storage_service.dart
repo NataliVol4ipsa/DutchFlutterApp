@@ -1,6 +1,6 @@
 import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/business_logic/mapping/words_mapper.dart';
+import 'package:first_project/core/mapping/words_mapper.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
 
 class WordsStorageService {

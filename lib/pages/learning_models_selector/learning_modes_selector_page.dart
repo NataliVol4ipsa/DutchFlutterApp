@@ -1,8 +1,8 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
-import 'package:first_project/pages/learning/learning_flow/learning_flow_manager.dart';
-import 'package:first_project/pages/learning/learning_flow/learning_flow_page.dart';
+import 'package:first_project/pages/learning_flow/learning_flow_manager.dart';
+import 'package:first_project/pages/learning_flow/learning_flow_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

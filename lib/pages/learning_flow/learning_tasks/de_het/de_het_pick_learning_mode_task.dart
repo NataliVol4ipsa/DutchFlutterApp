@@ -1,10 +1,10 @@
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_tasks/base_learning_mode_task.dart';
-import 'package:first_project/core/business_logic/learning_modes/learning_modes_tasks/task_answer_summary.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/base_learning_mode_task.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/task_answer_summary.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/pages/learning/learning_tasks/de_het_pick_learning_task_widget.dart';
+import 'package:first_project/pages/learning_flow/learning_tasks/de_het/de_het_pick_learning_task_widget.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickLearningModeTask extends BaseLearningModeTask {
