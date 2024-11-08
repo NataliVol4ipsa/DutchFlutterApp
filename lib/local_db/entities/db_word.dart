@@ -1,6 +1,6 @@
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/local_db/entities/db_collection.dart';
+import 'package:first_project/local_db/entities/db_word_collection.dart';
 import 'package:isar/isar.dart';
 
 //dart run build_runner build
@@ -17,5 +17,5 @@ class DbWord {
   late DeHetType deHet;
   late String? pluralForm;
   late String? tag;
-  final collection = IsarLink<DbCollection>();
+  final collection = IsarLink<DbWordCollection>();
 }

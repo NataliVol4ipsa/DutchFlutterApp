@@ -60,7 +60,7 @@ const DbWordSchema = CollectionSchema(
     r'collection': LinkSchema(
       id: -8955838127233442545,
       name: r'collection',
-      target: r'DbCollection',
+      target: r'DbWordCollection',
       single: true,
     )
   },
@@ -203,7 +203,7 @@ List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
 void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
   object.id = id;
   object.collection
-      .attach(col, col.isar.collection<DbCollection>(), r'collection', id);
+      .attach(col, col.isar.collection<DbWordCollection>(), r'collection', id);
 }
 
 extension DbWordQueryWhereSort on QueryBuilder<DbWord, DbWord, QWhere> {
@@ -995,7 +995,7 @@ extension DbWordQueryObject on QueryBuilder<DbWord, DbWord, QFilterCondition> {}
 
 extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> collection(
-      FilterQuery<DbCollection> q) {
+      FilterQuery<DbWordCollection> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'collection');
     });

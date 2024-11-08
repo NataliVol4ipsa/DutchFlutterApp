@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'db_collection.dart';
+part of 'db_word_collection.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'db_collection.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetDbCollectionCollection on Isar {
-  IsarCollection<DbCollection> get dbCollections => this.collection();
+extension GetDbWordCollectionCollection on Isar {
+  IsarCollection<DbWordCollection> get dbWordCollections => this.collection();
 }
 
-const DbCollectionSchema = CollectionSchema(
-  name: r'DbCollection',
-  id: -325697747884612310,
+const DbWordCollectionSchema = CollectionSchema(
+  name: r'DbWordCollection',
+  id: -5732899757398745101,
   properties: {
     r'name': PropertySchema(
       id: 0,
@@ -23,35 +23,35 @@ const DbCollectionSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _dbCollectionEstimateSize,
-  serialize: _dbCollectionSerialize,
-  deserialize: _dbCollectionDeserialize,
-  deserializeProp: _dbCollectionDeserializeProp,
+  estimateSize: _dbWordCollectionEstimateSize,
+  serialize: _dbWordCollectionSerialize,
+  deserialize: _dbWordCollectionDeserialize,
+  deserializeProp: _dbWordCollectionDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {
     r'parentCollection': LinkSchema(
-      id: 1825718459919779489,
+      id: -2840749376969866624,
       name: r'parentCollection',
-      target: r'DbCollection',
+      target: r'DbWordCollection',
       single: true,
     ),
     r'words': LinkSchema(
-      id: -4331887751715316958,
+      id: -100550191124026551,
       name: r'words',
       target: r'DbWord',
       single: false,
     )
   },
   embeddedSchemas: {},
-  getId: _dbCollectionGetId,
-  getLinks: _dbCollectionGetLinks,
-  attach: _dbCollectionAttach,
+  getId: _dbWordCollectionGetId,
+  getLinks: _dbWordCollectionGetLinks,
+  attach: _dbWordCollectionAttach,
   version: '3.1.0+1',
 );
 
-int _dbCollectionEstimateSize(
-  DbCollection object,
+int _dbWordCollectionEstimateSize(
+  DbWordCollection object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -60,8 +60,8 @@ int _dbCollectionEstimateSize(
   return bytesCount;
 }
 
-void _dbCollectionSerialize(
-  DbCollection object,
+void _dbWordCollectionSerialize(
+  DbWordCollection object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -69,19 +69,19 @@ void _dbCollectionSerialize(
   writer.writeString(offsets[0], object.name);
 }
 
-DbCollection _dbCollectionDeserialize(
+DbWordCollection _dbWordCollectionDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = DbCollection();
+  final object = DbWordCollection();
   object.id = id;
   object.name = reader.readString(offsets[0]);
   return object;
 }
 
-P _dbCollectionDeserializeProp<P>(
+P _dbWordCollectionDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -95,34 +95,35 @@ P _dbCollectionDeserializeProp<P>(
   }
 }
 
-Id _dbCollectionGetId(DbCollection object) {
+Id _dbWordCollectionGetId(DbWordCollection object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _dbCollectionGetLinks(DbCollection object) {
+List<IsarLinkBase<dynamic>> _dbWordCollectionGetLinks(DbWordCollection object) {
   return [object.parentCollection, object.words];
 }
 
-void _dbCollectionAttach(
-    IsarCollection<dynamic> col, Id id, DbCollection object) {
+void _dbWordCollectionAttach(
+    IsarCollection<dynamic> col, Id id, DbWordCollection object) {
   object.id = id;
   object.parentCollection.attach(
-      col, col.isar.collection<DbCollection>(), r'parentCollection', id);
+      col, col.isar.collection<DbWordCollection>(), r'parentCollection', id);
   object.words.attach(col, col.isar.collection<DbWord>(), r'words', id);
 }
 
-extension DbCollectionQueryWhereSort
-    on QueryBuilder<DbCollection, DbCollection, QWhere> {
-  QueryBuilder<DbCollection, DbCollection, QAfterWhere> anyId() {
+extension DbWordCollectionQueryWhereSort
+    on QueryBuilder<DbWordCollection, DbWordCollection, QWhere> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension DbCollectionQueryWhere
-    on QueryBuilder<DbCollection, DbCollection, QWhereClause> {
-  QueryBuilder<DbCollection, DbCollection, QAfterWhereClause> idEqualTo(Id id) {
+extension DbWordCollectionQueryWhere
+    on QueryBuilder<DbWordCollection, DbWordCollection, QWhereClause> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhereClause> idEqualTo(
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -131,8 +132,8 @@ extension DbCollectionQueryWhere
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -154,9 +155,8 @@ extension DbCollectionQueryWhere
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -164,8 +164,8 @@ extension DbCollectionQueryWhere
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -173,7 +173,7 @@ extension DbCollectionQueryWhere
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterWhereClause> idBetween(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -190,10 +190,10 @@ extension DbCollectionQueryWhere
   }
 }
 
-extension DbCollectionQueryFilter
-    on QueryBuilder<DbCollection, DbCollection, QFilterCondition> {
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension DbWordCollectionQueryFilter
+    on QueryBuilder<DbWordCollection, DbWordCollection, QFilterCondition> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -202,7 +202,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -215,7 +216,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> idLessThan(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -228,7 +230,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> idBetween(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -245,7 +248,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -258,7 +262,7 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       nameGreaterThan(
     String value, {
     bool include = false,
@@ -274,7 +278,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -289,7 +294,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameBetween(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -308,7 +314,7 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       nameStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -322,7 +328,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -335,9 +342,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'name',
@@ -347,9 +353,8 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> nameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      nameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'name',
@@ -359,7 +364,7 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -369,7 +374,7 @@ extension DbCollectionQueryFilter
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -380,54 +385,54 @@ extension DbCollectionQueryFilter
   }
 }
 
-extension DbCollectionQueryObject
-    on QueryBuilder<DbCollection, DbCollection, QFilterCondition> {}
+extension DbWordCollectionQueryObject
+    on QueryBuilder<DbWordCollection, DbWordCollection, QFilterCondition> {}
 
-extension DbCollectionQueryLinks
-    on QueryBuilder<DbCollection, DbCollection, QFilterCondition> {
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
-      parentCollection(FilterQuery<DbCollection> q) {
+extension DbWordCollectionQueryLinks
+    on QueryBuilder<DbWordCollection, DbWordCollection, QFilterCondition> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      parentCollection(FilterQuery<DbWordCollection> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'parentCollection');
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       parentCollectionIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'parentCollection', 0, true, 0, true);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition> words(
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition> words(
       FilterQuery<DbWord> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'words');
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'words', length, true, length, true);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'words', 0, true, 0, true);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'words', 0, false, 999999, true);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsLengthLessThan(
     int length, {
     bool include = false,
@@ -437,7 +442,7 @@ extension DbCollectionQueryLinks
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsLengthGreaterThan(
     int length, {
     bool include = false,
@@ -447,7 +452,7 @@ extension DbCollectionQueryLinks
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterFilterCondition>
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       wordsLengthBetween(
     int lower,
     int upper, {
@@ -461,51 +466,54 @@ extension DbCollectionQueryLinks
   }
 }
 
-extension DbCollectionQuerySortBy
-    on QueryBuilder<DbCollection, DbCollection, QSortBy> {
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> sortByName() {
+extension DbWordCollectionQuerySortBy
+    on QueryBuilder<DbWordCollection, DbWordCollection, QSortBy> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension DbCollectionQuerySortThenBy
-    on QueryBuilder<DbCollection, DbCollection, QSortThenBy> {
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> thenById() {
+extension DbWordCollectionQuerySortThenBy
+    on QueryBuilder<DbWordCollection, DbWordCollection, QSortThenBy> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> thenByName() {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<DbCollection, DbCollection, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 }
 
-extension DbCollectionQueryWhereDistinct
-    on QueryBuilder<DbCollection, DbCollection, QDistinct> {
-  QueryBuilder<DbCollection, DbCollection, QDistinct> distinctByName(
+extension DbWordCollectionQueryWhereDistinct
+    on QueryBuilder<DbWordCollection, DbWordCollection, QDistinct> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -513,15 +521,15 @@ extension DbCollectionQueryWhereDistinct
   }
 }
 
-extension DbCollectionQueryProperty
-    on QueryBuilder<DbCollection, DbCollection, QQueryProperty> {
-  QueryBuilder<DbCollection, int, QQueryOperations> idProperty() {
+extension DbWordCollectionQueryProperty
+    on QueryBuilder<DbWordCollection, DbWordCollection, QQueryProperty> {
+  QueryBuilder<DbWordCollection, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<DbCollection, String, QQueryOperations> nameProperty() {
+  QueryBuilder<DbWordCollection, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });

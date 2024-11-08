@@ -28,8 +28,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
       TextEditingController();
   TextEditingController dutchPluralFormTextInputController =
       TextEditingController();
-  FocusNode dutchWordFocusNode =
-      FocusNode(); // To switch focus to dutch input field after clicking Add
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -165,7 +163,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
   @override
   void dispose() {
-    dutchWordFocusNode.dispose();
     super.dispose();
   }
 
@@ -201,7 +198,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
                     )),
                 TextFormField(
                   controller: dutchWordTextInputController,
-                  focusNode: dutchWordFocusNode,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Dutch word",

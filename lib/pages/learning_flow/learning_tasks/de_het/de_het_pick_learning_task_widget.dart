@@ -17,7 +17,7 @@ class DeHetPickLearningTaskWidget extends StatefulWidget {
 
 class _DeHetPickLearningTaskWidgetState
     extends State<DeHetPickLearningTaskWidget> {
-  late bool? isCorrectAnswer = null;
+  late bool? isCorrectAnswer;
 
   void onAnswerProvided(DeHetType answer) {
     setState(() {

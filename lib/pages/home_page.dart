@@ -28,6 +28,11 @@ class HomePage extends StatelessWidget {
                   child: const Text("See words")),
               ElevatedButton(
                   onPressed: () {
+                    Navigator.pushNamed(context, '/wordcollections');
+                  },
+                  child: const Text("See collections")),
+              ElevatedButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, '/learningmodesselector');
                   },
                   child: const Text("Practice")),
