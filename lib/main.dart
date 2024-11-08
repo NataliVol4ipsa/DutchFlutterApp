@@ -25,9 +25,7 @@ void main() async {
   runApp(
     MultiProvider(providers: [
       Provider<DbContext>(create: (_) => DbContext()),
-      ProxyProvider<DbContext, WordsRepository>(
-        update: (_, dbContext, __) => WordsRepository(dbContext: dbContext),
-      ),
+      Provider<WordsRepository>(create: (_) => WordsRepository()),
       ChangeNotifierProvider(create: (_) => LearningTaskAnsweredNotifier()),
     ], child: MyApp()),
   );

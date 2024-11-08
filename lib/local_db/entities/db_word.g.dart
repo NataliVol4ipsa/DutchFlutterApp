@@ -33,23 +33,18 @@ const DbWordSchema = CollectionSchema(
       name: r'englishWord',
       type: IsarType.string,
     ),
-    r'isPhrase': PropertySchema(
-      id: 3,
-      name: r'isPhrase',
-      type: IsarType.bool,
-    ),
     r'pluralForm': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'pluralForm',
       type: IsarType.string,
     ),
     r'tag': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'tag',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'type',
       type: IsarType.byte,
       enumMap: _DbWordtypeEnumValueMap,
@@ -61,7 +56,14 @@ const DbWordSchema = CollectionSchema(
   deserializeProp: _dbWordDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'collection': LinkSchema(
+      id: -8955838127233442545,
+      name: r'collection',
+      target: r'DbCollection',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _dbWordGetId,
   getLinks: _dbWordGetLinks,
@@ -101,9 +103,9 @@ void _dbWordSerialize(
   writer.writeByte(offsets[0], object.deHet.index);
   writer.writeString(offsets[1], object.dutchWord);
   writer.writeString(offsets[2], object.englishWord);
-  writer.writeString(offsets[4], object.pluralForm);
-  writer.writeString(offsets[5], object.tag);
-  writer.writeByte(offsets[6], object.type.index);
+  writer.writeString(offsets[3], object.pluralForm);
+  writer.writeString(offsets[4], object.tag);
+  writer.writeByte(offsets[5], object.type.index);
 }
 
 DbWord _dbWordDeserialize(
@@ -118,9 +120,9 @@ DbWord _dbWordDeserialize(
   object.dutchWord = reader.readString(offsets[1]);
   object.englishWord = reader.readString(offsets[2]);
   object.id = id;
-  object.pluralForm = reader.readStringOrNull(offsets[4]);
-  object.tag = reader.readStringOrNull(offsets[5]);
-  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[6])] ??
+  object.pluralForm = reader.readStringOrNull(offsets[3]);
+  object.tag = reader.readStringOrNull(offsets[4]);
+  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
       WordType.none;
   return object;
 }
@@ -140,12 +142,10 @@ P _dbWordDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
-    case 6:
       return (_DbWordtypeValueEnumMap[reader.readByteOrNull(offset)] ??
           WordType.none) as P;
     default:
@@ -168,12 +168,28 @@ const _DbWordtypeEnumValueMap = {
   'noun': 1,
   'adjective': 2,
   'verb': 3,
+  'adverb': 4,
+  'preposition': 5,
+  'interjection': 6,
+  'conjuction': 7,
+  'fixedConjuction': 8,
+  'pronoun': 9,
+  'numeral': 10,
+  'phrase': 11,
 };
 const _DbWordtypeValueEnumMap = {
   0: WordType.none,
   1: WordType.noun,
   2: WordType.adjective,
   3: WordType.verb,
+  4: WordType.adverb,
+  5: WordType.preposition,
+  6: WordType.interjection,
+  7: WordType.conjuction,
+  8: WordType.fixedConjuction,
+  9: WordType.pronoun,
+  10: WordType.numeral,
+  11: WordType.phrase,
 };
 
 Id _dbWordGetId(DbWord object) {
@@ -181,11 +197,13 @@ Id _dbWordGetId(DbWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
-  return [];
+  return [object.collection];
 }
 
 void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
   object.id = id;
+  object.collection
+      .attach(col, col.isar.collection<DbCollection>(), r'collection', id);
 }
 
 extension DbWordQueryWhereSort on QueryBuilder<DbWord, DbWord, QWhere> {
@@ -629,16 +647,6 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> isPhraseEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isPhrase',
-        value: value,
-      ));
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -985,7 +993,20 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
 
 extension DbWordQueryObject on QueryBuilder<DbWord, DbWord, QFilterCondition> {}
 
-extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {}
+extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> collection(
+      FilterQuery<DbCollection> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'collection');
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> collectionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'collection', 0, true, 0, true);
+    });
+  }
+}
 
 extension DbWordQuerySortBy on QueryBuilder<DbWord, DbWord, QSortBy> {
   QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByDeHet() {
@@ -1021,18 +1042,6 @@ extension DbWordQuerySortBy on QueryBuilder<DbWord, DbWord, QSortBy> {
   QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByEnglishWordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'englishWord', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByIsPhrase() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isPhrase', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByIsPhraseDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isPhrase', Sort.desc);
     });
   }
 
@@ -1122,18 +1131,6 @@ extension DbWordQuerySortThenBy on QueryBuilder<DbWord, DbWord, QSortThenBy> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByIsPhrase() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isPhrase', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByIsPhraseDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isPhrase', Sort.desc);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByPluralForm() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pluralForm', Sort.asc);
@@ -1192,12 +1189,6 @@ extension DbWordQueryWhereDistinct on QueryBuilder<DbWord, DbWord, QDistinct> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QDistinct> distinctByIsPhrase() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isPhrase');
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QDistinct> distinctByPluralForm(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1241,12 +1232,6 @@ extension DbWordQueryProperty on QueryBuilder<DbWord, DbWord, QQueryProperty> {
   QueryBuilder<DbWord, String, QQueryOperations> englishWordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'englishWord');
-    });
-  }
-
-  QueryBuilder<DbWord, bool, QQueryOperations> isPhraseProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isPhrase');
     });
   }
 

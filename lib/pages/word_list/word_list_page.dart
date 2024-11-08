@@ -83,7 +83,7 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> _fetchWordsAsync() async {
-    var dbWords = await wordsRepository.fetchWordsAsync();
+    var dbWords = await wordsRepository.getAsync();
 
     setState(() {
       words = dbWords;
@@ -93,7 +93,7 @@ class _WordListPageState extends State<WordListPage> {
 
   Future<void> _deleteWordsAsync() async {
     var selectedWordsIds = getSelectedWordsIds();
-    await wordsRepository.deleteWordsAsync(selectedWordsIds);
+    await wordsRepository.deleteBatchAsync(selectedWordsIds);
   }
 
   List<int> getSelectedWordsIds() {

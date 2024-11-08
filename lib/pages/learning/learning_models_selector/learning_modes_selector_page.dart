@@ -29,7 +29,7 @@ class _LearningModesSelectorPageState extends State<LearningModesSelectorPage> {
   }
 
   void onStartButtonClick() async {
-    List<Word> words = await wordsRepository.fetchWordsAsync();
+    List<Word> words = await wordsRepository.getAsync();
     var flowManager = LearningFlowManager(selectedModes.toList(), words);
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);

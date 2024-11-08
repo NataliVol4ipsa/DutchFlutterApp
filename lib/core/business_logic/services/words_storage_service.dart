@@ -11,7 +11,7 @@ class WordsStorageService {
   Future<List<int>> storeInDatabaseAsync(
       WordsCollectionDtoV1 collection) async {
     List<Word> wordList = WordsMapper().toWordsListV1(collection);
-    var result = await wordsRepository.addWordsAsync(wordList);
+    var result = await wordsRepository.addBatchAsync(wordList);
 
     return result;
   }

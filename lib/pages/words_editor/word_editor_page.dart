@@ -82,7 +82,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
         null, dutchWordInput, englishWordInput, selectedWordType!,
         deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
-    await wordsRepository.addWordAsync(newWord);
+    await wordsRepository.addAsync(newWord);
 
     setState(() {
       _formKey.currentState!.reset(); //todo
@@ -103,7 +103,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
         englishWordInput, selectedWordType!,
         deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
-    await wordsRepository.updateWordAsync(updatedWord);
+    await wordsRepository.updateAsync(updatedWord);
 //todo make this an input method - what to do when action is complete. Accept new or close the page.
   }
 
