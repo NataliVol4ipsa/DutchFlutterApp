@@ -1,26 +1,32 @@
 import 'package:first_project/reusable_widgets/input_label.dart';
 import 'package:flutter/material.dart';
 
-class ExportWordsDialog extends StatefulWidget {
-  final Function onExportPressed;
+class TextInputModal extends StatefulWidget {
+  final Function onConfirmPressed;
+  final String title;
+  final String? inputLabel;
+  final String? confirmText;
 
-  const ExportWordsDialog({
+  const TextInputModal({
     super.key,
-    required this.onExportPressed,
+    required this.title,
+    required this.onConfirmPressed,
+    this.inputLabel,
+    this.confirmText,
   });
 
   @override
-  State<ExportWordsDialog> createState() => _ExportWordsDialogState();
+  State<TextInputModal> createState() => _TextInputModalState();
 }
 
-class _ExportWordsDialogState extends State<ExportWordsDialog> {
+class _TextInputModalState extends State<TextInputModal> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController fileNameInputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Exporting word list'),
+      title: Text(widget.title),
       content: Form(
         key: _formKey,
         child: Column(
@@ -28,8 +34,8 @@ class _ExportWordsDialogState extends State<ExportWordsDialog> {
           children: [
             Container(
                 alignment: Alignment.centerLeft,
-                child: const InputLabel(
-                  "Choose file name",
+                child: InputLabel(
+                  widget.inputLabel ?? "Please enter text value:",
                 )),
             TextFormField(
               controller: fileNameInputController,
@@ -58,12 +64,12 @@ class _ExportWordsDialogState extends State<ExportWordsDialog> {
             ),
             TextButton(
               onPressed: () {
-                widget.onExportPressed(context, fileNameInputController.text);
+                widget.onConfirmPressed(context, fileNameInputController.text);
                 Navigator.of(context).pop();
               },
-              child: const Text(
-                'EXPORT',
-                style: TextStyle(color: Colors.red),
+              child: Text(
+                widget.confirmText ?? 'OK',
+                style: const TextStyle(color: Colors.red),
               ),
             ),
           ],

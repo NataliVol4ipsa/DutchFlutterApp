@@ -1,15 +1,14 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/services/words_io_json_v1_service.dart';
 import 'package:first_project/core/services/words_storage_service.dart';
 import 'package:first_project/pages/word_list/dialogs/delete_word_dialog.dart';
-import 'package:first_project/pages/word_list/dialogs/export_words_dialog.dart';
 import 'package:first_project/pages/word_list/snackbars/snackbar_shower.dart';
 import 'package:first_project/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
+import 'package:first_project/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -126,8 +125,11 @@ class _WordListPageState extends State<WordListPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ExportWordsDialog(
-          onExportPressed: exportWordsAsync,
+        return TextInputModal(
+          title: 'Exporting word list',
+          inputLabel: "Choose file name",
+          confirmText: 'EXPORT',
+          onConfirmPressed: exportWordsAsync,
         );
       },
     );
