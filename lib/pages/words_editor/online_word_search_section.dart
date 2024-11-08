@@ -48,6 +48,7 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
     });
   }
 
+//todo rename method and trigger
   void resetSearchComplete() {
     setState(() {
       searchComplete = false;

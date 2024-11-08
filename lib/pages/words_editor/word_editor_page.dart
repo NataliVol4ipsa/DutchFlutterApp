@@ -21,6 +21,8 @@ class WordEditorPage extends StatefulWidget {
 }
 
 class _WordEditorPageState extends State<WordEditorPage> {
+  Key key = UniqueKey();
+
   TextEditingController dutchWordTextInputController = TextEditingController();
   TextEditingController englishWordTextInputController =
       TextEditingController();
@@ -64,13 +66,25 @@ class _WordEditorPageState extends State<WordEditorPage> {
     if (!_formKey.currentState!.validate()) return;
     if (isNewWord) {
       await createWordAsync();
-      resetSearchTrigger = !resetSearchTrigger;
+      recreatePage();
     } else {
       await updateWordAsync();
       if (mounted) {
         Navigator.of(context).pop();
       }
     }
+  }
+
+  void recreatePage() {
+    Navigator.pushReplacement(
+      context,
+      NoAnimationPageRoute(
+        builder: (context) => WordEditorPage(
+          key: UniqueKey(),
+          existingWord: widget.existingWord,
+        ),
+      ),
+    );
   }
 
   Future<void> createWordAsync() async {
@@ -83,15 +97,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
         deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
 
     await wordsRepository.addAsync(newWord);
-
-    setState(() {
-      _formKey.currentState!.reset(); //todo
-      dutchWordTextInputController.text = "";
-      englishWordTextInputController.text = "";
-      dutchPluralFormTextInputController.text = "";
-      selectedDeHetType = DeHetType.none;
-      dutchWordFocusNode.requestFocus();
-    });
   }
 
   Future<void> updateWordAsync() async {
@@ -287,4 +292,16 @@ class _WordEditorPageState extends State<WordEditorPage> {
       ),
     );
   }
+}
+
+class NoAnimationPageRoute<T> extends PageRouteBuilder<T> {
+  final WidgetBuilder builder;
+
+  NoAnimationPageRoute({required this.builder})
+      : super(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              builder(context),
+          transitionDuration: Duration.zero, // No animation
+          reverseTransitionDuration: Duration.zero, // No reverse animation
+        );
 }
