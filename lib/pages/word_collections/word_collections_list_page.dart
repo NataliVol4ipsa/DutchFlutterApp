@@ -51,9 +51,35 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-  Future<void> createCollectionAsync(
-      BuildContext context, String collectionName) async {
+  Future<void> createCollectionAsync(String collectionName) async {
     await collectionsRepository.addAsync(WordCollection(null, collectionName));
+    await _loadData();
+  }
+
+  void onCollectionTap(WordCollection collection) {
+    showUpdateCollectionDialog(collection);
+  }
+
+  void showUpdateCollectionDialog(WordCollection collection) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TextInputModal(
+          title: 'Edit collection name',
+          inputLabel: "Choose new collection name",
+          confirmText: 'UPDATE',
+          initialValue: collection.name,
+          onConfirmPressed: (String newName) =>
+              {updateCollectionAsync(collection, newName)},
+        );
+      },
+    );
+  }
+
+  Future<void> updateCollectionAsync(
+      WordCollection collection, String newName) async {
+    await collectionsRepository
+        .updateAsync(WordCollection(collection.id, newName));
     await _loadData();
   }
 
@@ -77,6 +103,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                           title: Text(collection.name),
                           tileColor: colorScheme.surface,
                           textColor: colorScheme.onSurface,
+                          onTap: () => {onCollectionTap(collection)},
                         ),
                         customPadding(),
                       ],

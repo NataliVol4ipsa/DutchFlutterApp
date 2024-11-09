@@ -6,6 +6,7 @@ class TextInputModal extends StatefulWidget {
   final String title;
   final String? inputLabel;
   final String? confirmText;
+  final String? initialValue;
 
   const TextInputModal({
     super.key,
@@ -13,6 +14,7 @@ class TextInputModal extends StatefulWidget {
     required this.onConfirmPressed,
     this.inputLabel,
     this.confirmText,
+    this.initialValue,
   });
 
   @override
@@ -22,6 +24,12 @@ class TextInputModal extends StatefulWidget {
 class _TextInputModalState extends State<TextInputModal> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController fileNameInputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fileNameInputController.text = widget.initialValue ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +72,7 @@ class _TextInputModalState extends State<TextInputModal> {
             ),
             TextButton(
               onPressed: () {
-                widget.onConfirmPressed(context, fileNameInputController.text);
+                widget.onConfirmPressed(fileNameInputController.text);
                 Navigator.of(context).pop();
               },
               child: Text(
