@@ -42,6 +42,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorSchemeSeed: Color.fromARGB(255, 0, 255, 213),
+          brightness: Brightness.light,
+          useMaterial3: true,
+        ),
         home: HomePage(),
         routes: {
           '/home': (context) => HomePage(),

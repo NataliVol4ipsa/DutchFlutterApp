@@ -28,10 +28,11 @@ class WordTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Container(
-          color: Colors.grey[300],
+          color: theme.colorScheme.onPrimary,
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,29 +40,20 @@ class WordTable extends StatelessWidget {
               Container(
                 width: 50,
                 padding: const EdgeInsets.all(4.0),
-                child: const Text(
-                  "No.",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: headerText("No.", theme),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(4.0),
+                  child: headerText("Dutch Word", theme),
                 ),
               ),
               Expanded(
                 flex: 2,
                 child: Container(
                   padding: const EdgeInsets.all(4.0),
-                  child: const Text(
-                    "Dutch Word",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  child: const Text(
-                    "English Word",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: headerText("English Word", theme),
                 ),
               ),
               if (isMultiselectModeEnabled)
@@ -89,10 +81,10 @@ class WordTable extends StatelessWidget {
             itemBuilder: (context, index) {
               final word = words[index];
               return WordTableRow(
-                color: index.isEven ? Colors.grey[200] : Colors.white,
-                // final theme = Theme.of(context);
-                // ? theme.colorScheme.onTertiary
-                // : theme.colorScheme.background,
+                color: index.isEven
+                    ? theme.colorScheme.surface
+                    : Color.alphaBlend(Colors.black.withOpacity(0.05),
+                        theme.colorScheme.surface),
                 index: index,
                 word: word,
                 isSelected: selectedRows[index],
@@ -106,6 +98,14 @@ class WordTable extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Text headerText(String text, ThemeData theme) {
+    return Text(
+      text,
+      style: TextStyle(
+          fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
     );
   }
 }
