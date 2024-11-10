@@ -193,7 +193,7 @@ const _DbWordtypeValueEnumMap = {
 };
 
 Id _dbWordGetId(DbWord object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
@@ -595,7 +595,23 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -605,7 +621,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -618,7 +634,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -631,8 +647,8 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

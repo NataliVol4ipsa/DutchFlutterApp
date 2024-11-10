@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class GenericDropdownMenu<T extends Enum> extends StatefulWidget {
+class GenericDropdownMenu<T> extends StatefulWidget {
   final List<T> dropdownValues;
   final ValueChanged<T?> onValueChanged;
   final String Function(T value) displayStringFunc;
@@ -18,8 +18,7 @@ class GenericDropdownMenu<T extends Enum> extends StatefulWidget {
   State<GenericDropdownMenu<T>> createState() => _GenericDropdownMenuState<T>();
 }
 
-class _GenericDropdownMenuState<T extends Enum>
-    extends State<GenericDropdownMenu<T>> {
+class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(

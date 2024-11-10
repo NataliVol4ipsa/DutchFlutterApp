@@ -3,12 +3,11 @@ import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/local_db/entities/db_word_collection.dart';
 import 'package:isar/isar.dart';
 
-//dart run build_runner build
 part 'db_word.g.dart';
 
 @Collection()
 class DbWord {
-  Id id = Isar.autoIncrement;
+  Id? id;
   late String dutchWord;
   late String englishWord;
   @enumerated

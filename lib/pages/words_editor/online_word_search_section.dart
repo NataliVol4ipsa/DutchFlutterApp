@@ -1,3 +1,4 @@
+import 'package:first_project/core/functions/capitalize_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:first_project/http_clients/get_word_online_response.dart';
 import 'package:first_project/http_clients/woordenlijst_client.dart';
@@ -26,12 +27,6 @@ class OnlineWordSearchSection extends StatefulWidget {
 class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
   bool searchComplete = false;
   List<GetWordOnlineResponse>? onlineWordOptions;
-
-//todo move elsewhere
-  String capitalizeEnum(Enum value) {
-    final word = value.name;
-    return '${word[0].toUpperCase()}${word.substring(1)}';
-  }
 
   Future<void> onSearchWordOnlineClicked() async {
     setState(() {

@@ -1,20 +1,44 @@
 import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/local_db/entities/db_word.dart';
+import 'package:first_project/local_db/entities/db_word_collection.dart';
 import 'package:isar/isar.dart';
 
 import '../mapping/words_mapper.dart';
 
 class WordsRepository {
   Future<int> addAsync(Word word) async {
-    final newWord = WordsMapper().mapToEntity(word);
+    final newWord = WordsMapper.mapToEntity(word);
+    int? collectionId = word.collection?.id;
+    if (collectionId != null) {
+      addWordToCollectionAsync(collectionId, newWord);
+    }
     final int id = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWords.put(newWord));
     return id;
   }
 
+  Future<int> addWordToCollectionAsync(int collectionId, DbWord newWord) async {
+    int newWordId = -1;
+    // Transaction
+    await DbContext.isar.writeTxn(() async {
+      final collection =
+          await DbContext.isar.dbWordCollections.get(collectionId);
+      if (collection != null) {
+        newWordId = await DbContext.isar.dbWords.put(newWord);
+        collection.words.add(newWord);
+        await collection.words.save();
+        await DbContext.isar.dbWordCollections.put(collection);
+      } else {
+        throw Exception("Could not find collection with id $collectionId");
+      }
+    });
+
+    return newWordId;
+  }
+
   Future<List<int>> addBatchAsync(List<Word> words) async {
-    final newWords = WordsMapper().mapToEntityList(words);
+    final newWords = WordsMapper.mapToEntityList(words);
 
     final List<int> ids = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWords.putAll(newWords));
@@ -24,17 +48,8 @@ class WordsRepository {
 
   Future<List<Word>> getAsync() async {
     List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
-    List<Word> words = dbWords
-        .map((dbWord) => Word(
-              dbWord.id,
-              dbWord.dutchWord,
-              dbWord.englishWord,
-              dbWord.type,
-              deHetType: dbWord.deHet,
-              pluralForm: dbWord.pluralForm,
-              tag: dbWord.tag,
-            ))
-        .toList();
+    List<Word> words =
+        dbWords.map((dbWord) => WordsMapper.mapToDomain(dbWord)).toList();
     return words;
   }
 

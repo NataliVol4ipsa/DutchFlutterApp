@@ -6,7 +6,7 @@ import 'package:isar/isar.dart';
 
 class WordCollectionsRepository {
   Future<int> addAsync(WordCollection wordCollection) async {
-    final newCollection = WordCollectionsMapper().mapToEntity(wordCollection);
+    final newCollection = WordCollectionsMapper.mapToEntity(wordCollection);
     final int id = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWordCollections.put(newCollection));
     return id;
@@ -15,10 +15,28 @@ class WordCollectionsRepository {
   Future<List<WordCollection>> getAsync() async {
     List<DbWordCollection> dbWordCollections =
         await DbContext.isar.dbWordCollections.where().findAll();
-    List<WordCollection> result = dbWordCollections
-        .map((dbWordCollection) =>
-            WordCollection(dbWordCollection.id, dbWordCollection.name))
-        .toList();
+    List<WordCollection> result =
+        WordCollectionsMapper.mapToDomainList(dbWordCollections);
+    return result;
+  }
+
+  Future<WordCollection> getCollectionWithWordsAsync(int collectionId) async {
+    var collection = await DbContext.isar.dbWordCollections.get(collectionId);
+    if (collection == null) {
+      throw Exception("Could not find collection with id $collectionId");
+    }
+
+    return await WordCollectionsMapper.mapWithWordsToDomainAsync(collection);
+  }
+
+  Future<List<WordCollection>> getCollectionsWithWordsAsync() async {
+    List<DbWordCollection> dbWordCollections =
+        await DbContext.isar.dbWordCollections.where().findAll();
+
+    List<WordCollection> result =
+        await WordCollectionsMapper.mapWithWordsToDomainListAsync(
+            dbWordCollections);
+
     return result;
   }
 

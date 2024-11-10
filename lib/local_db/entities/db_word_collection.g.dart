@@ -37,10 +37,11 @@ const DbWordCollectionSchema = CollectionSchema(
       single: true,
     ),
     r'words': LinkSchema(
-      id: -100550191124026551,
+      id: 2122411533238173103,
       name: r'words',
       target: r'DbWord',
       single: false,
+      linkName: r'collection',
     )
   },
   embeddedSchemas: {},
@@ -96,7 +97,7 @@ P _dbWordCollectionDeserializeProp<P>(
 }
 
 Id _dbWordCollectionGetId(DbWordCollection object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _dbWordCollectionGetLinks(DbWordCollection object) {
@@ -193,7 +194,25 @@ extension DbWordCollectionQueryWhere
 extension DbWordCollectionQueryFilter
     on QueryBuilder<DbWordCollection, DbWordCollection, QFilterCondition> {
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
-      idEqualTo(Id value) {
+      idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -204,7 +223,7 @@ extension DbWordCollectionQueryFilter
 
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -218,7 +237,7 @@ extension DbWordCollectionQueryFilter
 
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -232,8 +251,8 @@ extension DbWordCollectionQueryFilter
 
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
       idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

@@ -1,3 +1,4 @@
+import 'package:first_project/core/models/word_collection.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 
@@ -9,6 +10,7 @@ class Word {
   DeHetType deHetType;
   String? pluralForm;
   String? tag;
+  WordCollection? collection;
 
   Word(
     this.id,
@@ -18,5 +20,6 @@ class Word {
     this.deHetType = DeHetType.none,
     this.pluralForm,
     this.tag,
+    this.collection,
   });
 }

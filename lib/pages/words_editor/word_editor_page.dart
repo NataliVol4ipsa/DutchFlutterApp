@@ -1,9 +1,11 @@
+import 'package:first_project/core/models/word_collection.dart';
 import 'package:first_project/http_clients/get_word_online_response.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/pages/words_editor/online_word_search_section.dart';
-import 'package:first_project/reusable_widgets/generic_dropdown_menu.dart';
+import 'package:first_project/reusable_widgets/dropdowns/word_collection_dropdown.dart';
+import 'package:first_project/reusable_widgets/dropdowns/word_type_dropdown.dart';
 import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
 import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
 import 'package:first_project/core/models/word.dart';
@@ -32,12 +34,11 @@ class _WordEditorPageState extends State<WordEditorPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   WordType? selectedWordType;
+  WordCollection? selectedWordCollection;
   DeHetType? selectedDeHetType = DeHetType.none;
 
   bool isNewWord = false;
   bool resetSearchTrigger = false;
-
-  List<WordType> wordTypeDropdownValues = WordType.values.toList();
 
   late WordsRepository wordsRepository;
 
@@ -92,7 +93,9 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
     var newWord = Word(
         null, dutchWordInput, englishWordInput, selectedWordType!,
-        deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
+        deHetType: selectedDeHetType!,
+        pluralForm: dutchPluralFormWordInput,
+        collection: selectedWordCollection);
 
     await wordsRepository.addAsync(newWord);
   }
@@ -121,20 +124,17 @@ class _WordEditorPageState extends State<WordEditorPage> {
   }
 
   void updateSelectedWordType(WordType? newValue) {
-    setState(() {
-      selectedWordType = newValue;
-    });
+    selectedWordType = newValue;
+  }
+
+  void updateSelectedWordCollection(WordCollection newValue) {
+    selectedWordCollection = newValue;
   }
 
   void updateSelectedDeHetType(DeHetType? newValue) {
     setState(() {
       selectedDeHetType = newValue;
     });
-  }
-
-  String capitalizeEnum(Enum value) {
-    final word = value.name;
-    return '${word[0].toUpperCase()}${word.substring(1)}';
   }
 
   bool shouldDisplayDeHetInput() {
@@ -184,11 +184,20 @@ class _WordEditorPageState extends State<WordEditorPage> {
                     child: const InputLabel(
                       "Word type",
                     )),
-                GenericDropdownMenu(
-                    initialValue: selectedWordType,
-                    onValueChanged: updateSelectedWordType,
-                    dropdownValues: wordTypeDropdownValues,
-                    displayStringFunc: capitalizeEnum),
+                WordTypeDropdown(
+                  initialValue: selectedWordType,
+                  updateValueCallback: updateSelectedWordType,
+                ),
+                customPadding(),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: const InputLabel(
+                      "Collection",
+                    )),
+                WordCollectionDropdown(
+                  //initialValue: selectedWordType,
+                  updateValueCallback: updateSelectedWordCollection,
+                ),
                 customPadding(),
                 Container(
                     alignment: Alignment.centerLeft,

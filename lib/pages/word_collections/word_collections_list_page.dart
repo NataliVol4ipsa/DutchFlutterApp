@@ -26,7 +26,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Future<void> _loadData() async {
-    var dbCollections = await collectionsRepository.getAsync();
+    var dbCollections =
+        await collectionsRepository.getCollectionsWithWordsAsync();
 
     setState(() {
       collections = dbCollections;
@@ -99,11 +100,16 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                     WordCollection collection = collections[index];
                     return Column(
                       children: [
-                        ListTile(
+                        ExpansionTile(
                           title: Text(collection.name),
-                          tileColor: colorScheme.surface,
                           textColor: colorScheme.onSurface,
-                          onTap: () => {onCollectionTap(collection)},
+                          children: collection.words!.map((word) {
+                            return ListTile(
+                              title: Text(
+                                  "${word.dutchWord} - ${word.englishWord}"),
+                            );
+                          }).toList(),
+                          //onTap: () => {onCollectionTap(collection)},
                         ),
                         customPadding(),
                       ],

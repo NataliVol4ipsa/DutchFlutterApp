@@ -4,7 +4,7 @@ import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 
-class WordsMapper {
+class WordsIoMapper {
   WordsCollectionDtoV1 toCollectionDto(List<Word> inputWords) {
     return WordsCollectionDtoV1(
         inputWords.map((word) => WordDto.fromWord(word)).toList());

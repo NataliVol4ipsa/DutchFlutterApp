@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
 import 'package:first_project/core/services/io_service.dart';
-import 'package:first_project/core/mapping/words_mapper.dart';
+import 'package:first_project/core/mapping/words_io_mapper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 
@@ -12,7 +12,7 @@ class WordsIoJsonV1Service {
   Future<String> exportAsync(List<Word> words, String fileName) async {
     Directory directory = await getExportDirectoryAsync();
 
-    var dataToSerialize = WordsMapper().toCollectionDto(words);
+    var dataToSerialize = WordsIoMapper().toCollectionDto(words);
     String jsonString = jsonEncode(dataToSerialize);
 
     final path = '${directory.path}/$fileName.json';
