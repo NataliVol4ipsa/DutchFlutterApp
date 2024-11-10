@@ -101,7 +101,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                     return Column(
                       children: [
                         ExpansionTile(
-                          title: Text(collection.name),
+                          title: Text(
+                              "${collection.name} (${collection.words?.length ?? 0})"),
                           textColor: colorScheme.onSurface,
                           children: collection.words!.map((word) {
                             return ListTile(
