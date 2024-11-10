@@ -19,6 +19,14 @@ class WordCollectionsMapper {
     return newCollection;
   }
 
+  static WordCollection? mapNullableToDomain(DbWordCollection? collection) {
+    if (collection == null) {
+      return null;
+    }
+
+    return mapToDomain(collection);
+  }
+
   static Future<WordCollection> mapWithWordsToDomainAsync(
       DbWordCollection dbCollection) async {
     await dbCollection.words.load();

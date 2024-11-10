@@ -55,6 +55,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
   void initializeWithExistingWord(Word word) {
     selectedWordType = word.wordType;
+    selectedWordCollection = word.collection;
     dutchWordTextInputController.text = word.dutchWord;
     englishWordTextInputController.text = word.englishWord;
     dutchPluralFormTextInputController.text = word.pluralForm ?? "";
@@ -107,7 +108,9 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
     var updatedWord = Word(widget.existingWord!.id, dutchWordInput,
         englishWordInput, selectedWordType!,
-        deHetType: selectedDeHetType!, pluralForm: dutchPluralFormWordInput);
+        deHetType: selectedDeHetType!,
+        pluralForm: dutchPluralFormWordInput,
+        collection: selectedWordCollection);
 
     await wordsRepository.updateAsync(updatedWord);
 //todo make this an input method - what to do when action is complete. Accept new or close the page.
@@ -195,7 +198,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
                       "Collection",
                     )),
                 WordCollectionDropdown(
-                  //initialValue: selectedWordType,
+                  initialValue: selectedWordCollection,
                   updateValueCallback: updateSelectedWordCollection,
                 ),
                 customPadding(),

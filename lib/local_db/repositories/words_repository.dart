@@ -11,16 +11,17 @@ class WordsRepository {
     final newWord = WordsMapper.mapToEntity(word);
     int? collectionId = word.collection?.id;
     if (collectionId != null) {
-      addWordToCollectionAsync(collectionId, newWord);
+      addNewWordToCollectionAsync(collectionId, newWord);
     }
     final int id = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWords.put(newWord));
     return id;
   }
 
-  Future<int> addWordToCollectionAsync(int collectionId, DbWord newWord) async {
+  Future<int> addNewWordToCollectionAsync(
+      int collectionId, DbWord newWord) async {
     int newWordId = -1;
-    // Transaction
+
     await DbContext.isar.writeTxn(() async {
       final collection =
           await DbContext.isar.dbWordCollections.get(collectionId);
@@ -37,6 +38,31 @@ class WordsRepository {
     return newWordId;
   }
 
+  Future<void> addExistingWordToCollectionAsync(
+      int collectionId, DbWord word) async {
+    await DbContext.isar.writeTxn(() async {
+      final collection =
+          await DbContext.isar.dbWordCollections.get(collectionId);
+      if (collection != null) {
+        collection.words.add(word);
+        await collection.words.save();
+      }
+    });
+  }
+
+  Future<void> remodeWordFromCollectionAsync(DbWord word) async {
+    if (word.collection.value?.id == null) return;
+
+    await DbContext.isar.writeTxn(() async {
+      final oldCollection = await DbContext.isar.dbWordCollections
+          .get(word.collection.value!.id!);
+      if (oldCollection != null) {
+        oldCollection.words.remove(word);
+        await oldCollection.words.save();
+      }
+    });
+  }
+
   Future<List<int>> addBatchAsync(List<Word> words) async {
     final newWords = WordsMapper.mapToEntityList(words);
 
@@ -48,8 +74,14 @@ class WordsRepository {
 
   Future<List<Word>> getAsync() async {
     List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
+    List<Word> words = WordsMapper.mapToDomainList(dbWords);
+    return words;
+  }
+
+  Future<List<Word>> getWithCollectionAsync() async {
+    List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
     List<Word> words =
-        dbWords.map((dbWord) => WordsMapper.mapToDomain(dbWord)).toList();
+        await WordsMapper.mapWithCollectionToDomainListAsync(dbWords);
     return words;
   }
 
@@ -66,16 +98,29 @@ class WordsRepository {
           "Tried to update word ${updatedWord.id}, but it was not found in database.");
     }
 
+    await dbWord.collection.load();
+
+    mapUpdatedWordToEntity(dbWord, updatedWord);
+
+    await DbContext.isar.writeTxn(() => DbContext.isar.dbWords.put(dbWord));
+
+    if (dbWord.collection.value?.id != updatedWord.collection?.id) {
+      await remodeWordFromCollectionAsync(dbWord);
+      if (updatedWord.collection?.id != null) {
+        await addExistingWordToCollectionAsync(
+            updatedWord.collection!.id!, dbWord);
+      }
+    }
+    return true;
+  }
+
+  void mapUpdatedWordToEntity(DbWord dbWord, Word updatedWord) {
     dbWord.dutchWord = updatedWord.dutchWord;
     dbWord.englishWord = updatedWord.englishWord;
     dbWord.type = updatedWord.wordType;
     dbWord.deHet = updatedWord.deHetType;
     dbWord.pluralForm = updatedWord.pluralForm;
     dbWord.tag = updatedWord.tag;
-
-    await DbContext.isar.writeTxn(() => DbContext.isar.dbWords.put(dbWord));
-
-    return true;
   }
 
   Future<bool> deleteAsync(int id) async {

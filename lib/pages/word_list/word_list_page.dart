@@ -82,7 +82,7 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> _fetchWordsAsync() async {
-    var dbWords = await wordsRepository.getAsync();
+    var dbWords = await wordsRepository.getWithCollectionAsync();
 
     setState(() {
       words = dbWords;
@@ -320,6 +320,14 @@ class _WordListPageState extends State<WordListPage> {
     );
 
     await _reloadDataAsync();
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Successfully updated word.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   BottomNavigationBar createMultiselectBottomNavBar(BuildContext context) {
