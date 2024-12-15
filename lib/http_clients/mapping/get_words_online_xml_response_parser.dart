@@ -30,11 +30,18 @@ class GetWordsOnlineXmlResponseParser {
     return result;
   }
 
-  List<xml.XmlElement> identifyWordSection(
+  List<xml.XmlElement> identifyWordSectionFiltered(
       String searchText, String xmlString) {
-    var document = xml.XmlDocument.parse(xmlString);
+    xml.XmlDocument document = xml.XmlDocument.parse(xmlString);
 
     return document.findAllWithChildText('found_lemmata', 'lemma', searchText);
+  }
+
+  List<xml.XmlElement> identifyWordSection(
+      String searchText, String xmlString) {
+    xml.XmlDocument document = xml.XmlDocument.parse(xmlString);
+
+    return document.findAllElements('found_lemmata').toList();
   }
 
   String? findDiminutive(xml.XmlElement section) {
