@@ -1,15 +1,12 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:first_project/local_db/db_context.dart';
-import 'package:first_project/local_db/repositories/word_collections_repository.dart';
-import 'package:first_project/pages/learning_models_selector/learning_modes_selector_page.dart';
-import 'package:first_project/pages/learning_flow/learning_task_answered_notifier.dart';
+import 'package:first_project/pages/dependency_injections.dart';
+import 'package:first_project/pages/exercises_selector/exercises_selector_page.dart';
 import 'package:first_project/pages/word_collections/word_collections_list_page.dart';
 import 'package:first_project/pages/word_list/word_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'local_db/repositories/words_repository.dart';
+import 'local_db/dependency_injections.dart';
 import 'pages/words_editor/word_editor_page.dart';
 import 'pages/home_page.dart';
 
@@ -26,12 +23,9 @@ void main() async {
   await DbContext.initialize();
   runApp(
     MultiProvider(providers: [
-      Provider<DbContext>(create: (_) => DbContext()),
-      Provider<WordsRepository>(create: (_) => WordsRepository()),
-      Provider<WordCollectionsRepository>(
-          create: (_) => WordCollectionsRepository()),
-      ChangeNotifierProvider(create: (_) => LearningTaskAnsweredNotifier()),
-    ], child: MyApp()),
+      ...databaseProviders(),
+      ...notifierProviders(),
+    ], child: const MyApp()),
   );
 }
 
@@ -43,17 +37,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorSchemeSeed: Color.fromARGB(255, 0, 255, 213),
+          colorSchemeSeed: const Color.fromARGB(255, 0, 255, 213),
           brightness: Brightness.light,
           useMaterial3: true,
         ),
-        home: HomePage(),
+        home: const HomePage(),
         routes: {
-          '/home': (context) => HomePage(),
-          '/newword': (context) => WordEditorPage(),
-          '/wordlist': (context) => WordListPage(),
-          '/wordcollections': (context) => WordCollectionsListPage(),
-          '/learningmodesselector': (context) => LearningModesSelectorPage(),
+          '/home': (context) => const HomePage(),
+          '/newword': (context) => const WordEditorPage(),
+          '/wordlist': (context) => const WordListPage(),
+          '/wordcollections': (context) => const WordCollectionsListPage(),
+          '/learningmodesselector': (context) => const ExercisesSelectorPage(),
         });
   }
 }

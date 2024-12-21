@@ -1,22 +1,21 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/learning_mode_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
-import 'package:first_project/pages/learning_flow/learning_flow_manager.dart';
-import 'package:first_project/pages/learning_flow/learning_flow_page.dart';
+import 'package:first_project/pages/learning_session/session_manager.dart';
+import 'package:first_project/pages/learning_session/session_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LearningModesSelectorPage extends StatefulWidget {
-  const LearningModesSelectorPage({super.key});
+class ExercisesSelectorPage extends StatefulWidget {
+  const ExercisesSelectorPage({super.key});
 
   @override
-  State<LearningModesSelectorPage> createState() =>
-      _LearningModesSelectorPageState();
+  State<ExercisesSelectorPage> createState() => _ExercisesSelectorPageState();
 }
 
 Widget customPadding() => const SizedBox(height: 10);
 
-class _LearningModesSelectorPageState extends State<LearningModesSelectorPage> {
+class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   late WordsRepository wordsRepository;
 
   List<LearningModeType> learningModes = LearningModeType.values.toList();
@@ -30,17 +29,19 @@ class _LearningModesSelectorPageState extends State<LearningModesSelectorPage> {
 
   void onStartButtonClick() async {
     List<Word> words = await wordsRepository.getAsync();
-    var flowManager = LearningFlowManager(selectedModes.toList(), words);
+    // TEMP. REMOVE
+    words = [words[0], words[1], words[2]];
+    var flowManager = LearningSessionManager(selectedModes.toList(), words);
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);
   }
 
   void navigateToLearningTaskPage(
-      BuildContext context, LearningFlowManager flowManager) {
+      BuildContext context, LearningSessionManager flowManager) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LearningFlowPage(flowManager: flowManager),
+        builder: (context) => LearningSessionPage(flowManager: flowManager),
       ),
     );
   }

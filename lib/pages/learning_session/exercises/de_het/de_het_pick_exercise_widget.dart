@@ -1,30 +1,27 @@
-import 'package:first_project/pages/learning_flow/learning_tasks/de_het/de_het_pick_learning_mode_task.dart';
+import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/pages/learning_flow/learning_task_answered_notifier.dart';
+import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class DeHetPickLearningTaskWidget extends StatefulWidget {
-  final DeHetPickLearningModeTask task;
+class DeHetPickExerciseWidget extends StatefulWidget {
+  final DeHetPickExercise task;
   final String dutchWord;
 
-  const DeHetPickLearningTaskWidget(this.task, this.dutchWord, {super.key});
+  const DeHetPickExerciseWidget(this.task, this.dutchWord, {super.key});
 
   @override
-  State<DeHetPickLearningTaskWidget> createState() =>
-      _DeHetPickLearningTaskWidgetState();
+  State<DeHetPickExerciseWidget> createState() =>
+      _DeHetPickExerciseWidgetState();
 }
 
-class _DeHetPickLearningTaskWidgetState
-    extends State<DeHetPickLearningTaskWidget> {
-  late bool? isCorrectAnswer;
+class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
+  bool? isCorrectAnswer;
 
   void onAnswerProvided(DeHetType answer) {
     setState(() {
       isCorrectAnswer = widget.task.isCorrectAnswer(answer);
     });
-    Provider.of<LearningTaskAnsweredNotifier>(context, listen: false)
-        .updateAnswer(true);
+    notifyAnsweredTask(context, true);
     widget.task.processAnswer(answer);
   }
 

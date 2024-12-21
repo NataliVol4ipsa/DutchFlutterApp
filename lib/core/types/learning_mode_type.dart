@@ -33,7 +33,7 @@ extension LearningModeTypeExtension on LearningModeType {
   String get explanation {
     switch (this) {
       case LearningModeType.flipCard:
-        return 'Simple mode where you see one word and need to translate it';
+        return 'Simple mode where you flip the card and see whether your answer is correct';
       case LearningModeType.basicWrite:
         return 'Write Dutch translation of English word';
       case LearningModeType.deHetPick:
