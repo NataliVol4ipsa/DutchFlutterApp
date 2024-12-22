@@ -1,10 +1,10 @@
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/learning_mode_type.dart';
+import 'package:first_project/core/types/exercise_type.dart';
 
 class ExercisesGenerator {
-  final List<LearningModeType> learningModes;
+  final List<ExerciseType> learningModes;
   final List<Word> words;
 
   ExercisesGenerator(this.learningModes, this.words);

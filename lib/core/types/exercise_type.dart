@@ -1,4 +1,4 @@
-enum LearningModeType {
+enum ExerciseType {
   flipCard,
   basicWrite,
   deHetPick,
@@ -8,22 +8,22 @@ enum LearningModeType {
   basicManyPick,
 }
 
-extension LearningModeTypeExtension on LearningModeType {
+extension ExerciseTypeExtension on ExerciseType {
   String get label {
     switch (this) {
-      case LearningModeType.flipCard:
+      case ExerciseType.flipCard:
         return 'FlipCard Translation';
-      case LearningModeType.basicWrite:
+      case ExerciseType.basicWrite:
         return 'Translation Writing';
-      case LearningModeType.deHetPick:
+      case ExerciseType.deHetPick:
         return 'De or Het?';
-      case LearningModeType.pluralFormPick:
+      case ExerciseType.pluralFormPick:
         return 'Pick Plural Form';
-      case LearningModeType.pluralFormWrite:
+      case ExerciseType.pluralFormWrite:
         return 'Write Plural Form';
-      case LearningModeType.basicOnePick:
+      case ExerciseType.basicOnePick:
         return 'Pick Translation';
-      case LearningModeType.basicManyPick:
+      case ExerciseType.basicManyPick:
         return 'Match Translations';
       default:
         return '';
@@ -32,19 +32,19 @@ extension LearningModeTypeExtension on LearningModeType {
 
   String get explanation {
     switch (this) {
-      case LearningModeType.flipCard:
+      case ExerciseType.flipCard:
         return 'Simple mode where you flip the card and see whether your answer is correct';
-      case LearningModeType.basicWrite:
+      case ExerciseType.basicWrite:
         return 'Write Dutch translation of English word';
-      case LearningModeType.deHetPick:
+      case ExerciseType.deHetPick:
         return 'For Dutch noun on the screen, select whether this word has de or her article';
-      case LearningModeType.pluralFormPick:
+      case ExerciseType.pluralFormPick:
         return 'For Dutch noun on the screen, select properly spelled plural form of the word from the list of options';
-      case LearningModeType.pluralFormWrite:
+      case ExerciseType.pluralFormWrite:
         return 'For Dutch noun on the screen, write properly spelled plural form of the word';
-      case LearningModeType.basicOnePick:
+      case ExerciseType.basicOnePick:
         return 'Pick translation of word on screen from list of options';
-      case LearningModeType.basicManyPick:
+      case ExerciseType.basicManyPick:
         return 'Match two lists of words according to their translations';
       default:
         return '';

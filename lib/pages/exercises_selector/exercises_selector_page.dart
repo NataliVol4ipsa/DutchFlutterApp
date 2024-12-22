@@ -1,5 +1,5 @@
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/learning_mode_type.dart';
+import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/session_page.dart';
@@ -18,8 +18,8 @@ Widget customPadding() => const SizedBox(height: 10);
 class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   late WordsRepository wordsRepository;
 
-  List<LearningModeType> learningModes = LearningModeType.values.toList();
-  final Set<LearningModeType> selectedModes = {};
+  List<ExerciseType> learningModes = ExerciseType.values.toList();
+  final Set<ExerciseType> selectedModes = {};
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
               child: ListView.builder(
                 itemCount: learningModes.length,
                 itemBuilder: (context, index) {
-                  LearningModeType mode = learningModes[index];
+                  ExerciseType mode = learningModes[index];
                   bool isSelected = selectedModes.contains(mode);
 
                   return Column(

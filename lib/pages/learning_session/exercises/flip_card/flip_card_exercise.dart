@@ -1,11 +1,11 @@
 import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/learning_mode_type.dart';
+import 'package:first_project/core/types/exercise_type.dart';
 import 'package:flutter/material.dart';
 
 class FlipCardExercise extends BaseExercise {
   static const int requiredWords = 1;
-  static const LearningModeType type = LearningModeType.flipCard;
+  static const ExerciseType type = ExerciseType.flipCard;
   final Word word;
 
   FlipCardExercise(this.word) : super(requiredWords, type);

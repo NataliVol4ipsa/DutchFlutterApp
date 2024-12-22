@@ -54,6 +54,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
                         if (widget.flowManager.hasNextTask) {
                           widget.flowManager.moveToNextExercise();
                         } else {
+                          widget.flowManager.generateSummary();
                           _learningTasksCompletedNotifier?.notifyCompleted();
                         }
                       });
@@ -106,11 +107,16 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const Text('test'),
+            Text(
+                'Total exercises: ${widget.flowManager.summary?.totalExercises}'),
+            Text(
+                'Correct answers: ${widget.flowManager.summary?.correctExercises} (${widget.flowManager.summary?.correctPercent.toStringAsFixed(2)}%)'),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
@@ -136,8 +142,9 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
       bool showSessionTasks = !notifier.isCompleted;
       if (showSessionTasks) {
         return _buildTask(context);
+      } else {
+        return _buildSummary(context);
       }
-      return _buildSummary(context);
     });
   }
 }

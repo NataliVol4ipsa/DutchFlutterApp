@@ -1,20 +1,18 @@
 import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
-import 'package:first_project/pages/learning_session/exercises/exercise_answer_summary.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/learning_mode_type.dart';
+import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise_widget.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickExercise extends BaseExercise {
   static const int requiredWords = 1;
-  static const LearningModeType type = LearningModeType.deHetPick;
+  static const ExerciseType type = ExerciseType.deHetPick;
   final Word word;
 
   late String dutchWord;
   late DeHetType correctAnswer;
-  late ExerciseAnswerSummary answerSummary = ExerciseAnswerSummary();
 
   DeHetPickExercise(this.word) : super(requiredWords, type) {
     if (!isSupportedWord(word)) {
