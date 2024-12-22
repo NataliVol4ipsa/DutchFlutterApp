@@ -39,65 +39,72 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 30),
+            const Spacer(),
             Text(
               widget.dutchWord,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    onAnswerProvided(DeHetType.de);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    "De",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    onAnswerProvided(DeHetType.het);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    "Het",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
+            const Spacer(),
             if (isCorrectAnswer != null) ...{
-              if (isCorrectAnswer! == true) ...{
+              if (isCorrectAnswer == true) ...{
                 const Text(
                   "Correct!",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               },
-              if (isCorrectAnswer! == false) ...{
+              if (isCorrectAnswer == false) ...{
                 const Text(
                   "Wrong!",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               },
+            } else
+              const Text(
+                " ",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            const Spacer(),
+            if (isCorrectAnswer == null) ...{
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      onAnswerProvided(DeHetType.de);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "De",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      onAnswerProvided(DeHetType.het);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "Het",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
             },
+            const SizedBox(height: 30),
           ],
         ),
       ),
