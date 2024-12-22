@@ -1,6 +1,8 @@
+import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
+import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise_widget.dart';
 import 'package:flutter/material.dart';
 
 class FlipCardExercise extends BaseExercise {
@@ -8,21 +10,44 @@ class FlipCardExercise extends BaseExercise {
   static const ExerciseType type = ExerciseType.flipCard;
   final Word word;
 
-  FlipCardExercise(this.word) : super(requiredWords, type);
+  late String inputWord;
+  late String correctAnswer; //todo support multiple translations
+  late String? hint;
+
+  FlipCardExercise(this.word) : super(requiredWords, type) {
+    if (!isSupportedWord(word)) {
+      throw Exception("Tried to create Exercise for unsupported word");
+    }
+    inputWord = word.dutchWord;
+    correctAnswer = word.englishWord;
+    if (word.wordType != WordType.none) {
+      hint = word.wordType.name;
+    }
+  }
 
   static bool isSupportedWord(Word word) {
     return true;
   }
 
+  void processAnswer(bool userKnowsWord) {
+    if (userKnowsWord) {
+      answerSummary.totalCorrectAnswers++;
+    } else {
+      answerSummary.totalWrongAnswers++;
+    }
+  }
+
   @override
   Widget buildWidget({Key? key}) {
-    // TODO: implement buildWidget
-    throw UnimplementedError();
+    return FlipCardExerciseWidget(
+      this,
+      key: key,
+    );
   }
 
   @override
   bool isAnswered() {
-    // TODO: implement isAnswered
-    throw UnimplementedError();
+    return answerSummary.totalCorrectAnswers > 0 ||
+        answerSummary.totalWrongAnswers > 0;
   }
 }

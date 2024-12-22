@@ -3,7 +3,7 @@ import 'package:first_project/pages/learning_session/notifiers/session_completed
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void notifyAnsweredTask(BuildContext context, bool isAnswered) {
+void notifyAnsweredExercise(BuildContext context, bool isAnswered) {
   Provider.of<ExerciseAnsweredNotifier>(context, listen: false)
       .notifyAnswerUpdated(isAnswered);
 }

@@ -1,28 +1,25 @@
-import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
-import 'package:first_project/core/types/de_het_type.dart';
+import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
 import 'package:flutter/material.dart';
 
-class DeHetPickExerciseWidget extends StatefulWidget {
-  final DeHetPickExercise exercise;
-  final String dutchWord;
+class FlipCardExerciseWidget extends StatefulWidget {
+  final FlipCardExercise exercise;
 
-  const DeHetPickExerciseWidget(this.exercise, this.dutchWord, {super.key});
+  const FlipCardExerciseWidget(this.exercise, {super.key});
 
   @override
-  State<DeHetPickExerciseWidget> createState() =>
-      _DeHetPickExerciseWidgetState();
+  State<FlipCardExerciseWidget> createState() => _FlipCardExerciseWidgetState();
 }
 
-class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
+class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
   bool? isCorrectAnswer;
 
-  void onAnswerProvided(DeHetType answer) {
+  void onAnswerProvided(bool userKnowsWord) {
     setState(() {
-      isCorrectAnswer = widget.exercise.isCorrectAnswer(answer);
+      isCorrectAnswer = userKnowsWord;
     });
     notifyAnsweredExercise(context, true);
-    widget.exercise.processAnswer(answer);
+    widget.exercise.processAnswer(userKnowsWord);
   }
 
   @override
@@ -35,23 +32,30 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
           children: [
             const SizedBox(height: 30),
             const Text(
-              "Select 'De' or 'Het' for the following word:",
+              "Do you know the translation of following word?",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
             Text(
-              widget.dutchWord,
+              widget.exercise.inputWord,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
+            if (widget.exercise.hint != null) ...{
+              Text(
+                widget.exercise.hint!,
+                style: const TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              )
+            },
             const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    onAnswerProvided(DeHetType.de);
+                    onAnswerProvided(true);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -61,13 +65,13 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
                     ),
                   ),
                   child: const Text(
-                    "De",
+                    "Know",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    onAnswerProvided(DeHetType.het);
+                    onAnswerProvided(false);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -77,7 +81,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
                     ),
                   ),
                   child: const Text(
-                    "Het",
+                    "Don't know",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -85,15 +89,15 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
             ),
             const SizedBox(height: 40),
             if (isCorrectAnswer != null) ...{
-              if (isCorrectAnswer! == true) ...{
+              if (isCorrectAnswer == true) ...{
                 const Text(
-                  "Correct!",
+                  "Good job!",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               },
-              if (isCorrectAnswer! == false) ...{
+              if (isCorrectAnswer == false) ...{
                 const Text(
-                  "Wrong!",
+                  "This word will be shown again later.",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               },

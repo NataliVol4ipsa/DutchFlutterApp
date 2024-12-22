@@ -9,6 +9,7 @@ abstract class BaseExercise {
 
   BaseExercise(this.numOfRequiredWords, this.learningModeType);
 
+  // Todo move all child implementations here?
   bool isAnswered();
 
   Widget buildWidget({Key? key});

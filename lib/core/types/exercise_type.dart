@@ -35,7 +35,7 @@ extension ExerciseTypeExtension on ExerciseType {
       case ExerciseType.flipCard:
         return 'Simple mode where you flip the card and see whether your answer is correct';
       case ExerciseType.basicWrite:
-        return 'Write Dutch translation of English word';
+        return 'Write Dutch translation of English word. (Phrases not included by default)';
       case ExerciseType.deHetPick:
         return 'For Dutch noun on the screen, select whether this word has de or her article';
       case ExerciseType.pluralFormPick:

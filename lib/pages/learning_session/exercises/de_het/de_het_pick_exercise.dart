@@ -16,7 +16,7 @@ class DeHetPickExercise extends BaseExercise {
 
   DeHetPickExercise(this.word) : super(requiredWords, type) {
     if (!isSupportedWord(word)) {
-      throw Exception("Tried to create Task for unsupported word");
+      throw Exception("Tried to create Exercise for unsupported word");
     }
     dutchWord = word.dutchWord;
     correctAnswer = word.deHetType;
@@ -36,10 +36,6 @@ class DeHetPickExercise extends BaseExercise {
     } else {
       answerSummary.totalWrongAnswers++;
     }
-  }
-
-  bool showAgain() {
-    return answerSummary.totalCorrectAnswers == 0;
   }
 
   @override
