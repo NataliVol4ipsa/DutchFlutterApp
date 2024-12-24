@@ -2,6 +2,7 @@ import 'package:first_project/pages/learning_session/exercises/base/base_exercis
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
+import 'package:first_project/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickExerciseWidget extends StatefulWidget {
@@ -145,7 +146,11 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
           : () {
               onAnswerProvided(deHetType);
             },
-      style: ElevatedButton.styleFrom(
+      style: ButtonStyles.secondaryButtonStyle(context),
+
+      /*
+
+style: ElevatedButton.styleFrom(
         backgroundColor: answerOptionButtonBackgroundColor,
         foregroundColor: answerOptionButtonTextColor,
         disabledBackgroundColor: answerOptionButtonDisabledBackgroundColor,
@@ -155,6 +160,15 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+
+            style: ButtonStyles.exerciseAnswerButtonStyle.copyWith(
+        backgroundColor: answerOptionButtonBackgroundColor,
+        foregroundColor: answerOptionButtonTextColor,
+        disabledBackgroundColor: answerOptionButtonDisabledBackgroundColor,
+        disabledForegroundColor: answerOptionButtonDisabledTextColor,
+      ),
+      
+       */
       child: Text(
         buttonText,
         //todo reuse for Next and Finish buttons

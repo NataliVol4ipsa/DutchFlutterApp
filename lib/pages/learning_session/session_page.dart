@@ -50,18 +50,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
                   color: Theme.of(context).colorScheme.surface,
                   padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
                   child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _learningTaskAnsweredNotifier
-                            ?.notifyAnswerUpdated(false);
-                        if (widget.flowManager.hasNextTask) {
-                          widget.flowManager.moveToNextExercise();
-                        } else {
-                          widget.flowManager.generateSummary();
-                          _learningTasksCompletedNotifier?.notifyCompleted();
-                        }
-                      });
-                    },
+                    onPressed: _onNextButtonPressed,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40, vertical: 20),
@@ -83,6 +72,18 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
             : Container();
       },
     );
+  }
+
+  void _onNextButtonPressed() {
+    setState(() {
+      _learningTaskAnsweredNotifier?.notifyAnswerUpdated(false);
+      if (widget.flowManager.hasNextTask) {
+        widget.flowManager.moveToNextExercise();
+      } else {
+        widget.flowManager.generateSummary();
+        _learningTasksCompletedNotifier?.notifyCompleted();
+      }
+    });
   }
 
   Widget _buildExercise(BuildContext context) {
