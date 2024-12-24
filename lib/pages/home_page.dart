@@ -107,6 +107,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+// or this https://www.justinmind.com/wp-content/webp-express/webp-images/uploads/2024/06/tv-shows-tracker-mobile-navigation-example.png.webp
   Widget _buildRecentCollectionsSection(BuildContext context) {
     // todo apply to cards BG colors - to reflect how complete are they. From grey to green with alpha based on completion %
     return Container(

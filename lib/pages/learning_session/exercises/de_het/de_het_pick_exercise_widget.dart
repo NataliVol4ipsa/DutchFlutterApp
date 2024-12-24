@@ -3,6 +3,7 @@ import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pic
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
 import 'package:first_project/styles/button_styles.dart';
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickExerciseWidget extends StatefulWidget {
@@ -147,28 +148,6 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
               onAnswerProvided(deHetType);
             },
       style: ButtonStyles.secondaryButtonStyle(context),
-
-      /*
-
-style: ElevatedButton.styleFrom(
-        backgroundColor: answerOptionButtonBackgroundColor,
-        foregroundColor: answerOptionButtonTextColor,
-        disabledBackgroundColor: answerOptionButtonDisabledBackgroundColor,
-        disabledForegroundColor: answerOptionButtonDisabledTextColor,
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-
-            style: ButtonStyles.exerciseAnswerButtonStyle.copyWith(
-        backgroundColor: answerOptionButtonBackgroundColor,
-        foregroundColor: answerOptionButtonTextColor,
-        disabledBackgroundColor: answerOptionButtonDisabledBackgroundColor,
-        disabledForegroundColor: answerOptionButtonDisabledTextColor,
-      ),
-      
-       */
       child: Text(
         buttonText,
         //todo reuse for Next and Finish buttons
@@ -224,7 +203,7 @@ style: ElevatedButton.styleFrom(
         Expanded(
           child: _buildAnswerOptionButton(DeHetType.de, "De"),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: ContainerStyles.defaultPadding),
         Expanded(
           child: _buildAnswerOptionButton(DeHetType.het, "Het"),
         ),

@@ -1,5 +1,6 @@
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class FlipCardExerciseWidget extends StatefulWidget {
@@ -26,7 +27,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: ContainerStyles.containerPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

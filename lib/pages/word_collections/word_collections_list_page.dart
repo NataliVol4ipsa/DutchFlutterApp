@@ -1,6 +1,7 @@
 import 'package:first_project/core/models/word_collection.dart';
 import 'package:first_project/local_db/repositories/word_collections_repository.dart';
 import 'package:first_project/reusable_widgets/text_input_modal.dart';
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -122,7 +123,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           ),
         ),
         floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding:
+              const EdgeInsets.only(bottom: ContainerStyles.defaultPadding),
           child: FloatingActionButton(
             onPressed: () => {onAddCollectionButtonPressed(context)},
             child: const Icon(Icons.add),

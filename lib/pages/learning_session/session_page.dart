@@ -2,6 +2,7 @@ import 'package:first_project/pages/learning_session/exercises/base/base_session
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +49,11 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
                 right: 0,
                 child: Container(
                   color: Theme.of(context).colorScheme.surface,
-                  padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(
+                      ContainerStyles.defaultPadding,
+                      60,
+                      ContainerStyles.defaultPadding,
+                      ContainerStyles.defaultPadding),
                   child: ElevatedButton(
                     onPressed: _onNextButtonPressed,
                     style: ElevatedButton.styleFrom(
@@ -149,54 +154,3 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     );
   }
 }
-
-// Widget buildOld(BuildContext context) {
-//   return Scaffold(
-//     appBar: AppBar(
-//       title: Text(
-//           'Task ${widget.flowManager.currentExerciseIndex + 1} of ${widget.flowManager.totalTasks}'),
-//     ),
-//     body: Column(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Expanded(
-//           child: Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: _buildContent(context),
-//           ),
-//         ),
-//         Container(
-//           color: Colors.grey.shade200,
-//           padding: const EdgeInsets.all(16),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: [
-//               ElevatedButton.icon(
-//                 onPressed: () {},
-//                 icon: Icon(Icons.home),
-//                 label: Text('Home'),
-//               ),
-//               ElevatedButton.icon(
-//                 onPressed: () {},
-//                 icon: Icon(Icons.search),
-//                 label: Text('Search'),
-//               ),
-//               ElevatedButton.icon(
-//                 onPressed: () {},
-//                 icon: Icon(Icons.settings),
-//                 label: Text('Settings'),
-//               ),
-//             ],
-//           ),
-//         ),
-//         // Expanded(
-//         //   child: widget.flowManager.currentTask.buildWidget(key: taskKey),
-//         // ),
-//         // Expanded(
-//         //   child: _buildNextButton(context),
-//         // ),
-//       ],
-//     ),
-//   );
-// }
-//}

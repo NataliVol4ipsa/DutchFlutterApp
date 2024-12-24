@@ -1,3 +1,4 @@
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class BaseExerciseLayout extends StatefulWidget {
@@ -23,12 +24,12 @@ class _BaseExerciseLayoutState extends State<BaseExerciseLayout> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: ContainerStyles.containerPadding,
               child: widget.contentBuilder(context),
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: ContainerStyles.containerPadding,
             child: widget.footerBuilder(context),
           ),
         ],
