@@ -42,11 +42,13 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
       builder: (context, taskNotifier, child) {
         bool showNextButton = taskNotifier.isAnswered;
         return showNextButton
-            ? Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: SizedBox(
-                  width: double.infinity,
+            ? Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
@@ -61,14 +63,19 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 20),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: Text(
                       widget.flowManager.hasNextTask ? "Next" : "Finish",
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -80,7 +87,12 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
 
   Widget _buildExercise(BuildContext context) {
     Key taskKey = UniqueKey();
-    return widget.flowManager.currentTask.buildWidget(key: taskKey);
+    return Stack(children: [
+      widget.flowManager.currentTask.buildWidget(
+        key: taskKey,
+      ),
+      _buildNextButton(context),
+    ]);
   }
 
   Widget _buildSummary(BuildContext context) {
@@ -114,13 +126,12 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   Widget _buildContent(BuildContext context) {
     return Consumer<SessionCompletedNotifier>(
         builder: (context, notifier, child) {
-      //bool showSessionTasks = !notifier.isCompleted;
-      return _buildExercise(context);
-      // if (showSessionTasks) {
-      //   return _buildTask(context);
-      // } else {
-      //   return _buildSummary(context);
-      // }
+      bool showSessionTasks = !notifier.isCompleted;
+      if (showSessionTasks) {
+        return _buildExercise(context);
+      } else {
+        return _buildSummary(context);
+      }
     });
   }
 

@@ -157,6 +157,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
       ),
       child: Text(
         buttonText,
+        //todo reuse for Next and Finish buttons
         style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
