@@ -3,6 +3,7 @@ import 'package:first_project/pages/dependency_injections.dart';
 import 'package:first_project/pages/exercises_selector/exercises_selector_page.dart';
 import 'package:first_project/pages/word_collections/word_collections_list_page.dart';
 import 'package:first_project/pages/word_list/word_list_page.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,20 +35,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //var scheme = FlexScheme.amber;
+    //var scheme = FlexScheme.espresso;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorSchemeSeed: const Color.fromARGB(255, 0, 255, 213),
-          brightness: Brightness.light,
-          useMaterial3: true,
+        theme: FlexThemeData.light(scheme: FlexScheme.amber),
+        darkTheme: FlexThemeData.dark(
+          scheme: FlexScheme.amber,
+          appBarStyle: FlexAppBarStyle.material,
+          appBarElevation: 1,
         ),
+        themeMode: ThemeMode.light,
+        // theme: ThemeData(
+        //   // Color.fromARGB(255, 0, 255, 213),
+        //   // Color.fromARGB(255, 54, 94, 2),
+        //   //colorSchemeSeed: const Color.fromARGB(255, 54, 94, 2),
+        //   brightness: Brightness.light,
+        //   useMaterial3: true,
+        // ),
         home: const HomePage(),
         routes: {
           '/home': (context) => const HomePage(),
           '/newword': (context) => const WordEditorPage(),
           '/wordlist': (context) => const WordListPage(),
           '/wordcollections': (context) => const WordCollectionsListPage(),
-          '/learningmodesselector': (context) => const ExercisesSelectorPage(),
+          '/exercisesselector': (context) => const ExercisesSelectorPage(),
         });
   }
 }

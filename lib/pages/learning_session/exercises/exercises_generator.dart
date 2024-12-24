@@ -1,5 +1,5 @@
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
-import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
+import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';

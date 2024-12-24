@@ -7,7 +7,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home page'),
+        centerTitle: true,
+        title: const Text(
+          'Home page',
+        ),
         automaticallyImplyLeading: false, // Removes the back button
       ),
       body: Center(
@@ -33,7 +36,7 @@ class HomePage extends StatelessWidget {
                   child: const Text("See collections")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/learningmodesselector');
+                    Navigator.pushNamed(context, '/exercisesselector');
                   },
                   child: const Text("Practice")),
             ],
@@ -58,7 +61,7 @@ class HomePage extends StatelessWidget {
         onTap: (int index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/learningmodesselector');
+              Navigator.pushNamed(context, '/exercisesselector');
               break;
             case 1:
               Navigator.pushNamed(context, '/wordlist');

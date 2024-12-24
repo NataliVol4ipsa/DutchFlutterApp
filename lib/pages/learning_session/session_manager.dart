@@ -1,5 +1,5 @@
 import 'package:first_project/pages/learning_session/exercises/exercises_generator.dart';
-import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
+import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 

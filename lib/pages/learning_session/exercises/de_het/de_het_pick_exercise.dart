@@ -1,4 +1,4 @@
-import 'package:first_project/pages/learning_session/exercises/base_exercise.dart';
+import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/exercise_type.dart';
@@ -11,14 +11,12 @@ class DeHetPickExercise extends BaseExercise {
   static const ExerciseType type = ExerciseType.deHetPick;
   final Word word;
 
-  late String dutchWord;
   late DeHetType correctAnswer;
 
   DeHetPickExercise(this.word) : super(requiredWords, type) {
     if (!isSupportedWord(word)) {
       throw Exception("Tried to create Exercise for unsupported word");
     }
-    dutchWord = word.dutchWord;
     correctAnswer = word.deHetType;
   }
 
@@ -42,7 +40,6 @@ class DeHetPickExercise extends BaseExercise {
   Widget buildWidget({Key? key}) {
     return DeHetPickExerciseWidget(
       this,
-      dutchWord,
       key: key,
     );
   }
