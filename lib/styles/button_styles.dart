@@ -1,7 +1,7 @@
 import 'package:first_project/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
-class ButtonStyles extends BaseStyles {
+class ButtonStyles {
   static final ButtonStyle primaryButtonStyle = ButtonStyle(
       padding: MaterialStateProperty.all(
         const EdgeInsets.symmetric(horizontal: 40, vertical: 20),

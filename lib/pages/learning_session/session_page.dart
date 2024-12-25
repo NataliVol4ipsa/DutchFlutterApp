@@ -2,6 +2,8 @@ import 'package:first_project/pages/learning_session/exercises/base/base_session
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:first_project/pages/learning_session/session_summary_widget.dart';
+import 'package:first_project/styles/button_styles.dart';
 import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,21 +58,9 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
                       ContainerStyles.defaultPadding),
                   child: ElevatedButton(
                     onPressed: _onNextButtonPressed,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 20),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: ButtonStyles.primaryButtonStyle,
                     child: Text(
-                      widget.flowManager.hasNextTask ? "Next" : "Finish",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                        widget.flowManager.hasNextTask ? "Next" : "Finish"),
                   ),
                 ),
               )
@@ -102,31 +92,9 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   Widget _buildSummary(BuildContext context) {
-    return Column(
-      children: [
-        Text('Total exercises: ${widget.flowManager.summary?.totalExercises}'),
-        Text(
-            'Correct answers: ${widget.flowManager.summary?.correctExercises} (${widget.flowManager.summary?.correctPercent.toStringAsFixed(2)}%)'),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              "Back to menu",
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-        ),
-      ],
-    );
+    SessionSummary summary = widget.flowManager.summary!;
+
+    return SessionSummaryWidget(summary: summary);
   }
 
   Widget _buildContent(BuildContext context) {

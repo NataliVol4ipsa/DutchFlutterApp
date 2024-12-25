@@ -1,3 +1,4 @@
+import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
 import 'package:first_project/styles/container_styles.dart';
@@ -22,6 +23,14 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
     notifyAnsweredExercise(context, true);
     widget.exercise.processAnswer(userKnowsWord);
   }
+
+// @override
+//   Widget build(BuildContext context){
+
+//      return BaseExerciseLayout(
+//         contentBuilder: _buildContent, footerBuilder: _buildFooter);
+//   }
+//   }
 
   @override
   Widget build(BuildContext context) {
