@@ -1,4 +1,5 @@
 import 'package:first_project/core/functions/capitalize_enum.dart';
+import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:first_project/http_clients/get_word_online_response.dart';
 import 'package:first_project/http_clients/woordenlijst_client.dart';
@@ -103,7 +104,7 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: ContainerStyles.containerPadding,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -3,7 +3,7 @@ import 'package:first_project/http_clients/get_word_online_response.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
-import 'package:first_project/pages/words_editor/online_word_search_section.dart';
+import 'package:first_project/pages/word_editor/online_word_search_section.dart';
 import 'package:first_project/reusable_widgets/dropdowns/word_collection_dropdown.dart';
 import 'package:first_project/reusable_widgets/dropdowns/word_type_dropdown.dart';
 import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
@@ -127,7 +127,9 @@ class _WordEditorPageState extends State<WordEditorPage> {
   }
 
   void updateSelectedWordType(WordType? newValue) {
-    selectedWordType = newValue;
+    setState(() {
+      selectedWordType = newValue;
+    });
   }
 
   void updateSelectedWordCollection(WordCollection newValue) {

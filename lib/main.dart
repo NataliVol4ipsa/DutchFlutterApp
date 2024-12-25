@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'local_db/dependency_injections.dart';
-import 'pages/words_editor/word_editor_page.dart';
+import 'pages/word_editor/word_editor_page.dart';
 import 'pages/home_page.dart';
 
 // ctrl + shift + p: launch command line
