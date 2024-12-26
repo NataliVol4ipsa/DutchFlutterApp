@@ -29,4 +29,13 @@ class TextStyles {
     return TextStyle(
         fontSize: 24, fontWeight: FontWeight.bold, color: textColor);
   }
+
+  static TextStyle exerciseInputDataHintStyle(BuildContext context) {
+    return exerciseInputDataStyle(context).copyWith(fontSize: 14);
+  }
+
+  static TextStyle exerciseInputDataAnswerStyle(BuildContext context) {
+    return exerciseInputDataStyle(context)
+        .copyWith(color: evaluationSuccessTextColor);
+  }
 }

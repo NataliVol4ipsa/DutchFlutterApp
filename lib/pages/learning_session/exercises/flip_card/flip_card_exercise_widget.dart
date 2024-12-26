@@ -1,7 +1,11 @@
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_content_widget.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_evaluation_widget.dart';
 import 'package:first_project/pages/learning_session/notifiers/notifier_tools.dart';
+import 'package:first_project/styles/button_styles.dart';
 import 'package:first_project/styles/container_styles.dart';
+import 'package:first_project/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class FlipCardExerciseWidget extends StatefulWidget {
@@ -14,107 +18,130 @@ class FlipCardExerciseWidget extends StatefulWidget {
 }
 
 class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
-  bool? isCorrectAnswer;
+  bool? userKnowsTrasnslation;
+  bool showTranslation = false;
+  // differs from exercise.isAnswered - answer is for current widget only
+  bool isExerciseAnswered = false;
 
-  void onAnswerProvided(bool userKnowsWord) {
+  void onAnswerProvided(bool userKnowsTrasnslationInput) {
     setState(() {
-      isCorrectAnswer = userKnowsWord;
+      isExerciseAnswered = true;
+      userKnowsTrasnslation = userKnowsTrasnslationInput;
     });
     notifyAnsweredExercise(context, true);
-    widget.exercise.processAnswer(userKnowsWord);
+    widget.exercise.processAnswer(userKnowsTrasnslation!);
   }
 
-// @override
-//   Widget build(BuildContext context){
+  void onShowTranslationClicked() {
+    setState(() {
+      showTranslation = true;
+    });
+  }
 
-//      return BaseExerciseLayout(
-//         contentBuilder: _buildContent, footerBuilder: _buildFooter);
-//   }
-//   }
+  Widget _buildContent(BuildContext context) {
+    return ExerciseContent(
+      promptBuilder: _buildPrompt,
+      inputDataBuilder: _buildInputData,
+      evaluationBuilder: _buildEvaluation,
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: ContainerStyles.containerPadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+  Widget _buildPrompt(BuildContext context) {
+    return Text(
+      "Do you know the translation of following word?",
+      style: TextStyles.exercisePromptStyle(context),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildInputData(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
           children: [
-            const SizedBox(height: 30),
-            const Text(
-              "Do you know the translation of following word?",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
             Text(
               widget.exercise.inputWord,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyles.exerciseInputDataStyle(context),
               textAlign: TextAlign.center,
             ),
             if (widget.exercise.hint != null) ...{
               Text(
                 widget.exercise.hint!,
-                style: const TextStyle(fontSize: 14),
+                style: TextStyles.exerciseInputDataHintStyle(context),
                 textAlign: TextAlign.center,
               )
             },
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    onAnswerProvided(true);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    "Know",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    onAnswerProvided(false);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    "Don't know",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-            if (isCorrectAnswer != null) ...{
-              if (isCorrectAnswer == true) ...{
-                const Text(
-                  "Good job!",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-              },
-              if (isCorrectAnswer == false) ...{
-                const Text(
-                  "This word will be shown again later.",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-              },
-            },
           ],
         ),
+        Opacity(
+          opacity: showTranslation ? 1.0 : 0.0,
+          child: Text(
+            widget.exercise.word.englishWord,
+            style: TextStyles.exerciseInputDataAnswerStyle(context),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEvaluation(context) {
+    return ExerciseEvaluation(
+      isExerciseAnswered: isExerciseAnswered,
+      isCorrectAnswer: userKnowsTrasnslation,
+      successTextOverride: "Good job!",
+      failureTextOverride: "This exercise will be shown again later.",
+    );
+  }
+
+  Widget _buildFooter(context) {
+    return showTranslation
+        ? _buildAnswerOptionsFooter(context)
+        : _buildShowTranslationFooter(context);
+  }
+
+  Widget _buildShowTranslationFooter(context) {
+    return TextButton(
+      onPressed: () {
+        onShowTranslationClicked();
+      },
+      style: ButtonStyles.secondaryButtonStyle(context),
+      child: const Text(
+        "Show translation",
       ),
     );
+  }
+
+  Widget _buildAnswerOptionsFooter(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: _buildAnswerOptionButton(true, "Know"),
+        ),
+        const SizedBox(width: ContainerStyles.defaultPadding),
+        Expanded(
+          child: _buildAnswerOptionButton(false, "Don't know"),
+        ),
+      ],
+    );
+  }
+
+  TextButton _buildAnswerOptionButton(bool userClickedKnow, String buttonText) {
+    return TextButton(
+      onPressed: () {
+        onAnswerProvided(userClickedKnow);
+      },
+      style: ButtonStyles.secondaryButtonStyle(context),
+      child: Text(
+        buttonText,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseExerciseLayout(
+        contentBuilder: _buildContent, footerBuilder: _buildFooter);
   }
 }

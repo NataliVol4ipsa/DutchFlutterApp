@@ -6,10 +6,14 @@ class ExerciseEvaluation extends StatelessWidget {
     super.key,
     required this.isExerciseAnswered,
     required this.isCorrectAnswer,
+    this.successTextOverride,
+    this.failureTextOverride,
   });
 
   final bool isExerciseAnswered;
   final bool? isCorrectAnswer;
+  final String? successTextOverride;
+  final String? failureTextOverride;
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +22,15 @@ class ExerciseEvaluation extends StatelessWidget {
     }
 
     if (isCorrectAnswer == true) {
-      return Text("Correct!", style: TextStyles.successEvaluationStyle);
+      return Text(successTextOverride ?? "Correct!",
+          style: TextStyles.successEvaluationStyle,
+          textAlign: TextAlign.center);
     }
 
-    return Text("Wrong!", style: TextStyles.failureEvaluationStyle);
+    return Text(
+      failureTextOverride ?? "Wrong!",
+      style: TextStyles.failureEvaluationStyle,
+      textAlign: TextAlign.center,
+    );
   }
 }

@@ -49,7 +49,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
     );
   }
 
-  RichText _buildInputData(BuildContext context) {
+  Widget _buildInputData(BuildContext context) {
     return RichText(
         text: TextSpan(
       style: TextStyles.exerciseInputDataStyle(context),

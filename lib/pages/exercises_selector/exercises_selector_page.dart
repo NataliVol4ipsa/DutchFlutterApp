@@ -72,10 +72,10 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         tileColor: isSelected
-                            ? colorScheme.primary.withOpacity(0.3)
+                            ? colorScheme.secondaryContainer
                             : colorScheme.surface,
                         textColor: isSelected
-                            ? colorScheme.onPrimary
+                            ? colorScheme.onSecondaryContainer
                             : colorScheme.onSurface,
                         onTap: () {
                           setState(() {
