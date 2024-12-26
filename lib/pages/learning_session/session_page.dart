@@ -1,10 +1,10 @@
 import 'package:first_project/pages/learning_session/exercises/base/base_session_step_layout_widget.dart';
+import 'package:first_project/pages/learning_session/layered_bottom_widget.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
 import 'package:first_project/pages/learning_session/session_summary_widget.dart';
 import 'package:first_project/styles/button_styles.dart';
-import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,25 +45,14 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
       builder: (context, taskNotifier, child) {
         bool showNextButton = taskNotifier.isAnswered;
         return showNextButton
-            ? Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  color: Theme.of(context).colorScheme.surface,
-                  padding: const EdgeInsets.fromLTRB(
-                      ContainerStyles.defaultPadding,
-                      60,
-                      ContainerStyles.defaultPadding,
-                      ContainerStyles.defaultPadding),
-                  child: ElevatedButton(
-                    onPressed: _onNextButtonPressed,
-                    style: ButtonStyles.primaryButtonStyle,
-                    child: Text(
-                        widget.flowManager.hasNextTask ? "Next" : "Finish"),
-                  ),
-                ),
-              )
+            ? LayeredBottom(contentBuilder: (context) {
+                return ElevatedButton(
+                  onPressed: _onNextButtonPressed,
+                  style: ButtonStyles.primaryButtonStyle,
+                  child:
+                      Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
+                );
+              })
             : Container();
       },
     );
