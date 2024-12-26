@@ -62,6 +62,13 @@ const DbWordSchema = CollectionSchema(
       name: r'collection',
       target: r'DbWordCollection',
       single: true,
+    ),
+    r'progress': LinkSchema(
+      id: 8075695890059373153,
+      name: r'progress',
+      target: r'DbWordProgress',
+      single: false,
+      linkName: r'word',
     )
   },
   embeddedSchemas: {},
@@ -197,13 +204,15 @@ Id _dbWordGetId(DbWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
-  return [object.collection];
+  return [object.collection, object.progress];
 }
 
 void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
   object.id = id;
   object.collection
       .attach(col, col.isar.collection<DbWordCollection>(), r'collection', id);
+  object.progress
+      .attach(col, col.isar.collection<DbWordProgress>(), r'progress', id);
 }
 
 extension DbWordQueryWhereSort on QueryBuilder<DbWord, DbWord, QWhere> {
@@ -1020,6 +1029,62 @@ extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> collectionIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'collection', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progress(
+      FilterQuery<DbWordProgress> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'progress');
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'progress', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'progress', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'progress', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'progress', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'progress', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> progressLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'progress', lower, includeLower, upper, includeUpper);
     });
   }
 }

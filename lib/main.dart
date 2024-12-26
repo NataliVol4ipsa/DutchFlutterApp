@@ -14,7 +14,8 @@ import 'pages/home_page.dart';
 // ctrl + shift + p: launch command line
 // win + end: to launch emulator (custom binding)
 // shift + alt + f: format document
-// flutter pub add - install package
+// flutter pub add xxx - install package xxx
+// flutter pub run build_runner build - generate db tables .g.dart
 
 //todo is notifier for db changes really needed?
 //todo floating action button bottom right at list of words to add new word - 3:29:47 of guide
