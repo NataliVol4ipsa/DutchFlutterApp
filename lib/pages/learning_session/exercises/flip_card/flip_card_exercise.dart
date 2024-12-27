@@ -3,6 +3,7 @@ import 'package:first_project/pages/learning_session/exercises/base/base_exercis
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise_widget.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';
 
 class FlipCardExercise extends BaseExercise {
@@ -49,5 +50,16 @@ class FlipCardExercise extends BaseExercise {
   bool isAnswered() {
     return answerSummary.totalCorrectAnswers > 0 ||
         answerSummary.totalWrongAnswers > 0;
+  }
+
+  @override
+  List<ExerciseSummaryDetailed> generateSummaries() {
+    return [
+      ExerciseSummaryDetailed(
+          wordId: word.id,
+          exerciseType: ExerciseType.flipCard,
+          totalCorrectAnswers: answerSummary.totalCorrectAnswers,
+          totalWrongAnswers: answerSummary.totalWrongAnswers)
+    ];
   }
 }

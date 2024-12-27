@@ -1,9 +1,10 @@
 import 'package:first_project/local_db/repositories/word_progress_repository.dart';
-import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:first_project/pages/learning_session/summary/session_summary.dart';
 
 // Manage order of tasks and moving pointer of current task during session
 class LearningSessionManager {
@@ -44,39 +45,32 @@ class LearningSessionManager {
     return null;
   }
 
-  SessionSummary? summary;
+  SessionSummary? sessionSummary;
 
   Future<void> processSessionResultsAsync() async {
-    generateSummary();
+    _generateSessionSummary();
 
-    await Future.forEach(exercises, (exercise) async {
-      if (exercise.exerciseType == ExerciseType.deHetPick) {
-        DeHetPickExercise ex = exercise as DeHetPickExercise;
-        await wordProgressRepository.updateAsync(
-            ex.word.id,
-            ExerciseType.deHetPick,
-            exercise.answerSummary.totalCorrectAnswers,
-            exercise.answerSummary.totalWrongAnswers);
-      }
-    });
+    await _saveDetailedSummariesAsync();
   }
 
-  void generateSummary() {
-    summary = SessionSummary(
+  void _generateSessionSummary() {
+    sessionSummary = SessionSummary(
         totalExercises: exercises.length,
         correctExercises: exercises
             .where((element) => element.answerSummary.totalCorrectAnswers > 0)
             .length);
   }
-}
 
-class SessionSummary {
-  final int totalExercises;
-  final int correctExercises;
-  late double correctPercent;
+  Future<void> _saveDetailedSummariesAsync() async {
+    List<ExerciseSummaryDetailed> detailedSummaries =
+        exercises.expand((ex) => ex.generateSummaries()).toList();
 
-  SessionSummary(
-      {required this.totalExercises, required this.correctExercises}) {
-    correctPercent = correctExercises * 100 / totalExercises;
+    await Future.forEach(detailedSummaries, (summary) async {
+      await wordProgressRepository.updateAsync(
+          summary.wordId,
+          summary.exerciseType,
+          summary.totalCorrectAnswers,
+          summary.totalWrongAnswers);
+    });
   }
 }

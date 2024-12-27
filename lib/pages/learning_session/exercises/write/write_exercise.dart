@@ -2,6 +2,7 @@ import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';
 
 class WriteExercise extends BaseExercise {
@@ -25,5 +26,16 @@ class WriteExercise extends BaseExercise {
   bool isAnswered() {
     // TODO: implement isAnswered
     throw UnimplementedError();
+  }
+
+  @override
+  List<ExerciseSummaryDetailed> generateSummaries() {
+    return [
+      ExerciseSummaryDetailed(
+          wordId: word.id,
+          exerciseType: ExerciseType.basicWrite,
+          totalCorrectAnswers: answerSummary.totalCorrectAnswers,
+          totalWrongAnswers: answerSummary.totalWrongAnswers)
+    ];
   }
 }

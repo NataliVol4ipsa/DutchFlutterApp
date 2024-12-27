@@ -4,6 +4,7 @@ import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/core/types/word_type.dart';
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise_widget.dart';
+import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickExercise extends BaseExercise {
@@ -48,5 +49,16 @@ class DeHetPickExercise extends BaseExercise {
   bool isAnswered() {
     return answerSummary.totalCorrectAnswers > 0 ||
         answerSummary.totalWrongAnswers > 0;
+  }
+
+  @override
+  List<ExerciseSummaryDetailed> generateSummaries() {
+    return [
+      ExerciseSummaryDetailed(
+          wordId: word.id,
+          exerciseType: ExerciseType.deHetPick,
+          totalCorrectAnswers: answerSummary.totalCorrectAnswers,
+          totalWrongAnswers: answerSummary.totalWrongAnswers)
+    ];
   }
 }

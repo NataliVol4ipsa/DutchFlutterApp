@@ -1,9 +1,10 @@
 import 'package:first_project/pages/learning_session/exercises/base/base_session_step_layout_widget.dart';
-import 'package:first_project/pages/learning_session/layered_bottom_widget.dart';
+import 'package:first_project/reusable_widgets/layered_bottom_widget.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
-import 'package:first_project/pages/learning_session/session_summary_widget.dart';
+import 'package:first_project/pages/learning_session/summary/session_summary.dart';
+import 'package:first_project/pages/learning_session/summary/session_summary_widget.dart';
 import 'package:first_project/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   Widget _buildSummary(BuildContext context) {
-    SessionSummary summary = widget.flowManager.summary!;
+    SessionSummary summary = widget.flowManager.sessionSummary!;
 
     return SessionSummaryWidget(summary: summary);
   }

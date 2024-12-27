@@ -1,5 +1,5 @@
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
-import 'package:first_project/pages/learning_session/session_manager.dart';
+import 'package:first_project/pages/learning_session/summary/session_summary.dart';
 import 'package:first_project/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 
