@@ -1,3 +1,5 @@
+import 'package:first_project/local_db/repositories/word_progress_repository.dart';
+import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
@@ -13,7 +15,10 @@ class LearningSessionManager {
   int currentExerciseIndex = 0;
   int get totalTasks => exercisesQueue.length;
 
-  LearningSessionManager(this.learningModes, this.words) {
+  final WordProgressRepository wordProgressRepository;
+
+  LearningSessionManager(
+      this.learningModes, this.words, this.wordProgressRepository) {
     exercises = ExercisesGenerator(learningModes, words).generateExcercises();
     exercisesQueue = List.from(exercises);
   }
@@ -40,6 +45,21 @@ class LearningSessionManager {
   }
 
   SessionSummary? summary;
+
+  Future<void> processSessionResultsAsync() async {
+    generateSummary();
+
+    await Future.forEach(exercises, (exercise) async {
+      if (exercise.exerciseType == ExerciseType.deHetPick) {
+        DeHetPickExercise ex = exercise as DeHetPickExercise;
+        await wordProgressRepository.updateAsync(
+            ex.word.id,
+            ExerciseType.deHetPick,
+            exercise.answerSummary.totalCorrectAnswers,
+            exercise.answerSummary.totalWrongAnswers);
+      }
+    });
+  }
 
   void generateSummary() {
     summary = SessionSummary(

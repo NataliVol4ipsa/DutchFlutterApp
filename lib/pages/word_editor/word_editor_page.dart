@@ -1,3 +1,4 @@
+import 'package:first_project/core/models/new_word.dart';
 import 'package:first_project/core/models/word_collection.dart';
 import 'package:first_project/http_clients/get_word_online_response.dart';
 import 'package:first_project/core/types/de_het_type.dart';
@@ -92,8 +93,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
     String englishWordInput = englishWordTextInputController.text;
     String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
 
-    var newWord = Word(
-        null, dutchWordInput, englishWordInput, selectedWordType!,
+    var newWord = NewWord(dutchWordInput, englishWordInput, selectedWordType!,
         deHetType: selectedDeHetType!,
         pluralForm: dutchPluralFormWordInput,
         collection: selectedWordCollection);

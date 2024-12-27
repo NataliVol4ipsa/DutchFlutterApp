@@ -99,8 +99,8 @@ class _WordListPageState extends State<WordListPage> {
     List<int> selectedIds = [];
 
     for (int i = 0; i < words.length; i++) {
-      if (selectedRows[i] && words[i].id != null) {
-        selectedIds.add(words[i].id!);
+      if (selectedRows[i]) {
+        selectedIds.add(words[i].id);
       }
     }
 

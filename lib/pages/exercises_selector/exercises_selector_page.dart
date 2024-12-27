@@ -1,5 +1,6 @@
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
+import 'package:first_project/local_db/repositories/word_progress_repository.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/session_page.dart';
@@ -31,7 +32,10 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
     List<Word> words = await wordsRepository.getAsync();
     // TEMP. REMOVE
     words = [words[0], words[1], words[2]];
-    var flowManager = LearningSessionManager(selectedModes.toList(), words);
+    var wordProgressRepository =
+        Provider.of<WordProgressRepository>(context, listen: false);
+    var flowManager = LearningSessionManager(
+        selectedModes.toList(), words, wordProgressRepository);
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);
   }

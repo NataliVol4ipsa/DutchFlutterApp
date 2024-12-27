@@ -16,6 +16,6 @@ class DbWordProgress {
   late ExerciseType exerciseType;
   late int correctAnswers = 0;
   late int wrongAnswers = 0;
-  late DateTime? lastPracticed;
+  DateTime? lastPracticed;
   late bool dontShowAgain = false;
 }

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 abstract class BaseExercise {
   final int numOfRequiredWords;
-  final ExerciseType learningModeType;
+  final ExerciseType exerciseType;
   late ExerciseAnswerSummary answerSummary = ExerciseAnswerSummary();
 
-  BaseExercise(this.numOfRequiredWords, this.learningModeType);
+  BaseExercise(this.numOfRequiredWords, this.exerciseType);
 
   // Todo move all child implementations here?
   bool isAnswered();

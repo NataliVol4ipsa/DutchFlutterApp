@@ -1,9 +1,10 @@
+import 'package:first_project/core/models/new_word.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/local_db/entities/db_word.dart';
 import 'package:first_project/local_db/mapping/word_collections_mapper.dart';
 
 class WordsMapper {
-  static DbWord mapToEntity(Word word) {
+  static DbWord mapToEntity(NewWord word) {
     var newWord = DbWord();
     newWord.dutchWord = word.dutchWord;
     newWord.englishWord = word.englishWord;
@@ -14,13 +15,13 @@ class WordsMapper {
     return newWord;
   }
 
-  static List<DbWord> mapToEntityList(List<Word> words) {
+  static List<DbWord> mapToEntityList(List<NewWord> words) {
     return words.map((word) => mapToEntity(word)).toList();
   }
 
   static Word mapToDomain(DbWord dbWord) {
     return Word(
-      dbWord.id,
+      dbWord.id!,
       dbWord.dutchWord,
       dbWord.englishWord,
       dbWord.type,
@@ -37,7 +38,7 @@ class WordsMapper {
   static Future<Word> mapWithCollectionToDomainAsync(DbWord dbWord) async {
     await dbWord.collection.load();
     return Word(
-      dbWord.id,
+      dbWord.id!,
       dbWord.dutchWord,
       dbWord.englishWord,
       dbWord.type,

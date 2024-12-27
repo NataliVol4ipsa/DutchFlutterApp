@@ -47,7 +47,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
         return showNextButton
             ? LayeredBottom(contentBuilder: (context) {
                 return ElevatedButton(
-                  onPressed: _onNextButtonPressed,
+                  onPressed: _onNextButtonPressedAsync,
                   style: ButtonStyles.primaryButtonStyle,
                   child:
                       Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
@@ -58,16 +58,17 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     );
   }
 
-  void _onNextButtonPressed() {
-    setState(() {
-      _learningTaskAnsweredNotifier?.notifyAnswerUpdated(false);
-      if (widget.flowManager.hasNextTask) {
+  Future<void> _onNextButtonPressedAsync() async {
+    _learningTaskAnsweredNotifier?.notifyAnswerUpdated(false);
+    if (widget.flowManager.hasNextTask) {
+      setState(() {
         widget.flowManager.moveToNextExercise();
-      } else {
-        widget.flowManager.generateSummary();
-        _learningTasksCompletedNotifier?.notifyCompleted();
-      }
-    });
+      });
+      return;
+    }
+
+    await widget.flowManager.processSessionResultsAsync();
+    _learningTasksCompletedNotifier?.notifyCompleted();
   }
 
   Widget _buildExercise(BuildContext context) {

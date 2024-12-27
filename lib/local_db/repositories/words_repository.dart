@@ -1,3 +1,4 @@
+import 'package:first_project/core/models/new_word.dart';
 import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/local_db/entities/db_word.dart';
@@ -7,7 +8,7 @@ import 'package:isar/isar.dart';
 import '../mapping/words_mapper.dart';
 
 class WordsRepository {
-  Future<int> addAsync(Word word) async {
+  Future<int> addAsync(NewWord word) async {
     final newWord = WordsMapper.mapToEntity(word);
     int? collectionId = word.collection?.id;
     if (collectionId != null) {
@@ -63,7 +64,7 @@ class WordsRepository {
     });
   }
 
-  Future<List<int>> addBatchAsync(List<Word> words) async {
+  Future<List<int>> addBatchAsync(List<NewWord> words) async {
     final newWords = WordsMapper.mapToEntityList(words);
 
     final List<int> ids = await DbContext.isar
@@ -86,12 +87,7 @@ class WordsRepository {
   }
 
   Future<bool> updateAsync(Word updatedWord) async {
-    if (updatedWord.id == null) {
-      throw Exception(
-          "Called word update, but word Id is null. Please refactor this code to rich domain model!");
-    }
-
-    final dbWord = await DbContext.isar.dbWords.get(updatedWord.id!);
+    final dbWord = await DbContext.isar.dbWords.get(updatedWord.id);
 
     if (dbWord == null) {
       throw Exception(

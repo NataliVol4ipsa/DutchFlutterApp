@@ -100,7 +100,7 @@ DbWordProgress _dbWordProgressDeserialize(
           reader.readByteOrNull(offsets[2])] ??
       ExerciseType.flipCard;
   object.id = id;
-  object.lastPracticed = reader.readDateTime(offsets[3]);
+  object.lastPracticed = reader.readDateTimeOrNull(offsets[3]);
   object.wrongAnswers = reader.readLong(offsets[4]);
   return object;
 }
@@ -121,7 +121,7 @@ P _dbWordProgressDeserializeProp<P>(
               reader.readByteOrNull(offset)] ??
           ExerciseType.flipCard) as P;
     case 3:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
       return (reader.readLong(offset)) as P;
     default:
@@ -441,7 +441,25 @@ extension DbWordProgressQueryFilter
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      lastPracticedEqualTo(DateTime value) {
+      lastPracticedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastPracticed',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      lastPracticedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastPracticed',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      lastPracticedEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'lastPracticed',
@@ -452,7 +470,7 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       lastPracticedGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -466,7 +484,7 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       lastPracticedLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -480,8 +498,8 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       lastPracticedBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -796,7 +814,7 @@ extension DbWordProgressQueryProperty
     });
   }
 
-  QueryBuilder<DbWordProgress, DateTime, QQueryOperations>
+  QueryBuilder<DbWordProgress, DateTime?, QQueryOperations>
       lastPracticedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastPracticed');
