@@ -28,8 +28,8 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
       isExerciseAnswered = true;
       userKnowsTrasnslation = userKnowsTrasnslationInput;
     });
-    notifyAnsweredExercise(context, true);
     widget.exercise.processAnswer(userKnowsTrasnslation!);
+    notifyAnsweredExercise(context, true); //move to base?
   }
 
   void onShowTranslationClicked() {

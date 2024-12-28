@@ -29,8 +29,8 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
       isExerciseAnswered = true;
       isCorrectAnswer = widget.exercise.isCorrectAnswer(answer);
     });
-    notifyAnsweredExercise(context, true);
     widget.exercise.processAnswer(answer);
+    notifyAnsweredExercise(context, true); //move to base?
   }
 
   Widget _buildContent(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/local_db/repositories/word_progress_repository.dart';
 import 'package:first_project/local_db/repositories/words_repository.dart';
+import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/session_page.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,10 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
     words = [words[0], words[1], words[2]];
     var wordProgressRepository =
         Provider.of<WordProgressRepository>(context, listen: false);
+    var notifier =
+        Provider.of<ExerciseAnsweredNotifier>(context, listen: false);
     var flowManager = LearningSessionManager(
-        selectedModes.toList(), words, wordProgressRepository);
+        selectedModes.toList(), words, wordProgressRepository, notifier);
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);
   }

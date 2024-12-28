@@ -6,6 +6,7 @@ import 'package:first_project/pages/learning_session/exercises/base/base_exercis
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/exercise_type.dart';
 import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/summary/session_summary.dart';
 
 // Manage order of tasks and moving pointer of current task during session
@@ -13,17 +14,19 @@ class LearningSessionManager {
   final List<ExerciseType> learningModes;
   final List<Word> words;
   final WordProgressRepository wordProgressRepository;
+  final ExerciseAnsweredNotifier notifier;
 
   late List<BaseExercise> exercises;
   late Queue<BaseExercise> exercisesQueue;
 
   SessionSummary? sessionSummary;
 
-  LearningSessionManager(
-      this.learningModes, this.words, this.wordProgressRepository) {
+  LearningSessionManager(this.learningModes, this.words,
+      this.wordProgressRepository, this.notifier) {
     exercises = ExercisesGenerator(learningModes, words).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
+    notifier.addListener(processExerciseAnswer);
   }
 
   int get totalTasks => exercisesQueue.length;
@@ -34,13 +37,19 @@ class LearningSessionManager {
   bool get hasNextTask => exercisesQueue.length > 1;
 
   void moveToNextExercise() {
-    _processCurrentAnswer();
     if (exercisesQueue.isNotEmpty) {
       exercisesQueue.removeFirst();
     }
   }
 
-  void _processCurrentAnswer() {}
+  void processExerciseAnswer() {
+    if (!notifier.isAnswered || exercisesQueue.isEmpty) return;
+
+    var ex = exercisesQueue.first;
+    if (ex.isAnswered() && ex.answerSummary.totalCorrectAnswers == 0) {
+      exercisesQueue.add(exercisesQueue.first);
+    }
+  }
 
   Future<void> processSessionResultsAsync() async {
     _generateSessionSummary();
@@ -67,5 +76,9 @@ class LearningSessionManager {
           summary.totalCorrectAnswers,
           summary.totalWrongAnswers);
     });
+  }
+
+  void dispose() {
+    notifier.removeListener(processExerciseAnswer);
   }
 }

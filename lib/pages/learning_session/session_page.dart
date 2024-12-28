@@ -60,7 +60,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   Future<void> _onNextButtonPressedAsync() async {
-    _learningTaskAnsweredNotifier?.notifyAnswerUpdated(false);
+    _learningTaskAnsweredNotifier?.reset();
     if (widget.flowManager.hasNextTask) {
       setState(() {
         widget.flowManager.moveToNextExercise();
