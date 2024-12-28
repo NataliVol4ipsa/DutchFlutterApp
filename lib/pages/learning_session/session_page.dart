@@ -75,9 +75,10 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   Widget _buildExercise(BuildContext context) {
     Key taskKey = UniqueKey();
     return Stack(children: [
-      widget.flowManager.currentTask.buildWidget(
-        key: taskKey,
-      ),
+      widget.flowManager.currentTask?.buildWidget(
+            key: taskKey,
+          ) ??
+          const Text("Error: the queue is empty"),
       _buildNextButton(context),
     ]);
   }
@@ -101,7 +102,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   String _buildAppBarText() {
-    return 'Task ${widget.flowManager.currentExerciseIndex + 1} of ${widget.flowManager.totalTasks}';
+    return 'Exercises remaining: ${widget.flowManager.totalTasks}';
   }
 
   @override

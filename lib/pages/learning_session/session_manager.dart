@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:first_project/local_db/repositories/word_progress_repository.dart';
 import 'package:first_project/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
@@ -10,42 +12,35 @@ import 'package:first_project/pages/learning_session/summary/session_summary.dar
 class LearningSessionManager {
   final List<ExerciseType> learningModes;
   final List<Word> words;
+  final WordProgressRepository wordProgressRepository;
 
   late List<BaseExercise> exercises;
-  late List<BaseExercise> exercisesQueue;
-  int currentExerciseIndex = 0;
-  int get totalTasks => exercisesQueue.length;
+  late Queue<BaseExercise> exercisesQueue;
 
-  final WordProgressRepository wordProgressRepository;
+  SessionSummary? sessionSummary;
 
   LearningSessionManager(
       this.learningModes, this.words, this.wordProgressRepository) {
     exercises = ExercisesGenerator(learningModes, words).generateExcercises();
-    exercisesQueue = List.from(exercises);
+    exercisesQueue = Queue<BaseExercise>();
+    exercisesQueue.addAll(exercises);
   }
-  BaseExercise get currentTask => exercisesQueue[currentExerciseIndex];
 
-  BaseExercise? moveToNextExercise() {
-    if (currentExerciseIndex < exercisesQueue.length - 1) {
-      currentExerciseIndex++;
-      return exercisesQueue[currentExerciseIndex];
+  int get totalTasks => exercisesQueue.length;
+
+  BaseExercise? get currentTask => exercisesQueue.firstOrNull;
+
+  // 1 and not 0 because there must be NEXT task, not CURRENT task
+  bool get hasNextTask => exercisesQueue.length > 1;
+
+  void moveToNextExercise() {
+    _processCurrentAnswer();
+    if (exercisesQueue.isNotEmpty) {
+      exercisesQueue.removeFirst();
     }
-    return null;
   }
 
-  bool get hasNextTask {
-    return currentExerciseIndex < exercisesQueue.length - 1;
-  }
-
-  BaseExercise? get previousTask {
-    if (currentExerciseIndex > 0) {
-      currentExerciseIndex--;
-      return exercisesQueue[currentExerciseIndex];
-    }
-    return null;
-  }
-
-  SessionSummary? sessionSummary;
+  void _processCurrentAnswer() {}
 
   Future<void> processSessionResultsAsync() async {
     _generateSessionSummary();
