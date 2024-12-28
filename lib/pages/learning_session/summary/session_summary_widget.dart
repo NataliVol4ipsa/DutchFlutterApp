@@ -81,7 +81,7 @@ class SessionSummaryWidget extends StatelessWidget {
                       color: wordListBackgroundColor,
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children:
                           _buildImprovementRecommendations(summary, context),
                     )),
@@ -110,26 +110,20 @@ class SessionSummaryWidget extends StatelessWidget {
   Widget _buildWordStat(BuildContext context, ExerciseSummaryDetailed summary) {
     return Padding(
       padding: ContainerStyles.smallContainerPadding,
-      child: Column(
-        children: [
-          RichText(
-              text: TextSpan(
-                  style: TextStyles.sessionSummaryCardtitleTextStyle,
-                  children: <TextSpan>[
-                TextSpan(text: summary.correctAnswer),
-                const TextSpan(text: " ("),
-                TextSpan(
-                    text: summary.totalWrongAnswers.toString(),
-                    style: const TextStyle(color: TextStyles.failureTextColor)),
-                TextSpan(
-                    text: summary.totalWrongAnswers == 1
-                        ? " mistake"
-                        : " mistakes",
-                    style: const TextStyle(color: TextStyles.failureTextColor)),
-                const TextSpan(text: ")"),
-              ])),
-        ],
-      ),
+      child: RichText(
+          text: TextSpan(
+              style: TextStyles.sessionSummaryCardtitleTextStyle,
+              children: <TextSpan>[
+            TextSpan(text: summary.correctAnswer),
+            const TextSpan(text: " ("),
+            TextSpan(
+                text: summary.totalWrongAnswers.toString(),
+                style: const TextStyle(color: TextStyles.failureTextColor)),
+            TextSpan(
+                text: summary.totalWrongAnswers == 1 ? " mistake" : " mistakes",
+                style: const TextStyle(color: TextStyles.failureTextColor)),
+            const TextSpan(text: ")"),
+          ])),
     );
   }
 
