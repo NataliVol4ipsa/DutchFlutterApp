@@ -1,9 +1,8 @@
 import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/summary/session_summary.dart';
-import 'package:first_project/pages/learning_session/summary/summary_total_cards_builder.dart';
+import 'package:first_project/pages/learning_session/summary/summary_totals_widget.dart';
 import 'package:first_project/styles/button_styles.dart';
 import 'package:first_project/styles/container_styles.dart';
-import 'package:first_project/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 // todo animate main stats numbers slowly appear on screen.
@@ -17,61 +16,28 @@ import 'package:flutter/material.dart';
 // test on slower devices
 class SessionSummaryWidget extends StatelessWidget {
   final SessionSummary summary;
-  final SummaryTotalCardsBuilder _totalsBuilder;
 
-  SessionSummaryWidget({
+  const SessionSummaryWidget({
     super.key,
     required this.summary,
-  }) : _totalsBuilder = SummaryTotalCardsBuilder(summary: summary);
-
-  Widget _buildTotalsSection(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    var totalsBackgroundColor = colorScheme.surfaceVariant;
-
-    return Container(
-      padding: ContainerStyles.containerPadding,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: totalsBackgroundColor,
-      ),
-      alignment: Alignment.center,
-      child: Column(
-        children: [
-          const Text(
-            "Totals:",
-            style: TextStyles.sessionSummaryTitleTextStyle,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _totalsBuilder.buildWordsTotalCard(),
-              _totalsBuilder.buildExercisesTotalCard(),
-              _totalsBuilder.buildExerciseTypesTotalCard(),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _totalsBuilder.buildMistakesTotalCard(),
-              _totalsBuilder.buildSuccessRateTotalCard(),
-              _totalsBuilder.buildMistakesRateTotalCard(),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  });
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> contentSections = [
+      SummaryTotals(summary: summary),
+    ];
+
     return BaseExerciseLayout(
       contentBuilder: (context) {
-        return Column(
-          children: [
-            _buildTotalsSection(context),
-          ],
+        return ListView.builder(
+          itemCount: contentSections.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: ContainerStyles.betweenCardsPadding,
+              child: contentSections[index],
+            );
+          },
         );
       },
       footerBuilder: (context) {

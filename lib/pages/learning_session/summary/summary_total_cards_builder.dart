@@ -39,7 +39,7 @@ class SummaryTotalCardsBuilder {
   }
 
   Widget buildSuccessRateTotalCard() {
-    String text = "Success rate"; //todo
+    String text = "Success rate";
     return _buildTotalCard(
       text,
       _percentToString(summary.successRatePercent),
