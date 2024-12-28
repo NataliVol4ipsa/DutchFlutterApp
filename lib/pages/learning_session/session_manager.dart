@@ -64,7 +64,7 @@ class LearningSessionManager {
     sessionSummary = SessionSummary(
         totalWords: words.length,
         totalExercises: exercises.length,
-        totalExerciseTypes: exerciseTypes.length,
+        exerciseTypes: exerciseTypes,
         detailedSummaries: detailedSummaries!);
   }
 

@@ -35,7 +35,8 @@ class WriteExercise extends BaseExercise {
           word: word,
           exerciseType: ExerciseType.basicWrite,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
-          totalWrongAnswers: answerSummary.totalWrongAnswers)
+          totalWrongAnswers: answerSummary.totalWrongAnswers,
+          correctAnswer: word.dutchWord)
     ];
   }
 }

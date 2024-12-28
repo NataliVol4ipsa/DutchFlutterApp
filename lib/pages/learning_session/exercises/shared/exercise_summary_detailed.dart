@@ -6,6 +6,7 @@ class ExerciseSummaryDetailed {
   final ExerciseType exerciseType;
   final int totalCorrectAnswers;
   final int totalWrongAnswers;
+  final String correctAnswer;
 
   int get wordId => word.id;
 
@@ -13,5 +14,6 @@ class ExerciseSummaryDetailed {
       {required this.word,
       required this.exerciseType,
       required this.totalCorrectAnswers,
-      required this.totalWrongAnswers});
+      required this.totalWrongAnswers,
+      required this.correctAnswer});
 }

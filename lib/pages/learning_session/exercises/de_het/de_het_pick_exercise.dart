@@ -58,7 +58,8 @@ class DeHetPickExercise extends BaseExercise {
           word: word,
           exerciseType: ExerciseType.deHetPick,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
-          totalWrongAnswers: answerSummary.totalWrongAnswers)
+          totalWrongAnswers: answerSummary.totalWrongAnswers,
+          correctAnswer: "${word.deHetType.name} ${word.dutchWord}")
     ];
   }
 }
