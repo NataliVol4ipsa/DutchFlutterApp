@@ -8,6 +8,7 @@ import 'package:first_project/pages/word_list/dialogs/delete_word_dialog.dart';
 import 'package:first_project/pages/word_list/snackbars/snackbar_shower.dart';
 import 'package:first_project/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:first_project/pages/word_list/word_list_table.dart';
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:first_project/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -202,15 +203,15 @@ class _WordListPageState extends State<WordListPage> {
     return result;
   }
 
-  AppBar createAppBar() {
+  MyAppBar createAppBar() {
     if (!isMultiselectModeEnabled) {
       return createNormalAppBar();
     }
     return createMultiselectAppBar();
   }
 
-  AppBar createNormalAppBar() {
-    return AppBar(
+  MyAppBar createNormalAppBar() {
+    return MyAppBar(
       title: const Text('Word list'),
       actions: <Widget>[
         IconButton(
@@ -236,7 +237,7 @@ class _WordListPageState extends State<WordListPage> {
     });
   }
 
-  AppBar createMultiselectAppBar() {
+  MyAppBar createMultiselectAppBar() {
     var numOfSelectedItems = calculateNumOfSelectedItems();
     String appBarText;
     switch (numOfSelectedItems) {
@@ -247,7 +248,7 @@ class _WordListPageState extends State<WordListPage> {
       default:
         appBarText = "$numOfSelectedItems items selected";
     }
-    return AppBar(
+    return MyAppBar(
       title: Text(appBarText),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -394,7 +395,7 @@ class _WordListPageState extends State<WordListPage> {
       canPop: true,
       onPopInvoked: onPopAsync,
       child: Scaffold(
-        appBar: createAppBar(),
+        appBar: createAppBar(), //todo hide cog appbar when multiselecting
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: _isLoading

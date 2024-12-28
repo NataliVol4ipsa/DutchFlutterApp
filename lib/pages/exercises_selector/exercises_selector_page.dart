@@ -5,6 +5,7 @@ import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
 import 'package:first_project/pages/learning_session/session_manager.dart';
 import 'package:first_project/pages/learning_session/session_page.dart';
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +59,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Learning Modes')),
+      appBar: const MyAppBar(title: Text('Select Learning Modes')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

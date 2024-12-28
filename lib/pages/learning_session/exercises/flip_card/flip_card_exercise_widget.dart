@@ -1,4 +1,4 @@
-import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
+import 'package:first_project/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:first_project/pages/learning_session/exercises/shared/exercise_content_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/shared/exercise_evaluation_widget.dart';

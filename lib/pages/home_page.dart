@@ -1,3 +1,4 @@
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -155,9 +156,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: const MyAppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Home page',
         ),
         automaticallyImplyLeading: false, // Removes the back button

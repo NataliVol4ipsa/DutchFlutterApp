@@ -7,6 +7,7 @@ import 'package:first_project/local_db/repositories/words_repository.dart';
 import 'package:first_project/pages/word_editor/online_word_search_section.dart';
 import 'package:first_project/reusable_widgets/dropdowns/word_collection_dropdown.dart';
 import 'package:first_project/reusable_widgets/dropdowns/word_type_dropdown.dart';
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:first_project/reusable_widgets/optional_toggle_buttons.dart';
 import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
 import 'package:first_project/core/models/word.dart';
@@ -176,7 +177,10 @@ class _WordEditorPageState extends State<WordEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(getAppBarLabel())),
+      appBar: MyAppBar(
+        title: Text(getAppBarLabel()),
+        disableSettingsButton: widget.existingWord != null,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Form(

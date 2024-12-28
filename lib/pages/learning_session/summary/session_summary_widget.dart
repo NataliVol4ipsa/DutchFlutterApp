@@ -1,9 +1,10 @@
 import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
+import 'package:first_project/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:first_project/pages/learning_session/summary/exercise_total_cards_builder.dart';
 import 'package:first_project/pages/learning_session/summary/session_summary.dart';
 import 'package:first_project/pages/learning_session/summary/summary_totals_widget.dart';
+import 'package:first_project/reusable_widgets/section_container_widget.dart';
 import 'package:first_project/styles/button_styles.dart';
 import 'package:first_project/styles/container_styles.dart';
 import 'package:first_project/styles/text_styles.dart';
@@ -34,18 +35,7 @@ class SessionSummaryWidget extends StatelessWidget {
 
   Widget _buildExerciseSummary(
       SingleExerciseTypeSummary summary, BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    var sectionBackgroundColor = colorScheme.surfaceVariant;
-    var wordListBackgroundColor = colorScheme.surface.withOpacity(0.5);
-
-    return Container(
-      padding: ContainerStyles.containerPadding,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: sectionBackgroundColor,
-      ),
+    return SectionContainer(
       child: Column(
         children: [
           Text(
@@ -78,7 +68,7 @@ class SessionSummaryWidget extends StatelessWidget {
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: wordListBackgroundColor,
+                      color: ContainerStyles.sectionColor2(context),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

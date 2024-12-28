@@ -1,4 +1,4 @@
-import 'package:first_project/pages/learning_session/exercises/base/base_exercise.dart';
+import 'package:first_project/pages/learning_session/base/base_exercise.dart';
 import 'package:first_project/core/models/word.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/core/types/exercise_type.dart';

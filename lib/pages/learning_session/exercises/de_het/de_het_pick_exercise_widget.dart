@@ -1,4 +1,4 @@
-import 'package:first_project/pages/learning_session/exercises/base/base_exercise_layout_widget.dart';
+import 'package:first_project/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:first_project/core/types/de_het_type.dart';
 import 'package:first_project/pages/learning_session/exercises/shared/exercise_content_widget.dart';

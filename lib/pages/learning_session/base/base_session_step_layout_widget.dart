@@ -1,3 +1,4 @@
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class BaseSessionStepLayout extends StatefulWidget {
@@ -21,7 +22,7 @@ class _BaseSessionStepLayoutState extends State<BaseSessionStepLayout> {
   Widget build(BuildContext context) {
     //final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         title: Text(
           widget.appBarText,
           textAlign: TextAlign.center,

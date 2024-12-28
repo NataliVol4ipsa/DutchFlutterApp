@@ -1,5 +1,6 @@
 import 'package:first_project/core/models/word_collection.dart';
 import 'package:first_project/local_db/repositories/word_collections_repository.dart';
+import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
 import 'package:first_project/reusable_widgets/text_input_modal.dart';
 import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-        appBar: AppBar(title: const Text('Word collections')),
+        appBar: const MyAppBar(title: Text('Word collections')),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

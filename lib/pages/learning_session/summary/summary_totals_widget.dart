@@ -1,6 +1,6 @@
 import 'package:first_project/pages/learning_session/summary/session_summary.dart';
 import 'package:first_project/pages/learning_session/summary/summary_total_cards_builder.dart';
-import 'package:first_project/styles/container_styles.dart';
+import 'package:first_project/reusable_widgets/section_container_widget.dart';
 import 'package:first_project/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -15,18 +15,7 @@ class SummaryTotals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    var totalsBackgroundColor = colorScheme.surfaceVariant;
-
-    return Container(
-      padding: ContainerStyles.containerPadding,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: totalsBackgroundColor,
-      ),
-      alignment: Alignment.center,
+    return SectionContainer(
       child: Column(
         children: [
           const Text(

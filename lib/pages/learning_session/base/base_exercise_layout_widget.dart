@@ -15,10 +15,8 @@ class BaseExerciseLayout extends StatefulWidget {
 class _BaseExerciseLayoutState extends State<BaseExerciseLayout> {
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
     return Container(
-      color: colorScheme.background,
+      color: ContainerStyles.defaultColor(context),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

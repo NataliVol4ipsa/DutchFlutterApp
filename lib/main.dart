@@ -1,6 +1,7 @@
 import 'package:first_project/local_db/db_context.dart';
 import 'package:first_project/pages/dependency_injections.dart';
 import 'package:first_project/pages/exercises_selector/exercises_selector_page.dart';
+import 'package:first_project/pages/settings/settings_page.dart';
 import 'package:first_project/pages/word_collections/word_collections_list_page.dart';
 import 'package:first_project/pages/word_list/word_list_page.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         home: const HomePage(),
         routes: {
           '/home': (context) => const HomePage(),
+          '/settings': (context) => const SettingsPage(),
           '/newword': (context) => const WordEditorPage(),
           '/wordlist': (context) => const WordListPage(),
           '/wordcollections': (context) => const WordCollectionsListPage(),
