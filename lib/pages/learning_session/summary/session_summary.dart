@@ -29,6 +29,8 @@ class SessionSummary {
         totalExercises > 0 ? (totalMistakes * 100 / totalAttempts) : 0;
     successRatePercent = 100 - mistakeRatePercent;
 
+    exerciseTypes.sort((a, b) => a.toString().compareTo(b.toString()));
+
     summariesPerExercise = exerciseTypes
         .map((exerciseType) => SingleExerciseTypeSummary(
             exerciseType: exerciseType, detailedSummaries: detailedSummaries))
