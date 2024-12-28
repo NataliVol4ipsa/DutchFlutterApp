@@ -32,7 +32,7 @@ class WriteExercise extends BaseExercise {
   List<ExerciseSummaryDetailed> generateSummaries() {
     return [
       ExerciseSummaryDetailed(
-          wordId: word.id,
+          word: word,
           exerciseType: ExerciseType.basicWrite,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
           totalWrongAnswers: answerSummary.totalWrongAnswers)

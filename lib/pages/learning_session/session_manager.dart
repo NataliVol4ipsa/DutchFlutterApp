@@ -11,7 +11,7 @@ import 'package:first_project/pages/learning_session/summary/session_summary.dar
 
 // Manage order of tasks and moving pointer of current task during session
 class LearningSessionManager {
-  final List<ExerciseType> learningModes;
+  final List<ExerciseType> exerciseTypes;
   final List<Word> words;
   final WordProgressRepository wordProgressRepository;
   final ExerciseAnsweredNotifier notifier;
@@ -19,11 +19,12 @@ class LearningSessionManager {
   late List<BaseExercise> exercises;
   late Queue<BaseExercise> exercisesQueue;
 
+  List<ExerciseSummaryDetailed>? detailedSummaries;
   SessionSummary? sessionSummary;
 
-  LearningSessionManager(this.learningModes, this.words,
+  LearningSessionManager(this.exerciseTypes, this.words,
       this.wordProgressRepository, this.notifier) {
-    exercises = ExercisesGenerator(learningModes, words).generateExcercises();
+    exercises = ExercisesGenerator(exerciseTypes, words).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
     notifier.addListener(processExerciseAnswer);
@@ -52,23 +53,27 @@ class LearningSessionManager {
   }
 
   Future<void> processSessionResultsAsync() async {
-    _generateSessionSummary();
-
-    await _saveDetailedSummariesAsync();
-  }
-
-  void _generateSessionSummary() {
-    sessionSummary = SessionSummary(
-        totalExercises: exercises.length,
-        correctExercises: exercises
-            .where((element) => element.answerSummary.totalCorrectAnswers > 0)
-            .length);
-  }
-
-  Future<void> _saveDetailedSummariesAsync() async {
-    List<ExerciseSummaryDetailed> detailedSummaries =
+    detailedSummaries =
         exercises.expand((ex) => ex.generateSummaries()).toList();
 
+    await _saveDetailedSummariesAsync(detailedSummaries!);
+    _generateSummary();
+  }
+
+  void _generateSummary() {
+    sessionSummary = SessionSummary(
+        totalWords: words.length,
+        totalExercises: exercises.length,
+        totalExerciseTypes: exerciseTypes.length,
+        detailedSummaries: detailedSummaries!);
+  }
+
+  void endSession() {
+    exercisesQueue = Queue<BaseExercise>();
+  }
+
+  Future<void> _saveDetailedSummariesAsync(
+      List<ExerciseSummaryDetailed> detailedSummaries) async {
     await Future.forEach(detailedSummaries, (summary) async {
       await wordProgressRepository.updateAsync(
           summary.wordId,

@@ -2,15 +2,15 @@ import 'package:first_project/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
 class TextStyles {
-  static const Color evaluationSuccessTextColor = Colors.green;
-  static const Color evaluationErrorTextColor = Colors.red;
+  static const Color successTextColor = Colors.green;
+  static const Color failureTextColor = Colors.red;
 
   static const TextStyle exerciseEvaluationTextStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final TextStyle successEvaluationStyle =
-      exerciseEvaluationTextStyle.copyWith(color: evaluationSuccessTextColor);
+      exerciseEvaluationTextStyle.copyWith(color: successTextColor);
   static final TextStyle failureEvaluationStyle =
-      exerciseEvaluationTextStyle.copyWith(color: evaluationErrorTextColor);
+      exerciseEvaluationTextStyle.copyWith(color: failureTextColor);
 
   static TextStyle exercisePromptStyle(BuildContext context) {
     var colorScheme = BaseStyles.getColorScheme(context);
@@ -35,7 +35,27 @@ class TextStyles {
   }
 
   static TextStyle exerciseInputDataAnswerStyle(BuildContext context) {
-    return exerciseInputDataStyle(context)
-        .copyWith(color: evaluationSuccessTextColor);
+    return exerciseInputDataStyle(context).copyWith(color: successTextColor);
   }
+
+  static const TextStyle sessionSummaryTitleTextStyle =
+      TextStyle(fontSize: 26, fontWeight: FontWeight.bold);
+
+  static const TextStyle sessionSummarySubtitleTextStyle =
+      TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+
+  static const TextStyle sessionSummaryGoodStatStyle = TextStyle(
+      fontSize: 24, fontWeight: FontWeight.bold, color: successTextColor);
+
+  static const TextStyle sessionSummaryNeutralStatStyle =
+      TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+
+  static const TextStyle sessionSummaryBadStatStyle = TextStyle(
+      fontSize: 24, fontWeight: FontWeight.bold, color: failureTextColor);
+
+  static const TextStyle sessionSummaryAttentionStatTitleStyle =
+      TextStyle(fontSize: 26, fontWeight: FontWeight.bold);
+
+  static const TextStyle sessionSummaryAttentionStatStyle = TextStyle(
+      fontSize: 32, fontWeight: FontWeight.bold, color: successTextColor);
 }

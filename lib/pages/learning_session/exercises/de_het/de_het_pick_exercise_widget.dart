@@ -67,8 +67,8 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
       return const TextSpan(text: '___');
     }
     var color = isCorrectAnswer!
-        ? TextStyles.evaluationSuccessTextColor
-        : TextStyles.evaluationErrorTextColor;
+        ? TextStyles.successTextColor
+        : TextStyles.failureTextColor;
     return TextSpan(
         text: widget.exercise.word.deHetType.name,
         style: TextStyle(color: color));

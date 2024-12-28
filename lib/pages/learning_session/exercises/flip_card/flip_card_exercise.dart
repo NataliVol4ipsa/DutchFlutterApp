@@ -56,7 +56,7 @@ class FlipCardExercise extends BaseExercise {
   List<ExerciseSummaryDetailed> generateSummaries() {
     return [
       ExerciseSummaryDetailed(
-          wordId: word.id,
+          word: word,
           exerciseType: ExerciseType.flipCard,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
           totalWrongAnswers: answerSummary.totalWrongAnswers)

@@ -69,6 +69,9 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     }
 
     await widget.flowManager.processSessionResultsAsync();
+    setState(() {
+      widget.flowManager.endSession();
+    });
     _learningTasksCompletedNotifier?.notifyCompleted();
   }
 
@@ -102,7 +105,10 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   String _buildAppBarText() {
-    return 'Exercises remaining: ${widget.flowManager.totalTasks}';
+    if (widget.flowManager.hasNextTask) {
+      return 'Exercises remaining: ${widget.flowManager.totalTasks}';
+    }
+    return "Session complete";
   }
 
   @override

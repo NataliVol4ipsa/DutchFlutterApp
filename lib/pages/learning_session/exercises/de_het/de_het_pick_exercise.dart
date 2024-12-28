@@ -55,7 +55,7 @@ class DeHetPickExercise extends BaseExercise {
   List<ExerciseSummaryDetailed> generateSummaries() {
     return [
       ExerciseSummaryDetailed(
-          wordId: word.id,
+          word: word,
           exerciseType: ExerciseType.deHetPick,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
           totalWrongAnswers: answerSummary.totalWrongAnswers)
