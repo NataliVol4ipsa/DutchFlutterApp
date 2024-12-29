@@ -1,15 +1,13 @@
-import 'package:first_project/pages/settings/setting_tile_widget.dart';
-import 'package:first_project/pages/settings/settings_pages/theme_settings_page.dart';
 import 'package:first_project/pages/settings/settings_section_widget.dart';
 import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
+class ThemeSettingsPage extends StatelessWidget {
+  static const name = "Theme";
+  const ThemeSettingsPage({super.key});
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [
-      _buildThemeSettings(context),
       _buildThemeSettings(context),
     ];
 
@@ -28,33 +26,9 @@ class SettingsPage extends StatelessWidget {
 
   Widget _buildThemeSettings(BuildContext context) {
     return SettingsSection(children: [
-      SettingTile(
-          icon: Icons.brightness_4,
-          name: ThemeSettingsPage.name,
-          onTap: () {
-            _goToPage(context, const ThemeSettingsPage());
-          }),
-      SettingTile(
-          icon: Icons.brightness_4,
-          name: ThemeSettingsPage.name,
-          onTap: () {
-            _goToPage(context, const ThemeSettingsPage());
-          }),
-      // _buildSettingTile(
-      //     context,
-      //     Icons.brightness_4,
-      //     "gdlfsjg sk gjsdk gs    gsdhgsdgsdjkglsdjklgsdkl  jsokgjdsko",
-      //     ),
+      Align(alignment: Alignment.centerLeft, child: Text("Use system theme")),
+      Align(alignment: Alignment.centerLeft, child: Text("Use dark theme")),
     ]);
-  }
-
-  _goToPage(BuildContext context, Widget pageToOpenOnTap) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => pageToOpenOnTap,
-      ),
-    );
   }
 
   @override
@@ -62,7 +36,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Settings",
+          "$name Settings",
           textAlign: TextAlign.center,
         ),
         centerTitle: true,

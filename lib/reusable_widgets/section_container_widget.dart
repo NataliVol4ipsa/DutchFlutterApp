@@ -30,17 +30,14 @@ class SectionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? ContainerStyles.containerPadding,
+      padding: padding,
       margin: margin,
       width: width ?? double.infinity,
       height: height,
       alignment: alignment,
       decoration: decoration ??
           boxDecoration ??
-          BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: color ?? ContainerStyles.sectionColor(context),
-          ),
+          ContainerStyles.roundedEdgesDecoration(context),
       constraints: constraints,
       child: child,
     );

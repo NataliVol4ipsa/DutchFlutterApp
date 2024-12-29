@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           appBarStyle: FlexAppBarStyle.material,
           appBarElevation: 1,
         ),
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         // theme: ThemeData(
         //   // Color.fromARGB(255, 0, 255, 213),
         //   // Color.fromARGB(255, 54, 94, 2),

@@ -2,6 +2,7 @@ import 'package:first_project/styles/base_styles.dart';
 import 'package:flutter/cupertino.dart';
 
 class ContainerStyles {
+  static const double roundedEdgeRadius = 20;
   static const double defaultPadding = 16;
   static const EdgeInsets containerPadding = EdgeInsets.all(defaultPadding);
   static const EdgeInsets smallContainerPadding =
@@ -17,4 +18,12 @@ class ContainerStyles {
 
   static Color sectionColor2(BuildContext context) =>
       BaseStyles.getColorScheme(context).surfaceVariant.withOpacity(0.5);
+
+  static BoxDecoration roundedEdgesDecoration(BuildContext context,
+          {Color? color, bool useDefaultColor = true}) =>
+      BoxDecoration(
+        borderRadius: BorderRadius.circular(roundedEdgeRadius),
+        color: color ??
+            (useDefaultColor ? ContainerStyles.sectionColor(context) : null),
+      );
 }
