@@ -61,4 +61,6 @@ class TextStyles {
 
   static const TextStyle sessionSummaryAttentionStatStyle = TextStyle(
       fontSize: 32, fontWeight: FontWeight.bold, color: successTextColor);
+
+  static const TextStyle settingsTitleStyle = TextStyle(fontSize: 18);
 }
