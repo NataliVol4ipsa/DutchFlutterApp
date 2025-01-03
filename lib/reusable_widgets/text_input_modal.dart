@@ -2,7 +2,8 @@ import 'package:first_project/reusable_widgets/input_label.dart';
 import 'package:flutter/material.dart';
 
 class TextInputModal extends StatefulWidget {
-  final Function onConfirmPressed;
+  final Future<void> Function(BuildContext context, String fileName)
+      onConfirmPressed;
   final String title;
   final String? inputLabel;
   final String? confirmText;
@@ -72,7 +73,7 @@ class _TextInputModalState extends State<TextInputModal> {
             ),
             TextButton(
               onPressed: () {
-                widget.onConfirmPressed(fileNameInputController.text);
+                widget.onConfirmPressed(context, fileNameInputController.text);
                 Navigator.of(context).pop();
               },
               child: Text(

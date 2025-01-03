@@ -54,7 +54,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-  Future<void> createCollectionAsync(String collectionName) async {
+  Future<void> createCollectionAsync(
+      BuildContext context, String collectionName) async {
     await collectionsRepository.addAsync(WordCollection(null, collectionName));
     await _loadData();
   }
@@ -72,8 +73,9 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           inputLabel: "Choose new collection name",
           confirmText: 'UPDATE',
           initialValue: collection.name,
-          onConfirmPressed: (String newName) =>
-              {updateCollectionAsync(collection, newName)},
+          onConfirmPressed: (BuildContext context, String newName) {
+            return updateCollectionAsync(collection, newName);
+          },
         );
       },
     );
