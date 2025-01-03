@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 // Accepts list of setting tiles, puts dividers between them and wraps into nice section container
 class SettingsSection extends StatelessWidget {
   final List<Widget> children;
-  const SettingsSection({super.key, required this.children});
+  final bool useShortDivider;
+  const SettingsSection(
+      {super.key, required this.children, this.useShortDivider = false});
 
-  static List<Widget> _buildSectionChildrenWithDividers(
+  List<Widget> _buildSectionChildrenWithDividers(
       BuildContext context, List<Widget> widgets) {
     if (widgets.isEmpty) return [];
 
@@ -22,26 +24,41 @@ class SettingsSection extends StatelessWidget {
     return result;
   }
 
-  static Widget _dividerRow(BuildContext context) {
+  Widget _dividerRow(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 16), //todo
+      padding: _buildPadding(),
       child: Row(
         children: [
           Expanded(
             flex: SettingsTileConfig.settingIconFlex,
-            child: Container(),
+            child: _buildLeftDivider(context),
           ),
           Expanded(
             flex: SettingsTileConfig.settingNameFlex,
             child: _divider(context),
           ),
           Expanded(
-            flex: SettingsTileConfig.settingOpenFlex,
+            flex: SettingsTileConfig.settingActionFlex,
             child: _divider(context),
           ),
         ],
       ),
     );
+  }
+
+  //todo improve padding - its not very universal
+  EdgeInsets _buildPadding() {
+    if (useShortDivider) {
+      return const EdgeInsets.only(right: 16);
+    }
+    return const EdgeInsets.symmetric(horizontal: 16);
+  }
+
+  Widget _buildLeftDivider(BuildContext context) {
+    if (useShortDivider) {
+      return Container();
+    }
+    return _divider(context);
   }
 
   static Widget _divider(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:first_project/pages/settings/setting_tile_widget.dart';
+import 'package:first_project/pages/settings/setting_tiles/setting_navigation_tile_widget.dart';
 import 'package:first_project/pages/settings/settings_pages/theme_settings_page.dart';
 import 'package:first_project/pages/settings/settings_section_widget.dart';
 import 'package:first_project/styles/container_styles.dart';
@@ -9,8 +9,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [
-      _buildThemeSettings(context),
-      _buildThemeSettings(context),
+      _buildUiSettingsSection(context),
     ];
 
     return Container(
@@ -26,25 +25,20 @@ class SettingsPage extends StatelessWidget {
         ));
   }
 
-  Widget _buildThemeSettings(BuildContext context) {
-    return SettingsSection(children: [
-      SettingTile(
+  Widget _buildUiSettingsSection(BuildContext context) {
+    return SettingsSection(useShortDivider: true, children: [
+      SettingNavigationTile(
           icon: Icons.brightness_4,
           name: ThemeSettingsPage.name,
           onTap: () {
             _goToPage(context, const ThemeSettingsPage());
           }),
-      SettingTile(
+      SettingNavigationTile(
           icon: Icons.brightness_4,
           name: ThemeSettingsPage.name,
           onTap: () {
             _goToPage(context, const ThemeSettingsPage());
           }),
-      // _buildSettingTile(
-      //     context,
-      //     Icons.brightness_4,
-      //     "gdlfsjg sk gjsdk gs    gsdhgsdgsdjkglsdjklgsdkl  jsokgjdsko",
-      //     ),
     ]);
   }
 

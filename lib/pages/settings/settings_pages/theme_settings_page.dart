@@ -1,11 +1,25 @@
+import 'package:first_project/pages/settings/setting_tiles/setting_switch_tile_widget.dart';
 import 'package:first_project/pages/settings/settings_section_widget.dart';
 import 'package:first_project/styles/container_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class ThemeSettingsPage extends StatelessWidget {
+class ThemeSettingsPage extends StatefulWidget {
   static const name = "Theme";
   const ThemeSettingsPage({super.key});
+
+  @override
+  State<ThemeSettingsPage> createState() => _ThemeSettingsPageState();
+}
+
+class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
+  late bool showUseDarkTheme;
+
+  @override
+  void initState() {
+    super.initState();
+    showUseDarkTheme = false; //todo load from preserved settings
+  }
+
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [
       _buildThemeSettings(context),
@@ -24,10 +38,19 @@ class ThemeSettingsPage extends StatelessWidget {
         ));
   }
 
+  void _onUseSystemThemeChanged(bool useSystemTheme) {
+    setState(() {
+      showUseDarkTheme = !useSystemTheme;
+    });
+  }
+
   Widget _buildThemeSettings(BuildContext context) {
     return SettingsSection(children: [
-      Align(alignment: Alignment.centerLeft, child: Text("Use system theme")),
-      Align(alignment: Alignment.centerLeft, child: Text("Use dark theme")),
+      SettingsSwitchTile(
+        name: "Use system theme",
+        onChanged: _onUseSystemThemeChanged,
+      ),
+      if (showUseDarkTheme) const SettingsSwitchTile(name: "Use dark theme"),
     ]);
   }
 
@@ -36,7 +59,7 @@ class ThemeSettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "$name Settings",
+          "${ThemeSettingsPage.name} Settings",
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
