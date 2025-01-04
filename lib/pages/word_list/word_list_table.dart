@@ -83,8 +83,8 @@ class WordTable extends StatelessWidget {
               return WordTableRow(
                 color: index.isEven
                     ? theme.colorScheme.surface
-                    : Color.alphaBlend(Colors.black.withOpacity(0.05),
-                        theme.colorScheme.surface),
+                    : Color.alphaBlend(
+                        Colors.black.withAlpha(12), theme.colorScheme.surface),
                 index: index,
                 word: word,
                 isSelected: selectedRows[index],

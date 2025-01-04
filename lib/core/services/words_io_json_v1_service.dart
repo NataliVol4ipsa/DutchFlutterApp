@@ -20,8 +20,6 @@ class WordsIoJsonV1Service {
 
     await ioService.writeToFileAsync(file, jsonString);
 
-    print('File saved to: $path');
-
     return path;
   }
 

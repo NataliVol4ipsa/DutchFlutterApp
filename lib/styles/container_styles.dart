@@ -11,13 +11,13 @@ class ContainerStyles {
       EdgeInsets.symmetric(vertical: 10);
 
   static Color defaultColor(BuildContext context) =>
-      BaseStyles.getColorScheme(context).background;
+      BaseStyles.getColorScheme(context).surface;
 
   static Color sectionColor(BuildContext context) =>
-      BaseStyles.getColorScheme(context).surfaceVariant;
+      BaseStyles.getColorScheme(context).surfaceContainerHigh;
 
   static Color sectionColor2(BuildContext context) =>
-      BaseStyles.getColorScheme(context).surfaceVariant.withOpacity(0.5);
+      BaseStyles.getColorScheme(context).surfaceContainerHighest;
 
   static BoxDecoration roundedEdgesDecoration(BuildContext context,
           {Color? color, bool useDefaultColor = true}) =>

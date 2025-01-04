@@ -25,8 +25,6 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'Pick Translation';
       case ExerciseType.basicManyPick:
         return 'Match Translations';
-      default:
-        return '';
     }
   }
 
@@ -46,8 +44,6 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'Pick translation of word on screen from list of options';
       case ExerciseType.basicManyPick:
         return 'Match two lists of words according to their translations';
-      default:
-        return '';
     }
   }
 }

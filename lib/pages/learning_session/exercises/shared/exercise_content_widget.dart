@@ -15,7 +15,7 @@ class ExerciseContent extends StatelessWidget {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
 
-    var questionBackgroundColor = colorScheme.surfaceVariant;
+    var questionBackgroundColor = colorScheme.surfaceContainerHighest;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

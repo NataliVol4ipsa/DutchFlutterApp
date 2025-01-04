@@ -36,6 +36,7 @@ class SessionSummaryWidget extends StatelessWidget {
   Widget _buildExerciseSummary(
       SingleExerciseTypeSummary summary, BuildContext context) {
     return SectionContainer(
+      padding: ContainerStyles.containerPadding,
       child: Column(
         children: [
           Text(

@@ -393,7 +393,13 @@ class _WordListPageState extends State<WordListPage> {
     // PopScope Allows to override back button behavior
     return PopScope(
       canPop: true,
-      onPopInvoked: onPopAsync,
+      /* It's not possible to prevent the pop from happening at the time that this method is called; the pop has already happened. 
+         Use [canPop] to disable pops in advance.
+         This will still be called even when the pop is canceled.
+         A pop is canceled when the relevant [Route.popDisposition] returns false, such as when [canPop] is set to false on a [PopScope]. 
+         The didPop parameter indicates whether or not the back navigation actually happened successfully. 
+      */
+      onPopInvokedWithResult: onAfterPopAsync,
       child: Scaffold(
         appBar: createAppBar(), //todo hide cog appbar when multiselecting
         body: Padding(
@@ -430,7 +436,7 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
-  Future<void> onPopAsync(bool didPop) async {
+  Future<void> onAfterPopAsync(bool didPop, Object? result) async {
     if (isMultiselectModeEnabled) {
       toggleMultiSelectMode();
       return;

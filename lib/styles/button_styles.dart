@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 class ButtonStyles {
   static final ButtonStyle primaryButtonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all(
+      padding: WidgetStateProperty.all(
         const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       ),
-      minimumSize: MaterialStateProperty.all(const Size(double.infinity, 50)),
-      shape: MaterialStateProperty.all(
+      minimumSize: WidgetStateProperty.all(const Size(double.infinity, 50)),
+      shape: WidgetStateProperty.all(
         const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
-      textStyle: MaterialStateProperty.all(const TextStyle(
+      textStyle: WidgetStateProperty.all(const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
       )));
@@ -31,10 +31,10 @@ class ButtonStyles {
 
   // Tools
 
-  static MaterialStateProperty<Color> _createButtonStyleColor(Color color) {
-    return MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.disabled)) {
-        return color.withOpacity(0.5);
+  static WidgetStateProperty<Color> _createButtonStyleColor(Color color) {
+    return WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return color.withAlpha(12);
       }
       return color;
     });

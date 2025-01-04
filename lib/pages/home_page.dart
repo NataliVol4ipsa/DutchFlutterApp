@@ -1,4 +1,5 @@
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
         Navigator.pushNamed(context, navigationPath);
       },
       child: Card(
+        color: ContainerStyles.sectionColor(context),
         elevation: 4,
         child: Center(child: Text(cardText)),
       ),
@@ -64,14 +66,12 @@ class HomePage extends StatelessWidget {
   Widget _buildCollectionProgress(double percentage) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
-      color: Colors.green.withOpacity(percentage / 100),
+      color: Colors.green.withAlpha((percentage * 2.55).toInt()),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text("stat1"),
             Text("$percentage %"),
           ],
         ),
@@ -111,25 +111,18 @@ class HomePage extends StatelessWidget {
 // or this https://www.justinmind.com/wp-content/webp-express/webp-images/uploads/2024/06/tv-shows-tracker-mobile-navigation-example.png.webp
   Widget _buildRecentCollectionsSection(BuildContext context) {
     // todo apply to cards BG colors - to reflect how complete are they. From grey to green with alpha based on completion %
-    return Container(
-      child: Column(
-        children: [
-          const Text("Recent collections studied"),
-          _buildGridViewTwoColumns([
-            _buildNavigationCardWithHeader(
-                context, "Collection 1", _buildCollectionProgress(87), '/1'),
-            _buildNavigationCardWithHeader(
-                context, "Collection 2", _buildCollectionProgress(12), '/2'),
-            _buildNavigationCardWithHeader(
-                context, "Collection 3", _buildCollectionProgress(45), '/3'),
-          ], childAspectRatio: 2.0),
-        ],
-      ),
-      // show top 3-5 recent collections.
-      // show number of studied & unstudied words, and words to practice, in percent.
-      // perhaps a circle diagram?
-      // add button to see all collections. after navigation to col list:
-      // Order collections by recency of practice (but allow to sort by alphabet too)
+    return Column(
+      children: [
+        const Text("Recent collections studied"),
+        _buildGridViewTwoColumns([
+          _buildNavigationCardWithHeader(
+              context, "Collection 1", _buildCollectionProgress(87), '/1'),
+          _buildNavigationCardWithHeader(
+              context, "Collection 2", _buildCollectionProgress(12), '/2'),
+          _buildNavigationCardWithHeader(
+              context, "Collection 3", _buildCollectionProgress(45), '/3'),
+        ], childAspectRatio: 2.0),
+      ],
     );
   }
 
@@ -174,6 +167,7 @@ class HomePage extends StatelessWidget {
             _buildRecentCollectionsSection(context),
           ]),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: ContainerStyles.sectionColor(context),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
