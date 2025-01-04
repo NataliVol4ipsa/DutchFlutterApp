@@ -1,9 +1,9 @@
-import 'package:first_project/core/dtos/word_dto.dart';
-import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
-import 'package:first_project/core/models/new_word.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/word_type.dart';
+import 'package:dutch_app/core/dtos/word_dto.dart';
+import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
+import 'package:dutch_app/core/models/new_word.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 
 class WordsIoMapper {
   WordsCollectionDtoV1 toCollectionDto(List<Word> inputWords) {

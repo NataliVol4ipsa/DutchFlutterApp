@@ -1,13 +1,13 @@
 import 'dart:collection';
 
-import 'package:first_project/local_db/repositories/word_progress_repository.dart';
-import 'package:first_project/pages/learning_session/exercises/exercises_generator.dart';
-import 'package:first_project/pages/learning_session/base/base_exercise.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
-import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:first_project/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
+import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
+import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 
 // Manage order of tasks and moving pointer of current task during session
 class LearningSessionManager {

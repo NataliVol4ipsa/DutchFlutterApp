@@ -1,6 +1,6 @@
-import 'package:first_project/pages/settings/settings_tile_config.dart';
-import 'package:first_project/reusable_widgets/section_container_widget.dart';
-import 'package:first_project/styles/container_styles.dart';
+import 'package:dutch_app/pages/settings/settings_tile_config.dart';
+import 'package:dutch_app/reusable_widgets/section_container_widget.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 // Accepts list of setting tiles, puts dividers between them and wraps into nice section container

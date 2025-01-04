@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:first_project/core/models/word.dart';
+import 'package:dutch_app/core/models/word.dart';
 
 class WordTableRow extends StatelessWidget {
   final int index;

@@ -1,6 +1,6 @@
-import 'package:first_project/core/models/word_collection.dart';
-import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/word_type.dart';
+import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 
 class BaseWord {
   final String dutchWord;

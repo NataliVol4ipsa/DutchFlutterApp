@@ -1,5 +1,5 @@
-import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 
 class SessionSummary {
   final int totalWords;

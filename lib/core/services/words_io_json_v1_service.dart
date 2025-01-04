@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
-import 'package:first_project/core/services/io_service.dart';
-import 'package:first_project/core/mapping/words_io_mapper.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
+import 'package:dutch_app/core/services/io_service.dart';
+import 'package:dutch_app/core/mapping/words_io_mapper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 

@@ -1,7 +1,7 @@
-import 'package:first_project/pages/settings/settings_tile_config.dart';
-import 'package:first_project/styles/container_styles.dart';
-import 'package:first_project/styles/icon_styles.dart';
-import 'package:first_project/styles/text_styles.dart';
+import 'package:dutch_app/pages/settings/settings_tile_config.dart';
+import 'package:dutch_app/styles/container_styles.dart';
+import 'package:dutch_app/styles/icon_styles.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class SettingTile extends StatelessWidget {

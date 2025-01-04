@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:first_project/reusable_widgets/models/toggle_button_item.dart';
+import 'package:dutch_app/reusable_widgets/models/toggle_button_item.dart';
 import 'package:flutter/material.dart';
 
 class OptionalToggleButtons<T> extends StatefulWidget {

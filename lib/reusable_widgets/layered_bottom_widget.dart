@@ -1,4 +1,4 @@
-import 'package:first_project/styles/container_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 // widget in the bottom of screen that hides whatever is underneath it and shows content on its place

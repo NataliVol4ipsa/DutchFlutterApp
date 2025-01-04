@@ -1,11 +1,11 @@
-import 'package:first_project/pages/learning_session/base/base_session_step_layout_widget.dart';
-import 'package:first_project/reusable_widgets/layered_bottom_widget.dart';
-import 'package:first_project/pages/learning_session/session_manager.dart';
-import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
-import 'package:first_project/pages/learning_session/summary/session_summary.dart';
-import 'package:first_project/pages/learning_session/summary/session_summary_widget.dart';
-import 'package:first_project/styles/button_styles.dart';
+import 'package:dutch_app/pages/learning_session/base/base_session_step_layout_widget.dart';
+import 'package:dutch_app/reusable_widgets/layered_bottom_widget.dart';
+import 'package:dutch_app/pages/learning_session/session_manager.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary_widget.dart';
+import 'package:dutch_app/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

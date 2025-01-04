@@ -1,7 +1,7 @@
-import 'package:first_project/pages/learning_session/summary/session_summary.dart';
-import 'package:first_project/pages/learning_session/summary/summary_total_cards_builder.dart';
-import 'package:first_project/reusable_widgets/section_container_widget.dart';
-import 'package:first_project/styles/text_styles.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/pages/learning_session/summary/summary_total_cards_builder.dart';
+import 'package:dutch_app/reusable_widgets/section_container_widget.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class SummaryTotals extends StatelessWidget {

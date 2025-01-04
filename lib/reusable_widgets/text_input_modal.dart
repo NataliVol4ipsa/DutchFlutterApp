@@ -1,4 +1,4 @@
-import 'package:first_project/reusable_widgets/input_label.dart';
+import 'package:dutch_app/reusable_widgets/input_label.dart';
 import 'package:flutter/material.dart';
 
 class TextInputModal extends StatefulWidget {

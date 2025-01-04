@@ -1,4 +1,4 @@
-import 'package:first_project/styles/text_styles.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseEvaluation extends StatelessWidget {

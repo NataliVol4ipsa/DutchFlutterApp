@@ -1,4 +1,4 @@
-import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {

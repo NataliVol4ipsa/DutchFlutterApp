@@ -1,5 +1,5 @@
-import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:first_project/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/session_completed_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

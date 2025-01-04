@@ -1,4 +1,4 @@
-import 'package:first_project/core/types/word_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 
 class WordTypeConverter {
   static WordType toWordType(String woordenlijstPartOfSpeechCode) {

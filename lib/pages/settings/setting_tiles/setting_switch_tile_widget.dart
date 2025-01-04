@@ -1,4 +1,4 @@
-import 'package:first_project/pages/settings/setting_tiles/setting_tile_widget.dart';
+import 'package:dutch_app/pages/settings/setting_tiles/setting_tile_widget.dart';
 import 'package:flutter/material.dart';
 
 class SettingsSwitchTile extends StatefulWidget {

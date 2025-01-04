@@ -1,7 +1,7 @@
-import 'package:first_project/core/dtos/words_collection_dto_v1.dart';
-import 'package:first_project/core/models/new_word.dart';
-import 'package:first_project/core/mapping/words_io_mapper.dart';
-import 'package:first_project/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
+import 'package:dutch_app/core/models/new_word.dart';
+import 'package:dutch_app/core/mapping/words_io_mapper.dart';
+import 'package:dutch_app/local_db/repositories/words_repository.dart';
 
 class WordsStorageService {
   final WordsRepository wordsRepository;

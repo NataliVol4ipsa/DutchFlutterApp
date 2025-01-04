@@ -1,4 +1,4 @@
-import 'package:first_project/local_db/entities/db_word.dart';
+import 'package:dutch_app/local_db/entities/db_word.dart';
 import 'package:isar/isar.dart';
 
 part 'db_word_collection.g.dart';

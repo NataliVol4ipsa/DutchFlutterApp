@@ -1,7 +1,7 @@
-import 'package:first_project/pages/settings/setting_tiles/setting_navigation_tile_widget.dart';
-import 'package:first_project/pages/settings/settings_pages/theme_settings_page.dart';
-import 'package:first_project/pages/settings/settings_section_widget.dart';
-import 'package:first_project/styles/container_styles.dart';
+import 'package:dutch_app/pages/settings/setting_tiles/setting_navigation_tile_widget.dart';
+import 'package:dutch_app/pages/settings/settings_pages/theme_settings_page.dart';
+import 'package:dutch_app/pages/settings/settings_section_widget.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {

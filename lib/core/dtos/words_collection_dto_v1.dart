@@ -1,5 +1,5 @@
-import 'package:first_project/core/dtos/base_words_collection_dto.dart';
-import 'package:first_project/core/dtos/word_dto.dart';
+import 'package:dutch_app/core/dtos/base_words_collection_dto.dart';
+import 'package:dutch_app/core/dtos/word_dto.dart';
 
 const int collectionVersion = 1;
 

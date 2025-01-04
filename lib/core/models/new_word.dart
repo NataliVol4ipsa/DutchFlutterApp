@@ -1,5 +1,5 @@
-import 'package:first_project/core/models/base_word.dart';
-import 'package:first_project/core/types/de_het_type.dart';
+import 'package:dutch_app/core/models/base_word.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
 
 class NewWord extends BaseWord {
   NewWord(

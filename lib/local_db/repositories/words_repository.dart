@@ -1,8 +1,8 @@
-import 'package:first_project/core/models/new_word.dart';
-import 'package:first_project/local_db/db_context.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/local_db/entities/db_word.dart';
-import 'package:first_project/local_db/entities/db_word_collection.dart';
+import 'package:dutch_app/core/models/new_word.dart';
+import 'package:dutch_app/local_db/db_context.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/local_db/entities/db_word.dart';
+import 'package:dutch_app/local_db/entities/db_word_collection.dart';
 import 'package:isar/isar.dart';
 
 import '../mapping/words_mapper.dart';

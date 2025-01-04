@@ -1,4 +1,4 @@
-import 'package:first_project/styles/base_styles.dart';
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/cupertino.dart';
 
 class ContainerStyles {

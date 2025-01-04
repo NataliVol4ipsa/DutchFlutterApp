@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/pages/word_editor/word_editor_page.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/pages/word_editor/word_editor_page.dart';
 
 class WordEditorModal {
   static Future<void> show({

@@ -1,4 +1,4 @@
-import 'package:first_project/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
 
 class GenderConverter {
   static DeHetType convert(String? genderCode) {

@@ -1,13 +1,13 @@
-import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/pages/learning_session/base/base_exercise_layout_widget.dart';
-import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
-import 'package:first_project/pages/learning_session/summary/exercise_total_cards_builder.dart';
-import 'package:first_project/pages/learning_session/summary/session_summary.dart';
-import 'package:first_project/pages/learning_session/summary/summary_totals_widget.dart';
-import 'package:first_project/reusable_widgets/section_container_widget.dart';
-import 'package:first_project/styles/button_styles.dart';
-import 'package:first_project/styles/container_styles.dart';
-import 'package:first_project/styles/text_styles.dart';
+import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
+import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:dutch_app/pages/learning_session/summary/exercise_total_cards_builder.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/pages/learning_session/summary/summary_totals_widget.dart';
+import 'package:dutch_app/reusable_widgets/section_container_widget.dart';
+import 'package:dutch_app/styles/button_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 // todo animate main stats numbers slowly appear on screen.

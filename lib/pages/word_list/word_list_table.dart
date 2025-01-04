@@ -1,6 +1,6 @@
-import 'package:first_project/pages/word_list/word_list_table_row.dart';
+import 'package:dutch_app/pages/word_list/word_list_table_row.dart';
 import 'package:flutter/material.dart';
-import 'package:first_project/core/models/word.dart';
+import 'package:dutch_app/core/models/word.dart';
 
 class WordTable extends StatelessWidget {
   final List<Word> words;

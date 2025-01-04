@@ -1,8 +1,8 @@
-import 'package:first_project/core/models/word_collection.dart';
-import 'package:first_project/local_db/repositories/word_collections_repository.dart';
-import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
-import 'package:first_project/reusable_widgets/text_input_modal.dart';
-import 'package:first_project/styles/container_styles.dart';
+import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

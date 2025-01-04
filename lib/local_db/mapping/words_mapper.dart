@@ -1,7 +1,7 @@
-import 'package:first_project/core/models/new_word.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/local_db/entities/db_word.dart';
-import 'package:first_project/local_db/mapping/word_collections_mapper.dart';
+import 'package:dutch_app/core/models/new_word.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/local_db/entities/db_word.dart';
+import 'package:dutch_app/local_db/mapping/word_collections_mapper.dart';
 
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {

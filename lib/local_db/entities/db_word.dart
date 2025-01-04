@@ -1,7 +1,7 @@
-import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/local_db/entities/db_word_collection.dart';
-import 'package:first_project/local_db/entities/db_word_progress.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/local_db/entities/db_word_collection.dart';
+import 'package:dutch_app/local_db/entities/db_word_progress.dart';
 import 'package:isar/isar.dart';
 
 part 'db_word.g.dart';

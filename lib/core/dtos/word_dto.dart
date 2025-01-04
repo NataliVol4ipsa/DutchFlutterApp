@@ -1,7 +1,7 @@
-import 'package:first_project/core/dtos/base_word_dto.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/word_type.dart';
+import 'package:dutch_app/core/dtos/base_word_dto.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 
 class WordDto implements BaseWordDto {
   @override

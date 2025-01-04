@@ -1,11 +1,11 @@
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/local_db/repositories/word_progress_repository.dart';
-import 'package:first_project/local_db/repositories/words_repository.dart';
-import 'package:first_project/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:first_project/pages/learning_session/session_manager.dart';
-import 'package:first_project/pages/learning_session/session_page.dart';
-import 'package:first_project/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
+import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/session_manager.dart';
+import 'package:dutch_app/pages/learning_session/session_page.dart';
+import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

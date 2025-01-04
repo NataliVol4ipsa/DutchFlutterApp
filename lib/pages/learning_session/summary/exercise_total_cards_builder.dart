@@ -1,6 +1,6 @@
-import 'package:first_project/pages/learning_session/summary/card_builder.dart';
-import 'package:first_project/pages/learning_session/summary/session_summary.dart';
-import 'package:first_project/styles/text_styles.dart';
+import 'package:dutch_app/pages/learning_session/summary/card_builder.dart';
+import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 //todo refactor and reuse other cards

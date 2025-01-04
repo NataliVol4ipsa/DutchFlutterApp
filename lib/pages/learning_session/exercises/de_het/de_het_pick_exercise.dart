@@ -1,10 +1,10 @@
-import 'package:first_project/pages/learning_session/base/base_exercise.dart';
-import 'package:first_project/core/models/word.dart';
-import 'package:first_project/core/types/de_het_type.dart';
-import 'package:first_project/core/types/exercise_type.dart';
-import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/pages/learning_session/exercises/de_het/de_het_pick_exercise_widget.dart';
-import 'package:first_project/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
+import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
+import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise_widget.dart';
+import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';
 
 class DeHetPickExercise extends BaseExercise {

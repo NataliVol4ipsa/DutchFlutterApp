@@ -1,6 +1,6 @@
-import 'package:first_project/core/models/word_collection.dart';
-import 'package:first_project/local_db/repositories/word_collections_repository.dart';
-import 'package:first_project/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
+import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 

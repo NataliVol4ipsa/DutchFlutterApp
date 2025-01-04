@@ -1,7 +1,7 @@
-import 'package:first_project/core/models/word_collection.dart';
-import 'package:first_project/local_db/db_context.dart';
-import 'package:first_project/local_db/entities/db_word_collection.dart';
-import 'package:first_project/local_db/mapping/word_collections_mapper.dart';
+import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/local_db/db_context.dart';
+import 'package:dutch_app/local_db/entities/db_word_collection.dart';
+import 'package:dutch_app/local_db/mapping/word_collections_mapper.dart';
 import 'package:isar/isar.dart';
 
 class WordCollectionsRepository {

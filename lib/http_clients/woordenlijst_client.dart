@@ -1,7 +1,7 @@
-import 'package:first_project/http_clients/get_words_online_response.dart';
-import 'package:first_project/http_clients/mapping/get_words_online_xml_response_parser.dart';
-import 'package:first_project/http_clients/mapping/word_type_converter.dart';
-import 'package:first_project/core/types/word_type.dart';
+import 'package:dutch_app/http_clients/get_words_online_response.dart';
+import 'package:dutch_app/http_clients/mapping/get_words_online_xml_response_parser.dart';
+import 'package:dutch_app/http_clients/mapping/word_type_converter.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 import 'package:http/http.dart' as http;
 
 class WoordenlijstClient {

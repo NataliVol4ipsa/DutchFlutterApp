@@ -1,4 +1,4 @@
-import 'package:first_project/styles/container_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/widgets.dart';
 
 class SectionContainer extends StatelessWidget {

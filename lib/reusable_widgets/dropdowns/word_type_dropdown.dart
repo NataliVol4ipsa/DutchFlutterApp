@@ -1,6 +1,6 @@
-import 'package:first_project/core/functions/capitalize_enum.dart';
-import 'package:first_project/core/types/word_type.dart';
-import 'package:first_project/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
+import 'package:dutch_app/core/functions/capitalize_enum.dart';
+import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:flutter/cupertino.dart';
 
 class WordTypeDropdown extends StatefulWidget {
