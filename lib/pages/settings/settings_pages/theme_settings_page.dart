@@ -20,10 +20,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   late SettingsService settingSetvice;
   late Settings settings;
 
-  bool isUseSystemModeEnabled = false;
-  bool isUseDarkThemeEnabled = false;
-
-  get showUseDarkTheme => !isUseSystemModeEnabled;
+  get showUseDarkTheme => !settings.theme.useSystemMode;
 
   @override
   void initState() {
@@ -35,17 +32,14 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   Future<void> _loadSettingsAsync() async {
     settings = await settingSetvice.getSettingsAsync();
     setState(() {
-      isUseSystemModeEnabled = settings.theme.useSystemMode;
-      isUseDarkThemeEnabled = settings.theme.useDarkMode;
       isLoading = false;
     });
   }
 
   Future<void> _onUseSystemThemeChangedAsync(bool useSystemMode) async {
     setState(() {
-      isUseSystemModeEnabled = useSystemMode;
+      settings.theme.useSystemMode = useSystemMode;
     });
-    settings.theme.useSystemMode = useSystemMode;
     await settingSetvice.updateSettingsAsync(settings);
   }
 
@@ -72,7 +66,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       SettingsSwitchTile(
           name: "Use system theme",
           onChanged: _onUseSystemThemeChangedAsync,
-          isInitiallyEnabled: isUseSystemModeEnabled),
+          isInitiallyEnabled: settings.theme.useSystemMode),
       if (showUseDarkTheme) const SettingsSwitchTile(name: "Use dark theme"),
     ]);
   }
