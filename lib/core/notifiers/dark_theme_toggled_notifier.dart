@@ -1,6 +1,5 @@
 import 'package:dutch_app/core/services/settings_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DarkThemeToggledNotifier extends ChangeNotifier {
   bool _isDarkTheme = false;
@@ -9,11 +8,9 @@ class DarkThemeToggledNotifier extends ChangeNotifier {
 
   ThemeMode get currentTheme => _isDarkTheme ? ThemeMode.dark : ThemeMode.light;
 
-  Future<void> loadInitialTheme(BuildContext context) async {
-    var settingSetvice = context.read<SettingsService>();
-    Brightness platformBrightness = MediaQuery.of(context).platformBrightness;
-
-    var settings = await settingSetvice.getSettingsAsync();
+  Future<void> loadInitialTheme(
+      SettingsService settingsService, Brightness platformBrightness) async {
+    var settings = await settingsService.getSettingsAsync();
 
     _isDarkTheme = shouldUseDarkTheme(settings.theme.useSystemMode,
         settings.theme.useDarkMode, platformBrightness);

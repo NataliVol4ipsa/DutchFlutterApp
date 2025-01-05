@@ -105,7 +105,9 @@ class SessionSummaryWidget extends StatelessWidget {
           text: TextSpan(
               style: TextStyles.sessionSummaryCardtitleTextStyle,
               children: <TextSpan>[
-            TextSpan(text: summary.correctAnswer),
+            TextSpan(
+                text: summary.correctAnswer,
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             const TextSpan(text: " ("),
             TextSpan(
                 text: summary.totalWrongAnswers.toString(),
