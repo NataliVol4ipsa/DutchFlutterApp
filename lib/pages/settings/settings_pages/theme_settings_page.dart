@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/models/settings.dart';
+import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
 import 'package:dutch_app/core/services/settings_service.dart';
 import 'package:dutch_app/pages/settings/setting_tiles/setting_switch_tile_widget.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
@@ -20,12 +21,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   late SettingsService settingSetvice;
   late Settings settings;
 
+  late DarkThemeToggledNotifier darkThemeNotifier;
+
   get showUseDarkTheme => !settings.theme.useSystemMode;
 
   @override
   void initState() {
     super.initState();
     settingSetvice = context.read<SettingsService>();
+    darkThemeNotifier =
+        Provider.of<DarkThemeToggledNotifier>(context, listen: false);
     _loadSettingsAsync();
   }
 
@@ -41,6 +46,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       settings.theme.useSystemMode = useSystemMode;
     });
     await settingSetvice.updateSettingsAsync(settings);
+    _notifyThemeChanges();
   }
 
   Future<void> _onUseDarkModeChangedAsync(bool useDarkMode) async {
@@ -48,6 +54,17 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       settings.theme.useDarkMode = useDarkMode;
     });
     await settingSetvice.updateSettingsAsync(settings);
+    _notifyThemeChanges();
+  }
+
+  void _notifyThemeChanges() {
+    Brightness platformBrightness = MediaQuery.of(context).platformBrightness;
+    bool useDarkTheme = DarkThemeToggledNotifier.shouldUseDarkTheme(
+        settings.theme.useSystemMode,
+        settings.theme.useDarkMode,
+        platformBrightness);
+
+    darkThemeNotifier.setDarkTheme(useDarkTheme);
   }
 
   Widget _buildSettings(BuildContext context) {

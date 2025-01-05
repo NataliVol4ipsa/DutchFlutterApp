@@ -1,5 +1,6 @@
-import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:dutch_app/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
+import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,4 +12,9 @@ void notifyAnsweredExercise(BuildContext context, bool isAnswered) {
 void notifyCompletedTasks(BuildContext context) {
   Provider.of<SessionCompletedNotifier>(context, listen: false)
       .notifyCompleted();
+}
+
+void notifyDarkThemeToggled(BuildContext context, bool useDarkMode) {
+  Provider.of<DarkThemeToggledNotifier>(context, listen: false)
+      .setDarkTheme(useDarkMode);
 }

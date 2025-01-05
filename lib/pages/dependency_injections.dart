@@ -1,5 +1,6 @@
-import 'package:dutch_app/pages/learning_session/notifiers/exercise_answered_notifier.dart';
-import 'package:dutch_app/pages/learning_session/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
+import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,12 @@ List<ChangeNotifierProvider> notifierProviders() {
       create: (context) {
         debugPrint('Initializing LearningTasksCompletedNotifier');
         return SessionCompletedNotifier();
+      },
+    ),
+    ChangeNotifierProvider<DarkThemeToggledNotifier>(
+      create: (context) {
+        debugPrint('Initializing DarkThemeToggledNotifier');
+        return DarkThemeToggledNotifier();
       },
     ),
   ];

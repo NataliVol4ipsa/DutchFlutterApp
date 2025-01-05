@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/dependency_injections.dart';
+import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
 import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/pages/dependency_injections.dart';
 import 'package:dutch_app/pages/exercises_selector/exercises_selector_page.dart';
@@ -39,32 +40,56 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Provider.of<DarkThemeToggledNotifier>(context, listen: false)
+          .loadInitialTheme(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return MaterialApp(
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+          );
+        }
+        return const MainApp();
+      },
+    );
+  }
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     //var scheme = FlexScheme.amber;
     //var scheme = FlexScheme.espresso;
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: FlexThemeData.light(scheme: FlexScheme.amber),
-        darkTheme: FlexThemeData.dark(
-          scheme: FlexScheme.amber,
-          appBarStyle: FlexAppBarStyle.material,
-          appBarElevation: 1,
-        ),
-        themeMode: ThemeMode.dark,
-        // theme: ThemeData(
-        //   // Color.fromARGB(255, 0, 255, 213),
-        //   // Color.fromARGB(255, 54, 94, 2),
-        //   //colorSchemeSeed: const Color.fromARGB(255, 54, 94, 2),
-        //   brightness: Brightness.light,
-        //   useMaterial3: true,
-        // ),
-        home: const HomePage(),
-        routes: {
-          '/home': (context) => const HomePage(),
-          '/settings': (context) => const SettingsPage(),
-          '/newword': (context) => const WordEditorPage(),
-          '/wordlist': (context) => const WordListPage(),
-          '/wordcollections': (context) => const WordCollectionsListPage(),
-          '/exercisesselector': (context) => const ExercisesSelectorPage(),
-        });
+
+    return Consumer<DarkThemeToggledNotifier>(
+        builder: (context, themeNotifier, child) {
+      return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: FlexThemeData.light(scheme: FlexScheme.amber),
+          darkTheme: FlexThemeData.dark(
+            scheme: FlexScheme.amber,
+            appBarStyle: FlexAppBarStyle.material,
+            appBarElevation: 1,
+          ),
+          themeMode: themeNotifier.currentTheme,
+          // theme: ThemeData(
+          //   // Color.fromARGB(255, 0, 255, 213),
+          //   // Color.fromARGB(255, 54, 94, 2),
+          //   //colorSchemeSeed: const Color.fromARGB(255, 54, 94, 2),
+          //   brightness: Brightness.light,
+          //   useMaterial3: true,
+          // ),
+          home: const HomePage(),
+          routes: {
+            '/home': (context) => const HomePage(),
+            '/settings': (context) => const SettingsPage(),
+            '/newword': (context) => const WordEditorPage(),
+            '/wordlist': (context) => const WordListPage(),
+            '/wordcollections': (context) => const WordCollectionsListPage(),
+            '/exercisesselector': (context) => const ExercisesSelectorPage(),
+          });
+    });
   }
 }
