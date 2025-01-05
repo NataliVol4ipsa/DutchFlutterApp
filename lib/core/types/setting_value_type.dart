@@ -1,0 +1,1 @@
+enum SettingValueType { bool, string }
