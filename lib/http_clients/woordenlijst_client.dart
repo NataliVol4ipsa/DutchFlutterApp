@@ -1,13 +1,15 @@
+import 'package:dutch_app/core/notifiers/notifier_tools.dart';
 import 'package:dutch_app/http_clients/get_words_online_response.dart';
 import 'package:dutch_app/http_clients/mapping/get_words_online_xml_response_parser.dart';
 import 'package:dutch_app/http_clients/mapping/word_type_converter.dart';
 import 'package:dutch_app/core/types/word_type.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class WoordenlijstClient {
   static String baseUrl = "https://woordenlijst.org";
 
-  Future<GetWordsOnlineResponse> findAsync(String word,
+  Future<GetWordsOnlineResponse?> findAsync(BuildContext context, String word,
       {WordType? wordType}) async {
     String? partOfSpeech = WordTypeConverter.toPartOfSpeechCode(wordType);
     String partOfSpeechQueryParam =
@@ -20,14 +22,20 @@ class WoordenlijstClient {
         '&regex=false'
         '&diminutive=true'
         '&paradigm=true');
-
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      return GetWordsOnlineXmlResponseParser()
-          .parseResponse(word, response.body);
-    } else {
-      throw Exception("Something went wrong");
+    try {
+      final http.Response response = await http.get(uri);
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        return GetWordsOnlineXmlResponseParser()
+            .parseResponse(word, response.body);
+      } else {
+        notifyOnlineWordSearchErrorOccurred(context,
+            errorStatusCode: response.statusCode,
+            errorMesssage: response.reasonPhrase);
+        return null;
+      }
+    } catch (ex) {
+      notifyOnlineWordSearchErrorOccurred(context, errorMesssage: "$ex");
+      return null;
     }
   }
 }

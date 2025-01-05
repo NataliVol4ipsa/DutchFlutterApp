@@ -1,4 +1,4 @@
-import 'package:dutch_app/pages/learning_session/summary/card_builder.dart';
+import 'package:dutch_app/pages/learning_session/summary/summary_card_builder.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ class ExerciseTotalsCardsBuilder {
   static Widget buildWordsTotalCard(
       BuildContext context, SingleExerciseTypeSummary summary) {
     String text = summary.totalWords > 1 ? "Words" : "Word";
-    return CardBuilder.buildTotalCard(
+    return SummaryCardBuilder.buildTotalCard(
         context, text, summary.totalWords.toString());
   }
 
@@ -17,17 +17,17 @@ class ExerciseTotalsCardsBuilder {
     String text = summary.totalMistakes > 1 || summary.totalMistakes == 0
         ? "Mistakes"
         : "Mistake";
-    return CardBuilder.buildTotalCard(
+    return SummaryCardBuilder.buildTotalCard(
         context, text, summary.totalMistakes.toString());
   }
 
   static Widget buildSuccessRateTotalCard(
       BuildContext context, SingleExerciseTypeSummary summary) {
     String text = "Success rate";
-    return CardBuilder.buildTotalCard(
+    return SummaryCardBuilder.buildTotalCard(
       context,
       text,
-      CardBuilder.percentToString(summary.successRatePercent),
+      SummaryCardBuilder.percentToString(summary.successRatePercent),
       statColorOverride: _successColor(summary.successRatePercent),
     );
   }
@@ -35,8 +35,8 @@ class ExerciseTotalsCardsBuilder {
   static Widget buildMistakesRateTotalCard(
       BuildContext context, SingleExerciseTypeSummary summary) {
     String text = "Mistakes rate";
-    return CardBuilder.buildTotalCard(
-        context, text, CardBuilder.percentToString(summary.mistakeRatePercent));
+    return SummaryCardBuilder.buildTotalCard(context, text,
+        SummaryCardBuilder.percentToString(summary.mistakeRatePercent));
   }
 
   static Color? _successColor(double successRate) {

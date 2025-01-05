@@ -1,31 +1,30 @@
-import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
-class CardBuilder {
+class SummaryCardBuilder {
   static Widget buildTotalCard(BuildContext context, String title, String stat,
       {TextStyle? titleStyleOverride,
       TextStyle? statStyleOverride,
       Color? statColorOverride}) {
     return Expanded(
-      child: Padding(
-        padding: ContainerStyles.smallContainerPadding,
-        child: Column(
-          children: [
-            Text(stat,
+      child: Column(
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(stat,
                 style: statStyleOverride ??
                     TextStyles.sessionSummaryNeutralStatStyle.copyWith(
                         color: statColorOverride ??
                             TextStyles.sessionSummaryNeutralStatStyle.color)),
-            Text(title,
-                maxLines: 2,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: titleStyleOverride ??
-                    TextStyles.sessionSummaryCardtitleTextStyle(context)),
-          ],
-        ),
+          ),
+          Text(title,
+              maxLines: 2,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: titleStyleOverride ??
+                  TextStyles.sessionSummaryCardtitleTextStyle(context)),
+        ],
       ),
     );
   }

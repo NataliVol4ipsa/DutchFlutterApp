@@ -17,12 +17,18 @@ class SummaryTotals extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionContainer(
-      padding: ContainerStyles.containerPadding,
+      padding: EdgeInsets.only(
+          left: ContainerStyles.defaultPadding / 2,
+          bottom: ContainerStyles.defaultPadding / 2,
+          right: ContainerStyles.defaultPadding / 2),
       child: Column(
         children: [
-          const Text(
-            "Totals:",
-            style: TextStyles.sessionSummaryTitleTextStyle,
+          Padding(
+            padding: ContainerStyles.containerPadding,
+            child: const Text(
+              "Totals:",
+              style: TextStyles.sessionSummaryTitleTextStyle,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -1,10 +1,13 @@
 import 'package:dutch_app/core/functions/capitalize_enum.dart';
+import 'package:dutch_app/core/notifiers/online_word_search_error_notifier.dart';
 import 'package:dutch_app/styles/container_styles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst_client.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:provider/provider.dart';
 
 class OnlineWordSearchSection extends StatefulWidget {
   final TextEditingController dutchWordTextInputController;
@@ -34,12 +37,13 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
       searchComplete = false;
     });
     var response = await WoordenlijstClient().findAsync(
+      context,
       widget.dutchWordTextInputController.text,
       wordType: widget.selectedWordType,
     );
 
     setState(() {
-      onlineWordOptions = response.onlineWords;
+      onlineWordOptions = response?.onlineWords;
       searchComplete = true;
     });
   }
@@ -64,6 +68,18 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Consumer<OnlineWordSearchErrorNotifier>(
+            builder: (context, notifier, child) {
+          if (notifier.hasError) {
+            if (kDebugMode) {
+              return SelectableText(
+                  "Error: [${notifier.errorStatusCode}]. '${notifier.errorMesssage}'");
+            }
+            return Text(
+                "Failed to access online word search service. Please check app permissions or try again later.");
+          }
+          return Container();
+        }),
         if (searchComplete) ...{
           if (onlineWordOptions == null || onlineWordOptions!.isEmpty) ...{
             Padding(
