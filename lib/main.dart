@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/dependency_injections.dart';
 import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/pages/dependency_injections.dart';
 import 'package:dutch_app/pages/exercises_selector/exercises_selector_page.dart';
@@ -28,6 +29,7 @@ void main() async {
     MultiProvider(providers: [
       ...databaseProviders(),
       ...notifierProviders(),
+      ...serviceProviders(),
     ], child: const MyApp()),
   );
 }

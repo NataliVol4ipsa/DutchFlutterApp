@@ -5,8 +5,8 @@ class Settings {
 }
 
 class ThemeSettings {
-  final bool useSystemMode;
-  final bool useDarkMode;
+  bool useSystemMode;
+  bool useDarkMode;
 
   ThemeSettings({
     bool? useSystemMode,

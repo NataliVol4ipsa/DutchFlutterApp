@@ -1,7 +1,10 @@
+import 'package:dutch_app/core/models/settings.dart';
+import 'package:dutch_app/core/services/settings_service.dart';
 import 'package:dutch_app/pages/settings/setting_tiles/setting_switch_tile_widget.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ThemeSettingsPage extends StatefulWidget {
   static const name = "Theme";
@@ -12,12 +15,38 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
-  late bool showUseDarkTheme;
+  bool isLoading = true;
+
+  late SettingsService settingSetvice;
+  late Settings settings;
+
+  bool isUseSystemModeEnabled = false;
+  bool isUseDarkThemeEnabled = false;
+
+  get showUseDarkTheme => !isUseSystemModeEnabled;
 
   @override
   void initState() {
     super.initState();
-    showUseDarkTheme = false; //todo load from preserved settings
+    settingSetvice = context.read<SettingsService>();
+    _loadSettingsAsync();
+  }
+
+  Future<void> _loadSettingsAsync() async {
+    settings = await settingSetvice.getSettingsAsync();
+    setState(() {
+      isUseSystemModeEnabled = settings.theme.useSystemMode;
+      isUseDarkThemeEnabled = settings.theme.useDarkMode;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _onUseSystemThemeChangedAsync(bool useSystemMode) async {
+    setState(() {
+      isUseSystemModeEnabled = useSystemMode;
+    });
+    settings.theme.useSystemMode = useSystemMode;
+    await settingSetvice.updateSettingsAsync(settings);
   }
 
   Widget _buildSettings(BuildContext context) {
@@ -38,24 +67,21 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         ));
   }
 
-  void _onUseSystemThemeChanged(bool useSystemTheme) {
-    setState(() {
-      showUseDarkTheme = !useSystemTheme;
-    });
-  }
-
   Widget _buildThemeSettings(BuildContext context) {
     return SettingsSection(children: [
       SettingsSwitchTile(
-        name: "Use system theme",
-        onChanged: _onUseSystemThemeChanged,
-      ),
+          name: "Use system theme",
+          onChanged: _onUseSystemThemeChangedAsync,
+          isInitiallyEnabled: isUseSystemModeEnabled),
       if (showUseDarkTheme) const SettingsSwitchTile(name: "Use dark theme"),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
