@@ -8,42 +8,46 @@ class SummaryTotalCardsBuilder {
 
   SummaryTotalCardsBuilder({required this.summary});
 
-  Widget buildWordsTotalCard() {
+  Widget buildWordsTotalCard(BuildContext context) {
     String text = summary.totalWords > 1 ? "Words" : "Word";
-    return CardBuilder.buildTotalCard(text, summary.totalWords.toString());
+    return CardBuilder.buildTotalCard(
+        context, text, summary.totalWords.toString());
   }
 
-  Widget buildExercisesTotalCard() {
+  Widget buildExercisesTotalCard(BuildContext context) {
     String text = summary.totalExercises > 1 ? "Exercises" : "Exercise";
-    return CardBuilder.buildTotalCard(text, summary.totalExercises.toString());
+    return CardBuilder.buildTotalCard(
+        context, text, summary.totalExercises.toString());
   }
 
-  Widget buildExerciseTypesTotalCard() {
+  Widget buildExerciseTypesTotalCard(BuildContext context) {
     String text =
         summary.totalExerciseTypes > 1 ? "Exercise Types" : "Exercise Type";
     return CardBuilder.buildTotalCard(
-        text, summary.totalExerciseTypes.toString());
+        context, text, summary.totalExerciseTypes.toString());
   }
 
-  Widget buildMistakesTotalCard() {
+  Widget buildMistakesTotalCard(BuildContext context) {
     String text = summary.totalMistakes > 1 || summary.totalMistakes == 0
         ? "Mistakes"
         : "Mistake";
-    return CardBuilder.buildTotalCard(text, summary.totalMistakes.toString(),
+    return CardBuilder.buildTotalCard(
+        context, text, summary.totalMistakes.toString(),
         statColorOverride: CardBuilder.mistakesColor(summary.totalMistakes));
   }
 
-  Widget buildMistakesRateTotalCard() {
+  Widget buildMistakesRateTotalCard(BuildContext context) {
     String text = "Mistakes rate";
     return CardBuilder.buildTotalCard(
-        text, CardBuilder.percentToString(summary.mistakeRatePercent),
+        context, text, CardBuilder.percentToString(summary.mistakeRatePercent),
         statColorOverride:
             CardBuilder.mistakeRateColor(summary.mistakeRatePercent));
   }
 
-  Widget buildSuccessRateTotalCard() {
+  Widget buildSuccessRateTotalCard(BuildContext context) {
     String text = "Success rate";
     return CardBuilder.buildTotalCard(
+      context,
       text,
       CardBuilder.percentToString(summary.successRatePercent),
       titleStyleOverride: TextStyles.sessionSummaryAttentionStatTitleStyle,

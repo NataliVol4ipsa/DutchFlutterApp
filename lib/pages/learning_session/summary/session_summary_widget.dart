@@ -46,10 +46,13 @@ class SessionSummaryWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ExerciseTotalsCardsBuilder.buildWordsTotalCard(summary),
-              ExerciseTotalsCardsBuilder.buildMistakesTotalCard(summary),
-              ExerciseTotalsCardsBuilder.buildSuccessRateTotalCard(summary),
-              ExerciseTotalsCardsBuilder.buildMistakesRateTotalCard(summary),
+              ExerciseTotalsCardsBuilder.buildWordsTotalCard(context, summary),
+              ExerciseTotalsCardsBuilder.buildMistakesTotalCard(
+                  context, summary),
+              ExerciseTotalsCardsBuilder.buildSuccessRateTotalCard(
+                  context, summary),
+              ExerciseTotalsCardsBuilder.buildMistakesRateTotalCard(
+                  context, summary),
             ],
           ),
           if (summary.totalMistakes > 0) ...{
@@ -103,11 +106,9 @@ class SessionSummaryWidget extends StatelessWidget {
       padding: ContainerStyles.smallContainerPadding,
       child: RichText(
           text: TextSpan(
-              style: TextStyles.sessionSummaryCardtitleTextStyle,
+              style: TextStyles.sessionSummaryCardtitleTextStyle(context),
               children: <TextSpan>[
-            TextSpan(
-                text: summary.correctAnswer,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            TextSpan(text: summary.correctAnswer),
             const TextSpan(text: " ("),
             TextSpan(
                 text: summary.totalWrongAnswers.toString(),

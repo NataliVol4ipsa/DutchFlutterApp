@@ -18,6 +18,8 @@ class ContainerStyles {
 
   static Color sectionColor2(BuildContext context) =>
       BaseStyles.getColorScheme(context).surfaceContainerHighest;
+  static Color sectionColor2Text(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSurface;
 
   static BoxDecoration roundedEdgesDecoration(BuildContext context,
           {Color? color, bool useDefaultColor = true}) =>

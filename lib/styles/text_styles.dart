@@ -1,4 +1,5 @@
 import 'package:dutch_app/styles/base_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class TextStyles {
@@ -44,8 +45,13 @@ class TextStyles {
   static const TextStyle sessionSummarySubtitleTextStyle =
       TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
-  static const TextStyle sessionSummaryCardtitleTextStyle =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+  static TextStyle sessionSummaryCardtitleTextStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: ContainerStyles.sectionColor2Text(context),
+    );
+  }
 
   static const TextStyle sessionSummaryGoodStatStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: successTextColor);

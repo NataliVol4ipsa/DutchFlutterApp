@@ -3,7 +3,7 @@ import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CardBuilder {
-  static Widget buildTotalCard(String title, String stat,
+  static Widget buildTotalCard(BuildContext context, String title, String stat,
       {TextStyle? titleStyleOverride,
       TextStyle? statStyleOverride,
       Color? statColorOverride}) {
@@ -23,7 +23,7 @@ class CardBuilder {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: titleStyleOverride ??
-                    TextStyles.sessionSummaryCardtitleTextStyle),
+                    TextStyles.sessionSummaryCardtitleTextStyle(context)),
           ],
         ),
       ),

@@ -27,17 +27,17 @@ class SummaryTotals extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _totalsBuilder.buildWordsTotalCard(),
-              _totalsBuilder.buildExercisesTotalCard(),
-              _totalsBuilder.buildExerciseTypesTotalCard(),
+              _totalsBuilder.buildWordsTotalCard(context),
+              _totalsBuilder.buildExercisesTotalCard(context),
+              _totalsBuilder.buildExerciseTypesTotalCard(context),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _totalsBuilder.buildMistakesTotalCard(),
-              _totalsBuilder.buildSuccessRateTotalCard(),
-              _totalsBuilder.buildMistakesRateTotalCard(),
+              _totalsBuilder.buildMistakesTotalCard(context),
+              _totalsBuilder.buildSuccessRateTotalCard(context),
+              _totalsBuilder.buildMistakesRateTotalCard(context),
             ],
           ),
         ],
