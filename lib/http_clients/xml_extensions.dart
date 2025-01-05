@@ -11,7 +11,7 @@ extension XmlExtensionsNullable on xml.XmlElement? {
 
   String? findFirstText(String sectionName) {
     var section = this?.findFirst(sectionName);
-    return section?.value;
+    return section?.text;
   }
 
   xml.XmlElement? findFirstWithChildText(
@@ -38,7 +38,7 @@ extension XmlExtensions on xml.XmlElement {
 
   String? findFirstText(String sectionName) {
     var section = findFirst(sectionName);
-    return section?.value;
+    return section?.text;
   }
 
   xml.XmlElement? findFirstWithChildText(
