@@ -36,9 +36,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     });
   }
 
-  Future<void> _onUseSystemThemeChangedAsync(bool useSystemMode) async {
+  Future<void> _onUseSystemModeChangedAsync(bool useSystemMode) async {
     setState(() {
       settings.theme.useSystemMode = useSystemMode;
+    });
+    await settingSetvice.updateSettingsAsync(settings);
+  }
+
+  Future<void> _onUseDarkModeChangedAsync(bool useDarkMode) async {
+    setState(() {
+      settings.theme.useDarkMode = useDarkMode;
     });
     await settingSetvice.updateSettingsAsync(settings);
   }
@@ -65,9 +72,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     return SettingsSection(children: [
       SettingsSwitchTile(
           name: "Use system theme",
-          onChanged: _onUseSystemThemeChangedAsync,
+          onChanged: _onUseSystemModeChangedAsync,
           isInitiallyEnabled: settings.theme.useSystemMode),
-      if (showUseDarkTheme) const SettingsSwitchTile(name: "Use dark theme"),
+      if (showUseDarkTheme)
+        SettingsSwitchTile(
+            name: "Use dark theme",
+            onChanged: _onUseDarkModeChangedAsync,
+            isInitiallyEnabled: settings.theme.useDarkMode),
     ]);
   }
 
