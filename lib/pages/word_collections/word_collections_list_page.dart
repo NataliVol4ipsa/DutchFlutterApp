@@ -1,7 +1,8 @@
-import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -21,7 +22,7 @@ Widget customPadding() => const SizedBox(height: 10);
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
-  List<WordCollection> collections = [];
+  List<SelectableWordCollection> collections = [];
 
   @override
   void initState() {
@@ -34,8 +35,13 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     var dbCollections =
         await collectionsRepository.getCollectionsWithWordsAsync();
 
+    var selectableCollections = dbCollections
+        .map((col) => SelectableWordCollection(col.id, col.name,
+            col.words?.map((word) => SelectableWord(word)).toList()))
+        .toList();
+
     setState(() {
-      collections = dbCollections;
+      collections = selectableCollections;
       isLoading = false;
     });
   }
@@ -72,7 +78,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   List<Widget> _buildSingleCollectionAndWords(
-      BuildContext context, WordCollection collection) {
+      BuildContext context, SelectableWordCollection collection) {
     return [
       _buildSingleCollectionWidget(context, collection),
       ..._buildCollectionWordsWidgets(context, collection.words)
@@ -80,7 +86,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Widget _buildSingleCollectionWidget(
-      BuildContext context, WordCollection collection) {
+      BuildContext context, SelectableWordCollection collection) {
     return Container(
         padding: ContainerStyles.smallContainerPadding,
         color: ContainerStyles.sectionColor(context),
@@ -88,14 +94,15 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   List<Widget> _buildCollectionWordsWidgets(
-      BuildContext context, List<Word>? words) {
+      BuildContext context, List<SelectableWord>? words) {
     if (words == null) {
       return [];
     }
     return words.map((word) => _buildWordWidget(context, word)).toList();
   }
 
-  Widget _buildWordWidget(BuildContext context, Word word) {
+  Widget _buildWordWidget(BuildContext context, SelectableWord selectableWord) {
+    var word = selectableWord.word;
     var dutchWord = word.deHetType != DeHetType.none
         ? "${word.deHetType.label} ${word.dutchWord}"
         : word.dutchWord;
