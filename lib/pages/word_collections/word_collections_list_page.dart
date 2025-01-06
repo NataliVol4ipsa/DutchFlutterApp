@@ -1,5 +1,6 @@
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
@@ -95,9 +96,12 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Widget _buildWordWidget(BuildContext context, Word word) {
+    var dutchWord = word.deHetType != DeHetType.none
+        ? "${word.deHetType.label} ${word.dutchWord}"
+        : word.dutchWord;
     return Container(
         padding: ContainerStyles.smallContainerPadding,
-        child: Text("${word.dutchWord} - ${word.englishWord}"));
+        child: Text("$dutchWord - ${word.englishWord}"));
   }
 
   @override
