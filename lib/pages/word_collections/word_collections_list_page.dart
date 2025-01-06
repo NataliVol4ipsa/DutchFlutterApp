@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -17,6 +18,7 @@ class WordCollectionsListPage extends StatefulWidget {
 Widget customPadding() => const SizedBox(height: 10);
 
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
+  bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
   List<WordCollection> collections = [];
 
@@ -33,6 +35,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
     setState(() {
       collections = dbCollections;
+      isLoading = false;
     });
   }
 
@@ -60,69 +63,60 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     await _loadData();
   }
 
-  void onCollectionTap(WordCollection collection) {
-    showUpdateCollectionDialog(collection);
+  List<Widget> _buildWordsAndCollections(BuildContext context) {
+    return collections
+        .expand(
+            (collection) => _buildSingleCollectionAndWords(context, collection))
+        .toList();
   }
 
-  void showUpdateCollectionDialog(WordCollection collection) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return TextInputModal(
-          title: 'Edit collection name',
-          inputLabel: "Choose new collection name",
-          confirmText: 'UPDATE',
-          initialValue: collection.name,
-          onConfirmPressed: (BuildContext context, String newName) {
-            return updateCollectionAsync(collection, newName);
-          },
-        );
-      },
-    );
+  List<Widget> _buildSingleCollectionAndWords(
+      BuildContext context, WordCollection collection) {
+    return [
+      _buildSingleCollectionWidget(context, collection),
+      ..._buildCollectionWordsWidgets(context, collection.words)
+    ].toList();
   }
 
-  Future<void> updateCollectionAsync(
-      WordCollection collection, String newName) async {
-    await collectionsRepository
-        .updateAsync(WordCollection(collection.id, newName));
-    await _loadData();
+  Widget _buildSingleCollectionWidget(
+      BuildContext context, WordCollection collection) {
+    return Container(
+        padding: ContainerStyles.smallContainerPadding,
+        color: ContainerStyles.sectionColor(context),
+        child: Text(collection.name));
+  }
+
+  List<Widget> _buildCollectionWordsWidgets(
+      BuildContext context, List<Word>? words) {
+    if (words == null) {
+      return [];
+    }
+    return words.map((word) => _buildWordWidget(context, word)).toList();
+  }
+
+  Widget _buildWordWidget(BuildContext context, Word word) {
+    return Container(
+        padding: ContainerStyles.smallContainerPadding,
+        child: Text("${word.dutchWord} - ${word.englishWord}"));
   }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    List<Widget> collectionsAndWords = _buildWordsAndCollections(context);
+
     return Scaffold(
         appBar: const MyAppBar(title: Text('Word collections')),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: collections.length,
-                  itemBuilder: (context, index) {
-                    WordCollection collection = collections[index];
-                    return Column(
-                      children: [
-                        ExpansionTile(
-                          title: Text(
-                              "${collection.name} (${collection.words?.length ?? 0})"),
-                          textColor: colorScheme.onSurface,
-                          children: collection.words!.map((word) {
-                            return ListTile(
-                              title: Text(
-                                  "${word.dutchWord} - ${word.englishWord}"),
-                            );
-                          }).toList(),
-                          //onTap: () => {onCollectionTap(collection)},
-                        ),
-                        customPadding(),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
+        body: Container(
+          padding: ContainerStyles.containerPadding,
+          child: ListView.builder(
+            itemCount: collectionsAndWords.length,
+            itemBuilder: (context, index) {
+              return collectionsAndWords[index];
+            },
           ),
         ),
         floatingActionButton: Padding(
