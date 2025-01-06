@@ -30,6 +30,8 @@ class ContainerStyles {
 
   static Color sectionColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).surfaceContainerHigh;
+  static Color sectionTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSurface;
 
   static Color sectionColor2(BuildContext context) =>
       BaseStyles.getColorScheme(context).surfaceContainerHighest;

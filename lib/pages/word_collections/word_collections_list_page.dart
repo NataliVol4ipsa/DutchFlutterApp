@@ -97,7 +97,16 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(collection.name),
+              Text(
+                collection.name,
+                maxLines: 2,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: collection.isSelected
+                        ? ContainerStyles.selectedPrimaryTextColor(context)
+                        : ContainerStyles.sectionTextColor(context)),
+              ),
               SizedBox(
                   width: 20.0,
                   height: 20.0,
@@ -143,12 +152,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "$dutchWord - ${word.englishWord}",
-                style: TextStyle(
-                    color: selectableWord.isSelected
-                        ? ContainerStyles.selectedSecondaryTextColor(context)
-                        : ContainerStyles.backgroundTextColor(context)),
+              Expanded(
+                child: Text(
+                  "$dutchWord - ${word.englishWord}",
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: selectableWord.isSelected
+                          ? ContainerStyles.selectedSecondaryTextColor(context)
+                          : ContainerStyles.backgroundTextColor(context)),
+                ),
               ),
               SizedBox(
                   width: 20.0,
