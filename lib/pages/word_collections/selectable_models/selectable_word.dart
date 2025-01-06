@@ -1,8 +1,8 @@
 import 'package:dutch_app/core/models/word.dart';
 
-class SelectableWord {
+class SelectableWordModel {
   bool isSelected = false;
   final Word word;
 
-  SelectableWord(this.word);
+  SelectableWordModel(this.word);
 }
