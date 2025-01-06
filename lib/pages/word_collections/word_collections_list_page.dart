@@ -1,11 +1,9 @@
-import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
-import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +22,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
   List<SelectableWordCollectionModel> collections = [];
+
+  bool checkboxModeEnabled = false;
 
   @override
   void initState() {
@@ -47,30 +47,6 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     });
   }
 
-  void onAddCollectionButtonPressed(BuildContext context) {
-    showAddCollectionDialog(context);
-  }
-
-  void showAddCollectionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return TextInputModal(
-          title: 'Creating new word collection',
-          inputLabel: "Choose collection name",
-          confirmText: 'CREATE',
-          onConfirmPressed: createCollectionAsync,
-        );
-      },
-    );
-  }
-
-  Future<void> createCollectionAsync(
-      BuildContext context, String collectionName) async {
-    await collectionsRepository.addAsync(WordCollection(null, collectionName));
-    await _loadData();
-  }
-
   List<Widget> _buildWordsAndCollections(BuildContext context) {
     return collections
         .expand(
@@ -89,11 +65,21 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     });
   }
 
+  void _toggleCheckboxMode() {
+    if (checkboxModeEnabled) return;
+    setState(() {
+      checkboxModeEnabled = true;
+    });
+  }
+
   List<Widget> _buildSingleCollectionAndWords(
       BuildContext context, SelectableWordCollectionModel collection) {
     return [
       SelectableWordCollectionRow(
-          collection: collection, onSelectCollectionTap: _selectCollection),
+          collection: collection,
+          onRowTap: _selectCollection,
+          showCheckbox: checkboxModeEnabled,
+          onLongRowPress: _toggleCheckboxMode),
       ..._buildCollectionWordsWidgets(context, collection.words)
     ].toList();
   }
@@ -103,7 +89,13 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     if (words == null) {
       return [];
     }
-    return words.map((word) => SelectableWord(word: word)).toList();
+    return words
+        .map((word) => SelectableWord(
+              word: word,
+              showCheckbox: checkboxModeEnabled,
+              onLongRowPress: _toggleCheckboxMode,
+            ))
+        .toList();
   }
 
   @override
@@ -115,24 +107,49 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     List<Widget> collectionsAndWords = _buildWordsAndCollections(context);
 
     return Scaffold(
-        appBar: const MyAppBar(title: Text('Word collections')),
-        body: Container(
-          padding: ContainerStyles.containerPadding,
-          child: ListView.builder(
-            itemCount: collectionsAndWords.length,
-            itemBuilder: (context, index) {
-              return collectionsAndWords[index];
-            },
-          ),
+      appBar: const MyAppBar(title: Text('Word collections')),
+      body: Container(
+        padding: ContainerStyles.containerPadding,
+        child: ListView.builder(
+          itemCount: collectionsAndWords.length,
+          itemBuilder: (context, index) {
+            return collectionsAndWords[index];
+          },
         ),
-        floatingActionButton: Padding(
-          padding:
-              const EdgeInsets.only(bottom: ContainerStyles.defaultPadding),
-          child: FloatingActionButton(
-            onPressed: () => {onAddCollectionButtonPressed(context)},
-            child: const Icon(Icons.add),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked);
+      ),
+      // floatingActionButton: Padding(
+      //   padding:
+      //       const EdgeInsets.only(bottom: ContainerStyles.defaultPadding),
+      //   child: FloatingActionButton(
+      //     onPressed: () => {onAddCollectionButtonPressed(context)},
+      //     child: const Icon(Icons.add),
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked
+    );
   }
+
+  // void onAddCollectionButtonPressed(BuildContext context) {
+  //   showAddCollectionDialog(context);
+  // }
+
+  // void showAddCollectionDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return TextInputModal(
+  //         title: 'Creating new word collection',
+  //         inputLabel: "Choose collection name",
+  //         confirmText: 'CREATE',
+  //         onConfirmPressed: createCollectionAsync,
+  //       );
+  //     },
+  //   );
+  // }
+
+  // Future<void> createCollectionAsync(
+  //     BuildContext context, String collectionName) async {
+  //   await collectionsRepository.addAsync(WordCollection(null, collectionName));
+  //   await _loadData();
+  // }
 }

@@ -6,7 +6,13 @@ import 'package:flutter/material.dart';
 
 class SelectableWord extends StatefulWidget {
   final SelectableWordModel word;
-  const SelectableWord({super.key, required this.word});
+  final bool showCheckbox;
+  final void Function() onLongRowPress;
+  const SelectableWord(
+      {super.key,
+      required this.word,
+      required this.onLongRowPress,
+      required this.showCheckbox});
 
   @override
   State<SelectableWord> createState() => _SelectableWordState();
@@ -39,6 +45,7 @@ class _SelectableWordState extends State<SelectableWord> {
         : word.dutchWord;
     return GestureDetector(
       onTap: () => {_selectWord(widget.word)},
+      onLongPress: widget.onLongRowPress,
       child: Container(
           color: _backgroundColor(context),
           padding: ContainerStyles.smallContainerPadding,
@@ -54,9 +61,10 @@ class _SelectableWordState extends State<SelectableWord> {
                   style: TextStyle(color: _textColor(context)),
                 ),
               ),
-              MyCheckbox(
-                  value: widget.word.isSelected,
-                  onChanged: (value) => {_selectWord(widget.word)}),
+              if (widget.showCheckbox)
+                MyCheckbox(
+                    value: widget.word.isSelected,
+                    onChanged: (value) => {_selectWord(widget.word)}),
             ],
           )),
     );
