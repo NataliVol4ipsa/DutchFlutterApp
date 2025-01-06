@@ -87,10 +87,37 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   Widget _buildSingleCollectionWidget(
       BuildContext context, SelectableWordCollection collection) {
-    return Container(
-        padding: ContainerStyles.smallContainerPadding,
-        color: ContainerStyles.sectionColor(context),
-        child: Text(collection.name));
+    return GestureDetector(
+      onTap: () => {_selectCollection(collection)},
+      child: Container(
+          color: collection.isSelected
+              ? ContainerStyles.selectedPrimaryColor(context)
+              : ContainerStyles.sectionColor(context),
+          padding: ContainerStyles.smallContainerPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(collection.name),
+              SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                  child: Checkbox(
+                      value: collection.isSelected,
+                      onChanged: (value) => {_selectCollection(collection)})),
+            ],
+          )),
+    );
+  }
+
+  void _selectCollection(SelectableWordCollection collection) {
+    setState(() {
+      collection.isSelected = !collection.isSelected;
+      if (collection.words != null) {
+        for (var word in collection.words!) {
+          word.isSelected = collection.isSelected;
+        }
+      }
+    });
   }
 
   List<Widget> _buildCollectionWordsWidgets(
@@ -106,9 +133,38 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     var dutchWord = word.deHetType != DeHetType.none
         ? "${word.deHetType.label} ${word.dutchWord}"
         : word.dutchWord;
-    return Container(
-        padding: ContainerStyles.smallContainerPadding,
-        child: Text("$dutchWord - ${word.englishWord}"));
+    return GestureDetector(
+      onTap: () => {_selectWord(selectableWord)},
+      child: Container(
+          color: selectableWord.isSelected
+              ? ContainerStyles.selectedSecondaryColor(context)
+              : ContainerStyles.backgroundColor(context),
+          padding: ContainerStyles.smallContainerPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "$dutchWord - ${word.englishWord}",
+                style: TextStyle(
+                    color: selectableWord.isSelected
+                        ? ContainerStyles.selectedSecondaryTextColor(context)
+                        : ContainerStyles.backgroundTextColor(context)),
+              ),
+              SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                  child: Checkbox(
+                      value: selectableWord.isSelected,
+                      onChanged: (value) => {_selectWord(selectableWord)})),
+            ],
+          )),
+    );
+  }
+
+  void _selectWord(SelectableWord word) {
+    setState(() {
+      word.isSelected = !word.isSelected;
+    });
   }
 
   @override

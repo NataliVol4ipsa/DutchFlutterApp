@@ -10,6 +10,21 @@ class ContainerStyles {
   static const EdgeInsets betweenCardsPadding =
       EdgeInsets.symmetric(vertical: 10);
 
+  static Color backgroundColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).surface;
+  static Color backgroundTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSurface;
+
+  static Color selectedSecondaryColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).secondaryContainer;
+  static Color selectedSecondaryTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSecondaryContainer;
+
+  static Color selectedPrimaryColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).primaryContainer;
+  static Color selectedPrimaryTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onPrimaryContainer;
+
   static Color defaultColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).surface;
 
