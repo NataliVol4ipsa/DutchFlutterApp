@@ -38,6 +38,10 @@ class ContainerStyles {
   static Color sectionColor2Text(BuildContext context) =>
       BaseStyles.getColorScheme(context).onSurface;
 
+  static Color bottomNavBarColor(BuildContext context) => sectionColor(context);
+  static Color bottomNavBarTextColor(BuildContext context) =>
+      sectionTextColor(context);
+
   static BoxDecoration roundedEdgesDecoration(BuildContext context,
           {Color? color, bool useDefaultColor = true}) =>
       BoxDecoration(

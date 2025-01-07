@@ -55,6 +55,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _selectCollection(SelectableWordCollectionModel collection) {
+    if (!checkboxModeEnabled) return;
     setState(() {
       collection.isSelected = !collection.isSelected;
       if (collection.words != null) {
@@ -63,6 +64,25 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         }
       }
     });
+  }
+
+  void _selectWord(SelectableWordModel word) {
+    if (!checkboxModeEnabled) return;
+    setState(() {
+      word.isSelected = !word.isSelected;
+    });
+  }
+
+  void _longPressCollection(SelectableWordCollectionModel collection) {
+    if (checkboxModeEnabled) return;
+    _toggleCheckboxMode();
+    _selectCollection(collection);
+  }
+
+  void _longPressWord(SelectableWordModel word) {
+    if (checkboxModeEnabled) return;
+    _toggleCheckboxMode();
+    _selectWord(word);
   }
 
   void _toggleCheckboxMode() {
@@ -79,7 +99,9 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           collection: collection,
           onRowTap: _selectCollection,
           showCheckbox: checkboxModeEnabled,
-          onLongRowPress: _toggleCheckboxMode),
+          onLongRowPress: () {
+            _longPressCollection(collection);
+          }),
       ..._buildCollectionWordsWidgets(context, collection.words)
     ].toList();
   }
@@ -90,11 +112,15 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       return [];
     }
     return words
-        .map((word) => SelectableWord(
+        .map(
+          (word) => SelectableWord(
               word: word,
               showCheckbox: checkboxModeEnabled,
-              onLongRowPress: _toggleCheckboxMode,
-            ))
+              onRowTap: _selectWord,
+              onLongRowPress: () {
+                _longPressWord(word);
+              }),
+        )
         .toList();
   }
 
@@ -117,15 +143,95 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           },
         ),
       ),
-      // floatingActionButton: Padding(
-      //   padding:
-      //       const EdgeInsets.only(bottom: ContainerStyles.defaultPadding),
-      //   child: FloatingActionButton(
-      //     onPressed: () => {onAddCollectionButtonPressed(context)},
-      //     child: const Icon(Icons.add),
-      //   ),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked
+      bottomNavigationBar: _buildBottomNavBar(context),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    if (checkboxModeEnabled) {
+      return _buildCheckboxNavBar(context);
+    }
+    return _buildRegularNavBar(context);
+  }
+
+//todo move out?
+  BottomNavigationBar _buildRegularNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: ContainerStyles.bottomNavBarColor(context),
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          label: 'Add Word',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.list),
+          label: 'Add collection',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.file_download),
+          label: 'Import',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.library_add_check),
+          label: 'Actions',
+        ),
+      ],
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            break;
+          case 1:
+            break;
+          case 2:
+            break;
+          case 3:
+            _toggleCheckboxMode();
+            break;
+        }
+      },
+    );
+  }
+
+  BottomNavigationBar _buildCheckboxNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: ContainerStyles.bottomNavBarColor(context),
+      selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+      selectedLabelStyle:
+          TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+      unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+      unselectedLabelStyle:
+          TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+      type: BottomNavigationBarType.fixed,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.school),
+          label: 'Practice',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.drive_file_move),
+          label: 'Move',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.file_copy),
+          label: 'Copy',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.upload_file),
+          label: 'Export',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.grid_view),
+          label: 'More',
+        ),
+      ],
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            _toggleCheckboxMode();
+            break;
+        }
+      },
     );
   }
 

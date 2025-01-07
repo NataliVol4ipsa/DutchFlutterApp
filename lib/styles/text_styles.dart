@@ -53,6 +53,13 @@ class TextStyles {
     );
   }
 
+  static TextStyle bottomAppBarTextStyle(BuildContext context, {Color? color}) {
+    return TextStyle(
+      fontSize: 20,
+      color: color,
+    );
+  }
+
   static const TextStyle sessionSummaryGoodStatStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: successTextColor);
 

@@ -4,48 +4,39 @@ import 'package:dutch_app/reusable_widgets/my_checkbox.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
-class SelectableWord extends StatefulWidget {
+class SelectableWord extends StatelessWidget {
   final SelectableWordModel word;
   final bool showCheckbox;
+  final Function(SelectableWordModel) onRowTap;
   final void Function() onLongRowPress;
   const SelectableWord(
       {super.key,
       required this.word,
+      required this.onRowTap,
       required this.onLongRowPress,
       required this.showCheckbox});
 
-  @override
-  State<SelectableWord> createState() => _SelectableWordState();
-}
-
-class _SelectableWordState extends State<SelectableWord> {
-  void _selectWord(SelectableWordModel word) {
-    setState(() {
-      word.isSelected = !word.isSelected;
-    });
-  }
-
   Color _backgroundColor(BuildContext context) {
-    return widget.word.isSelected
+    return word.isSelected
         ? ContainerStyles.selectedSecondaryColor(context)
         : ContainerStyles.backgroundColor(context);
   }
 
   Color _textColor(BuildContext context) {
-    return widget.word.isSelected
+    return word.isSelected
         ? ContainerStyles.selectedSecondaryTextColor(context)
         : ContainerStyles.backgroundTextColor(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    var word = widget.word.word;
-    var dutchWord = word.deHetType != DeHetType.none
-        ? "${word.deHetType.label} ${word.dutchWord}"
-        : word.dutchWord;
+    var wordValue = word.word;
+    var dutchWord = wordValue.deHetType != DeHetType.none
+        ? "${wordValue.deHetType.label} ${wordValue.dutchWord}"
+        : wordValue.dutchWord;
     return GestureDetector(
-      onTap: () => {_selectWord(widget.word)},
-      onLongPress: widget.onLongRowPress,
+      onTap: () => {onRowTap(word)},
+      onLongPress: onLongRowPress,
       child: Container(
           color: _backgroundColor(context),
           padding: ContainerStyles.smallContainerPadding,
@@ -54,17 +45,17 @@ class _SelectableWordState extends State<SelectableWord> {
             children: [
               Expanded(
                 child: Text(
-                  "$dutchWord - ${word.englishWord}",
+                  "$dutchWord - ${wordValue.englishWord}",
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: _textColor(context)),
                 ),
               ),
-              if (widget.showCheckbox)
+              if (showCheckbox)
                 MyCheckbox(
-                    value: widget.word.isSelected,
-                    onChanged: (value) => {_selectWord(widget.word)}),
+                    value: word.isSelected,
+                    onChanged: (value) => {onRowTap(word)}),
             ],
           )),
     );
