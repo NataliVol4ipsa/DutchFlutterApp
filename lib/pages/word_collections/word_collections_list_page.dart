@@ -25,6 +25,13 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   bool checkboxModeEnabled = false;
 
+  Future<void> onAfterPopAsync(bool didPop, Object? result) async {
+    if (checkboxModeEnabled) {
+      _toggleCheckboxMode();
+      return;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +59,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         .expand(
             (collection) => _buildSingleCollectionAndWords(context, collection))
         .toList();
+  }
+
+  void _unselectAllRows() {
+    setState(() {
+      for (var collection in collections) {
+        collection.isSelected = false;
+        for (var word in collection.words ?? []) {
+          word.isSelected = false;
+        }
+      }
+    });
   }
 
   void _selectCollection(SelectableWordCollectionModel collection) {
@@ -86,9 +104,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _toggleCheckboxMode() {
-    if (checkboxModeEnabled) return;
     setState(() {
-      checkboxModeEnabled = true;
+      checkboxModeEnabled = !checkboxModeEnabled;
+      if (checkboxModeEnabled == false) {
+        _unselectAllRows();
+      }
     });
   }
 
@@ -132,8 +152,21 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
     List<Widget> collectionsAndWords = _buildWordsAndCollections(context);
 
+    return PopScope(
+        canPop: !checkboxModeEnabled,
+        onPopInvokedWithResult: onAfterPopAsync,
+        child: _buildPage(collectionsAndWords, context));
+  }
+
+  String _appBarTitle() {
+    return checkboxModeEnabled
+        ? "Select one or multiple items"
+        : "Words and collections";
+  }
+
+  Scaffold _buildPage(List<Widget> collectionsAndWords, BuildContext context) {
     return Scaffold(
-      appBar: const MyAppBar(title: Text('Word collections')),
+      appBar: MyAppBar(title: Text(_appBarTitle())),
       body: Container(
         padding: ContainerStyles.containerPadding,
         child: ListView.builder(
@@ -234,7 +267,6 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       },
     );
   }
-
   // void onAddCollectionButtonPressed(BuildContext context) {
   //   showAddCollectionDialog(context);
   // }
