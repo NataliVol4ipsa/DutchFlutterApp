@@ -189,10 +189,9 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
 //todo move out?
   BottomNavigationBar _buildRegularNavBar(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: ContainerStyles.bottomNavBarColor(context),
-      items: const <BottomNavigationBarItem>[
+    return _buildNavBar(
+      context,
+      const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
           label: 'Add Word',
@@ -210,9 +209,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           label: 'Actions',
         ),
       ],
-      onTap: (int index) {
+      (int index) {
         switch (index) {
           case 0:
+            Navigator.pushNamed(context, '/newword');
             break;
           case 1:
             break;
@@ -226,17 +226,25 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-  BottomNavigationBar _buildCheckboxNavBar(BuildContext context) {
+  BottomNavigationBar _buildNavBar(BuildContext context,
+      List<BottomNavigationBarItem> items, Function(int) onTap) {
     return BottomNavigationBar(
-      backgroundColor: ContainerStyles.bottomNavBarColor(context),
-      selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-      selectedLabelStyle:
-          TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-      unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-      unselectedLabelStyle:
-          TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
+        backgroundColor: ContainerStyles.bottomNavBarColor(context),
+        selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+        selectedLabelStyle:
+            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+        unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+        unselectedLabelStyle:
+            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+        type: BottomNavigationBarType.fixed,
+        items: items,
+        onTap: onTap);
+  }
+
+  BottomNavigationBar _buildCheckboxNavBar(BuildContext context) {
+    return _buildNavBar(
+      context,
+      const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.school),
           label: 'Practice',
@@ -258,7 +266,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           label: 'More',
         ),
       ],
-      onTap: (int index) {
+      (int index) {
         switch (index) {
           case 0:
             _toggleCheckboxMode();
