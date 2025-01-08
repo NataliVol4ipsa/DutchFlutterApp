@@ -1,5 +1,7 @@
 import 'package:dutch_app/core/models/new_word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/core/notifiers/notifier_tools.dart';
+import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
@@ -66,11 +68,15 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
   Future<void> submitChangesAsync() async {
     if (!_formKey.currentState!.validate()) return;
+    var notifier = Provider.of<WordCreatedNotifier>(context, listen: false);
     if (isNewWord) {
+      notifyWordCreated(context);
       await createWordAsync();
+      notifier.notify();
       recreatePage();
     } else {
       await updateWordAsync();
+      notifier.notify();
       if (mounted) {
         Navigator.of(context).pop();
       }

@@ -2,6 +2,7 @@ import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
 import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/core/notifiers/online_word_search_error_notifier.dart';
 import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,4 +26,8 @@ void notifyOnlineWordSearchErrorOccurred(BuildContext context,
   Provider.of<OnlineWordSearchErrorNotifier>(context, listen: false)
       .notifyOccurred(
           errorStatusCode: errorStatusCode, errorMesssage: errorMesssage);
+}
+
+void notifyWordCreated(BuildContext context) {
+  Provider.of<WordCreatedNotifier>(context, listen: false).notify();
 }

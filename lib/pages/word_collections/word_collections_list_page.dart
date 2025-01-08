@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
@@ -22,6 +23,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
   List<SelectableWordCollectionModel> collections = [];
+  List<Widget> collectionsAndWords = [];
+  late WordCreatedNotifier notifier;
 
   bool checkboxModeEnabled = false;
 
@@ -35,11 +38,23 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   @override
   void initState() {
     super.initState();
+    notifier = context.read<WordCreatedNotifier>();
+    notifier.addListener(_loadData);
     collectionsRepository = context.read<WordCollectionsRepository>();
     _loadData();
   }
 
+  @override
+  void dispose() {
+    notifier.removeListener(_loadData);
+    super.dispose();
+  }
+
   Future<void> _loadData() async {
+    setState(() {
+      isLoading = true;
+    });
+
     var dbCollections =
         await collectionsRepository.getCollectionsWithWordsAsync();
 
@@ -51,6 +66,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     setState(() {
       collections = selectableCollections;
       isLoading = false;
+      collectionsAndWords = _buildWordsAndCollections(context);
     });
   }
 
@@ -150,8 +166,6 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<Widget> collectionsAndWords = _buildWordsAndCollections(context);
-
     return PopScope(
         canPop: !checkboxModeEnabled,
         onPopInvokedWithResult: onAfterPopAsync,
@@ -188,92 +202,75 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
 //todo move out?
-  BottomNavigationBar _buildRegularNavBar(BuildContext context) {
-    return _buildNavBar(
-      context,
-      const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add),
-          label: 'Add Word',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: 'Add collection',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.file_download),
-          label: 'Import',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.library_add_check),
-          label: 'Actions',
-        ),
-      ],
-      (int index) {
-        switch (index) {
-          case 0:
-            Navigator.pushNamed(context, '/newword');
-            break;
-          case 1:
-            break;
-          case 2:
-            break;
-          case 3:
-            _toggleCheckboxMode();
-            break;
-        }
-      },
-    );
+  Widget _buildRegularNavBar(BuildContext context) {
+    return WordListNavBar(
+        context: context,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add Word',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'Add collection',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_download),
+            label: 'Import',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_add_check),
+            label: 'Actions',
+          ),
+        ],
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/newword');
+              break;
+            case 1:
+              break;
+            case 2:
+              break;
+            case 3:
+              _toggleCheckboxMode();
+              break;
+          }
+        });
   }
 
-  BottomNavigationBar _buildNavBar(BuildContext context,
-      List<BottomNavigationBarItem> items, Function(int) onTap) {
-    return BottomNavigationBar(
-        backgroundColor: ContainerStyles.bottomNavBarColor(context),
-        selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-        selectedLabelStyle:
-            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-        unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-        unselectedLabelStyle:
-            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-        type: BottomNavigationBarType.fixed,
-        items: items,
-        onTap: onTap);
-  }
-
-  BottomNavigationBar _buildCheckboxNavBar(BuildContext context) {
-    return _buildNavBar(
-      context,
-      const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.school),
-          label: 'Practice',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.drive_file_move),
-          label: 'Move',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.file_copy),
-          label: 'Copy',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.upload_file),
-          label: 'Export',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.grid_view),
-          label: 'More',
-        ),
-      ],
-      (int index) {
-        switch (index) {
-          case 0:
-            _toggleCheckboxMode();
-            break;
-        }
-      },
-    );
+  Widget _buildCheckboxNavBar(BuildContext context) {
+    return WordListNavBar(
+        context: context,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Practice',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.drive_file_move),
+            label: 'Move',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_copy),
+            label: 'Copy',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.upload_file),
+            label: 'Export',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_view),
+            label: 'More',
+          ),
+        ],
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              _toggleCheckboxMode();
+              break;
+          }
+        });
   }
   // void onAddCollectionButtonPressed(BuildContext context) {
   //   showAddCollectionDialog(context);
@@ -298,4 +295,32 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   //   await collectionsRepository.addAsync(WordCollection(null, collectionName));
   //   await _loadData();
   // }
+}
+
+class WordListNavBar extends StatelessWidget {
+  const WordListNavBar({
+    super.key,
+    required this.context,
+    required this.items,
+    required this.onTap,
+  });
+
+  final BuildContext context;
+  final List<BottomNavigationBarItem> items;
+  final Function(int p1) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+        backgroundColor: ContainerStyles.bottomNavBarColor(context),
+        selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+        selectedLabelStyle:
+            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+        unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
+        unselectedLabelStyle:
+            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
+        type: BottomNavigationBarType.fixed,
+        items: items,
+        onTap: onTap);
+  }
 }
