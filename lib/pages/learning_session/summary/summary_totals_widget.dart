@@ -32,6 +32,7 @@ class SummaryTotals extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _totalsBuilder.buildWordsTotalCard(context),
               _totalsBuilder.buildExercisesTotalCard(context),
@@ -40,6 +41,7 @@ class SummaryTotals extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _totalsBuilder.buildMistakesTotalCard(context),
               _totalsBuilder.buildSuccessRateTotalCard(context),
