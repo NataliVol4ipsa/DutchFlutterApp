@@ -4,6 +4,7 @@ class GenderConverter {
   static DeHetType convert(String? genderCode) {
     switch (genderCode) {
       case 'm':
+      case 'f':
         return DeHetType.de;
       case 'n':
         return DeHetType.het;
