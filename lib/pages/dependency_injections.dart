@@ -1,5 +1,6 @@
 import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/core/notifiers/online_word_search_error_notifier.dart';
+import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,11 @@ List<ChangeNotifierProvider> notifierProviders() {
     ChangeNotifierProvider<OnlineWordSearchErrorNotifier>(
       create: (context) {
         return OnlineWordSearchErrorNotifier();
+      },
+    ),
+    ChangeNotifierProvider<OnlineWordSearchSuggestionSelectedNotifier>(
+      create: (context) {
+        return OnlineWordSearchSuggestionSelectedNotifier();
       },
     ),
     ChangeNotifierProvider<WordCreatedNotifier>(

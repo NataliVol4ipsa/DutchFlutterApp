@@ -1,27 +1,29 @@
 import 'package:dutch_app/pages/word_editor/inputs/form_input_widget.dart';
 import 'package:flutter/material.dart';
 
-class TextFormInput extends StatefulWidget {
+class FormTextInput extends StatefulWidget {
   final TextEditingController textInputController;
   final String? inputLabel;
   final bool isRequired;
   final String? hintText;
   final bool Function(String?)? valueValidator;
   final String? invalidInputErrorMessage;
-  const TextFormInput(
+  final Widget? suffixIcon;
+  const FormTextInput(
       {super.key,
       required this.textInputController,
       this.hintText,
       this.inputLabel,
       this.isRequired = false,
       this.valueValidator,
-      this.invalidInputErrorMessage});
+      this.invalidInputErrorMessage,
+      this.suffixIcon});
 
   @override
-  State<TextFormInput> createState() => _TextFormInputState();
+  State<FormTextInput> createState() => _FormTextInputState();
 }
 
-class _TextFormInputState extends State<TextFormInput> {
+class _FormTextInputState extends State<FormTextInput> {
   @override
   Widget build(BuildContext context) {
     return FormInput(
@@ -32,6 +34,7 @@ class _TextFormInputState extends State<TextFormInput> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: widget.hintText,
+          suffixIcon: widget.suffixIcon,
           contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         ),
         autovalidateMode: AutovalidateMode.onUserInteraction,

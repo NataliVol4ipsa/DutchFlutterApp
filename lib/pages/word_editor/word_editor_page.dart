@@ -1,14 +1,16 @@
 import 'package:dutch_app/core/models/new_word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
+import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/pages/word_editor/inputs/form_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/inputs/text_form_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/online_word_search_section.dart';
+import 'package:dutch_app/pages/word_editor/inputs/form_text_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/padded_form_component_widget.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_word_search_modal.dart';
 import 'package:dutch_app/pages/word_editor/validation_functions.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_collection_dropdown.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_type_dropdown.dart';
@@ -29,14 +31,13 @@ class WordEditorPage extends StatefulWidget {
 
 class _WordEditorPageState extends State<WordEditorPage> {
   Key key = UniqueKey();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController dutchWordTextInputController = TextEditingController();
   TextEditingController englishWordTextInputController =
       TextEditingController();
   TextEditingController dutchPluralFormTextInputController =
       TextEditingController();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   WordType? selectedWordType;
   WordCollection? selectedWordCollection;
@@ -46,16 +47,34 @@ class _WordEditorPageState extends State<WordEditorPage> {
   bool resetSearchTrigger = false;
 
   late WordsRepository wordsRepository;
+  late OnlineWordSearchSuggestionSelectedNotifier onlineWordSelectedNotifier;
 
   @override
   void initState() {
     super.initState();
+    onlineWordSelectedNotifier =
+        context.read<OnlineWordSearchSuggestionSelectedNotifier>();
+    onlineWordSelectedNotifier.addListener(() {
+      onlineWordSelectedNotifierAction(onlineWordSelectedNotifier.wordOption);
+    });
     wordsRepository = context.read<WordsRepository>();
     isNewWord = widget.existingWord == null;
     if (!isNewWord) {
       initializeWithExistingWord(widget.existingWord!);
     }
     selectedWordType ??= WordType.none;
+  }
+
+  void onlineWordSelectedNotifierAction(GetWordOnlineResponse? wordOption) {
+    if (wordOption == null) {
+      return;
+    }
+    setState(() {
+      resetSearchTrigger = !resetSearchTrigger;
+      selectedWordType = wordOption.partOfSpeech ?? WordType.none;
+      dutchPluralFormTextInputController.text = wordOption.pluralForm ?? "";
+      selectedDeHetType = wordOption.gender ?? DeHetType.none;
+    });
   }
 
   void initializeWithExistingWord(Word word) {
@@ -165,21 +184,22 @@ class _WordEditorPageState extends State<WordEditorPage> {
     });
   }
 
-  void onApplyOnlineWordPressed(GetWordOnlineResponse wordOption) {
-    setState(() {
-      resetSearchTrigger = !resetSearchTrigger;
-      selectedWordType = wordOption.partOfSpeech ?? WordType.none;
-      dutchPluralFormTextInputController.text = wordOption.pluralForm ?? "";
-      selectedDeHetType = wordOption.gender ?? DeHetType.none;
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
   }
 
   Widget customPadding() => const SizedBox(height: 10);
+
+  Widget _buildSearchSuffixIcon(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (dutchWordTextInputController.text.trim() == "") return;
+        OnlineWordSearchModal.show(context, dutchWordTextInputController.text);
+      },
+      child: Icon(Icons.search),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,67 +215,81 @@ class _WordEditorPageState extends State<WordEditorPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                FormInput(
-                    inputLabel: "Word type",
-                    child: WordTypeDropdown(
-                      initialValue: selectedWordType,
-                      updateValueCallback: updateSelectedWordType,
-                    )),
-                FormInput(
-                  inputLabel: "Collection",
-                  child: WordCollectionDropdown(
-                    initialValue: selectedWordCollection,
-                    updateValueCallback: updateSelectedWordCollection,
+                PaddedFormComponent(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: FormInput(
+                            inputLabel: "Word type",
+                            child: WordTypeDropdown(
+                              initialValue: selectedWordType,
+                              updateValueCallback: updateSelectedWordType,
+                            )),
+                      ),
+                      Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
+                      Expanded(
+                        child: FormInput(
+                          inputLabel: "Collection",
+                          child: WordCollectionDropdown(
+                            initialValue: selectedWordCollection,
+                            updateValueCallback: updateSelectedWordCollection,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                TextFormInput(
+                PaddedFormComponent(
+                  child: FormTextInput(
                     textInputController: dutchWordTextInputController,
                     inputLabel: "Dutch",
                     hintText: "Dutch word",
                     isRequired: true,
                     valueValidator: nonEmptyString,
-                    invalidInputErrorMessage: "Dutch word is required"),
-                if (isNewWord) ...{
-                  OnlineWordSearchSection(
-                    dutchWordTextInputController: dutchWordTextInputController,
-                    selectedWordType: selectedWordType,
-                    onApplyOnlineWordPressed:
-                        onApplyOnlineWordPressed, //rename func
-                    resetTrigger: resetSearchTrigger,
+                    invalidInputErrorMessage: "Dutch word is required",
+                    suffixIcon: _buildSearchSuffixIcon(context),
                   ),
-                },
-                TextFormInput(
-                    textInputController: englishWordTextInputController,
-                    inputLabel: "English",
-                    hintText: "English word",
-                    isRequired: true,
-                    valueValidator: nonEmptyString,
-                    invalidInputErrorMessage: "English word is required"),
+                ),
+                PaddedFormComponent(
+                  child: FormTextInput(
+                      textInputController: englishWordTextInputController,
+                      inputLabel: "English",
+                      hintText: "English word",
+                      isRequired: true,
+                      valueValidator: nonEmptyString,
+                      invalidInputErrorMessage: "English word is required"),
+                ),
                 if (shouldDisplayDeHetInput()) ...[
-                  FormInput(
-                    inputLabel: "De/Het type",
-                    child: OptionalToggleButtons<DeHetType?>(
-                      items: [
-                        ToggleButtonItem(label: 'De', value: DeHetType.de),
-                        ToggleButtonItem(label: 'Het', value: DeHetType.het),
-                      ],
-                      onChanged: onDeHetToggleChanged,
-                      selectedValue: selectedDeHetType,
+                  PaddedFormComponent(
+                    child: FormInput(
+                      inputLabel: "De/Het type",
+                      child: OptionalToggleButtons<DeHetType?>(
+                        items: [
+                          ToggleButtonItem(label: 'De', value: DeHetType.de),
+                          ToggleButtonItem(label: 'Het', value: DeHetType.het),
+                        ],
+                        onChanged: onDeHetToggleChanged,
+                        selectedValue: selectedDeHetType,
+                      ),
                     ),
                   ),
                 ],
-                customPadding(),
                 if (shouldDisplayPluralFormInput()) ...[
-                  TextFormInput(
-                      textInputController: dutchPluralFormTextInputController,
-                      inputLabel: "Dutch plural form",
-                      hintText: "Dutch plural form",
-                      isRequired: false),
+                  PaddedFormComponent(
+                    child: FormTextInput(
+                        textInputController: dutchPluralFormTextInputController,
+                        inputLabel: "Dutch plural form",
+                        hintText: "Dutch plural form",
+                        isRequired: false),
+                  ),
                 ],
                 //todo redesign
-                ElevatedButton(
-                    onPressed: submitChangesAsync,
-                    child: Text(getSubmitButtonLabel())),
+                PaddedFormComponent(
+                  child: ElevatedButton(
+                      onPressed: submitChangesAsync,
+                      child: Text(getSubmitButtonLabel())),
+                ),
                 const SizedBox(height: 20),
               ],
             ),
