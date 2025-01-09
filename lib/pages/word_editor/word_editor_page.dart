@@ -6,7 +6,10 @@ import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor/inputs/form_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/text_form_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_word_search_section.dart';
+import 'package:dutch_app/pages/word_editor/validation_functions.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_collection_dropdown.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_type_dropdown.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -15,8 +18,6 @@ import 'package:dutch_app/reusable_widgets/models/toggle_button_item.dart';
 import 'package:dutch_app/core/models/word.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../reusable_widgets/input_label.dart';
 
 class WordEditorPage extends StatefulWidget {
   final Word? existingWord;
@@ -194,113 +195,64 @@ class _WordEditorPageState extends State<WordEditorPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child: const InputLabel(
-                      "Word type",
+                FormInput(
+                    inputLabel: "Word type",
+                    child: WordTypeDropdown(
+                      initialValue: selectedWordType,
+                      updateValueCallback: updateSelectedWordType,
                     )),
-                WordTypeDropdown(
-                  initialValue: selectedWordType,
-                  updateValueCallback: updateSelectedWordType,
-                ),
-                customPadding(),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child: const InputLabel(
-                      "Collection",
-                    )),
-                WordCollectionDropdown(
-                  initialValue: selectedWordCollection,
-                  updateValueCallback: updateSelectedWordCollection,
-                ),
-                customPadding(),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child: const InputLabel(
-                      "Dutch",
-                      isRequired: true,
-                    )),
-                TextFormField(
-                  controller: dutchWordTextInputController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Dutch word",
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                FormInput(
+                  inputLabel: "Collection",
+                  child: WordCollectionDropdown(
+                    initialValue: selectedWordCollection,
+                    updateValueCallback: updateSelectedWordCollection,
                   ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Dutch word is required';
-                    }
-                    return null;
-                  },
                 ),
-                customPadding(),
+                TextFormInput(
+                    textInputController: dutchWordTextInputController,
+                    inputLabel: "Dutch",
+                    hintText: "Dutch word",
+                    isRequired: true,
+                    valueValidator: nonEmptyString,
+                    invalidInputErrorMessage: "Dutch word is required"),
                 if (isNewWord) ...{
                   OnlineWordSearchSection(
                     dutchWordTextInputController: dutchWordTextInputController,
                     selectedWordType: selectedWordType,
-                    onApplyOnlineWordPressed: onApplyOnlineWordPressed,
+                    onApplyOnlineWordPressed:
+                        onApplyOnlineWordPressed, //rename func
                     resetTrigger: resetSearchTrigger,
                   ),
                 },
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child: const InputLabel(
-                      "English",
-                      isRequired: true,
-                    )),
-                TextFormField(
-                  controller: englishWordTextInputController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                TextFormInput(
+                    textInputController: englishWordTextInputController,
+                    inputLabel: "English",
                     hintText: "English word",
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'English word is required';
-                    }
-                    return null;
-                  },
-                ),
-                customPadding(),
+                    isRequired: true,
+                    valueValidator: nonEmptyString,
+                    invalidInputErrorMessage: "English word is required"),
                 if (shouldDisplayDeHetInput()) ...[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: const InputLabel(
-                        "De/Het type",
-                      )),
-                  OptionalToggleButtons<DeHetType?>(
-                    items: [
-                      ToggleButtonItem(label: 'De', value: DeHetType.de),
-                      ToggleButtonItem(label: 'Het', value: DeHetType.het),
-                    ],
-                    onChanged: onDeHetToggleChanged,
-                    selectedValue: selectedDeHetType,
-                  ),
-                ],
-                customPadding(),
-                if (shouldDisplayPluralFormInput()) ...[
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: const InputLabel(
-                        "Dutch plural form",
-                      )),
-                  TextField(
-                    controller: dutchPluralFormTextInputController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Dutch plural form",
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  FormInput(
+                    inputLabel: "De/Het type",
+                    child: OptionalToggleButtons<DeHetType?>(
+                      items: [
+                        ToggleButtonItem(label: 'De', value: DeHetType.de),
+                        ToggleButtonItem(label: 'Het', value: DeHetType.het),
+                      ],
+                      onChanged: onDeHetToggleChanged,
+                      selectedValue: selectedDeHetType,
                     ),
                   ),
                 ],
                 customPadding(),
+                if (shouldDisplayPluralFormInput()) ...[
+                  TextFormInput(
+                      textInputController: dutchPluralFormTextInputController,
+                      inputLabel: "Dutch plural form",
+                      hintText: "Dutch plural form",
+                      isRequired: false),
+                ],
+                //todo redesign
                 ElevatedButton(
                     onPressed: submitChangesAsync,
                     child: Text(getSubmitButtonLabel())),
@@ -314,9 +266,9 @@ class _WordEditorPageState extends State<WordEditorPage> {
   }
 }
 
+// todo move out and explain what it does
 class NoAnimationPageRoute<T> extends PageRouteBuilder<T> {
   final WidgetBuilder builder;
-
   NoAnimationPageRoute({required this.builder})
       : super(
           pageBuilder: (context, animation, secondaryAnimation) =>

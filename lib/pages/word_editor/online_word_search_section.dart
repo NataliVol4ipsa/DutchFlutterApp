@@ -64,6 +64,76 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
     }
   }
 
+//todo light and dark theme styles
+  Padding _buildNoWordsSection() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            color: Colors.red[50],
+            child: const Row(
+              children: [
+                Icon(Icons.error, color: Colors.red),
+                SizedBox(width: 8),
+                Text(
+                  "Failed to find word online",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Card _buildOnlineSearchCard(GetWordOnlineResponse wordOption) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Padding(
+        padding: ContainerStyles.containerPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              wordOption.word,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            if (wordOption.note != null && wordOption.note != "")
+              Text('Note: ${wordOption.note}'),
+            if (wordOption.partOfSpeech != null &&
+                wordOption.partOfSpeech != WordType.none)
+              Text(
+                  'Part of Speech: ${capitalizeEnum(wordOption.partOfSpeech!)}'),
+            if (wordOption.gender != null &&
+                wordOption.gender != DeHetType.none)
+              Text('De/Het: ${capitalizeEnum(wordOption.gender!)}'),
+            if (wordOption.pluralForm != null)
+              Text('Plural: ${wordOption.pluralForm}'),
+            if (wordOption.diminutive != null)
+              Text('Diminutive: ${wordOption.diminutive}'),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  widget.onApplyOnlineWordPressed(wordOption);
+                },
+                child: const Text('Apply'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -82,30 +152,7 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
         }),
         if (searchComplete) ...{
           if (onlineWordOptions == null || onlineWordOptions!.isEmpty) ...{
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    color: Colors.red[50],
-                    child: const Row(
-                      children: [
-                        Icon(Icons.error, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text(
-                          "Failed to find word online",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildNoWordsSection(),
             const SizedBox(height: 10),
           },
           if (onlineWordOptions != null && onlineWordOptions!.isNotEmpty) ...{
@@ -115,47 +162,7 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
               itemCount: onlineWordOptions?.length ?? 0,
               itemBuilder: (context, index) {
                 final wordOption = onlineWordOptions![index];
-                return Card(
-                  elevation: 3,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: Padding(
-                    padding: ContainerStyles.containerPadding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          wordOption.word,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        if (wordOption.note != null && wordOption.note != "")
-                          Text('Note: ${wordOption.note}'),
-                        if (wordOption.partOfSpeech != null &&
-                            wordOption.partOfSpeech != WordType.none)
-                          Text(
-                              'Part of Speech: ${capitalizeEnum(wordOption.partOfSpeech!)}'),
-                        if (wordOption.gender != null &&
-                            wordOption.gender != DeHetType.none)
-                          Text('De/Het: ${capitalizeEnum(wordOption.gender!)}'),
-                        if (wordOption.pluralForm != null)
-                          Text('Plural: ${wordOption.pluralForm}'),
-                        if (wordOption.diminutive != null)
-                          Text('Diminutive: ${wordOption.diminutive}'),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              widget.onApplyOnlineWordPressed(wordOption);
-                            },
-                            child: const Text('Apply'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _buildOnlineSearchCard(wordOption);
               },
             ),
           }
@@ -170,7 +177,6 @@ class _OnlineWordSearchSectionState extends State<OnlineWordSearchSection> {
             );
           },
         ),
-        const SizedBox(height: 10),
       ],
     );
   }
