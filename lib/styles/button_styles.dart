@@ -2,7 +2,7 @@ import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
 class ButtonStyles {
-  static final ButtonStyle primaryButtonStyle = ButtonStyle(
+  static final ButtonStyle bigButtonStyle = ButtonStyle(
       padding: WidgetStateProperty.all(
         const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       ),
@@ -17,21 +17,21 @@ class ButtonStyles {
         fontWeight: FontWeight.bold,
       )));
 
-  static ButtonStyle secondaryButtonStyle(BuildContext context) {
+  static ButtonStyle primaryButtonStyle(BuildContext context) {
     var colorScheme = BaseStyles.getColorScheme(context);
 
     var textColor = colorScheme.onPrimaryContainer;
     var backgroundColor = colorScheme.primaryContainer;
 
-    return primaryButtonStyle.copyWith(
-      backgroundColor: _createButtonStyleColor(backgroundColor),
-      foregroundColor: _createButtonStyleColor(textColor),
+    return bigButtonStyle.copyWith(
+      backgroundColor: createButtonStyleColor(backgroundColor),
+      foregroundColor: createButtonStyleColor(textColor),
     );
   }
 
   // Tools
 
-  static WidgetStateProperty<Color> _createButtonStyleColor(Color color) {
+  static WidgetStateProperty<Color> createButtonStyleColor(Color color) {
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.disabled)) {
         return color.withAlpha(12);

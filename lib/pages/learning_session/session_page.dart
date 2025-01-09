@@ -49,7 +49,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
             ? LayeredBottom(contentBuilder: (context) {
                 return ElevatedButton(
                   onPressed: _onNextButtonPressedAsync,
-                  style: ButtonStyles.primaryButtonStyle,
+                  style: ButtonStyles.bigButtonStyle,
                   child:
                       Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
                 );

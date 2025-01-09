@@ -3,6 +3,8 @@ import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
+import 'package:dutch_app/styles/base_styles.dart';
+import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,7 @@ class OnlineWordCard extends StatelessWidget {
         Provider.of<OnlineWordSearchSuggestionSelectedNotifier>(context,
             listen: false);
     return Card(
+      color: ContainerStyles.sectionColor(context),
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Padding(
@@ -28,31 +31,65 @@ class OnlineWordCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              wordResponse.word,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(fontSize: 20),
+                children: <TextSpan>[
+                  if (wordResponse.gender != null &&
+                      wordResponse.gender != DeHetType.none) ...[
+                    TextSpan(text: wordResponse.gender!.label),
+                    const TextSpan(text: ' '),
+                  ],
+                  TextSpan(
+                    text: wordResponse.word,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             if (wordResponse.note != null && wordResponse.note != "")
-              Text('Note: ${wordResponse.note}'),
+              Text(
+                'Note: ${wordResponse.note}',
+                style: TextStyle(
+                    color: ContainerStyles.sectionTextColor(context),
+                    fontSize: 16),
+              ),
             if (wordResponse.partOfSpeech != null &&
                 wordResponse.partOfSpeech != WordType.none)
               Text(
-                  'Part of Speech: ${capitalizeEnum(wordResponse.partOfSpeech!)}'),
-            if (wordResponse.gender != null &&
-                wordResponse.gender != DeHetType.none)
-              Text('De/Het: ${capitalizeEnum(wordResponse.gender!)}'),
+                  'Part of Speech: ${capitalizeEnum(wordResponse.partOfSpeech!)}',
+                  style: const TextStyle(fontSize: 16)),
             if (wordResponse.pluralForm != null)
-              Text('Plural: ${wordResponse.pluralForm}'),
+              Text('Plural: ${wordResponse.pluralForm}',
+                  style: const TextStyle(fontSize: 16)),
             if (wordResponse.diminutive != null)
-              Text('Diminutive: ${wordResponse.diminutive}'),
+              Text('Diminutive: ${wordResponse.diminutive}',
+                  style: const TextStyle(fontSize: 16)),
             Align(
               alignment: Alignment.bottomRight,
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: () {
                   wordSelectedNotifier.notify(wordResponse);
                   Navigator.pop(context);
                 },
+                style: ButtonStyle(
+                    backgroundColor: ButtonStyles.createButtonStyleColor(
+                        BaseStyles.getColorScheme(context).primaryContainer),
+                    foregroundColor: ButtonStyles.createButtonStyleColor(
+                        BaseStyles.getColorScheme(context).onPrimaryContainer),
+                    padding: WidgetStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    ),
+                    shape: WidgetStateProperty.all(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                    ),
+                    textStyle: WidgetStateProperty.all(TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ))),
                 child: const Text('Apply'),
               ),
             ),

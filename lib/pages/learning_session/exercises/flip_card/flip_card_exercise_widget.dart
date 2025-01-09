@@ -105,7 +105,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
       onPressed: () {
         onShowTranslationClicked();
       },
-      style: ButtonStyles.secondaryButtonStyle(context),
+      style: ButtonStyles.primaryButtonStyle(context),
       child: const Text(
         "Show translation",
       ),
@@ -132,7 +132,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
       onPressed: () {
         onAnswerProvided(userClickedKnow);
       },
-      style: ButtonStyles.secondaryButtonStyle(context),
+      style: ButtonStyles.primaryButtonStyle(context),
       child: Text(
         buttonText,
       ),
