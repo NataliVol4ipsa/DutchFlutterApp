@@ -5,6 +5,7 @@ import 'package:dutch_app/pages/word_collections/selectable_models/selectable_co
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
+import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,23 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       isLoading = false;
       collectionsAndWords = _buildWordsAndCollections(context);
     });
+  }
+
+  Future<void> _loadDataWithSnackBar(String message) async {
+    var snackBar = ScaffoldMessenger.of(context);
+    await _loadData();
+    snackBar.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            print("Undo clicked!");
+          },
+        ),
+      ),
+    );
   }
 
   List<Widget> _buildWordsAndCollections(BuildContext context) {
@@ -163,16 +181,13 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    collectionsAndWords = _buildWordsAndCollections(context);
-
     return PopScope(
         canPop: !checkboxModeEnabled,
         onPopInvokedWithResult: onAfterPopAsync,
-        child: _buildPage(collectionsAndWords, context));
+        child: Scaffold(
+            appBar: MyAppBar(title: Text(_appBarTitle())),
+            body: _buildPage(context),
+            bottomNavigationBar: _buildBottomNavBar(context)));
   }
 
   String _appBarTitle() {
@@ -181,19 +196,20 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         : "Words and collections";
   }
 
-  Scaffold _buildPage(List<Widget> collectionsAndWords, BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(title: Text(_appBarTitle())),
-      body: Container(
-        padding: ContainerStyles.containerPadding,
-        child: ListView.builder(
-          itemCount: collectionsAndWords.length,
-          itemBuilder: (context, index) {
-            return collectionsAndWords[index];
-          },
-        ),
+  Widget _buildPage(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    collectionsAndWords = _buildWordsAndCollections(context);
+    return Container(
+      padding: ContainerStyles.containerPadding,
+      child: ListView.builder(
+        itemCount: collectionsAndWords.length,
+        itemBuilder: (context, index) {
+          return collectionsAndWords[index];
+        },
       ),
-      bottomNavigationBar: _buildBottomNavBar(context),
     );
   }
 
@@ -232,7 +248,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
               Navigator.pushNamed(context, '/newword');
               break;
             case 1:
-              showAddCollectionDialog(context: context, callback: _loadData);
+              showAddCollectionDialog(
+                  context: context,
+                  callback: (() => _loadDataWithSnackBar(
+                      "Succesfully created new collection")));
               break;
             case 2:
               break;
@@ -275,33 +294,5 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
               break;
           }
         });
-  }
-}
-
-class WordListNavBar extends StatelessWidget {
-  const WordListNavBar({
-    super.key,
-    required this.context,
-    required this.items,
-    required this.onTap,
-  });
-
-  final BuildContext context;
-  final List<BottomNavigationBarItem> items;
-  final Function(int p1) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-        backgroundColor: ContainerStyles.bottomNavBarColor(context),
-        selectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-        selectedLabelStyle:
-            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-        unselectedItemColor: ContainerStyles.bottomNavBarTextColor(context),
-        unselectedLabelStyle:
-            TextStyle(color: ContainerStyles.bottomNavBarTextColor(context)),
-        type: BottomNavigationBarType.fixed,
-        items: items,
-        onTap: onTap);
   }
 }
