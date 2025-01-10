@@ -27,6 +27,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   List<SelectableWordCollectionModel> collections = [];
   List<Widget> collectionsAndWords = [];
   late WordCreatedNotifier notifier;
+  final ScrollController scrollController = ScrollController();
 
   bool checkboxModeEnabled = false;
 
@@ -48,11 +49,16 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   @override
   void dispose() {
+    scrollController.dispose();
     notifier.removeListener(_loadData);
     super.dispose();
   }
 
   Future<void> _loadData() async {
+    double preservedScrollPosition = 0;
+    if (scrollController.hasClients) {
+      preservedScrollPosition = scrollController.offset;
+    }
     setState(() {
       isLoading = true;
     });
@@ -69,6 +75,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       collections = selectableCollections;
       isLoading = false;
       collectionsAndWords = _buildWordsAndCollections(context);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (preservedScrollPosition != 0) {
+        scrollController.jumpTo(preservedScrollPosition);
+      }
     });
   }
 
@@ -205,6 +216,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     return Container(
       padding: ContainerStyles.containerPadding,
       child: ListView.builder(
+        controller: scrollController,
         itemCount: collectionsAndWords.length,
         itemBuilder: (context, index) {
           return collectionsAndWords[index];
