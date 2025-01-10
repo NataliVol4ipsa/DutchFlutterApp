@@ -1,12 +1,11 @@
-import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
-import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -233,7 +232,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
               Navigator.pushNamed(context, '/newword');
               break;
             case 1:
-              showAddCollectionDialog(context);
+              showAddCollectionDialog(context: context, callback: _loadData);
               break;
             case 2:
               break;
@@ -276,26 +275,6 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
               break;
           }
         });
-  }
-
-  void showAddCollectionDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return TextInputModal(
-          title: 'Creating new word collection',
-          inputLabel: "Choose collection name",
-          confirmText: 'CREATE',
-          onConfirmPressed: createCollectionAsync,
-        );
-      },
-    );
-  }
-
-  Future<void> createCollectionAsync(
-      BuildContext context, String collectionName) async {
-    await collectionsRepository.addAsync(WordCollection(null, collectionName));
-    await _loadData();
   }
 }
 
