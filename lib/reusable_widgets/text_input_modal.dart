@@ -24,12 +24,12 @@ class TextInputModal extends StatefulWidget {
 
 class _TextInputModalState extends State<TextInputModal> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController fileNameInputController = TextEditingController();
+  TextEditingController inputController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fileNameInputController.text = widget.initialValue ?? "";
+    inputController.text = widget.initialValue ?? "";
   }
 
   @override
@@ -47,7 +47,7 @@ class _TextInputModalState extends State<TextInputModal> {
                   widget.inputLabel ?? "Please enter text value:",
                 )),
             TextFormField(
-              controller: fileNameInputController,
+              controller: inputController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding:
@@ -73,7 +73,7 @@ class _TextInputModalState extends State<TextInputModal> {
             ),
             TextButton(
               onPressed: () {
-                widget.onConfirmPressed(context, fileNameInputController.text);
+                widget.onConfirmPressed(context, inputController.text);
                 Navigator.of(context).pop();
               },
               child: Text(
