@@ -5,6 +5,7 @@ import 'package:dutch_app/pages/learning_session/summary/exercise_total_cards_bu
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 import 'package:dutch_app/pages/learning_session/summary/summary_totals_widget.dart';
 import 'package:dutch_app/reusable_widgets/section_container_widget.dart';
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
@@ -71,8 +72,8 @@ class SessionSummaryWidget extends StatelessWidget {
                     width: double.infinity,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: ContainerStyles.sectionColor2(context),
+                      borderRadius: BorderStyles.bigBorderRadius,
+                      color: ContainerStyles.section2Color(context),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

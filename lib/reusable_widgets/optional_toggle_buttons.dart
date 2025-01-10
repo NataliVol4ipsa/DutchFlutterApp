@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:dutch_app/reusable_widgets/models/toggle_button_item.dart';
+import 'package:dutch_app/styles/border_styles.dart';
+import 'package:dutch_app/styles/button_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class OptionalToggleButtons<T> extends StatefulWidget {
@@ -64,16 +66,29 @@ class _OptionalToggleButtonsState<T> extends State<OptionalToggleButtons<T>> {
             (constraints.maxWidth - (widget.items.length + 2)) /
                 widget.items.length;
 
-        return ToggleButtons(
-          isSelected: isSelected,
-          onPressed: onPressedHandler,
-          borderRadius: BorderRadius.circular(18),
-          children: widget.items.map((item) {
-            return SizedBox(
-              width: buttonWidth,
-              child: Center(child: Text(item.label)),
-            );
-          }).toList(),
+        return Container(
+          decoration: BoxDecoration(
+            color: ContainerStyles.sectionColor(context),
+            borderRadius: BorderStyles.defaultBorderRadius,
+          ),
+          child: ToggleButtons(
+            fillColor: ButtonStyles.secondaryButtonColor(context),
+            splashColor:
+                ButtonStyles.secondaryButtonColor(context).withAlpha(100),
+            isSelected: isSelected,
+            onPressed: onPressedHandler,
+            borderRadius: BorderStyles.defaultBorderRadius,
+            borderColor: BorderStyles.enabledBorderColor,
+            children: widget.items.map((item) {
+              return SizedBox(
+                  width: buttonWidth,
+                  child: Center(
+                    child: Text(item.label,
+                        style: TextStyle(
+                            color: ContainerStyles.sectionTextColor(context))),
+                  ));
+            }).toList(),
+          ),
         );
       },
     );

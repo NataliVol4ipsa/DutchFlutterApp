@@ -49,7 +49,7 @@ class TextStyles {
     return TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.bold,
-      color: ContainerStyles.sectionColor2Text(context),
+      color: ContainerStyles.section2TextColor(context),
     );
   }
 

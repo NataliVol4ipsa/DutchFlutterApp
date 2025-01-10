@@ -1,4 +1,5 @@
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -34,10 +35,11 @@ class HomePage extends StatelessWidget {
             Flexible(
               fit: FlexFit.loose, // Take only as much space as needed
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  topRight: Radius.circular(5),
-                ), // Clip only the top corners(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(BorderStyles.smallBorderRadiusValue),
+                  topRight:
+                      Radius.circular(BorderStyles.smallBorderRadiusValue),
+                ),
                 child: Container(
                   width: double.infinity,
                   color: Theme.of(context).colorScheme.primaryContainer,

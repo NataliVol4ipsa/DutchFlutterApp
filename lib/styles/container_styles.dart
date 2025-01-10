@@ -1,8 +1,8 @@
 import 'package:dutch_app/styles/base_styles.dart';
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/cupertino.dart';
 
 class ContainerStyles {
-  static const double roundedEdgeRadius = 20;
   static const double defaultPadding = 16;
   static const EdgeInsets containerPadding = EdgeInsets.all(defaultPadding);
   static const EdgeInsets smallContainerPadding =
@@ -33,9 +33,9 @@ class ContainerStyles {
   static Color sectionTextColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).onSurface;
 
-  static Color sectionColor2(BuildContext context) =>
+  static Color section2Color(BuildContext context) =>
       BaseStyles.getColorScheme(context).surfaceContainerHighest;
-  static Color sectionColor2Text(BuildContext context) =>
+  static Color section2TextColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).onSurface;
 
   static Color bottomNavBarColor(BuildContext context) => sectionColor(context);
@@ -45,7 +45,7 @@ class ContainerStyles {
   static BoxDecoration roundedEdgesDecoration(BuildContext context,
           {Color? color, bool useDefaultColor = true}) =>
       BoxDecoration(
-        borderRadius: BorderRadius.circular(roundedEdgeRadius),
+        borderRadius: BorderStyles.bigBorderRadius,
         color: color ??
             (useDefaultColor ? ContainerStyles.sectionColor(context) : null),
       );

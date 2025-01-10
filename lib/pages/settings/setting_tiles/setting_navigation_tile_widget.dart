@@ -1,5 +1,5 @@
 import 'package:dutch_app/pages/settings/setting_tiles/setting_tile_widget.dart';
-import 'package:dutch_app/styles/container_styles.dart';
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/material.dart';
 
 class SettingNavigationTile extends StatelessWidget {
@@ -19,8 +19,7 @@ class SettingNavigationTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         customBorder: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(ContainerStyles.roundedEdgeRadius),
+          borderRadius: BorderStyles.bigBorderRadius,
         ),
         onTap: onTap,
         child: SettingTile(

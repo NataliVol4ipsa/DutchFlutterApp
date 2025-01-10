@@ -3,7 +3,6 @@ import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
-import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,9 @@ class OnlineWordCard extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20,
+                    color: ContainerStyles.sectionTextColor(context)),
                 children: <TextSpan>[
                   if (wordResponse.gender != null &&
                       wordResponse.gender != DeHetType.none) ...[
@@ -73,23 +74,7 @@ class OnlineWordCard extends StatelessWidget {
                   wordSelectedNotifier.notify(wordResponse);
                   Navigator.pop(context);
                 },
-                style: ButtonStyle(
-                    backgroundColor: ButtonStyles.createButtonStyleColor(
-                        BaseStyles.getColorScheme(context).primaryContainer),
-                    foregroundColor: ButtonStyles.createButtonStyleColor(
-                        BaseStyles.getColorScheme(context).onPrimaryContainer),
-                    padding: WidgetStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    ),
-                    shape: WidgetStateProperty.all(
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                    ),
-                    textStyle: WidgetStateProperty.all(TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ))),
+                style: ButtonStyles.mediumPrimaryButtonStyle(context),
                 child: const Text('Apply'),
               ),
             ),

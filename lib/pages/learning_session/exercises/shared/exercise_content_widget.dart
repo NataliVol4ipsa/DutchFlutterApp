@@ -1,3 +1,4 @@
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseContent extends StatelessWidget {
@@ -42,7 +43,7 @@ class ExerciseContent extends StatelessWidget {
             flex: 3,
             child: Container(
               decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  BoxDecoration(borderRadius: BorderStyles.bigBorderRadius),
               alignment: Alignment.center,
               child: evaluationBuilder(context),
             )),

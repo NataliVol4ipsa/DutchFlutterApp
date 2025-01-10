@@ -102,7 +102,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
           : () {
               onAnswerProvided(deHetType);
             },
-      style: ButtonStyles.primaryButtonStyle(context),
+      style: ButtonStyles.largePrimaryButtonStyle(context),
       child: Text(
         buttonText,
       ),

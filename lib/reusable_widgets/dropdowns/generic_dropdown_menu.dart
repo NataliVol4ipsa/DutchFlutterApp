@@ -1,3 +1,5 @@
+import 'package:dutch_app/styles/border_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class GenericDropdownMenu<T> extends StatefulWidget {
@@ -23,23 +25,35 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity, // Make sure the dropdown takes full width
-      child: DropdownButtonFormField<T?>(
-        value: widget.initialValue,
-        onChanged: (T? value) {
-          if (value != null) {
-            widget.onValueChanged(value);
-            setState(() {});
-          }
-        },
-        items: widget.dropdownValues.map<DropdownMenuItem<T>>((T value) {
-          return DropdownMenuItem<T>(
-            value: value,
-            child: Text(widget.displayStringFunc(value)),
-          );
-        }).toList(),
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      child: Container(
+        decoration: BoxDecoration(
+            color: ContainerStyles.section2Color(context),
+            borderRadius: BorderStyles.defaultBorderRadius),
+        child: Theme(
+          data: Theme.of(context)
+              .copyWith(canvasColor: ContainerStyles.section2Color(context)),
+          child: DropdownButtonFormField<T?>(
+            value: widget.initialValue,
+            focusColor: Colors.red,
+            onChanged: (T? value) {
+              if (value != null) {
+                widget.onValueChanged(value);
+                setState(() {});
+              }
+            },
+            items: widget.dropdownValues.map<DropdownMenuItem<T>>((T value) {
+              return DropdownMenuItem<T>(
+                value: value,
+                child: Text(widget.displayStringFunc(value)),
+              );
+            }).toList(),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: BorderStyles.defaultBorderRadius),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+            ),
+          ),
         ),
       ),
     );

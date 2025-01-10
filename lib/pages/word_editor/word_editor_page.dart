@@ -18,6 +18,7 @@ import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/optional_toggle_buttons.dart';
 import 'package:dutch_app/reusable_widgets/models/toggle_button_item.dart';
 import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -284,11 +285,21 @@ class _WordEditorPageState extends State<WordEditorPage> {
                         isRequired: false),
                   ),
                 ],
-                //todo redesign
+                const SizedBox(height: 20),
                 PaddedFormComponent(
-                  child: ElevatedButton(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
                       onPressed: submitChangesAsync,
-                      child: Text(getSubmitButtonLabel())),
+                      style: ButtonStyles.mediumPrimaryButtonStyle(context),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          getSubmitButtonLabel(),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],

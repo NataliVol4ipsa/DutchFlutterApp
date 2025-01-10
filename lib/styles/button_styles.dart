@@ -1,31 +1,49 @@
 import 'package:dutch_app/styles/base_styles.dart';
+import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/material.dart';
 
 class ButtonStyles {
-  static final ButtonStyle bigButtonStyle = ButtonStyle(
-      padding: WidgetStateProperty.all(
-        const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-      ),
-      minimumSize: WidgetStateProperty.all(const Size(double.infinity, 50)),
-      shape: WidgetStateProperty.all(
-        const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+  static ButtonStyle _baseButtonStyle(
+      double horizontalPadding, double verticalPadding, double fontSize) {
+    return ButtonStyle(
+        padding: WidgetStateProperty.all(
+          EdgeInsets.symmetric(
+              horizontal: horizontalPadding, vertical: verticalPadding),
         ),
-      ),
-      textStyle: WidgetStateProperty.all(const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      )));
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+              borderRadius: BorderStyles.defaultBorderRadius),
+        ),
+        textStyle: WidgetStateProperty.all(TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+        )));
+  }
 
-  static ButtonStyle primaryButtonStyle(BuildContext context) {
-    var colorScheme = BaseStyles.getColorScheme(context);
+  static final ButtonStyle mediumButtonStyle = _baseButtonStyle(20, 10, 16);
+  static final ButtonStyle bigButtonStyle = _baseButtonStyle(40, 20, 20);
 
-    var textColor = colorScheme.onPrimaryContainer;
-    var backgroundColor = colorScheme.primaryContainer;
+  static Color primaryButtonColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).primaryContainer;
+  static Color primaryButtonColorText(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onPrimaryContainer;
 
+  static Color secondaryButtonColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).secondaryContainer;
+  static Color secondaryButtonColorText(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSecondaryContainer;
+
+  static ButtonStyle largePrimaryButtonStyle(BuildContext context) {
     return bigButtonStyle.copyWith(
-      backgroundColor: createButtonStyleColor(backgroundColor),
-      foregroundColor: createButtonStyleColor(textColor),
+      backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
+      foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
+    );
+  }
+
+  static ButtonStyle mediumPrimaryButtonStyle(BuildContext context) {
+    return mediumButtonStyle.copyWith(
+      backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
+      foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
     );
   }
 
@@ -34,7 +52,7 @@ class ButtonStyles {
   static WidgetStateProperty<Color> createButtonStyleColor(Color color) {
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.disabled)) {
-        return color.withAlpha(12);
+        return color.withAlpha(20);
       }
       return color;
     });
