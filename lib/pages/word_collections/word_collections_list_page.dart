@@ -166,6 +166,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    collectionsAndWords = _buildWordsAndCollections(context);
+
     return PopScope(
         canPop: !checkboxModeEnabled,
         onPopInvokedWithResult: onAfterPopAsync,
