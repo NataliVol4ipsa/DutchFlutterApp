@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
+import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
@@ -277,7 +278,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   Widget _buildCheckboxNavBar(BuildContext context) {
     return WordListNavBar(
         context: context,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Practice',
@@ -295,7 +296,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             label: 'Export',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
+            icon: _buildMoreButton(context),
             label: 'More',
           ),
         ],
@@ -304,7 +305,54 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             case 0:
               _toggleCheckboxMode();
               break;
+            case 1:
+              break;
+            case 2:
+              break;
+            case 3:
+              break;
+            case 4:
+              setState(() {
+                if (menuController == null) {
+                  return;
+                }
+                if (menuController!.isOpen) {
+                  menuController!.close();
+                } else {
+                  menuController!.open();
+                }
+              });
+              break;
           }
         });
+  }
+
+  MenuController? menuController;
+
+  Widget _buildMoreButton(BuildContext context) {
+    var actions = [
+      MyPopupMenuItem(
+        icon: Icons.delete,
+        label: "Delete",
+        onPressed: (() => {print("delete clicked")}),
+      ),
+      MyPopupMenuItem(
+        icon: Icons.delete,
+        label: "Delete",
+        onPressed: (() => {print("delete clicked")}),
+      ),
+    ];
+    return MenuAnchor(
+      alignmentOffset: const Offset(0, 8),
+      builder:
+          (BuildContext context, MenuController controller, Widget? child) {
+        menuController = controller;
+        return const Icon(Icons.grid_view);
+      },
+      menuChildren: List<Widget>.generate(
+        actions.length,
+        (int index) => actions[index],
+      ),
+    );
   }
 }
