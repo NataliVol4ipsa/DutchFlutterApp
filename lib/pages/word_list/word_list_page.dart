@@ -4,7 +4,7 @@ import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/services/words_io_json_v1_service.dart';
 import 'package:dutch_app/core/services/words_storage_service.dart';
-import 'package:dutch_app/pages/word_list/dialogs/delete_word_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
 import 'package:dutch_app/pages/word_list/snackbars/snackbar_shower.dart';
 import 'package:dutch_app/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:dutch_app/pages/word_list/word_list_table.dart';

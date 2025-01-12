@@ -76,4 +76,6 @@ class TextStyles {
       fontSize: 32, fontWeight: FontWeight.bold, color: successTextColor);
 
   static const TextStyle settingsTitleStyle = TextStyle(fontSize: 18);
+
+  static const TextStyle modalDescriptionTextStyle = TextStyle(fontSize: 16);
 }

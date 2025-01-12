@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
@@ -301,6 +302,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           ),
         ],
         onTap: (int index) {
+          if (!_shouldEnableMultiselectButtons()) return;
           switch (index) {
             case 0:
               _toggleCheckboxMode();
@@ -329,17 +331,38 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   MenuController? menuController;
 
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteWordDialog(
+          onDeletePressed: (() => {print("delete clicked")}),
+        );
+      },
+    );
+  }
+
+  bool _shouldEnableMultiselectButtons() {
+    //more room for other conditions
+    return _containsAtLeastOneSelectedItem();
+  }
+
+  bool _containsAtLeastOneSelectedItem() {
+    for (int i = 0; i < collections.length; i++) {
+      if (collections[i].isSelected || collections[i].containsSelectedWords()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   Widget _buildMoreButton(BuildContext context) {
     var actions = [
       MyPopupMenuItem(
         icon: Icons.delete,
         label: "Delete",
-        onPressed: (() => {print("delete clicked")}),
-      ),
-      MyPopupMenuItem(
-        icon: Icons.delete,
-        label: "Delete",
-        onPressed: (() => {print("delete clicked")}),
+        onPressed: () => _showDeleteDialog(context),
       ),
     ];
     return MenuAnchor(

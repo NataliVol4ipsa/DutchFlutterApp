@@ -50,14 +50,17 @@ class _WordEditorPageState extends State<WordEditorPage> {
   late WordsRepository wordsRepository;
   late OnlineWordSearchSuggestionSelectedNotifier onlineWordSelectedNotifier;
 
+  late void Function() onlineWordSelectedNotifierListener;
+
   @override
   void initState() {
     super.initState();
     onlineWordSelectedNotifier =
         context.read<OnlineWordSearchSuggestionSelectedNotifier>();
-    onlineWordSelectedNotifier.addListener(() {
+    onlineWordSelectedNotifierListener = () {
       onlineWordSelectedNotifierAction(onlineWordSelectedNotifier.wordOption);
-    });
+    };
+    onlineWordSelectedNotifier.addListener(onlineWordSelectedNotifierListener);
     wordsRepository = context.read<WordsRepository>();
     isNewWord = widget.existingWord == null;
     if (!isNewWord) {
@@ -188,6 +191,8 @@ class _WordEditorPageState extends State<WordEditorPage> {
   @override
   void dispose() {
     super.dispose();
+    onlineWordSelectedNotifier
+        .removeListener(onlineWordSelectedNotifierListener);
   }
 
   Widget customPadding() => const SizedBox(height: 10);
