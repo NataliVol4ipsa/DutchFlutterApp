@@ -1,18 +1,19 @@
 import 'dart:io';
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
-import 'package:dutch_app/core/services/io_service.dart';
-import 'package:dutch_app/core/mapping/words_io_mapper.dart';
+import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/io/io_service.dart';
+import 'package:dutch_app/io/v1/mapping/words_io_mapper.dart';
+import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 
-class WordsIoJsonV1Service {
+class WordsIoJsonServiceV1 {
   final ioService = IoService();
 
-  Future<String> exportAsync(List<Word> words, String fileName) async {
+  Future<String> exportAsync(
+      List<WordCollection> collections, String fileName) async {
     Directory directory = await getExportDirectoryAsync();
 
-    var dataToSerialize = WordsIoMapper().toCollectionDto(words);
+    var dataToSerialize = WordsIoMapper.toExportPackageV1(collections);
     String jsonString = jsonEncode(dataToSerialize);
 
     final path = '${directory.path}/$fileName.json';
@@ -33,14 +34,14 @@ class WordsIoJsonV1Service {
     }
   }
 
-  Future<WordsCollectionDtoV1> importAsync(File file) async {
+  Future<ExportPackageV1> importAsync(File file) async {
     if (!await file.exists()) {
       throw Exception("File not found: ${file.path}");
     }
 
     String jsonString = await file.readAsString();
     Map<String, dynamic> jsonData = jsonDecode(jsonString);
-    var wordsCollection = WordsCollectionDtoV1.fromJson(jsonData);
+    var wordsCollection = ExportPackageV1.fromJson(jsonData);
 
     return wordsCollection;
   }

@@ -1,7 +1,9 @@
+import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
@@ -312,6 +314,12 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             case 2:
               break;
             case 3:
+              showExportDataDialog(
+                  context: context,
+                  collections: _aggregateSelectedCollectionsAndWords(),
+                  callback: ((filePath) => _loadDataWithSnackBar(
+                      "Successfully exported words and collections to $filePath")) //todo counts of words and collections
+                  );
               break;
             case 4:
               setState(() {
@@ -355,6 +363,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     }
 
     return false;
+  }
+
+  List<WordCollection> _aggregateSelectedCollectionsAndWords() {
+    List<WordCollection> result = [];
+    for (int i = 0; i < collections.length; i++) {
+      if (collections[i].isSelected || collections[i].containsSelectedWords()) {
+        result.add(WordCollection(collections[i].id, collections[i].name,
+            words: collections[i].getSelectedWords()));
+      }
+    }
+    return result;
   }
 
   Widget _buildMoreButton(BuildContext context) {

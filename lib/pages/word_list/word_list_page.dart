@@ -1,15 +1,12 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart'; //todo move to separate file
-import 'package:dutch_app/core/dtos/words_collection_dto_v1.dart';
 import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/services/words_io_json_v1_service.dart';
+import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/core/services/words_storage_service.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
-import 'package:dutch_app/pages/word_list/snackbars/snackbar_shower.dart';
 import 'package:dutch_app/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:dutch_app/pages/word_list/word_list_table.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
-import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -118,48 +115,20 @@ class _WordListPageState extends State<WordListPage> {
     });
   }
 
-  void onExportButtonPressed(BuildContext context) async {
-    showExportDialog(context);
-  }
-
-  void showExportDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return TextInputModal(
-          title: 'Exporting word list',
-          inputLabel: "Choose file name",
-          confirmText: 'EXPORT',
-          onConfirmPressed: exportWordsAsync,
-        );
-      },
-    );
-  }
-
-  Future<void> exportWordsAsync(BuildContext context, String fileName) async {
-    String path = await WordsIoJsonV1Service().exportAsync(words, fileName);
-    if (!context.mounted) return;
-    SnackbarShower.show(
-        context, 'Successfully exported ${words.length} words to $path');
-  }
-
   void onImportPressed(BuildContext context) async {
-    final result = await FilePicker.platform.pickFiles(
-        allowMultiple: false,
-        type: FileType.custom,
-        allowedExtensions: ["json"]);
-    if (result == null) return null;
+    // final result = await FilePicker.platform.pickFiles(
+    //     allowMultiple: false,
+    //     type: FileType.custom,
+    //     allowedExtensions: ["json"]);
+    // if (result == null) return null;
 
-    WordsCollectionDtoV1 importedWords = await WordsIoJsonV1Service()
-        .importAsync(File(result.files.first.path!));
-    List<int> newWordsIds =
-        await WordsStorageService(wordsRepository: wordsRepository)
-            .storeInDatabaseAsync(importedWords);
+    // WordsCollectionDtoV1 importedWords = await WordsIoJsonServiceV1()
+    //     .importAsync(File(result.files.first.path!));
+    // List<int> newWordsIds =
+    //     await WordsStorageService(wordsRepository: wordsRepository)
+    //         .storeInDatabaseAsync(importedWords);
 
     await _reloadDataAsync();
-    if (!context.mounted) return;
-    SnackbarShower.show(
-        context, 'Successfully imported ${newWordsIds.length} words.');
   }
 
   void onRowCheckboxChanged(int index, bool? isSelected) {
@@ -214,9 +183,6 @@ class _WordListPageState extends State<WordListPage> {
     return MyAppBar(
       title: const Text('Word list'),
       actions: <Widget>[
-        IconButton(
-            onPressed: () => onExportButtonPressed(context),
-            icon: const Icon(Icons.file_download)),
         IconButton(
             onPressed: () => onImportPressed(context),
             icon: const Icon(Icons.upload_file)),

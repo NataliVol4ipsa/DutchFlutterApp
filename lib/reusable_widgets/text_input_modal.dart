@@ -2,7 +2,7 @@ import 'package:dutch_app/reusable_widgets/input_label.dart';
 import 'package:flutter/material.dart';
 
 class TextInputModal extends StatefulWidget {
-  final Future<void> Function(BuildContext context, String fileName)
+  final Future<void> Function(BuildContext context, String input)
       onConfirmPressed;
   final String title;
   final String? inputLabel;
