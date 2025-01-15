@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/models/new_word_collection.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -57,7 +58,7 @@ class _WordCollectionsListPageOldState
 
   Future<void> createCollectionAsync(
       BuildContext context, String collectionName) async {
-    await collectionsRepository.addAsync(WordCollection(null, collectionName));
+    await collectionsRepository.addAsync(NewWordCollection(collectionName));
     await _loadData();
   }
 

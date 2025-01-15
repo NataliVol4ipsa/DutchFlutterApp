@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
+import 'package:dutch_app/core/services/words_storage_service.dart';
+import 'package:dutch_app/io/v1/models/export_package_v1.dart';
+import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
@@ -12,6 +17,7 @@ import 'package:dutch_app/pages/word_collections/selectable_words_collection_wid
 import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +34,7 @@ Widget customPadding() => const SizedBox(height: 10);
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
+  late WordsStorageService wordsStorageService;
   List<SelectableWordCollectionModel> collections = [];
   List<Widget> collectionsAndWords = [];
   late WordCreatedNotifier notifier;
@@ -48,6 +55,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     notifier = context.read<WordCreatedNotifier>();
     notifier.addListener(_loadData);
     collectionsRepository = context.read<WordCollectionsRepository>();
+    wordsStorageService = context.read<WordsStorageService>();
     _loadData();
   }
 
@@ -194,6 +202,24 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         .toList();
   }
 
+  //todo move out
+  Future<void> _onImportPressedAsync(BuildContext context) async {
+    final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ["json"]);
+    if (result == null) {
+      return;
+    }
+
+    ExportPackageV1 importedWords = await WordsIoJsonServiceV1()
+        .importAsync(File(result.files.first.path!));
+
+    await wordsStorageService.storeInDatabaseAsync(importedWords);
+
+    await _loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -270,6 +296,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                       "Succesfully created new collection")));
               break;
             case 2:
+              _onImportPressedAsync(context);
               break;
             case 3:
               _toggleCheckboxMode();

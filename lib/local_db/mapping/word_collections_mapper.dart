@@ -1,16 +1,17 @@
+import 'package:dutch_app/core/models/new_word_collection.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/entities/db_word_collection.dart';
 import 'package:dutch_app/local_db/mapping/words_mapper.dart';
 
 class WordCollectionsMapper {
-  static DbWordCollection mapToEntity(WordCollection collection) {
+  static DbWordCollection mapToEntity(NewWordCollection collection) {
     var newCollection = DbWordCollection();
     newCollection.name = collection.name;
     return newCollection;
   }
 
   static List<DbWordCollection> mapToEntityList(
-      List<WordCollection> collections) {
+      List<NewWordCollection> collections) {
     return collections.map((collection) => mapToEntity(collection)).toList();
   }
 

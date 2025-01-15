@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/core/models/new_word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +27,6 @@ Future<void> _createCollectionAsync(
     String collectionName,
     WordCollectionsRepository repository,
     Future<void> Function() callback) async {
-  await repository.addAsync(WordCollection(null, collectionName));
+  await repository.addAsync(NewWordCollection(collectionName));
   await callback();
 }

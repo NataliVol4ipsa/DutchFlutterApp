@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/models/new_word_collection.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/local_db/entities/db_word_collection.dart';
@@ -5,7 +6,7 @@ import 'package:dutch_app/local_db/mapping/word_collections_mapper.dart';
 import 'package:isar/isar.dart';
 
 class WordCollectionsRepository {
-  Future<int> addAsync(WordCollection wordCollection) async {
+  Future<int> addAsync(NewWordCollection wordCollection) async {
     final newCollection = WordCollectionsMapper.mapToEntity(wordCollection);
     final int id = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWordCollections.put(newCollection));
