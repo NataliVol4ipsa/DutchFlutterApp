@@ -212,12 +212,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       return;
     }
 
-    ExportPackageV1 importedWords = await WordsIoJsonServiceV1()
+    ExportPackageV1 importPackage = await WordsIoJsonServiceV1()
         .importAsync(File(result.files.first.path!));
 
-    await wordsStorageService.storeInDatabaseAsync(importedWords);
+    await wordsStorageService.storeInDatabaseAsync(importPackage);
+    final totalWords = importPackage.collections.fold<int>(
+      0,
+      (sum, collection) => sum + collection.words.length,
+    );
 
-    await _loadData();
+    await _loadDataWithSnackBar(
+        "Succesfully imported ${importPackage.collections.length} collection(s) with $totalWords words");
   }
 
   @override

@@ -39,28 +39,6 @@ class WordsRepository {
     return newWordId;
   }
 
-  Future<int> addNewWordsAndCollectionsAsync(
-      int collectionId, List<NewWord> words) async {
-    int newWordId = -1;
-
-    await DbContext.isar.writeTxn(() async {
-      //todo batch transaction
-      final collection =
-          await DbContext.isar.dbWordCollections.get(collectionId);
-      if (collection != null) {
-        final newWords = WordsMapper.mapToEntityList(words);
-        await DbContext.isar.dbWords.putAll(newWords);
-        collection.words.addAll(newWords);
-        await collection.words.save();
-        await DbContext.isar.dbWordCollections.put(collection);
-      } else {
-        throw Exception("Could not find collection with id $collectionId");
-      }
-    });
-
-    return newWordId;
-  }
-
   Future<void> addExistingWordToCollectionAsync(
       int collectionId, DbWord word) async {
     await DbContext.isar.writeTxn(() async {
