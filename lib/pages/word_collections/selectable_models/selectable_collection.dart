@@ -3,7 +3,7 @@ import 'package:dutch_app/pages/word_collections/selectable_models/selectable_wo
 
 class SelectableWordCollectionModel {
   bool isSelected = false;
-  final int? id;
+  final int id;
   final String name;
   final List<SelectableWordModel>? words;
 

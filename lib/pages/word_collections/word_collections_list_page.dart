@@ -9,6 +9,7 @@ import 'package:dutch_app/local_db/repositories/word_collections_repository.dart
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/rename_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
@@ -74,12 +75,12 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     setState(() {
       isLoading = true;
     });
-
+//todo move fetch+mapping to service
     var dbCollections =
         await collectionsRepository.getCollectionsWithWordsAsync();
 
     var selectableCollections = dbCollections
-        .map((col) => SelectableWordCollectionModel(col.id, col.name,
+        .map((col) => SelectableWordCollectionModel(col.id!, col.name,
             col.words?.map((word) => SelectableWordModel(word)).toList()))
         .toList();
 
@@ -130,8 +131,16 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     });
   }
 
-  void _selectCollection(SelectableWordCollectionModel collection) {
-    if (!checkboxModeEnabled) return;
+  void _onCollectionRowTap(SelectableWordCollectionModel collection) {
+    if (!_shouldEnableMultiselectButtons()) {
+      _showUpdateCollectionDialog(collection);
+    } else {
+      _onMultiselectCollectionRowTap(collection);
+    }
+  }
+
+  void _onMultiselectCollectionRowTap(
+      SelectableWordCollectionModel collection) {
     setState(() {
       collection.isSelected = !collection.isSelected;
       if (collection.words != null) {
@@ -152,7 +161,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   void _longPressCollection(SelectableWordCollectionModel collection) {
     if (checkboxModeEnabled) return;
     _toggleCheckboxMode();
-    _selectCollection(collection);
+    _onMultiselectCollectionRowTap(collection);
   }
 
   void _longPressWord(SelectableWordModel word) {
@@ -170,12 +179,24 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     });
   }
 
+  void _showUpdateCollectionDialog(SelectableWordCollectionModel collection) {
+    showRenameCollectionDialog(
+      context: context,
+      collectionId: collection.id,
+      initialName: collection.name,
+      callback: ((newName) async {
+        await _loadDataWithSnackBar(
+            "Succesfully renamed collection '${collection.name}' to '$newName'");
+      }),
+    );
+  }
+
   List<Widget> _buildSingleCollectionAndWords(
       BuildContext context, SelectableWordCollectionModel collection) {
     return [
       SelectableWordCollectionRow(
           collection: collection,
-          onRowTap: _selectCollection,
+          onRowTap: _onCollectionRowTap,
           showCheckbox: checkboxModeEnabled,
           onLongRowPress: () {
             _longPressCollection(collection);
