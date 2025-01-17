@@ -1,5 +1,4 @@
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:dutch_app/reusable_widgets/my_checkbox.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +6,16 @@ import 'package:flutter/material.dart';
 class SelectableWord extends StatelessWidget {
   final SelectableWordModel word;
   final bool showCheckbox;
-  final Function(SelectableWordModel) onRowTap;
-  final void Function() onLongRowPress;
+  final double extraLeftPadding;
+  final void Function(SelectableWordModel) onRowTap;
+  final void Function()? onLongRowPress;
   const SelectableWord(
       {super.key,
       required this.word,
       required this.onRowTap,
-      required this.onLongRowPress,
-      required this.showCheckbox});
+      this.onLongRowPress,
+      required this.showCheckbox,
+      this.extraLeftPadding = 0});
 
   Color _backgroundColor(BuildContext context) {
     return word.isSelected
@@ -30,33 +31,36 @@ class SelectableWord extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var wordValue = word.word;
-    var dutchWord = wordValue.deHetType != DeHetType.none
-        ? "${wordValue.deHetType.label} ${wordValue.dutchWord}"
-        : wordValue.dutchWord;
     return GestureDetector(
       onTap: () => {onRowTap(word)},
       onLongPress: onLongRowPress,
       child: Container(
           color: _backgroundColor(context),
           padding: ContainerStyles.smallContainerPadding,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  "$dutchWord - ${wordValue.englishWord}",
-                  maxLines: 2,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: _textColor(context)),
+          child: Padding(
+            padding: EdgeInsets.only(left: extraLeftPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (showCheckbox)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: ContainerStyles.defaultPadding),
+                    child: MyCheckbox(
+                        value: word.isSelected,
+                        onChanged: (value) => {onRowTap(word)}),
+                  ),
+                Expanded(
+                  child: Text(
+                    word.displayValue,
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: _textColor(context)),
+                  ),
                 ),
-              ),
-              if (showCheckbox)
-                MyCheckbox(
-                    value: word.isSelected,
-                    onChanged: (value) => {onRowTap(word)}),
-            ],
+              ],
+            ),
           )),
     );
   }

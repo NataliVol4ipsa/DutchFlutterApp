@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
-import 'package:dutch_app/core/services/words_storage_service.dart';
+import 'package:dutch_app/core/services/batch_word_operations_service.dart';
 import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
@@ -11,8 +12,10 @@ import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/rename_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_item_model.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_string_model.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
@@ -35,7 +38,7 @@ Widget customPadding() => const SizedBox(height: 10);
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool isLoading = true;
   late WordCollectionsRepository collectionsRepository;
-  late WordsStorageService wordsStorageService;
+  late BatchWordOperationsService wordsStorageService;
   List<SelectableWordCollectionModel> collections = [];
   List<Widget> collectionsAndWords = [];
   late WordCreatedNotifier notifier;
@@ -56,7 +59,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     notifier = context.read<WordCreatedNotifier>();
     notifier.addListener(_loadData);
     collectionsRepository = context.read<WordCollectionsRepository>();
-    wordsStorageService = context.read<WordsStorageService>();
+    wordsStorageService = context.read<BatchWordOperationsService>();
     _loadData();
   }
 
@@ -79,10 +82,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     var dbCollections =
         await collectionsRepository.getCollectionsWithWordsAsync();
 
-    var selectableCollections = dbCollections
-        .map((col) => SelectableWordCollectionModel(col.id!, col.name,
-            col.words?.map((word) => SelectableWordModel(word)).toList()))
-        .toList();
+    var selectableCollections =
+        dbCollections //todo use more lightweight models to prevent lag for 600k words
+            .map((col) => SelectableWordCollectionModel(col.id!, col.name,
+                col.words?.map((word) => SelectableWordModel(word)).toList()))
+            .toList();
 
     setState(() {
       collections = selectableCollections;
@@ -132,15 +136,14 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _onCollectionRowTap(SelectableWordCollectionModel collection) {
-    if (!_shouldEnableMultiselectButtons()) {
+    if (!checkboxModeEnabled) {
       _showUpdateCollectionDialog(collection);
     } else {
-      _onMultiselectCollectionRowTap(collection);
+      _toggleIsSelectedCollection(collection);
     }
   }
 
-  void _onMultiselectCollectionRowTap(
-      SelectableWordCollectionModel collection) {
+  void _toggleIsSelectedCollection(SelectableWordCollectionModel collection) {
     setState(() {
       collection.isSelected = !collection.isSelected;
       if (collection.words != null) {
@@ -161,7 +164,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   void _longPressCollection(SelectableWordCollectionModel collection) {
     if (checkboxModeEnabled) return;
     _toggleCheckboxMode();
-    _onMultiselectCollectionRowTap(collection);
+    _toggleIsSelectedCollection(collection);
   }
 
   void _longPressWord(SelectableWordModel word) {
@@ -191,6 +194,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
+// I was stuck on a challenge where collection can contain selected words, but does not need to be selected itself
+// check _aggregateSelectedCollectionsAndWords - it collects unselected collections with selected words
+// idea: introduce boolean - include collections with at least one selected word
+  void _showDeleteDialog(BuildContext context) {
+    // showDeleteCollectionsDialog(
+    //   context: context,
+    //   callback: (() => _loadDataWithSnackBar(
+    //       "Succesfully deleted '${collectionCount}' collections and '${wordCount}' words.")),
+    // );
+  }
+
   List<Widget> _buildSingleCollectionAndWords(
       BuildContext context, SelectableWordCollectionModel collection) {
     return [
@@ -215,6 +229,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           (word) => SelectableWord(
               word: word,
               showCheckbox: checkboxModeEnabled,
+              extraLeftPadding: ContainerStyles.defaultPadding,
               onRowTap: _selectWord,
               onLongRowPress: () {
                 _longPressWord(word);
@@ -391,17 +406,6 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   MenuController? menuController;
-
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteWordDialog(
-          onDeletePressed: (() => {print("delete clicked")}),
-        );
-      },
-    );
-  }
 
   bool _shouldEnableMultiselectButtons() {
     //more room for other conditions

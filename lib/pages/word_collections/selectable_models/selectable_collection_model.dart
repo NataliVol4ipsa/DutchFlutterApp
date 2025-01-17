@@ -1,13 +1,19 @@
 import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_string_model.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 
 class SelectableWordCollectionModel {
   bool isSelected = false;
+  SelectableStringModel? selectAllModel;
   final int id;
   final String name;
   final List<SelectableWordModel>? words;
 
-  SelectableWordCollectionModel(this.id, this.name, this.words);
+  SelectableWordCollectionModel(this.id, this.name, this.words) {
+    if (words != null && words!.isNotEmpty) {
+      selectAllModel = SelectableStringModel("Select all");
+    }
+  }
 
   bool containsSelectedWords() {
     if (words == null) {
@@ -29,7 +35,7 @@ class SelectableWordCollectionModel {
     List<Word> result = [];
     for (int i = 0; i < words!.length; i++) {
       if (words![i].isSelected) {
-        result.add(words![i].word);
+        result.add(words![i].value);
       }
     }
 
