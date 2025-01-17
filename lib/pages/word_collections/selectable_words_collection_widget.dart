@@ -1,4 +1,4 @@
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection.dart';
+import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/reusable_widgets/my_checkbox.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +36,14 @@ class SelectableWordCollectionRow extends StatelessWidget {
           color: _backgroundColor(context),
           padding: ContainerStyles.smallContainerPadding,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              if (showCheckbox)
+                Padding(
+                    padding: const EdgeInsets.only(
+                        right: ContainerStyles.defaultPadding),
+                    child: MyCheckbox(
+                        value: collection.isSelected,
+                        onChanged: (value) => {onRowTap(collection)})),
               Text(
                 collection.name,
                 maxLines: 2,
@@ -45,10 +51,6 @@ class SelectableWordCollectionRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: _textColor(context)),
               ),
-              if (showCheckbox)
-                MyCheckbox(
-                    value: collection.isSelected,
-                    onChanged: (value) => {onRowTap(collection)}),
             ],
           )),
     );

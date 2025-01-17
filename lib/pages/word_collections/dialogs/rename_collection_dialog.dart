@@ -18,15 +18,14 @@ void showRenameCollectionDialog(
         inputLabel: "Choose new collection name",
         confirmText: 'UPDATE',
         initialValue: initialName,
-        onConfirmPressed: ((context, input) => _updateCollectionAsync(
-            context, collectionId, input, repository, callback)),
+        onConfirmPressed: ((context, input) =>
+            _updateCollectionAsync(collectionId, input, repository, callback)),
       );
     },
   );
 }
 
 Future<void> _updateCollectionAsync(
-    BuildContext context,
     int collectionId,
     String newName,
     WordCollectionsRepository repository,

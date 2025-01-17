@@ -26,4 +26,11 @@ class BatchRepository {
     await newCollection.words.save();
     await DbContext.isar.dbWordCollections.put(newCollection);
   }
+
+  Future<void> deleteAsync(List<int> wordIds, List<int> collectionIds) async {
+    await DbContext.isar.writeTxn(() async {
+      await DbContext.isar.dbWords.deleteAll(wordIds);
+      await DbContext.isar.dbWordCollections.deleteAll(collectionIds);
+    });
+  }
 }
