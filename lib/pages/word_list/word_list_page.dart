@@ -4,7 +4,7 @@ import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
-import 'package:dutch_app/pages/word_list/dialogs/word_editor_modal.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
 import 'package:dutch_app/pages/word_list/word_list_table.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -281,7 +281,7 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<void> showWordEditor(BuildContext context, Word word) async {
-    await WordEditorModal.show(
+    await EditWordDialog.show(
       context: context,
       word: word,
     );

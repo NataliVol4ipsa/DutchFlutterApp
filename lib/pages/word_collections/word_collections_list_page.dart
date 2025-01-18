@@ -14,6 +14,7 @@ import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
 import 'package:dutch_app/pages/word_collections/word_collection_list_manager.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:file_picker/file_picker.dart';
@@ -123,7 +124,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _selectWord(SelectableWordModel word) {
-    if (!checkboxModeEnabled) return;
+    if (!checkboxModeEnabled) {
+      _showEditWordDialog(context, word);
+      return;
+    }
+    ;
     setState(() {
       word.toggleIsSelected();
     });
@@ -171,6 +176,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       callback: (() => _loadDataWithSnackBar(
           "Succesfully deleted '${wordIds.length}' words.")),
     );
+  }
+
+  Future<void> _showEditWordDialog(
+      BuildContext context, SelectableWordModel word) async {
+    await EditWordDialog.show(
+      context: context,
+      word: word.value,
+    );
+
+    //todo track state when there were are no changes.
+    await _loadDataWithSnackBar("Successfully updated word.");
   }
 
   List<Widget> _buildSingleCollectionAndItsWords(
