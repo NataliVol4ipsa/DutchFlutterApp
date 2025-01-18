@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
@@ -8,13 +6,11 @@ import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
-import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/rename_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_item_model.dart';
-import 'package:dutch_app/pages/word_collections/selectable_models/selectable_string_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
@@ -78,7 +74,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     setState(() {
       isLoading = true;
     });
-//todo move fetch+mapping to service
+    //todo move fetch+mapping to service
     var dbCollections =
         await collectionsRepository.getCollectionsWithWordsAsync();
 
@@ -194,15 +190,21 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-// I was stuck on a challenge where collection can contain selected words, but does not need to be selected itself
-// check _aggregateSelectedCollectionsAndWords - it collects unselected collections with selected words
-// idea: introduce boolean - include collections with at least one selected word
-  void _showDeleteDialog(BuildContext context) {
-    // showDeleteCollectionsDialog(
-    //   context: context,
-    //   callback: (() => _loadDataWithSnackBar(
-    //       "Succesfully deleted '${collectionCount}' collections and '${wordCount}' words.")),
-    // );
+// only deletes words.
+  void _showDeleteWordsDialog(BuildContext context) {
+    List<int> wordIds = [];
+
+    for (var collection in collections) {
+      wordIds.addAll(collection.getSelectedWords().map((word) => word.id));
+    }
+
+    showDeleteWordsDialog(
+      context: context,
+      collectionIds: [],
+      wordIds: wordIds,
+      callback: (() => _loadDataWithSnackBar(
+          "Succesfully deleted '${wordIds.length}' words.")),
+    );
   }
 
   List<Widget> _buildSingleCollectionAndWords(
@@ -382,6 +384,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             case 2:
               break;
             case 3:
+              if (!_containsAtLeastOneSelectedItem()) break;
               showExportDataDialog(
                   context: context,
                   collections: _aggregateSelectedCollectionsAndWords(),
@@ -407,6 +410,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   MenuController? menuController;
 
+//todo
   bool _shouldEnableMultiselectButtons() {
     //more room for other conditions
     return _containsAtLeastOneSelectedItem();
@@ -415,6 +419,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   bool _containsAtLeastOneSelectedItem() {
     for (int i = 0; i < collections.length; i++) {
       if (collections[i].isSelected || collections[i].containsSelectedWords()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  //idea: can be moved to collection storage together with similar methods. And together with data reload.
+  bool _containsAtLeastOneSelectedWord() {
+    for (int i = 0; i < collections.length; i++) {
+      if (collections[i].containsSelectedWords()) {
         return true;
       }
     }
@@ -433,12 +448,22 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     return result;
   }
 
+  void Function()? createOnDeletePressedFunc(BuildContext context) {
+    return _containsAtLeastOneSelectedWord()
+        ? () => {_showDeleteWordsDialog(context)}
+        : null;
+  }
+
+  void Function()? createOnPracticePressedFunc(BuildContext context) {
+    return _containsAtLeastOneSelectedWord() ? () => {} : null;
+  }
+
   Widget _buildMoreButton(BuildContext context) {
     var actions = [
       MyPopupMenuItem(
         icon: Icons.delete,
-        label: "Delete",
-        onPressed: () => _showDeleteDialog(context),
+        label: "Delete Words",
+        onPressed: createOnDeletePressedFunc(context),
       ),
     ];
     return MenuAnchor(

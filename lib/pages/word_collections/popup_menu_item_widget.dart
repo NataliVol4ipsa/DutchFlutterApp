@@ -9,7 +9,7 @@ class MyPopupMenuItem extends StatelessWidget {
 
   final IconData icon;
   final String label;
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {

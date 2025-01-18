@@ -3,7 +3,7 @@ import 'package:file_picker/file_picker.dart'; //todo move to separate file
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
-import 'package:dutch_app/pages/word_collections/dialogs/delete_word_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_list/dialogs/word_editor_modal.dart';
 import 'package:dutch_app/pages/word_list/word_list_table.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';

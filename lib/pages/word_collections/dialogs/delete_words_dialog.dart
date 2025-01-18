@@ -3,7 +3,7 @@ import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void showDeleteCollectionsDialog(
+void showDeleteWordsDialog(
     {required BuildContext context,
     required List<int> collectionIds,
     required List<int> wordIds,
