@@ -18,4 +18,8 @@ class SelectableWordModel implements SelectableItemModel<Word> {
         : value.dutchWord;
     displayValue = "$dutchWord - ${value.englishWord}";
   }
+
+  void toggleIsSelected() {
+    isSelected = !isSelected;
+  }
 }

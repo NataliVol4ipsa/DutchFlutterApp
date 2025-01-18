@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
 import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
-import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
@@ -15,6 +13,7 @@ import 'package:dutch_app/pages/word_collections/selectable_models/selectable_wo
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
+import 'package:dutch_app/pages/word_collections/word_collection_list_manager.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:file_picker/file_picker.dart';
@@ -32,15 +31,31 @@ class WordCollectionsListPage extends StatefulWidget {
 Widget customPadding() => const SizedBox(height: 10);
 
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
+  late WordCollectionListManager dataManager;
   bool isLoading = true;
-  late WordCollectionsRepository collectionsRepository;
-  late BatchWordOperationsService wordsStorageService;
-  List<SelectableWordCollectionModel> collections = [];
   List<Widget> collectionsAndWords = [];
   late WordCreatedNotifier notifier;
   final ScrollController scrollController = ScrollController();
+  late BatchWordOperationsService wordsStorageService;
 
   bool checkboxModeEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    notifier = context.read<WordCreatedNotifier>();
+    notifier.addListener(_loadDataAsync);
+    dataManager = WordCollectionListManager(context);
+    wordsStorageService = context.read<BatchWordOperationsService>();
+    _loadDataAsync();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    notifier.removeListener(_loadDataAsync);
+    super.dispose();
+  }
 
   Future<void> onAfterPopAsync(bool didPop, Object? result) async {
     if (checkboxModeEnabled) {
@@ -49,24 +64,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    notifier = context.read<WordCreatedNotifier>();
-    notifier.addListener(_loadData);
-    collectionsRepository = context.read<WordCollectionsRepository>();
-    wordsStorageService = context.read<BatchWordOperationsService>();
-    _loadData();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    notifier.removeListener(_loadData);
-    super.dispose();
-  }
-
-  Future<void> _loadData() async {
+  Future<void> _loadDataAsync() async {
     double preservedScrollPosition = 0;
     if (scrollController.hasClients) {
       preservedScrollPosition = scrollController.offset;
@@ -74,20 +72,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     setState(() {
       isLoading = true;
     });
-    //todo move fetch+mapping to service
-    var dbCollections =
-        await collectionsRepository.getCollectionsWithWordsAsync();
-
-    var selectableCollections =
-        dbCollections //todo use more lightweight models to prevent lag for 600k words
-            .map((col) => SelectableWordCollectionModel(col.id!, col.name,
-                col.words?.map((word) => SelectableWordModel(word)).toList()))
-            .toList();
-
+    await dataManager.loadCollectionsAsync();
     setState(() {
-      collections = selectableCollections;
-      isLoading = false;
       collectionsAndWords = _buildWordsAndCollections(context);
+      isLoading = false;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (preservedScrollPosition != 0) {
@@ -98,7 +86,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   Future<void> _loadDataWithSnackBar(String message) async {
     var snackBar = ScaffoldMessenger.of(context);
-    await _loadData();
+    await _loadDataAsync();
     snackBar.showSnackBar(
       SnackBar(
         content: Text(message),
@@ -114,20 +102,15 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   List<Widget> _buildWordsAndCollections(BuildContext context) {
-    return collections
-        .expand(
-            (collection) => _buildSingleCollectionAndWords(context, collection))
+    return dataManager.collections
+        .expand((collection) =>
+            _buildSingleCollectionAndItsWords(context, collection))
         .toList();
   }
 
-  void _unselectAllRows() {
+  void _toggleIsSelectedCollection(SelectableWordCollectionModel collection) {
     setState(() {
-      for (var collection in collections) {
-        collection.isSelected = false;
-        for (var word in collection.words ?? []) {
-          word.isSelected = false;
-        }
-      }
+      collection.toggleIsSelectedCollectionAndWords();
     });
   }
 
@@ -139,21 +122,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     }
   }
 
-  void _toggleIsSelectedCollection(SelectableWordCollectionModel collection) {
-    setState(() {
-      collection.isSelected = !collection.isSelected;
-      if (collection.words != null) {
-        for (var word in collection.words!) {
-          word.isSelected = collection.isSelected;
-        }
-      }
-    });
-  }
-
   void _selectWord(SelectableWordModel word) {
     if (!checkboxModeEnabled) return;
     setState(() {
-      word.isSelected = !word.isSelected;
+      word.toggleIsSelected();
     });
   }
 
@@ -173,7 +145,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     setState(() {
       checkboxModeEnabled = !checkboxModeEnabled;
       if (checkboxModeEnabled == false) {
-        _unselectAllRows();
+        dataManager.unselectWordsAndCollections();
       }
     });
   }
@@ -190,14 +162,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-// only deletes words.
   void _showDeleteWordsDialog(BuildContext context) {
-    List<int> wordIds = [];
-
-    for (var collection in collections) {
-      wordIds.addAll(collection.getSelectedWords().map((word) => word.id));
-    }
-
+    var wordIds = dataManager.getAllSelectedWords();
     showDeleteWordsDialog(
       context: context,
       collectionIds: [],
@@ -207,7 +173,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
   }
 
-  List<Widget> _buildSingleCollectionAndWords(
+  List<Widget> _buildSingleCollectionAndItsWords(
       BuildContext context, SelectableWordCollectionModel collection) {
     return [
       SelectableWordCollectionRow(
@@ -377,17 +343,17 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           if (!_shouldEnableMultiselectButtons()) return;
           switch (index) {
             case 0:
-              _toggleCheckboxMode();
               break;
             case 1:
               break;
             case 2:
               break;
             case 3:
-              if (!_containsAtLeastOneSelectedItem()) break;
+              if (!dataManager.containsAtLeastOneSelectedItem()) break;
               showExportDataDialog(
                   context: context,
-                  collections: _aggregateSelectedCollectionsAndWords(),
+                  collections:
+                      dataManager.getCollectionsWithAtLeastOneSelectedWord(),
                   callback: ((filePath) => _loadDataWithSnackBar(
                       "Successfully exported words and collections to $filePath")) //todo counts of words and collections
                   );
@@ -413,49 +379,13 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 //todo
   bool _shouldEnableMultiselectButtons() {
     //more room for other conditions
-    return _containsAtLeastOneSelectedItem();
-  }
-
-  bool _containsAtLeastOneSelectedItem() {
-    for (int i = 0; i < collections.length; i++) {
-      if (collections[i].isSelected || collections[i].containsSelectedWords()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  //idea: can be moved to collection storage together with similar methods. And together with data reload.
-  bool _containsAtLeastOneSelectedWord() {
-    for (int i = 0; i < collections.length; i++) {
-      if (collections[i].containsSelectedWords()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  List<WordCollection> _aggregateSelectedCollectionsAndWords() {
-    List<WordCollection> result = [];
-    for (int i = 0; i < collections.length; i++) {
-      if (collections[i].isSelected || collections[i].containsSelectedWords()) {
-        result.add(WordCollection(collections[i].id, collections[i].name,
-            words: collections[i].getSelectedWords()));
-      }
-    }
-    return result;
+    return dataManager.containsAtLeastOneSelectedItem();
   }
 
   void Function()? createOnDeletePressedFunc(BuildContext context) {
-    return _containsAtLeastOneSelectedWord()
+    return dataManager.containsAtLeastOneSelectedWord()
         ? () => {_showDeleteWordsDialog(context)}
         : null;
-  }
-
-  void Function()? createOnPracticePressedFunc(BuildContext context) {
-    return _containsAtLeastOneSelectedWord() ? () => {} : null;
   }
 
   Widget _buildMoreButton(BuildContext context) {

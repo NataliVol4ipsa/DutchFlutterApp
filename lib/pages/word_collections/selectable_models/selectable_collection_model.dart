@@ -41,4 +41,13 @@ class SelectableWordCollectionModel {
 
     return result;
   }
+
+  void toggleIsSelectedCollectionAndWords() {
+    isSelected = !isSelected;
+    if (words != null) {
+      for (var word in words!) {
+        word.isSelected = isSelected;
+      }
+    }
+  }
 }
