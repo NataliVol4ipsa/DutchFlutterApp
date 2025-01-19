@@ -10,6 +10,7 @@ class FormTextInput extends StatefulWidget {
   final bool Function(String?)? valueValidator;
   final String? invalidInputErrorMessage;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   const FormTextInput(
       {super.key,
       required this.textInputController,
@@ -18,7 +19,8 @@ class FormTextInput extends StatefulWidget {
       this.isRequired = false,
       this.valueValidator,
       this.invalidInputErrorMessage,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.prefixIcon});
 
   @override
   State<FormTextInput> createState() => _FormTextInputState();
@@ -37,6 +39,7 @@ class _FormTextInputState extends State<FormTextInput> {
               borderRadius: BorderStyles.defaultBorderRadius),
           hintText: widget.hintText,
           suffixIcon: widget.suffixIcon,
+          prefixIcon: widget.prefixIcon,
           contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
