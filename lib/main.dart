@@ -9,7 +9,6 @@ import 'package:dutch_app/pages/dependency_injections.dart';
 import 'package:dutch_app/pages/exercises_selector/exercises_selector_page.dart';
 import 'package:dutch_app/pages/settings/settings_page.dart';
 import 'package:dutch_app/pages/word_collections/word_collections_list_page.dart';
-import 'package:dutch_app/pages/word_list/word_list_page.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +66,6 @@ class MyApp extends StatelessWidget {
             '/home': (context) => const HomePage(),
             '/settings': (context) => const SettingsPage(),
             '/newword': (context) => const WordEditorPage(),
-            '/wordlist': (context) => const WordListPage(),
             '/wordcollections': (context) => const WordCollectionsListPage(),
             '/exercisesselector': (context) => const ExercisesSelectorPage(),
           },

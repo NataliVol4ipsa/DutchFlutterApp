@@ -97,7 +97,6 @@ class HomePage extends StatelessWidget {
     return _buildGridViewTwoColumns([
       _buildNavigationCard(context, "Add word", '/newword'),
       _buildNavigationCard(context, "Practice", '/exercisesselector'),
-      _buildNavigationCard(context, "See words", '/wordlist'),
       _buildNavigationCard(context, "See collections", '/wordcollections'),
     ], childAspectRatio: 4.0);
   }
@@ -162,11 +161,11 @@ class HomePage extends StatelessWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.all(8.0),
           children: [
-            _buildNavigationSection(context),
-            _buildProgressSection(context),
-            _buildIncompleteStashesSection(context),
-            _buildFavoriteExercisesSection(context),
-            _buildRecentCollectionsSection(context),
+            //_buildNavigationSection(context),
+            //_buildProgressSection(context),
+            //_buildIncompleteStashesSection(context),
+            //_buildFavoriteExercisesSection(context),
+            //_buildRecentCollectionsSection(context),
           ]),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: ContainerStyles.sectionColor(context),
@@ -177,7 +176,7 @@ class HomePage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: 'Words collections',
+            label: 'Collections',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
@@ -190,7 +189,7 @@ class HomePage extends StatelessWidget {
               Navigator.pushNamed(context, '/exercisesselector');
               break;
             case 1:
-              Navigator.pushNamed(context, '/wordlist');
+              Navigator.pushNamed(context, '/wordcollections');
               break;
             case 2:
               Navigator.pushNamed(context, '/newword');
