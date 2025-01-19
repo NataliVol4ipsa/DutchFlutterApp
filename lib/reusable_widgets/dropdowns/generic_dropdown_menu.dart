@@ -26,9 +26,8 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
     return SizedBox(
       width: double.infinity, // Make sure the dropdown takes full width
       child: Container(
-        decoration: BoxDecoration(
-            color: ContainerStyles.section2Color(context),
-            borderRadius: BorderStyles.defaultBorderRadius),
+        decoration:
+            BoxDecoration(borderRadius: BorderStyles.defaultBorderRadius),
         child: Theme(
           data: Theme.of(context)
               .copyWith(canvasColor: ContainerStyles.section2Color(context)),

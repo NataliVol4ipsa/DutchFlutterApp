@@ -218,92 +218,114 @@ class _WordEditorPageState extends State<WordEditorPage> {
         padding: const EdgeInsets.all(25.0),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                PaddedFormComponent(
-                  child: FormInput(
-                      inputLabel: "Word type",
-                      child: WordTypeDropdown(
-                        initialValue: selectedWordType,
-                        updateValueCallback: updateSelectedWordType,
-                      )),
-                ),
-                PaddedFormComponent(
-                  child: FormInput(
-                    inputLabel: "Collection",
-                    child: WordCollectionDropdown(
-                      initialValue: selectedWordCollection,
-                      updateValueCallback: updateSelectedWordCollection,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: _buildFormInputs(),
                     ),
-                  ),
+                  ],
                 ),
-                PaddedFormComponent(
-                  child: FormTextInput(
-                    textInputController: dutchWordTextInputController,
-                    inputLabel: "Dutch",
-                    hintText: "Dutch word",
-                    isRequired: true,
-                    valueValidator: nonEmptyString,
-                    invalidInputErrorMessage: "Dutch word is required",
-                    suffixIcon: _buildSearchSuffixIcon(context),
-                  ),
-                ),
-                PaddedFormComponent(
-                  child: FormTextInput(
-                      textInputController: englishWordTextInputController,
-                      inputLabel: "English",
-                      hintText: "English word",
-                      isRequired: true,
-                      valueValidator: nonEmptyString,
-                      invalidInputErrorMessage: "English word is required"),
-                ),
-                if (shouldDisplayDeHetInput()) ...[
-                  PaddedFormComponent(
-                    child: FormInput(
-                      inputLabel: "De/Het type",
-                      child: OptionalToggleButtons<DeHetType?>(
-                        items: [
-                          ToggleButtonItem(label: 'De', value: DeHetType.de),
-                          ToggleButtonItem(label: 'Het', value: DeHetType.het),
-                        ],
-                        onChanged: onDeHetToggleChanged,
-                        selectedValue: selectedDeHetType,
-                      ),
-                    ),
-                  ),
-                ],
-                if (shouldDisplayPluralFormInput()) ...[
-                  PaddedFormComponent(
-                    child: FormTextInput(
-                        textInputController: dutchPluralFormTextInputController,
-                        inputLabel: "Dutch plural form",
-                        hintText: "Dutch plural form",
-                        isRequired: false),
-                  ),
-                ],
-                const SizedBox(height: 20),
-                PaddedFormComponent(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: submitChangesAsync,
-                      style: ButtonStyles.mediumPrimaryButtonStyle(context),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(
-                          getSubmitButtonLabel(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+              _buildSubmitFormButton(context),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> _buildFormInputs() {
+    return [
+      PaddedFormComponent(
+        child: FormTextInput(
+          textInputController: dutchWordTextInputController,
+          inputLabel: "Dutch",
+          hintText: "Dutch word",
+          isRequired: true,
+          valueValidator: nonEmptyString,
+          invalidInputErrorMessage: "Dutch word is required",
+          suffixIcon: _buildSearchSuffixIcon(context),
+        ),
+      ),
+      PaddedFormComponent(
+        child: FormTextInput(
+            textInputController: englishWordTextInputController,
+            inputLabel: "English",
+            hintText: "English word",
+            isRequired: true,
+            valueValidator: nonEmptyString,
+            invalidInputErrorMessage: "English word is required"),
+      ),
+      PaddedFormComponent(
+        child: FormInput(
+            inputLabel: "Word type",
+            child: WordTypeDropdown(
+              initialValue: selectedWordType,
+              updateValueCallback: updateSelectedWordType,
+            )),
+      ),
+      PaddedFormComponent(
+        child: FormInput(
+          inputLabel: "Collection",
+          child: WordCollectionDropdown(
+            initialValue: selectedWordCollection,
+            updateValueCallback: updateSelectedWordCollection,
+          ),
+        ),
+      ),
+      if (shouldDisplayDeHetInput()) ...[
+        PaddedFormComponent(
+          child: FormInput(
+            inputLabel: "De/Het type",
+            child: OptionalToggleButtons<DeHetType?>(
+              items: [
+                ToggleButtonItem(label: 'De', value: DeHetType.de),
+                ToggleButtonItem(label: 'Het', value: DeHetType.het),
+              ],
+              onChanged: onDeHetToggleChanged,
+              selectedValue: selectedDeHetType,
+            ),
+          ),
+        ),
+      ],
+      if (shouldDisplayPluralFormInput()) ...[
+        PaddedFormComponent(
+          child: FormTextInput(
+              textInputController: dutchPluralFormTextInputController,
+              inputLabel: "Dutch plural form",
+              hintText: "Dutch plural form",
+              isRequired: false),
+        ),
+      ]
+    ];
+  }
+
+  Column _buildSubmitFormButton(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        PaddedFormComponent(
+          child: SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: submitChangesAsync,
+              style: ButtonStyles.mediumPrimaryButtonStyle(context),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  getSubmitButtonLabel(),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }
