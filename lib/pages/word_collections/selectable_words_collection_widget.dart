@@ -27,6 +27,21 @@ class SelectableWordCollectionRow extends StatelessWidget {
         : ContainerStyles.sectionColor(context);
   }
 
+  bool? _calculateCheckBoxValue() {
+    if (collection.words?.isEmpty ?? true) {
+      return collection.isSelected;
+    }
+    int selectedWordsCount =
+        collection.words?.where((word) => word.isSelected).length ?? 0;
+    if (selectedWordsCount == 0) {
+      return false;
+    }
+    if (collection.words!.length != selectedWordsCount) {
+      return null;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -42,7 +57,8 @@ class SelectableWordCollectionRow extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         right: ContainerStyles.defaultPadding),
                     child: MyCheckbox(
-                        value: collection.isSelected,
+                        tristate: true,
+                        value: _calculateCheckBoxValue(),
                         onChanged: (value) => {onRowTap(collection)})),
               Text(
                 collection.name,
