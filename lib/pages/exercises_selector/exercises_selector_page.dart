@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/core/types/exercise_type.dart';
 import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
@@ -30,10 +31,10 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
     wordsRepository = context.read<WordsRepository>();
   }
 
-  void onStartButtonClick() async {
-    List<Word> words = await wordsRepository.getAsync();
-    // TEMP. REMOVE
-    words = [words[0], words[1], words[2]];
+  void onStartButtonClick() {
+    var service = context.read<PracticeSessionStatefulService>();
+    List<Word> words = service.words;
+    service.cleanup();
     var wordProgressRepository =
         Provider.of<WordProgressRepository>(context, listen: false);
     var notifier =

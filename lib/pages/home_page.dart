@@ -96,7 +96,7 @@ class HomePage extends StatelessWidget {
   Widget _buildNavigationSection(BuildContext context) {
     return _buildGridViewTwoColumns([
       _buildNavigationCard(context, "Add word", '/newword'),
-      _buildNavigationCard(context, "Practice", '/exercisesselector'),
+      _buildNavigationCard(context, "Practice", '/exerciseselector'),
       _buildNavigationCard(context, "See collections", '/wordcollections'),
     ], childAspectRatio: 4.0);
   }
@@ -186,7 +186,7 @@ class HomePage extends StatelessWidget {
         onTap: (int index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/exercisesselector');
+              Navigator.pushNamed(context, '/exerciseselector');
               break;
             case 1:
               Navigator.pushNamed(context, '/wordcollections');

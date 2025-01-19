@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
             '/settings': (context) => const SettingsPage(),
             '/newword': (context) => const WordEditorPage(),
             '/wordcollections': (context) => const WordCollectionsListPage(),
-            '/exercisesselector': (context) => const ExercisesSelectorPage(),
+            '/exerciseselector': (context) => const ExercisesSelectorPage(),
           },
         );
       },

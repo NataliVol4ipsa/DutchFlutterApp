@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
+import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
@@ -175,7 +176,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _showDeleteWordsDialog(BuildContext context) {
-    var wordIds = dataManager.getAllSelectedWords();
+    var wordIds = dataManager.getAllSelectedWordIds();
     showDeleteWordsDialog(
       context: context,
       collectionIds: [],
@@ -358,7 +359,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                 disabledIcon: Icons.school_outlined,
                 isEnabled: _shouldEnableMultiselectButtons(),
                 label: 'Practice',
-                onTap: (() => {print('Tapped Practice!')})),
+                onTap: (() => {_handleOnPracticeActionTap(context)})),
             MyBottomAppBarItem(
                 icon: Icons.drive_file_move,
                 disabledIcon: Icons.drive_file_move_outlined,
@@ -380,6 +381,16 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             _buildMoreButton(context),
           ],
         ));
+  }
+
+  void _handleOnPracticeActionTap(BuildContext context) {
+    if (!dataManager.containsAtLeastOneSelectedWord()) return;
+    var service = context.read<PracticeSessionStatefulService>();
+    service.initializeWords(dataManager.getAllSelectedWords());
+    Navigator.pushNamed(
+      context,
+      '/exerciseselector',
+    );
   }
 
   void _handleOnExportActionTap(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
@@ -36,13 +37,22 @@ class WordCollectionListManager {
     }
   }
 
-  List<int> getAllSelectedWords() {
+  List<int> getAllSelectedWordIds() {
     List<int> wordIds = [];
 
     for (var collection in collections) {
       wordIds.addAll(collection.getSelectedWords().map((word) => word.id));
     }
     return wordIds;
+  }
+
+  List<Word> getAllSelectedWords() {
+    List<Word> words = [];
+
+    for (var collection in collections) {
+      words.addAll(collection.getSelectedWords());
+    }
+    return words;
   }
 
   int calculateSelectedWords() {
