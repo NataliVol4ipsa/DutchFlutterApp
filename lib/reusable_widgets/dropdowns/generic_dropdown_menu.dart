@@ -44,7 +44,8 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
             items: widget.dropdownValues.map<DropdownMenuItem<T>>((T value) {
               return DropdownMenuItem<T>(
                 value: value,
-                child: Text(widget.displayStringFunc(value)),
+                child: Text(widget.displayStringFunc(value),
+                    overflow: TextOverflow.ellipsis),
               );
             }).toList(),
             decoration: InputDecoration(

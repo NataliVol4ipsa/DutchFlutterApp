@@ -222,28 +222,20 @@ class _WordEditorPageState extends State<WordEditorPage> {
             child: Column(
               children: [
                 PaddedFormComponent(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: FormInput(
-                            inputLabel: "Word type",
-                            child: WordTypeDropdown(
-                              initialValue: selectedWordType,
-                              updateValueCallback: updateSelectedWordType,
-                            )),
-                      ),
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                      Expanded(
-                        child: FormInput(
-                          inputLabel: "Collection",
-                          child: WordCollectionDropdown(
-                            initialValue: selectedWordCollection,
-                            updateValueCallback: updateSelectedWordCollection,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: FormInput(
+                      inputLabel: "Word type",
+                      child: WordTypeDropdown(
+                        initialValue: selectedWordType,
+                        updateValueCallback: updateSelectedWordType,
+                      )),
+                ),
+                PaddedFormComponent(
+                  child: FormInput(
+                    inputLabel: "Collection",
+                    child: WordCollectionDropdown(
+                      initialValue: selectedWordCollection,
+                      updateValueCallback: updateSelectedWordCollection,
+                    ),
                   ),
                 ),
                 PaddedFormComponent(
