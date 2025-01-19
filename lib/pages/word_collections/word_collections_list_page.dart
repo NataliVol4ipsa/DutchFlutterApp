@@ -263,9 +263,18 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             bottomNavigationBar: _buildBottomNavBar(context)));
   }
 
+  String _multiselectAppBarTitle() {
+    int selectedWordsCount = dataManager.calculateSelectedWords();
+    if (selectedWordsCount == 0) {
+      return "Select one or multiple items";
+    }
+    if (selectedWordsCount == 1) return "Selected 1 word";
+    return "Selected $selectedWordsCount words";
+  }
+
   String _appBarTitle() {
     return checkboxModeEnabled
-        ? "Select one or multiple items"
+        ? _multiselectAppBarTitle()
         : "Words and collections";
   }
 

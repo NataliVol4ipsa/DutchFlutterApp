@@ -45,6 +45,19 @@ class WordCollectionListManager {
     return wordIds;
   }
 
+  int calculateSelectedWords() {
+    int answer = 0;
+
+    for (var collection in collections) {
+      for (var word in collection.words ?? []) {
+        if (word.isSelected) {
+          answer++;
+        }
+      }
+    }
+    return answer;
+  }
+
   List<WordCollection> getCollectionsWithAtLeastOneSelectedWord() {
     List<WordCollection> result = [];
     for (int i = 0; i < collections.length; i++) {
