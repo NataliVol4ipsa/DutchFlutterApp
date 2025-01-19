@@ -335,19 +335,27 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         context: context,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
+            icon: _shouldEnableMultiselectButtons()
+                ? const Icon(Icons.school)
+                : const Icon(Icons.school_outlined),
             label: 'Practice',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.drive_file_move),
+            icon: _shouldEnableMultiselectButtons()
+                ? const Icon(Icons.drive_file_move)
+                : const Icon(Icons.drive_file_move_outlined),
             label: 'Move',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.file_copy),
+            icon: _shouldEnableMultiselectButtons()
+                ? const Icon(Icons.file_copy)
+                : const Icon(Icons.file_copy_outlined),
             label: 'Copy',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.upload_file),
+            icon: _shouldEnableMultiselectButtons()
+                ? const Icon(Icons.upload_file_rounded)
+                : const Icon(Icons.upload_file_outlined),
             label: 'Export',
           ),
           BottomNavigationBarItem(
@@ -417,7 +425,9 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       builder:
           (BuildContext context, MenuController controller, Widget? child) {
         menuController = controller;
-        return const Icon(Icons.grid_view);
+        return _shouldEnableMultiselectButtons()
+            ? const Icon(Icons.grid_view_sharp)
+            : const Icon(Icons.grid_view_outlined);
       },
       menuChildren: List<Widget>.generate(
         actions.length,
