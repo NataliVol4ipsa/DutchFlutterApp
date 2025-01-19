@@ -1,3 +1,5 @@
+import 'package:dutch_app/styles/button_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class MyPopupMenuItem extends StatelessWidget {
@@ -14,6 +16,9 @@ class MyPopupMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MenuItemButton(
+      style: ButtonStyle(
+          backgroundColor: ButtonStyles.createButtonStyleColor(
+              ContainerStyles.bottomNavBarColor(context))),
       onPressed: onPressed,
       child: Row(
         children: [

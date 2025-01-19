@@ -1,9 +1,4 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart'; //todo move to separate file
 import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
-import 'package:dutch_app/core/services/batch_word_operations_service.dart';
-import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
 import 'package:dutch_app/pages/word_list/word_list_table.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -231,34 +226,6 @@ class _WordListPageState extends State<WordListPage> {
     );
   }
 
-  void _showDeleteDialog(BuildContext context) {
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return DeleteWordDialog(
-    //       onDeletePressed: () => _onDeletePressed(context),
-    //     );
-    //   },
-    // );
-  }
-
-  void _onDeletePressed(BuildContext context) async {
-    showDeleteWordDialog();
-    await processWordDeletionAsync(context);
-  }
-
-  void showDeleteWordDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }
-
   Future<void> processWordDeletionAsync(BuildContext context) async {
     try {
       await _deleteWordsAsync();
@@ -318,7 +285,6 @@ class _WordListPageState extends State<WordListPage> {
           case 0:
             break;
           case 1: // Delete
-            _showDeleteDialog(context);
             break;
         }
       },

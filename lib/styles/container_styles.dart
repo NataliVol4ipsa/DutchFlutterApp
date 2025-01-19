@@ -41,6 +41,8 @@ class ContainerStyles {
   static Color bottomNavBarColor(BuildContext context) => sectionColor(context);
   static Color bottomNavBarTextColor(BuildContext context) =>
       sectionTextColor(context);
+  static Color bottomNavBarDisabledTextColor(BuildContext context) =>
+      sectionTextColor(context).withAlpha(100);
 
   static BoxDecoration roundedEdgesDecoration(BuildContext context,
           {Color? color, bool useDefaultColor = true}) =>

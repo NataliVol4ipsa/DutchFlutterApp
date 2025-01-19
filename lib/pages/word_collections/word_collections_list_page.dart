@@ -15,6 +15,8 @@ import 'package:dutch_app/pages/word_collections/selectable_words_collection_wid
 import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
 import 'package:dutch_app/pages/word_collections/word_collection_list_manager.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
+import 'package:dutch_app/reusable_widgets/bottom_app_bar/more_actions_bottom_app_bar_widget.dart';
+import 'package:dutch_app/reusable_widgets/bottom_app_bar/my_bottom_app_bar_item_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:file_picker/file_picker.dart';
@@ -76,17 +78,22 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     await dataManager.loadCollectionsAsync();
     setState(() {
       collectionsAndWords = _buildWordsAndCollections(context);
-      isLoading = false;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (preservedScrollPosition != 0) {
         scrollController.jumpTo(preservedScrollPosition);
       }
     });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> _loadDataWithSnackBar(String message) async {
     var snackBar = ScaffoldMessenger.of(context);
+    if (checkboxModeEnabled) {
+      _toggleCheckboxMode();
+    }
     await _loadDataAsync();
     snackBar.showSnackBar(
       SnackBar(
@@ -287,7 +294,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     return _buildRegularNavBar(context);
   }
 
-//todo move out?
+  //todo move out?
   Widget _buildRegularNavBar(BuildContext context) {
     return WordListNavBar(
         context: context,
@@ -331,76 +338,52 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Widget _buildCheckboxNavBar(BuildContext context) {
-    return WordListNavBar(
-        context: context,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: _shouldEnableMultiselectButtons()
-                ? const Icon(Icons.school)
-                : const Icon(Icons.school_outlined),
-            label: 'Practice',
-          ),
-          BottomNavigationBarItem(
-            icon: _shouldEnableMultiselectButtons()
-                ? const Icon(Icons.drive_file_move)
-                : const Icon(Icons.drive_file_move_outlined),
-            label: 'Move',
-          ),
-          BottomNavigationBarItem(
-            icon: _shouldEnableMultiselectButtons()
-                ? const Icon(Icons.file_copy)
-                : const Icon(Icons.file_copy_outlined),
-            label: 'Copy',
-          ),
-          BottomNavigationBarItem(
-            icon: _shouldEnableMultiselectButtons()
-                ? const Icon(Icons.upload_file_rounded)
-                : const Icon(Icons.upload_file_outlined),
-            label: 'Export',
-          ),
-          BottomNavigationBarItem(
-            icon: _buildMoreButton(context),
-            label: 'More',
-          ),
-        ],
-        onTap: (int index) {
-          if (!_shouldEnableMultiselectButtons()) return;
-          switch (index) {
-            case 0:
-              break;
-            case 1:
-              break;
-            case 2:
-              break;
-            case 3:
-              if (!dataManager.containsAtLeastOneSelectedItem()) break;
-              showExportDataDialog(
-                  context: context,
-                  collections:
-                      dataManager.getCollectionsWithAtLeastOneSelectedWord(),
-                  callback: ((filePath) => _loadDataWithSnackBar(
-                      "Successfully exported words and collections to $filePath")) //todo counts of words and collections
-                  );
-              break;
-            case 4:
-              setState(() {
-                if (menuController == null) {
-                  return;
-                }
-                if (menuController!.isOpen) {
-                  menuController!.close();
-                } else {
-                  menuController!.open();
-                }
-              });
-              break;
-          }
-        });
+    return BottomAppBar(
+        color: ContainerStyles.bottomNavBarColor(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyBottomAppBarItem(
+                icon: Icons.school,
+                disabledIcon: Icons.school_outlined,
+                isEnabled: _shouldEnableMultiselectButtons(),
+                label: 'Practice',
+                onTap: (() => {print('Tapped Practice!')})),
+            MyBottomAppBarItem(
+                icon: Icons.drive_file_move,
+                disabledIcon: Icons.drive_file_move_outlined,
+                isEnabled: _shouldEnableMultiselectButtons(),
+                label: 'Move',
+                onTap: (() => {print('Tapped Move!')})),
+            MyBottomAppBarItem(
+                icon: Icons.file_copy,
+                disabledIcon: Icons.file_copy_outlined,
+                isEnabled: _shouldEnableMultiselectButtons(),
+                label: 'Copy',
+                onTap: (() => {print('Tapped Copy!')})),
+            MyBottomAppBarItem(
+                icon: Icons.upload_file_rounded,
+                disabledIcon: Icons.upload_file_outlined,
+                isEnabled: _shouldEnableMultiselectButtons(),
+                label: 'Export',
+                onTap: (() => {_handleOnExportActionTap(context)})),
+            _buildMoreButton(context),
+          ],
+        ));
   }
 
-  MenuController? menuController;
+  void _handleOnExportActionTap(BuildContext context) {
+    if (!dataManager.containsAtLeastOneSelectedItem()) return;
+    showExportDataDialog(
+        context: context,
+        collections: dataManager.getCollectionsWithAtLeastOneSelectedWord(),
+        callback: ((filePath) => _loadDataWithSnackBar(
+            "Successfully exported words and collections to $filePath")) //todo counts of words and collections
+        );
+  }
 
-//todo
+  //todo
   bool _shouldEnableMultiselectButtons() {
     //more room for other conditions
     return dataManager.containsAtLeastOneSelectedItem();
@@ -413,26 +396,19 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Widget _buildMoreButton(BuildContext context) {
-    var actions = [
+    return MoreActionsBottomAppBar(
+        actions: _buildMoreActions(context),
+        verticalOffset: 13,
+        isEnabled: _shouldEnableMultiselectButtons());
+  }
+
+  List<Widget> _buildMoreActions(BuildContext context) {
+    return [
       MyPopupMenuItem(
         icon: Icons.delete,
         label: "Delete Words",
         onPressed: createOnDeletePressedFunc(context),
       ),
     ];
-    return MenuAnchor(
-      alignmentOffset: const Offset(0, 8),
-      builder:
-          (BuildContext context, MenuController controller, Widget? child) {
-        menuController = controller;
-        return _shouldEnableMultiselectButtons()
-            ? const Icon(Icons.grid_view_sharp)
-            : const Icon(Icons.grid_view_outlined);
-      },
-      menuChildren: List<Widget>.generate(
-        actions.length,
-        (int index) => actions[index],
-      ),
-    );
   }
 }
