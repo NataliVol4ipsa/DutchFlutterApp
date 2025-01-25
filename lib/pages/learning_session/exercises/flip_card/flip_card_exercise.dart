@@ -23,6 +23,8 @@ class FlipCardExercise extends BaseExercise {
     correctAnswer = word.englishWord;
     if (word.wordType != WordType.none) {
       hint = word.wordType.name;
+    } else {
+      hint = null;
     }
   }
 
