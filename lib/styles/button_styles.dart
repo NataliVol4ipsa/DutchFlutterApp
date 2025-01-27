@@ -21,7 +21,7 @@ class ButtonStyles {
   }
 
   static final ButtonStyle mediumButtonStyle = _baseButtonStyle(20, 10, 16);
-  static final ButtonStyle bigButtonStyle = _baseButtonStyle(40, 20, 20);
+  static final ButtonStyle bigButtonStyle = _baseButtonStyle(20, 20, 20);
 
   static Color primaryButtonColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).primaryContainer;
