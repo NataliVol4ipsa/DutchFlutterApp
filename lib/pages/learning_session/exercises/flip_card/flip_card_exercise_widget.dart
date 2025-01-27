@@ -134,6 +134,8 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
       },
       style: ButtonStyles.largePrimaryButtonStyle(context),
       child: Text(
+        maxLines: 1,
+        softWrap: false,
         buttonText,
       ),
     );
