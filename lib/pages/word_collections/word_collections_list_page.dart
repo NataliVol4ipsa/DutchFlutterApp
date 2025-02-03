@@ -13,7 +13,6 @@ import 'package:dutch_app/pages/word_collections/selectable_models/selectable_co
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
-import 'package:dutch_app/pages/word_collections/nav_bars/word_list_nav_bar_widget.dart';
 import 'package:dutch_app/pages/word_collections/word_collection_list_manager.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
 import 'package:dutch_app/reusable_widgets/bottom_app_bar/more_actions_bottom_app_bar_widget.dart';
@@ -304,55 +303,50 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     return _buildRegularNavBar(context);
   }
 
-  //todo move out?
   Widget _buildRegularNavBar(BuildContext context) {
-    return WordListNavBar(
-        context: context,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Word',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add collection',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.file_download),
-            label: 'Import',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_add_check),
-            label: 'Actions',
-          ),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/newword');
-              break;
-            case 1:
-              showAddCollectionDialog(
-                  context: context,
-                  callback: (() => _loadDataWithSnackBar(
-                      "Succesfully created new collection")));
-              break;
-            case 2:
-              _onImportPressedAsync(context);
-              break;
-            case 3:
-              _toggleCheckboxMode();
-              break;
-          }
-        });
-  }
-
-  Widget _buildCheckboxNavBar(BuildContext context) {
     return BottomAppBar(
+        height: 68,
         color: ContainerStyles.bottomNavBarColor(context),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyBottomAppBarItem(
+                icon: Icons.add,
+                disabledIcon: Icons.add_outlined,
+                label: 'Word',
+                onTap: (() => {Navigator.pushNamed(context, '/newword')})),
+            MyBottomAppBarItem(
+                icon: Icons.add,
+                disabledIcon: Icons.add_outlined,
+                label: 'Collection',
+                onTap: (() => {
+                      showAddCollectionDialog(
+                          context: context,
+                          callback: (() => _loadDataWithSnackBar(
+                              "Succesfully created new collection")))
+                    })),
+            MyBottomAppBarItem(
+                icon: Icons.file_download,
+                disabledIcon: Icons.file_download_outlined,
+                label: 'Import',
+                onTap: (() => {_onImportPressedAsync(context)})),
+            MyBottomAppBarItem(
+                icon: Icons.library_add_check,
+                disabledIcon: Icons.library_add_check_outlined,
+                label: 'Actions',
+                onTap: (() => {_toggleCheckboxMode()})),
+          ],
+        ));
+  }
+
+  Widget _buildCheckboxNavBar(BuildContext context) {
+    return BottomAppBar(
+        height: 68,
+        color: ContainerStyles.bottomNavBarColor(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             MyBottomAppBarItem(
                 icon: Icons.school,
