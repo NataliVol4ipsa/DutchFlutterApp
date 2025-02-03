@@ -12,6 +12,7 @@ class SelectableWordCollectionModel {
   SelectableWordCollectionModel(this.id, this.name, this.words) {
     if (words != null && words!.isNotEmpty) {
       selectAllModel = SelectableStringModel("Select all");
+      words!.sort((w1, w2) => w1.value.dutchWord.compareTo(w2.value.dutchWord));
     }
   }
 
