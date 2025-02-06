@@ -9,6 +9,7 @@ part 'db_word.g.dart';
 @Collection()
 class DbWord {
   Id? id;
+
   late String dutchWord;
   late String englishWord;
   @enumerated
