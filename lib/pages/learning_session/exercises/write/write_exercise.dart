@@ -17,7 +17,8 @@ class WriteExercise extends BaseExercise {
   }
 
   @override
-  Widget buildWidget({Key? key}) {
+  Widget buildWidget(
+      {Key? key, required Widget Function(BuildContext) nextButtonBuilder}) {
     // TODO: implement buildWidget
     throw UnimplementedError();
   }

@@ -15,5 +15,6 @@ abstract class BaseExercise {
 
   List<ExerciseSummaryDetailed> generateSummaries();
 
-  Widget buildWidget({Key? key});
+  Widget buildWidget(
+      {Key? key, required Widget Function(BuildContext) nextButtonBuilder});
 }

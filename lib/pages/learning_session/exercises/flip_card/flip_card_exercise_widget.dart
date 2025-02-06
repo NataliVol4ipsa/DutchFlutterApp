@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 
 class FlipCardExerciseWidget extends StatefulWidget {
   final FlipCardExercise exercise;
+  final Widget Function(BuildContext) nextButtonBuilder;
 
-  const FlipCardExerciseWidget(this.exercise, {super.key});
+  const FlipCardExerciseWidget(this.exercise,
+      {required this.nextButtonBuilder, super.key});
 
   @override
   State<FlipCardExerciseWidget> createState() => _FlipCardExerciseWidgetState();

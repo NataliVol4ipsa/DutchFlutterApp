@@ -59,6 +59,14 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     );
   }
 
+  Widget _buildNextButtonSimple(BuildContext context) {
+    return TextButton(
+      onPressed: _onNextButtonPressedAsync,
+      style: ButtonStyles.largePrimaryButtonStyle(context),
+      child: Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
+    );
+  }
+
   Future<void> _onNextButtonPressedAsync() async {
     _learningTaskAnsweredNotifier?.reset();
     if (widget.flowManager.hasNextTask) {
@@ -79,12 +87,13 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     Key taskKey = UniqueKey();
     return Stack(children: [
       widget.flowManager.currentTask?.buildWidget(
-            key: taskKey,
-          ) ??
+              key: taskKey, nextButtonBuilder: _buildNextButtonSimple) ??
           const Text("Error: the queue is empty"),
-      _buildNextButton(context),
+      //_buildNextButton(context),
     ]);
   }
+
+  //
 
   Widget _buildSummary(BuildContext context) {
     SessionSummary summary = widget.flowManager.sessionSummary!;

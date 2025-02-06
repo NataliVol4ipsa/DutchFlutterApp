@@ -11,8 +11,10 @@ import 'package:flutter/material.dart';
 
 class DeHetPickExerciseWidget extends StatefulWidget {
   final DeHetPickExercise exercise;
+  final Widget Function(BuildContext) nextButtonBuilder;
 
-  const DeHetPickExerciseWidget(this.exercise, {super.key});
+  const DeHetPickExerciseWidget(this.exercise,
+      {required this.nextButtonBuilder, super.key});
 
   @override
   State<DeHetPickExerciseWidget> createState() =>
@@ -82,17 +84,25 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
 
   Widget _buildFooter(context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: _buildAnswerOptionButton(DeHetType.de, "De"),
-        ),
-        const SizedBox(width: ContainerStyles.defaultPadding),
-        Expanded(
-          child: _buildAnswerOptionButton(DeHetType.het, "Het"),
-        ),
-      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: _buildFooterButtons(),
     );
+  }
+
+  List<Widget> _buildFooterButtons() {
+    if (isExerciseAnswered) {
+      return [Expanded(child: widget.nextButtonBuilder(context))];
+    }
+
+    return [
+      Expanded(
+        child: _buildAnswerOptionButton(DeHetType.de, "De"),
+      ),
+      const SizedBox(width: ContainerStyles.defaultPadding),
+      Expanded(
+        child: _buildAnswerOptionButton(DeHetType.het, "Het"),
+      ),
+    ];
   }
 
   TextButton _buildAnswerOptionButton(DeHetType deHetType, String buttonText) {

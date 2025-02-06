@@ -101,6 +101,7 @@ class HomePage extends StatelessWidget {
     ], childAspectRatio: 4.0);
   }
 
+  // ignore: unused_element
   Widget _buildProgressSection(BuildContext context) {
     return Container(
       child: const Text("Progress stats"),
@@ -110,6 +111,7 @@ class HomePage extends StatelessWidget {
   }
 
 // or this https://www.justinmind.com/wp-content/webp-express/webp-images/uploads/2024/06/tv-shows-tracker-mobile-navigation-example.png.webp
+  // ignore: unused_element
   Widget _buildRecentCollectionsSection(BuildContext context) {
     // todo apply to cards BG colors - to reflect how complete are they. From grey to green with alpha based on completion %
     return Column(
@@ -127,6 +129,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildFavoriteExercisesSection(BuildContext context) {
     return Container(
       child: const Text("Favorite Exercises"),
@@ -136,6 +139,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildIncompleteStashesSection(BuildContext context) {
     return Container(
       child: const Text("Incomplete Stashes"),

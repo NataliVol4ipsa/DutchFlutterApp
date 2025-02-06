@@ -38,10 +38,12 @@ class DeHetPickExercise extends BaseExercise {
   }
 
   @override
-  Widget buildWidget({Key? key}) {
+  Widget buildWidget(
+      {Key? key, required Widget Function(BuildContext) nextButtonBuilder}) {
     return DeHetPickExerciseWidget(
       this,
       key: key,
+      nextButtonBuilder: nextButtonBuilder,
     );
   }
 
