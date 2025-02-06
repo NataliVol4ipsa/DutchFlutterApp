@@ -11,10 +11,13 @@ import 'package:flutter/material.dart';
 
 class DeHetPickExerciseWidget extends StatefulWidget {
   final DeHetPickExercise exercise;
-  final Widget Function(BuildContext) nextButtonBuilder;
+  final Future<void> Function() onNextButtonPressed;
+  final String nextButtonText;
 
   const DeHetPickExerciseWidget(this.exercise,
-      {required this.nextButtonBuilder, super.key});
+      {required this.onNextButtonPressed,
+      required this.nextButtonText,
+      super.key});
 
   @override
   State<DeHetPickExerciseWidget> createState() =>
@@ -91,7 +94,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
 
   List<Widget> _buildFooterButtons() {
     if (isExerciseAnswered) {
-      return [Expanded(child: widget.nextButtonBuilder(context))];
+      return [Expanded(child: _buildNextButton())];
     }
 
     return [
@@ -103,6 +106,16 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
         child: _buildAnswerOptionButton(DeHetType.het, "Het"),
       ),
     ];
+  }
+
+  TextButton _buildNextButton() {
+    return TextButton(
+      onPressed: widget.onNextButtonPressed,
+      style: ButtonStyles.largePrimaryButtonStyle(context),
+      child: Text(
+        widget.nextButtonText,
+      ),
+    );
   }
 
   TextButton _buildAnswerOptionButton(DeHetType deHetType, String buttonText) {

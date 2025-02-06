@@ -42,11 +42,14 @@ class FlipCardExercise extends BaseExercise {
 
   @override
   Widget buildWidget(
-      {Key? key, required Widget Function(BuildContext) nextButtonBuilder}) {
+      {Key? key,
+      required Future<void> Function() onNextButtonPressed,
+      required String nextButtonText}) {
     return FlipCardExerciseWidget(
       this,
       key: key,
-      nextButtonBuilder: nextButtonBuilder,
+      onNextButtonPressed: onNextButtonPressed,
+      nextButtonText: nextButtonText,
     );
   }
 

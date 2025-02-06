@@ -1,11 +1,9 @@
 import 'package:dutch_app/pages/learning_session/base/base_session_step_layout_widget.dart';
-import 'package:dutch_app/reusable_widgets/layered_bottom_widget.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary_widget.dart';
-import 'package:dutch_app/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,30 +39,17 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     super.dispose();
   }
 
-  Widget _buildNextButton(BuildContext context) {
-    return Consumer<ExerciseAnsweredNotifier>(
-      builder: (context, taskNotifier, child) {
-        bool showNextButton = taskNotifier.isAnswered;
-        return showNextButton
-            ? LayeredBottom(contentBuilder: (context) {
-                return ElevatedButton(
-                  onPressed: _onNextButtonPressedAsync,
-                  style: ButtonStyles.bigButtonStyle,
-                  child:
-                      Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
-                );
-              })
-            : Container();
-      },
-    );
-  }
-
-  Widget _buildNextButtonSimple(BuildContext context) {
-    return TextButton(
-      onPressed: _onNextButtonPressedAsync,
-      style: ButtonStyles.largePrimaryButtonStyle(context),
-      child: Text(widget.flowManager.hasNextTask ? "Next" : "Finish"),
-    );
+  Widget _buildExercise(BuildContext context) {
+    Key taskKey = UniqueKey();
+    return Stack(children: [
+      widget.flowManager.currentTask?.buildWidget(
+              key: taskKey,
+              onNextButtonPressed: _onNextButtonPressedAsync,
+              nextButtonText:
+                  widget.flowManager.hasNextTask ? "Next" : "Finish") ??
+          const Text("Error: the queue is empty"),
+      //_buildNextButton(context),
+    ]);
   }
 
   Future<void> _onNextButtonPressedAsync() async {
@@ -81,16 +66,6 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
       widget.flowManager.endSession();
     });
     _learningTasksCompletedNotifier?.notifyCompleted();
-  }
-
-  Widget _buildExercise(BuildContext context) {
-    Key taskKey = UniqueKey();
-    return Stack(children: [
-      widget.flowManager.currentTask?.buildWidget(
-              key: taskKey, nextButtonBuilder: _buildNextButtonSimple) ??
-          const Text("Error: the queue is empty"),
-      //_buildNextButton(context),
-    ]);
   }
 
   //

@@ -142,15 +142,21 @@ class SessionSummaryWidget extends StatelessWidget {
         );
       },
       footerBuilder: (context) {
-        return ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: ButtonStyles.bigButtonStyle,
-          child: const Text(
-            "Back to menu",
-            style: TextStyle(fontSize: 20),
-          ),
+        return Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ButtonStyles.bigButtonStyle,
+                child: const Text(
+                  "Back to menu",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

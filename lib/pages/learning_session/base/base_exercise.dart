@@ -16,5 +16,7 @@ abstract class BaseExercise {
   List<ExerciseSummaryDetailed> generateSummaries();
 
   Widget buildWidget(
-      {Key? key, required Widget Function(BuildContext) nextButtonBuilder});
+      {Key? key,
+      required Future<void> Function() onNextButtonPressed,
+      required String nextButtonText});
 }

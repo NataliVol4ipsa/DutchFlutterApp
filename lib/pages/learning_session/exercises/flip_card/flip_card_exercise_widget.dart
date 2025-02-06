@@ -1,7 +1,6 @@
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_content_widget.dart';
-import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_evaluation_widget.dart';
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -10,10 +9,13 @@ import 'package:flutter/material.dart';
 
 class FlipCardExerciseWidget extends StatefulWidget {
   final FlipCardExercise exercise;
-  final Widget Function(BuildContext) nextButtonBuilder;
+  final Future<void> Function() onNextButtonPressed;
+  final String nextButtonText;
 
   const FlipCardExerciseWidget(this.exercise,
-      {required this.nextButtonBuilder, super.key});
+      {required this.onNextButtonPressed,
+      required this.nextButtonText,
+      super.key});
 
   @override
   State<FlipCardExerciseWidget> createState() => _FlipCardExerciseWidgetState();
@@ -25,13 +27,14 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
   // differs from exercise.isAnswered - answer is for current widget only
   bool isExerciseAnswered = false;
 
-  void onAnswerProvided(bool userKnowsTrasnslationInput) {
+  Future<void> onAnswerProvided(bool userKnowsTrasnslationInput) async {
     setState(() {
       isExerciseAnswered = true;
       userKnowsTrasnslation = userKnowsTrasnslationInput;
     });
     widget.exercise.processAnswer(userKnowsTrasnslation!);
     notifyAnsweredExercise(context, true); //move to base?
+    await widget.onNextButtonPressed();
   }
 
   void onShowTranslationClicked() {
@@ -44,7 +47,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
     return ExerciseContent(
       promptBuilder: _buildPrompt,
       inputDataBuilder: _buildInputData,
-      evaluationBuilder: _buildEvaluation,
+      evaluationBuilder: ((context) => Container()),
     );
   }
 
@@ -87,15 +90,6 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
     );
   }
 
-  Widget _buildEvaluation(context) {
-    return ExerciseEvaluation(
-      isExerciseAnswered: isExerciseAnswered,
-      isCorrectAnswer: userKnowsTrasnslation,
-      successTextOverride: "Good job!",
-      failureTextOverride: "This exercise will be shown again later.",
-    );
-  }
-
   Widget _buildFooter(context) {
     return showTranslation
         ? _buildAnswerOptionsFooter(context)
@@ -103,14 +97,19 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
   }
 
   Widget _buildShowTranslationFooter(context) {
-    return TextButton(
-      onPressed: () {
-        onShowTranslationClicked();
-      },
-      style: ButtonStyles.largePrimaryButtonStyle(context),
-      child: const Text(
-        "Show translation",
-      ),
+    return Row(
+      children: [
+        Expanded(
+            child: TextButton(
+          onPressed: () {
+            onShowTranslationClicked();
+          },
+          style: ButtonStyles.largePrimaryButtonStyle(context),
+          child: const Text(
+            "Show translation",
+          ),
+        )),
+      ],
     );
   }
 
@@ -133,6 +132,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
     return TextButton(
       onPressed: () {
         onAnswerProvided(userClickedKnow);
+        //
       },
       style: ButtonStyles.largePrimaryButtonStyle(context),
       child: Text(

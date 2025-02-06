@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';

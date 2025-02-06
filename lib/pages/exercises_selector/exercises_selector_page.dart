@@ -7,6 +7,7 @@ import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
+import 'package:dutch_app/styles/button_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -104,13 +105,20 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: selectedModes.isNotEmpty
-                    ? () {
-                        onStartButtonClick();
-                      }
-                    : null,
-                child: const Text('Start'),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: selectedModes.isNotEmpty
+                          ? () {
+                              onStartButtonClick();
+                            }
+                          : null,
+                      style: ButtonStyles.largePrimaryButtonStyle(context),
+                      child: const Text('Start'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
