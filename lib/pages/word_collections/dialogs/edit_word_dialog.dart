@@ -13,7 +13,7 @@ class EditWordDialog {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.9,
-          child: WordEditorPage(existingWord: word),
+          child: WordEditorPage(existingWordId: word.id),
         );
       },
     );

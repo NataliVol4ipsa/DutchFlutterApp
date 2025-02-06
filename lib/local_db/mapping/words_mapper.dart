@@ -19,7 +19,11 @@ class WordsMapper {
     return words.map((word) => mapToEntity(word)).toList();
   }
 
-  static Word mapToDomain(DbWord dbWord) {
+  static Word? mapToDomain(DbWord? dbWord) {
+    if (dbWord == null) {
+      return null;
+    }
+
     return Word(
       dbWord.id!,
       dbWord.dutchWord,
@@ -28,11 +32,12 @@ class WordsMapper {
       deHetType: dbWord.deHet,
       pluralForm: dbWord.pluralForm,
       tag: dbWord.tag,
+      collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
     );
   }
 
   static List<Word> mapToDomainList(List<DbWord> words) {
-    return words.map((word) => mapToDomain(word)).toList();
+    return words.map((word) => mapToDomain(word)).whereType<Word>().toList();
   }
 
   static Future<Word> mapWithCollectionToDomainAsync(DbWord dbWord) async {
@@ -45,8 +50,7 @@ class WordsMapper {
       deHetType: dbWord.deHet,
       pluralForm: dbWord.pluralForm,
       tag: dbWord.tag,
-      collection:
-          WordCollectionsMapper.mapNullableToDomain(dbWord.collection.value),
+      collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
     );
   }
 

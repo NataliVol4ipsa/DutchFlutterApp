@@ -23,8 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WordEditorPage extends StatefulWidget {
-  final Word? existingWord;
-  const WordEditorPage({super.key, this.existingWord});
+  final int? existingWordId;
+  const WordEditorPage({super.key, this.existingWordId});
 
   @override
   State<WordEditorPage> createState() => _WordEditorPageState();
@@ -47,6 +47,8 @@ class _WordEditorPageState extends State<WordEditorPage> {
   bool isNewWord = false;
   bool resetSearchTrigger = false;
 
+  bool isLoading = false;
+
   late WordsRepository wordsRepository;
   late OnlineWordSearchSuggestionSelectedNotifier onlineWordSelectedNotifier;
 
@@ -55,6 +57,11 @@ class _WordEditorPageState extends State<WordEditorPage> {
   @override
   void initState() {
     super.initState();
+
+    if (!isNewWord) {
+      isLoading = true;
+    }
+
     onlineWordSelectedNotifier =
         context.read<OnlineWordSearchSuggestionSelectedNotifier>();
     onlineWordSelectedNotifierListener = () {
@@ -62,10 +69,12 @@ class _WordEditorPageState extends State<WordEditorPage> {
     };
     onlineWordSelectedNotifier.addListener(onlineWordSelectedNotifierListener);
     wordsRepository = context.read<WordsRepository>();
-    isNewWord = widget.existingWord == null;
+    isNewWord = widget.existingWordId == null;
+
     if (!isNewWord) {
-      initializeWithExistingWord(widget.existingWord!);
+      initializeWithExistingWordAsync(widget.existingWordId!);
     }
+
     selectedWordType ??= WordType.none;
   }
 
@@ -81,26 +90,37 @@ class _WordEditorPageState extends State<WordEditorPage> {
     });
   }
 
-  void initializeWithExistingWord(Word word) {
+  Future<void> initializeWithExistingWordAsync(int wordId) async {
+    var word = await wordsRepository.getWordAsync(wordId);
+
+    if (word == null) {
+      throw Exception("Failed to edit word with id '$wordId'");
+    }
+
     selectedWordType = word.wordType;
     selectedWordCollection = word.collection;
     dutchWordTextInputController.text = word.dutchWord;
     englishWordTextInputController.text = word.englishWord;
     dutchPluralFormTextInputController.text = word.pluralForm ?? "";
     selectedDeHetType = word.deHetType;
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> submitChangesAsync() async {
     if (!_formKey.currentState!.validate()) return;
-    var notifier = Provider.of<WordCreatedNotifier>(context, listen: false);
+    var wordCreatedNotifier =
+        Provider.of<WordCreatedNotifier>(context, listen: false);
     if (isNewWord) {
       notifyWordCreated(context);
       await createWordAsync();
-      notifier.notify();
+      wordCreatedNotifier.notify();
       recreatePage();
     } else {
       await updateWordAsync();
-      notifier.notify();
+      wordCreatedNotifier.notify();
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -113,7 +133,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
       NoAnimationPageRoute(
         builder: (context) => WordEditorPage(
           key: UniqueKey(),
-          existingWord: widget.existingWord,
         ),
       ),
     );
@@ -133,11 +152,13 @@ class _WordEditorPageState extends State<WordEditorPage> {
   }
 
   Future<void> updateWordAsync() async {
+    if (isNewWord) return;
+
     String dutchWordInput = dutchWordTextInputController.text;
     String englishWordInput = englishWordTextInputController.text;
     String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
 
-    var updatedWord = Word(widget.existingWord!.id, dutchWordInput,
+    var updatedWord = Word(widget.existingWordId!, dutchWordInput,
         englishWordInput, selectedWordType!,
         deHetType: selectedDeHetType!,
         pluralForm: dutchPluralFormWordInput,
@@ -209,10 +230,14 @@ class _WordEditorPageState extends State<WordEditorPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       appBar: MyAppBar(
         title: Text(getAppBarLabel()),
-        disableSettingsButton: widget.existingWord != null,
+        disableSettingsButton: !isNewWord,
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),

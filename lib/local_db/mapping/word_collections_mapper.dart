@@ -15,17 +15,13 @@ class WordCollectionsMapper {
     return collections.map((collection) => mapToEntity(collection)).toList();
   }
 
-  static WordCollection mapToDomain(DbWordCollection dbCollection) {
-    var newCollection = WordCollection(dbCollection.id, dbCollection.name);
-    return newCollection;
-  }
-
-  static WordCollection? mapNullableToDomain(DbWordCollection? collection) {
-    if (collection == null) {
+  static WordCollection? mapToDomain(DbWordCollection? dbCollection) {
+    if (dbCollection == null) {
       return null;
     }
 
-    return mapToDomain(collection);
+    var collection = WordCollection(dbCollection.id, dbCollection.name);
+    return collection;
   }
 
   static Future<WordCollection> mapWithWordsToDomainAsync(
@@ -41,7 +37,10 @@ class WordCollectionsMapper {
 
   static List<WordCollection> mapToDomainList(
       List<DbWordCollection> collections) {
-    return collections.map((collection) => mapToDomain(collection)).toList();
+    return collections
+        .map((collection) => mapToDomain(collection))
+        .whereType<WordCollection>()
+        .toList();
   }
 
   static Future<List<WordCollection>> mapWithWordsToDomainListAsync(

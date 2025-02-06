@@ -73,17 +73,26 @@ class WordsRepository {
     return ids;
   }
 
-  Future<List<Word>> getAsync() async {
+  Future<List<Word>> getWordsAsync() async {
     List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
     List<Word> words = WordsMapper.mapToDomainList(dbWords);
     return words;
   }
 
-  Future<List<Word>> getWithCollectionAsync() async {
+  Future<List<Word>> getWordsWithCollectionAsync() async {
     List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
     List<Word> words =
         await WordsMapper.mapWithCollectionToDomainListAsync(dbWords);
     return words;
+  }
+
+  Future<Word?> getWordAsync(int wordId) async {
+    final DbWord? dbWord = await DbContext.isar.dbWords.get(wordId);
+
+    await dbWord?.collection.load();
+
+    Word? word = WordsMapper.mapToDomain(dbWord);
+    return word;
   }
 
   Future<bool> updateAsync(Word updatedWord) async {
