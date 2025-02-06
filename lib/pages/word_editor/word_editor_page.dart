@@ -58,6 +58,7 @@ class _WordEditorPageState extends State<WordEditorPage> {
   void initState() {
     super.initState();
 
+    isNewWord = widget.existingWordId == null;
     if (!isNewWord) {
       isLoading = true;
     }
@@ -69,7 +70,6 @@ class _WordEditorPageState extends State<WordEditorPage> {
     };
     onlineWordSelectedNotifier.addListener(onlineWordSelectedNotifierListener);
     wordsRepository = context.read<WordsRepository>();
-    isNewWord = widget.existingWordId == null;
 
     if (!isNewWord) {
       initializeWithExistingWordAsync(widget.existingWordId!);
