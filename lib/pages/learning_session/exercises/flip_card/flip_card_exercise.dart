@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/core/models/word.dart';
@@ -20,6 +21,9 @@ class FlipCardExercise extends BaseExercise {
       throw Exception("Tried to create Exercise for unsupported word");
     }
     inputWord = word.dutchWord;
+    if (word.deHetType != DeHetType.none && word.wordType == WordType.noun) {
+      inputWord = "${word.deHetType.label} $inputWord";
+    }
     correctAnswer = word.englishWord;
     if (word.wordType != WordType.none) {
       hint = word.wordType.name;
