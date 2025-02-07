@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
+import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
@@ -124,7 +125,9 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   void _onCollectionRowTap(SelectableWordCollectionModel collection) {
     if (!checkboxModeEnabled) {
-      _showUpdateCollectionDialog(collection);
+      if (CollectionPermissionService.canRenameCollection(collection.id)) {
+        _showUpdateCollectionDialog(collection);
+      }
     } else {
       _toggleIsSelectedCollection(collection);
     }

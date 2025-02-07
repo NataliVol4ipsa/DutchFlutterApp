@@ -1,17 +1,13 @@
+import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/local_db/entities/db_word.dart';
 import 'package:dutch_app/local_db/entities/db_word_collection.dart';
 import 'package:isar/isar.dart';
 
-class CollectionsConfig {
-  static int defaultCollectionId = -1;
-  static const String defaultCollectionName = "Default collection";
-}
-
 Future<void> seedDatabaseAsync() async {
   DbWordCollection defaultCollection =
       await getOrCreateDefaultCollectionIdAsync();
-  CollectionsConfig.defaultCollectionId = defaultCollection.id!;
+  CollectionPermissionService.defaultCollectionId = defaultCollection.id!;
 
   await setDefaultCollectionForExistingWordsAsync(defaultCollection);
 }
@@ -20,7 +16,7 @@ Future<DbWordCollection> getOrCreateDefaultCollectionIdAsync() async {
   var isar = DbContext.isar;
   final DbWordCollection? defaultCollection = await isar.dbWordCollections
       .filter()
-      .nameEqualTo(CollectionsConfig.defaultCollectionName)
+      .nameEqualTo(CollectionPermissionService.defaultCollectionName)
       .findFirst();
 
   if (defaultCollection != null) {
@@ -28,7 +24,7 @@ Future<DbWordCollection> getOrCreateDefaultCollectionIdAsync() async {
   }
 
   var newCollection = DbWordCollection();
-  newCollection.name = CollectionsConfig.defaultCollectionName;
+  newCollection.name = CollectionPermissionService.defaultCollectionName;
 
   await isar.writeTxn(() async {
     await isar.dbWordCollections.put(newCollection);

@@ -1,0 +1,5 @@
+Default collection:
+- all new words are added to default collection, if collection was not specified by user
+- default collection cannot be deleted
+- default collection cannot be renamed
+- when importing words, if there is a collection(s) with default name, then collection is not created but its words are imported into existing default collection

@@ -1,9 +1,9 @@
 import 'package:dutch_app/core/models/new_word.dart';
+import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/local_db/entities/db_word.dart';
 import 'package:dutch_app/local_db/entities/db_word_collection.dart';
-import 'package:dutch_app/local_db/seed/db_seed.dart';
 import 'package:isar/isar.dart';
 
 import '../mapping/words_mapper.dart';
@@ -12,7 +12,7 @@ class WordsRepository {
   Future<int> addAsync(NewWord word) async {
     final newWord = WordsMapper.mapToEntity(word);
     int collectionId =
-        word.collection?.id ?? CollectionsConfig.defaultCollectionId;
+        word.collection?.id ?? CollectionPermissionService.defaultCollectionId;
 
     return await addNewWordToCollectionAsync(collectionId, newWord);
   }

@@ -93,6 +93,7 @@ class HomePage extends StatelessWidget {
         children: children);
   }
 
+  // ignore: unused_element
   Widget _buildNavigationSection(BuildContext context) {
     return _buildGridViewTwoColumns([
       _buildNavigationCard(context, "Add word", '/newword'),
