@@ -7,7 +7,7 @@ import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
-import 'package:dutch_app/pages/word_collections/dialogs/rename_collection_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/edit_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
@@ -163,7 +163,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _showUpdateCollectionDialog(SelectableWordCollectionModel collection) {
-    showRenameCollectionDialog(
+    showEditCollectionDialog(
       context: context,
       collectionId: collection.id,
       initialName: collection.name,

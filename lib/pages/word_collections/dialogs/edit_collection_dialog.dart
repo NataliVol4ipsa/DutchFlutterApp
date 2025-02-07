@@ -1,10 +1,11 @@
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/collection_name_validator.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void showRenameCollectionDialog(
+void showEditCollectionDialog(
     {required BuildContext context,
     required int collectionId,
     required String initialName,
@@ -14,12 +15,14 @@ void showRenameCollectionDialog(
     context: context,
     builder: (BuildContext context) {
       return TextInputModal(
-        title: 'Editing collection name',
-        inputLabel: "Choose new collection name",
+        title: 'Edit collection',
+        inputLabel: "Choose collection name",
         confirmText: 'UPDATE',
         initialValue: initialName,
         onConfirmPressed: ((context, input) =>
             _updateCollectionAsync(collectionId, input, repository, callback)),
+        validateInput: isValidCollectionName,
+        prefixIcon: Icon(Icons.collections_bookmark_outlined),
       );
     },
   );

@@ -1,4 +1,4 @@
-import 'package:dutch_app/reusable_widgets/input_label.dart';
+import 'package:dutch_app/pages/word_editor/inputs/form_text_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class TextInputModal extends StatefulWidget {
@@ -8,6 +8,9 @@ class TextInputModal extends StatefulWidget {
   final String? inputLabel;
   final String? confirmText;
   final String? initialValue;
+  final bool Function(String?)? validateInput;
+  final String? invalidInputErrorMessage;
+  final Widget? prefixIcon;
 
   const TextInputModal({
     super.key,
@@ -16,6 +19,9 @@ class TextInputModal extends StatefulWidget {
     this.inputLabel,
     this.confirmText,
     this.initialValue,
+    this.validateInput,
+    this.invalidInputErrorMessage,
+    this.prefixIcon,
   });
 
   @override
@@ -41,19 +47,15 @@ class _TextInputModalState extends State<TextInputModal> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-                alignment: Alignment.centerLeft,
-                child: InputLabel(
-                  widget.inputLabel ?? "Please enter text value:",
-                )),
-            TextFormField(
-              controller: inputController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-              ),
-            )
+            FormTextInput(
+              textInputController: inputController,
+              inputLabel: widget.inputLabel ?? "Please enter text value:",
+              isRequired: true,
+              valueValidator: widget.validateInput,
+              invalidInputErrorMessage:
+                  widget.invalidInputErrorMessage ?? "Value is not correct.",
+              prefixIcon: widget.prefixIcon,
+            ),
           ],
         ),
       ),
@@ -72,10 +74,7 @@ class _TextInputModalState extends State<TextInputModal> {
               child: VerticalDivider(thickness: 1, color: Colors.grey),
             ),
             TextButton(
-              onPressed: () {
-                widget.onConfirmPressed(context, inputController.text);
-                Navigator.of(context).pop();
-              },
+              onPressed: _onConfirmPressed,
               child: Text(
                 widget.confirmText ?? 'OK',
                 style: const TextStyle(color: Colors.red),
@@ -85,5 +84,12 @@ class _TextInputModalState extends State<TextInputModal> {
         ),
       ],
     );
+  }
+
+  void _onConfirmPressed() {
+    if (!_formKey.currentState!.validate()) return;
+
+    widget.onConfirmPressed(context, inputController.text);
+    Navigator.of(context).pop();
   }
 }
