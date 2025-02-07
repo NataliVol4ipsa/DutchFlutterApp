@@ -3,6 +3,7 @@ import 'package:dutch_app/local_db/db_context.dart';
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/local_db/entities/db_word.dart';
 import 'package:dutch_app/local_db/entities/db_word_collection.dart';
+import 'package:dutch_app/local_db/seed/db_seed.dart';
 import 'package:isar/isar.dart';
 
 import '../mapping/words_mapper.dart';
@@ -10,13 +11,10 @@ import '../mapping/words_mapper.dart';
 class WordsRepository {
   Future<int> addAsync(NewWord word) async {
     final newWord = WordsMapper.mapToEntity(word);
-    int? collectionId = word.collection?.id;
-    if (collectionId != null) {
-      addNewWordToCollectionAsync(collectionId, newWord);
-    }
-    final int id = await DbContext.isar
-        .writeTxn(() => DbContext.isar.dbWords.put(newWord));
-    return id;
+    int collectionId =
+        word.collection?.id ?? CollectionsConfig.defaultCollectionId;
+
+    return await addNewWordToCollectionAsync(collectionId, newWord);
   }
 
   Future<int> addNewWordToCollectionAsync(

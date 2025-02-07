@@ -5,7 +5,7 @@ import 'package:isar/isar.dart';
 
 class CollectionsConfig {
   static int defaultCollectionId = -1;
-  static const String defaultCollectionName = "Words without collection";
+  static const String defaultCollectionName = "Default collection";
 }
 
 Future<void> seedDatabaseAsync() async {
