@@ -145,7 +145,7 @@ const _DbWordProgressexerciseTypeValueEnumMap = {
   3: ExerciseType.pluralFormPick,
   4: ExerciseType.pluralFormWrite,
   5: ExerciseType.basicOnePick,
-  6: ExerciseType.basicManyPick,
+  6: ExerciseType.manyToMany,
 };
 
 Id _dbWordProgressGetId(DbWordProgress object) {

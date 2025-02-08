@@ -46,7 +46,8 @@ class LearningSessionManager {
     if (!notifier.isAnswered || exercisesQueue.isEmpty) return;
 
     var ex = exercisesQueue.first;
-    if (ex.isAnswered() && ex.answerSummary.totalCorrectAnswers == 0) {
+    if (ex.isAnswered() &&
+        ex.answerSummary.totalCorrectAnswers < ex.numOfRequiredWords) {
       exercisesQueue.add(exercisesQueue.first);
     }
   }

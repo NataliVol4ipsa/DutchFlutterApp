@@ -5,7 +5,7 @@ enum ExerciseType {
   pluralFormPick,
   pluralFormWrite,
   basicOnePick,
-  basicManyPick,
+  manyToMany,
 }
 
 extension ExerciseTypeExtension on ExerciseType {
@@ -23,7 +23,7 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'Write Plural Form';
       case ExerciseType.basicOnePick:
         return 'Pick Translation';
-      case ExerciseType.basicManyPick:
+      case ExerciseType.manyToMany:
         return 'Match Translations';
     }
   }
@@ -42,7 +42,7 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'For Dutch noun on the screen, write properly spelled plural form of the word';
       case ExerciseType.basicOnePick:
         return 'Pick translation of word on screen from list of options';
-      case ExerciseType.basicManyPick:
+      case ExerciseType.manyToMany:
         return 'Match two lists of words according to their translations';
     }
   }

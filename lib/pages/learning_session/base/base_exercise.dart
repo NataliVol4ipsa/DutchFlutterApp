@@ -4,7 +4,7 @@ import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summa
 import 'package:flutter/material.dart';
 
 abstract class BaseExercise {
-  final int numOfRequiredWords;
+  final int numOfRequiredWords; //todo rm if not used
   final ExerciseType exerciseType;
   late ExerciseAnswerSummary answerSummary = ExerciseAnswerSummary();
 

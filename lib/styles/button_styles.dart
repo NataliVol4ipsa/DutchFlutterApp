@@ -47,6 +47,14 @@ class ButtonStyles {
     );
   }
 
+  static ButtonStyle mediumSecondaryButtonStyle(BuildContext context) {
+    return mediumButtonStyle.copyWith(
+      backgroundColor: createButtonStyleColor(secondaryButtonColor(context)),
+      foregroundColor:
+          createButtonStyleColor(secondaryButtonColorText(context)),
+    );
+  }
+
   // Tools
 
   static WidgetStateProperty<Color> createButtonStyleColor(Color color) {
