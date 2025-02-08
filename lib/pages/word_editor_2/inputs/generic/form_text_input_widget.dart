@@ -1,4 +1,4 @@
-import 'package:dutch_app/pages/word_editor/inputs/form_input_widget.dart';
+import 'package:dutch_app/pages/word_editor_2/inputs/generic/form_input_widget.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/material.dart';
 

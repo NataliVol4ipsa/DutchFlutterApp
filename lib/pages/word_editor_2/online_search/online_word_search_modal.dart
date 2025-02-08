@@ -1,4 +1,4 @@
-import 'package:dutch_app/pages/word_editor/online_search/online_word_search_page.dart';
+import 'package:dutch_app/pages/word_editor_2/online_search/online_word_search_page.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/material.dart';
 
