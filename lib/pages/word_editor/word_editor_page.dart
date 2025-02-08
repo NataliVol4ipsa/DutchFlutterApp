@@ -340,11 +340,8 @@ class _WordEditorPageState extends State<WordEditorPage> {
             child: TextButton(
               onPressed: submitChangesAsync,
               style: ButtonStyles.mediumPrimaryButtonStyle(context),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 4.0),
-                child: Text(
-                  getSubmitButtonLabel(),
-                ),
+              child: Text(
+                getSubmitButtonLabel(),
               ),
             ),
           ),

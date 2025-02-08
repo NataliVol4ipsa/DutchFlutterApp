@@ -111,7 +111,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
   TextButton _buildNextButton() {
     return TextButton(
       onPressed: widget.onNextButtonPressed,
-      style: ButtonStyles.largePrimaryButtonStyle(context),
+      style: ButtonStyles.largeWidePrimaryButtonStyle(context),
       child: Text(
         widget.nextButtonText,
       ),
@@ -125,7 +125,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
           : () {
               onAnswerProvided(deHetType);
             },
-      style: ButtonStyles.largePrimaryButtonStyle(context),
+      style: ButtonStyles.largeWidePrimaryButtonStyle(context),
       child: Text(
         buttonText,
       ),

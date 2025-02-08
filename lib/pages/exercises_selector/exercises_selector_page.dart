@@ -114,7 +114,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
                               onStartButtonClick();
                             }
                           : null,
-                      style: ButtonStyles.largePrimaryButtonStyle(context),
+                      style: ButtonStyles.largeWidePrimaryButtonStyle(context),
                       child: const Text('Start'),
                     ),
                   ),

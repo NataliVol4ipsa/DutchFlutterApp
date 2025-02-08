@@ -149,7 +149,7 @@ class SessionSummaryWidget extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                style: ButtonStyles.bigButtonStyle,
+                style: ButtonStyles.largeWidePrimaryButtonStyle(context),
                 child: const Text(
                   "Back to menu",
                   style: TextStyle(fontSize: 20),

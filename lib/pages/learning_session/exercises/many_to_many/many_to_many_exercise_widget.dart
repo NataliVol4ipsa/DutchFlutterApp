@@ -1,6 +1,7 @@
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
 import 'package:dutch_app/styles/button_styles.dart';
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,9 @@ class ManyToManyExerciseWidget extends StatefulWidget {
 }
 
 class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
+  void _handleLeftOptionClick(ManyToManyOption option) {}
+  void _handleRightOptionClick(ManyToManyOption option) {}
+
   Widget _buildContent(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -37,6 +41,9 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildOptionsColumn(widget.exercise.leftOptions, true),
+                SizedBox(
+                  width: ContainerStyles.defaultPadding,
+                ),
                 _buildOptionsColumn(widget.exercise.rightOptions, false),
               ],
             )),
@@ -46,26 +53,39 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
 
   Widget _buildOptionsColumn(
       List<ManyToManyOption> options, bool isLeftColumn) {
-    var optionItems =
-        options.map((opt) => _buildSingleOption(opt, isLeftColumn)).toList();
-    return Column(
-      children: optionItems,
+    return Expanded(
+      child: Column(
+        children: List.generate(
+          options.length * 2 - 1,
+          (index) {
+            if (index.isEven) {
+              return _buildSingleOption(options[index ~/ 2], isLeftColumn);
+            } else {
+              return SizedBox(height: ContainerStyles.defaultPadding);
+            }
+          },
+        ),
+      ),
     );
   }
 
-  void _handleLeftOptionClick(ManyToManyOption option) {}
-  void _handleRightOptionClick(ManyToManyOption option) {}
-
-// todo handle multiline
   Widget _buildSingleOption(ManyToManyOption option, bool isLeftColumn) {
-    return TextButton(
-        style: ButtonStyles.mediumSecondaryButtonStyle(context),
-        onPressed: () => !option.isActive
-            ? null
-            : isLeftColumn
-                ? _handleLeftOptionClick(option)
-                : _handleRightOptionClick(option),
-        child: Text(option.word));
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton(
+          style: ButtonStyles.manyToManyOptionButtonStyle(context),
+          onPressed: () => !option.isActive
+              ? null
+              : isLeftColumn
+                  ? _handleLeftOptionClick(option)
+                  : _handleRightOptionClick(option),
+          child: Text(
+            option.word,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            maxLines: 3,
+          )),
+    );
   }
 
   Widget _buildPrompt(BuildContext context) {
