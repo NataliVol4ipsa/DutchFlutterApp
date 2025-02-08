@@ -146,44 +146,4 @@ class ButtonStyles {
               : createButtonStyleColor(Colors.red),
     );
   }
-
-  static ButtonStyle newWordHeaderTabStyle(BuildContext context,
-      {required bool isSelected}) {
-    double fontSize = 18;
-    double borderRadius = 18;
-    return _baseButtonStyle(fontSize,
-            fontWeight: FontWeight.normal,
-            horizontalPadding: 20,
-            verticalPadding: 10,
-            bodrerRadius: borderRadius)
-        .copyWith(
-      side: isSelected
-          ? createButtonStyleBorder(secondaryButtonBorderColor(context),
-              width: 1)
-          : createButtonStyleBorder(tertiaryButtonBorderColor(context),
-              width: 1),
-      shape: WidgetStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(borderRadius)),
-        ),
-      ),
-      backgroundColor: isSelected
-          ? createButtonStyleColor(secondaryButtonColor(context))
-          : createButtonStyleColor(tertiaryButtonColor(context)),
-      foregroundColor: isSelected
-          ? createButtonStyleColor(secondaryButtonColorText(context))
-          : createButtonStyleColor(tertiaryButtonColorText(context)),
-    );
-  }
 }
- /*
- 
-  customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(BorderStyles.bigBorderRadiusValue)),
-          ),
-          onTap: null,
-          child: Text(name)),
- 
-  */

@@ -5,7 +5,6 @@ import 'package:dutch_app/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/pages/word_editor_2/header_tab.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
-import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -113,53 +112,33 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
   }
 
   Widget _buildBody(BuildContext context) {
+    return TabBarView(
+      children: headerTabs.map((tab) => Text(tab.name)).toList(),
+    );
+  }
+
+  TabBar _buildTabBar(BuildContext context) {
+    return TabBar(
+      labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      isScrollable: true,
+      tabs: headerTabs.map((headerTab) => Tab(text: headerTab.name)).toList(),
+    );
+  }
+
+  Widget _buildSubmitButton(BuildContext context) {
     return Padding(
-      padding: ContainerStyles.containerPadding,
-      child: Column(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
         children: [
-          _buildCarouselHeader(context),
-          _buildTabBody(context),
+          Expanded(
+            child: TextButton(
+                onPressed: () => {},
+                style: ButtonStyles.largeWidePrimaryButtonStyle(context),
+                child: Text("Submit")),
+          ),
         ],
       ),
     );
-  }
-
-  Widget _buildCarouselHeader(BuildContext context) {
-    var headers = headerTabs
-        .map((headerTab) => _buildHeaderTab(context, headerTab))
-        .toList();
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: List.generate(
-        headers.length * 2 - 1,
-        (index) {
-          if (index.isEven) {
-            return headers[index ~/ 2];
-          } else {
-            return SizedBox(width: 0);
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildHeaderTab(BuildContext context, HeaderTab headerTab) {
-    return TextButton(
-      onPressed: () => {
-        setState(() {
-          headerTabs.forEach((item) => item.isSelected = false);
-          headerTab.isSelected = true;
-        })
-      },
-      style: ButtonStyles.newWordHeaderTabStyle(context,
-          isSelected: headerTab.isSelected),
-      child: Text(headerTab.name),
-    );
-  }
-
-  Widget _buildTabBody(BuildContext context) {
-    return Container(child: Text("body"));
   }
 
   @override
@@ -168,12 +147,18 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Scaffold(
-      appBar: MyAppBar(
-        title: Text(getAppBarLabel()),
-        disableSettingsButton: !isNewWord,
+    return DefaultTabController(
+      length: headerTabs.length,
+      initialIndex: 1,
+      child: Scaffold(
+        appBar: MyAppBar(
+          title: Text(getAppBarLabel()),
+          disableSettingsButton: !isNewWord,
+          bottom: _buildTabBar(context),
+        ),
+        body: _buildBody(context),
+        bottomSheet: _buildSubmitButton(context),
       ),
-      body: _buildBody(context),
     );
   }
 }
