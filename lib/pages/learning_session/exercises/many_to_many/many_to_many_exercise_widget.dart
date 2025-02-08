@@ -164,7 +164,8 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
 
   TextButton _buildNextButton() {
     return TextButton(
-      onPressed: widget.onNextButtonPressed,
+      onPressed:
+          widget.exercise.isAnswered() ? widget.onNextButtonPressed : null,
       style: ButtonStyles.largeWidePrimaryButtonStyle(context),
       child: Text(
         widget.nextButtonText,

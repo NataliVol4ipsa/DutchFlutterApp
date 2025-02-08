@@ -51,27 +51,42 @@ class ExercisesGenerator {
     supportedWords.shuffle();
 
     List<BaseExercise> exercises = [];
+    var quantities = _calculateChunkQuantities(supportedWords.length);
+    int startIndex = 0;
 
-    //2..5=> 1 chunk
-    //6  => 2 chunks, 3+3 or 4+2
-    //7 => 5+2? 4+3?
-    //8 =? 5 + 3 ? 4 + 4?
-    //9 => 5 + 4
-    //10 => 5 + 5
-    for (int i = 0;
-        i < supportedWords.length;
-        i += ManyToManyExercise.requiredWords) {
-      List<Word> wordsChunk = supportedWords.sublist(
-          i,
-          (i + ManyToManyExercise.requiredWords)
-              .clamp(0, supportedWords.length));
-
+    for (int chunkId = 0; chunkId < quantities.length; chunkId++) {
+      List<Word> wordsChunk =
+          supportedWords.sublist(startIndex, startIndex + quantities[chunkId]);
       exercises.add(ManyToManyExercise(wordsChunk));
+      startIndex += quantities[chunkId];
     }
 
-    //todo handle 6 words
-
     return exercises;
+  }
+
+  //2..5=> 1 chunk
+  //6  => 2 chunks, 3+3 or 4+2
+  //7 => 5+2? 4+3?
+  //8 =? 5 + 3 ? 4 + 4?
+  //9 => 5 + 4
+  //10 => 5 + 5
+  //11 => 5 + 3 + 3 (11=>5+6)
+  static List<int> _calculateChunkQuantities(int numOfWords) {
+    int numOfChunks = (numOfWords / ManyToManyExercise.requiredWords).ceil();
+    var result = List<int>.generate(
+        numOfChunks, (index) => ManyToManyExercise.requiredWords);
+
+    int div = numOfWords % ManyToManyExercise.requiredWords;
+
+    if (numOfChunks == 1 || div == 0) {
+      return result;
+    }
+
+    int wordsToSplit = div + ManyToManyExercise.requiredWords;
+    result[numOfChunks - 2] = (wordsToSplit / 2).ceil();
+    result[numOfChunks - 1] = wordsToSplit - result[numOfChunks - 2];
+
+    return result;
   }
 
   List<BaseExercise> generateWritingExcercises() {

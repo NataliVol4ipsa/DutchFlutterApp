@@ -57,7 +57,7 @@ class ManyToManyExercise extends BaseExercise {
 
   @override
   bool isAnswered() {
-    return numOfCompletedPairs == requiredWords;
+    return numOfCompletedPairs == words.length;
   }
 
   @override
