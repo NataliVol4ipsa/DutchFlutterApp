@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/core/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
@@ -10,6 +11,7 @@ import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // todo animate main stats numbers slowly appear on screen.
 // rushing through all numbers from 1 to N.
@@ -146,9 +148,7 @@ class SessionSummaryWidget extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => _onCompletePressed(context),
                 style: ButtonStyles.largeWidePrimaryButtonStyle(context),
                 child: const Text(
                   "Back to menu",
@@ -160,5 +160,11 @@ class SessionSummaryWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  _onCompletePressed(BuildContext context) {
+    var service = context.read<PracticeSessionStatefulService>();
+    service.cleanup();
+    Navigator.pop(context);
   }
 }

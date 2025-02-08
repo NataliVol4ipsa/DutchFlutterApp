@@ -48,6 +48,8 @@ class ExercisesGenerator {
 
     if (supportedWords.length < 2) return [];
 
+    supportedWords.shuffle();
+
     List<BaseExercise> exercises = [];
 
     //2..5=> 1 chunk

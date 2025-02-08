@@ -35,7 +35,6 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   void onStartButtonClick() {
     var service = context.read<PracticeSessionStatefulService>();
     List<Word> words = service.words;
-    service.cleanup();
     var wordProgressRepository =
         Provider.of<WordProgressRepository>(context, listen: false);
     var notifier =
