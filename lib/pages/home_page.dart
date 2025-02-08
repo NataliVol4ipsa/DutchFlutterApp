@@ -1,3 +1,4 @@
+import 'package:dutch_app/reusable_widgets/bottom_app_bar/my_bottom_app_bar_item_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -96,7 +97,7 @@ class HomePage extends StatelessWidget {
   // ignore: unused_element
   Widget _buildNavigationSection(BuildContext context) {
     return _buildGridViewTwoColumns([
-      _buildNavigationCard(context, "Add word", '/newword'),
+      _buildNavigationCard(context, "Add word", '/wordeditor'),
       _buildNavigationCard(context, "Practice", '/exerciseselector'),
       _buildNavigationCard(context, "See collections", '/wordcollections'),
     ], childAspectRatio: 4.0);
@@ -172,36 +173,36 @@ class HomePage extends StatelessWidget {
             //_buildFavoriteExercisesSection(context),
             //_buildRecentCollectionsSection(context),
           ]),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: ContainerStyles.sectionColor(context),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Practice',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Collections',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Word',
-          ),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/exerciseselector');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/wordcollections');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/newword');
-              break;
-          }
-        },
-      ),
+      bottomNavigationBar: _buildBottomNavBar(context),
     );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return BottomAppBar(
+        height: 68,
+        color: ContainerStyles.bottomNavBarColor(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            MyBottomAppBarItem(
+                icon: Icons.add,
+                disabledIcon: Icons.add_outlined,
+                label: 'Add Word',
+                onTap: (() => {Navigator.pushNamed(context, '/wordeditor')})),
+            MyBottomAppBarItem(
+                icon: Icons.school,
+                disabledIcon: Icons.school_outlined,
+                label: 'Quick Practice',
+                onTap: (() =>
+                    {Navigator.pushNamed(context, '/exerciseselector')})),
+            MyBottomAppBarItem(
+                icon: Icons.list,
+                disabledIcon: Icons.list_outlined,
+                label: 'Collections',
+                onTap: (() =>
+                    {Navigator.pushNamed(context, '/wordcollections')})),
+          ],
+        ));
   }
 }
