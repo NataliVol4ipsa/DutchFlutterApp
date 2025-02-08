@@ -5,6 +5,7 @@ import 'package:dutch_app/core/types/exercise_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise_widget.dart';
+import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_option.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/widgets.dart';
 
@@ -37,8 +38,7 @@ class ManyToManyExercise extends BaseExercise {
 
   bool processAnswer(ManyToManyOption left, ManyToManyOption right) {
     if (left.id == right.id) {
-      left.isActive = false;
-      right.isActive = false;
+      numOfCompletedPairs++;
       answerSummary.totalCorrectAnswers++;
       return true;
     }
@@ -71,12 +71,4 @@ class ManyToManyExercise extends BaseExercise {
         onNextButtonPressed: onNextButtonPressed,
         nextButtonText: nextButtonText);
   }
-}
-
-class ManyToManyOption {
-  final int id;
-  final String word;
-  bool isActive = true;
-
-  ManyToManyOption({required this.id, required this.word});
 }

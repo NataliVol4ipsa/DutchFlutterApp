@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
+import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_option.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
@@ -21,8 +23,59 @@ class ManyToManyExerciseWidget extends StatefulWidget {
 }
 
 class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
-  void _handleLeftOptionClick(ManyToManyOption option) {}
-  void _handleRightOptionClick(ManyToManyOption option) {}
+  void _handleLeftOptionClick(ManyToManyOption leftOption) {
+    if (!leftOption.isActive) return;
+
+    bool currentOptionCurrentState = leftOption.isSelected;
+
+    var selectedRight =
+        widget.exercise.rightOptions.firstWhereOrNull((op) => op.isSelected);
+
+    if (selectedRight == null) {
+      setState(() {
+        for (int i = 0; i < widget.exercise.rightOptions.length; i++) {
+          widget.exercise.rightOptions[i].isSelected = false;
+        }
+        leftOption.isSelected = !currentOptionCurrentState;
+      });
+      return;
+    }
+
+    _handleTwoOptionsSelected(leftOption, selectedRight);
+  }
+
+  void _handleRightOptionClick(ManyToManyOption rightOption) {
+    if (!rightOption.isActive) return;
+
+    bool currentOptionCurrentState = rightOption.isSelected;
+
+    var selectedLeft =
+        widget.exercise.leftOptions.firstWhereOrNull((op) => op.isSelected);
+
+    if (selectedLeft == null) {
+      setState(() {
+        for (int i = 0; i < widget.exercise.rightOptions.length; i++) {
+          widget.exercise.rightOptions[i].isSelected = false;
+        }
+        rightOption.isSelected = !currentOptionCurrentState;
+      });
+      return;
+    }
+
+    _handleTwoOptionsSelected(selectedLeft, rightOption);
+  }
+
+  void _handleTwoOptionsSelected(
+      ManyToManyOption left, ManyToManyOption right) {
+    setState(() {
+      if (widget.exercise.processAnswer(left, right)) {
+        left.isActive = false;
+        right.isActive = false;
+        left.isSelected = false;
+        right.isSelected = false;
+      } else {}
+    });
+  }
 
   Widget _buildContent(BuildContext context) {
     return Column(
@@ -73,12 +126,15 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-          style: ButtonStyles.manyToManyOptionButtonStyle(context),
-          onPressed: () => !option.isActive
+          style: ButtonStyles.manyToManyOptionButtonStyle(
+              context, option.isSelected),
+          onPressed: !option.isActive
               ? null
-              : isLeftColumn
-                  ? _handleLeftOptionClick(option)
-                  : _handleRightOptionClick(option),
+              : () {
+                  isLeftColumn
+                      ? _handleLeftOptionClick(option)
+                      : _handleRightOptionClick(option);
+                },
           child: Text(
             option.word,
             softWrap: true,
@@ -97,7 +153,23 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
   }
 
   Widget _buildFooter(context) {
-    return Container();
+    return Opacity(
+      opacity: widget.exercise.isAnswered() ? 1.0 : 0.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [Expanded(child: _buildNextButton())],
+      ),
+    );
+  }
+
+  TextButton _buildNextButton() {
+    return TextButton(
+      onPressed: widget.onNextButtonPressed,
+      style: ButtonStyles.largeWidePrimaryButtonStyle(context),
+      child: Text(
+        widget.nextButtonText,
+      ),
+    );
   }
 
   @override
