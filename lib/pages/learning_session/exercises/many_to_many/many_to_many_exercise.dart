@@ -24,7 +24,8 @@ class ManyToManyExercise extends BaseExercise {
 
   ManyToManyExercise(this.words) : super(requiredWords, type) {
     for (int i = 0; i < words.length; i++) {
-      leftOptions.add(ManyToManyOption(id: i, word: words[i].dutchWord));
+      leftOptions
+          .add(ManyToManyOption(id: i, word: words[i].toDutchWordString()));
       rightOptions.add(ManyToManyOption(id: i, word: words[i].englishWord));
     }
 
@@ -44,15 +45,25 @@ class ManyToManyExercise extends BaseExercise {
     }
 
     numOfMistakes[left.id]++;
-    numOfMistakes[right.id]++;
 
     return false;
   }
 
   @override
   List<ExerciseSummaryDetailed> generateSummaries() {
-    // TODO: implement generateSummaries
-    throw UnimplementedError();
+    List<ExerciseSummaryDetailed> result = [];
+
+    for (int i = 0; i < words.length; i++) {
+      var word = words[i];
+      result.add(ExerciseSummaryDetailed(
+          word: word,
+          exerciseType: ExerciseType.manyToMany,
+          totalCorrectAnswers: 1,
+          totalWrongAnswers: numOfMistakes[i],
+          correctAnswer: "${word.dutchWord} - ${word.englishWord}"));
+    }
+
+    return result;
   }
 
   @override

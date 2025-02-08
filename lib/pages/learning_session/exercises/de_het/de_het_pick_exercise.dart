@@ -60,11 +60,12 @@ class DeHetPickExercise extends BaseExercise {
   List<ExerciseSummaryDetailed> generateSummaries() {
     return [
       ExerciseSummaryDetailed(
-          word: word,
-          exerciseType: ExerciseType.deHetPick,
-          totalCorrectAnswers: answerSummary.totalCorrectAnswers,
-          totalWrongAnswers: answerSummary.totalWrongAnswers,
-          correctAnswer: "${word.deHetType.name} ${word.dutchWord}")
+        word: word,
+        exerciseType: ExerciseType.deHetPick,
+        totalCorrectAnswers: answerSummary.totalCorrectAnswers,
+        totalWrongAnswers: answerSummary.totalWrongAnswers,
+        correctAnswer: word.toDutchWordString(),
+      )
     ];
   }
 }

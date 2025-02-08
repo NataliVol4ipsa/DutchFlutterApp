@@ -71,7 +71,7 @@ class FlipCardExercise extends BaseExercise {
           exerciseType: ExerciseType.flipCard,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
           totalWrongAnswers: answerSummary.totalWrongAnswers,
-          correctAnswer: "${word.dutchWord} - ${word.englishWord}")
+          correctAnswer: "${word.deHetType.label} ${word.dutchWord}")
     ];
   }
 }

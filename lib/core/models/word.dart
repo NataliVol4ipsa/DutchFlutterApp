@@ -1,5 +1,6 @@
 import 'package:dutch_app/core/models/base_word.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 
 class Word extends BaseWord {
   final int id;
@@ -14,4 +15,12 @@ class Word extends BaseWord {
     super.tag,
     super.collection,
   });
+
+  String toDutchWordString() {
+    if (deHetType != DeHetType.none && wordType == WordType.noun) {
+      return "${deHetType.label} $dutchWord";
+    }
+
+    return dutchWord;
+  }
 }
