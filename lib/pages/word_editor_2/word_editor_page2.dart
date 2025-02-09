@@ -61,6 +61,7 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     super.initState();
     _initIsNewWord();
     _initOnlineSearch();
+    _wordsRepository = context.read<WordsRepository>();
 
     _tabController = TabController(length: 0, vsync: this);
     _initTabs();
