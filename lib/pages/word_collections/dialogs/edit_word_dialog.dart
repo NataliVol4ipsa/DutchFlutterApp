@@ -1,6 +1,6 @@
+import 'package:dutch_app/pages/word_editor/word_editor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/pages/word_editor/word_editor_page_old.dart';
 
 class EditWordDialog {
   static Future<void> show({

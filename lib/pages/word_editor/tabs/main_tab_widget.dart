@@ -1,11 +1,11 @@
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/pages/word_editor_2/inputs/collection_dropdown_input_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/inputs/dehet_optional_toggle_input_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/inputs/dutch_word_input_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/inputs/english_word_input_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/inputs/word_type_dropdown_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/collection_dropdown_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/dehet_optional_toggle_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/dutch_word_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/english_word_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/word_type_dropdown_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class MainTab extends StatelessWidget {

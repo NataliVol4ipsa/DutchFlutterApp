@@ -90,12 +90,14 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     });
   }
 
-  Future<void> _loadDataWithSnackBar(String message) async {
+  Future<void> _loadDataWithSnackBar(String? message) async {
     var snackBar = ScaffoldMessenger.of(context);
     if (checkboxModeEnabled) {
       _toggleCheckboxMode();
     }
     await _loadDataAsync();
+    if (message == null) return;
+
     snackBar.showSnackBar(
       SnackBar(
         content: Text(message),
@@ -318,7 +320,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
                 icon: Icons.add,
                 disabledIcon: Icons.add_outlined,
                 label: 'Word',
-                onTap: (() => {Navigator.pushNamed(context, '/newword')})),
+                onTap: (() => {Navigator.pushNamed(context, '/wordeditor')})),
             MyBottomAppBarItem(
                 icon: Icons.add,
                 disabledIcon: Icons.add_outlined,

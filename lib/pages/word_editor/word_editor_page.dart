@@ -9,25 +9,25 @@ import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
-import 'package:dutch_app/pages/word_editor_2/tabs/meta_tab_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/tabs/past_tense_tab_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/tabs/plurals_tab_widget.dart';
-import 'package:dutch_app/pages/word_editor_2/tabs/main_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/plurals_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/main_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class WordEditorPage2 extends StatefulWidget {
+class WordEditorPage extends StatefulWidget {
   final int? existingWordId;
-  const WordEditorPage2({super.key, this.existingWordId});
+  const WordEditorPage({super.key, this.existingWordId});
 
   @override
-  State<WordEditorPage2> createState() => _WordEditorPage2State();
+  State<WordEditorPage> createState() => _WordEditorPageState();
 }
 
-class _WordEditorPage2State extends State<WordEditorPage2>
+class _WordEditorPageState extends State<WordEditorPage>
     with TickerProviderStateMixin {
   Key key = UniqueKey();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
