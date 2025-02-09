@@ -5,6 +5,7 @@ import 'package:dutch_app/core/notifiers/notifier_tools.dart';
 import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
@@ -47,6 +48,8 @@ class _WordEditorPage2State extends State<WordEditorPage2>
       ValueNotifier<WordCollection>(WordCollection(
           CollectionPermissionService.defaultCollectionId,
           CollectionPermissionService.defaultCollectionName));
+  final ValueNotifier<DeHetType> _deHetTypeTypeController =
+      ValueNotifier<DeHetType>(DeHetType.none);
 
   late TabController _tabController;
   final ValueNotifier<List<Tab>> _tabsNotifier = ValueNotifier<List<Tab>>([]);
@@ -87,7 +90,6 @@ class _WordEditorPage2State extends State<WordEditorPage2>
   void _initTabs() {
     _updateTabs();
 
-    // Listen to changes in wordType and update tabs dynamically
     _wordTypeController.addListener(() {
       _updateTabs();
     });
@@ -115,7 +117,6 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     _tabsNotifier.value = newTabs;
     _tabViewsNotifier.value = newTabViews;
 
-    // Ensure TabController updates correctly
     _tabController.dispose();
     _tabController = TabController(
         length: newTabs.length, vsync: this, initialIndex: _isNewWord ? 1 : 0);
@@ -130,7 +131,7 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     setState(() {
       _wordTypeController.value = wordOption.partOfSpeech ?? WordType.none;
       _dutchPluralFormController.text = wordOption.pluralForm ?? "";
-      // selectedDeHetType = wordOption.gender ?? DeHetType.none;
+      _deHetTypeTypeController.value = wordOption.gender ?? DeHetType.none;
     });
   }
 
@@ -156,8 +157,9 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     _englishWordController.text = existingWord.englishWord;
     _wordTypeController.value = existingWord.wordType;
     _dutchPluralFormController.text = existingWord.pluralForm ?? "";
-    // selectedWordCollection = existingWord.collection;
-    // selectedDeHetType = existingWord.deHetType;
+    _wordCollectionController.value =
+        existingWord.collection ?? _wordCollectionController.value;
+    _deHetTypeTypeController.value = existingWord.deHetType;
 
     setState(() {
       _isLoading = false;
@@ -192,6 +194,7 @@ class _WordEditorPage2State extends State<WordEditorPage2>
       englishWordController: _englishWordController,
       wordTypeValueNotifier: _wordTypeController,
       collectionValueNotifier: _wordCollectionController,
+      deHetValueNotifier: _deHetTypeTypeController,
     );
   }
 
@@ -288,8 +291,10 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var newWord = NewWord(
-      dutchWordInput, englishWordInput, _wordTypeController.value,
-      // deHetType: selectedDeHetType!,
+      dutchWordInput,
+      englishWordInput,
+      _wordTypeController.value,
+      deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
       collection: _wordCollectionController.value,
     );
@@ -305,9 +310,11 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var updatedWord = Word(
-      widget.existingWordId!, dutchWordInput,
-      englishWordInput, _wordTypeController.value,
-      // deHetType: selectedDeHetType!,
+      widget.existingWordId!,
+      dutchWordInput,
+      englishWordInput,
+      _wordTypeController.value,
+      deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
       collection: _wordCollectionController.value,
     );

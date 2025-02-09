@@ -1,6 +1,8 @@
 import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor_2/inputs/collection_dropdown_input_widget.dart';
+import 'package:dutch_app/pages/word_editor_2/inputs/dehet_optional_toggle_input_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/inputs/dutch_word_input_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/inputs/english_word_input_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/inputs/word_type_dropdown_input_widget.dart';
@@ -12,6 +14,7 @@ class MainTab extends StatelessWidget {
   final TextEditingController englishWordController;
   final ValueNotifier<WordType> wordTypeValueNotifier;
   final ValueNotifier<WordCollection> collectionValueNotifier;
+  final ValueNotifier<DeHetType> deHetValueNotifier;
 
   const MainTab({
     super.key,
@@ -20,6 +23,7 @@ class MainTab extends StatelessWidget {
     required this.wordTypeValueNotifier,
     required this.collectionValueNotifier,
     required this.wordTypeGetter,
+    required this.deHetValueNotifier,
   });
 
   @override
@@ -38,6 +42,8 @@ class MainTab extends StatelessWidget {
         CollectionDropdownInput(
           valueNotifier: collectionValueNotifier,
         ),
+        if (wordTypeGetter() == WordType.noun)
+          DeHetOptionalToggleInput(valueNotifier: deHetValueNotifier),
       ],
     );
   }
