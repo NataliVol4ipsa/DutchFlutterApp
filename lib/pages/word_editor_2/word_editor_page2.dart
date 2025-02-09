@@ -8,6 +8,7 @@ import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor_2/tabs/extra_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/tabs/main_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
@@ -27,30 +28,29 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
   Key key = UniqueKey();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool isNewWord = false;
-  bool isLoading = false;
+  bool _isNewWord = false;
+  bool _isLoading = false;
 
-  WordType selectedWordType = WordType.none;
+  late WordsRepository _wordsRepository;
 
-  late WordsRepository wordsRepository;
+  late OnlineWordSearchSuggestionSelectedNotifier _onlineWordSelectedNotifier;
+  late void Function() _onlineWordSelectedNotifierListener;
 
-  late OnlineWordSearchSuggestionSelectedNotifier onlineWordSelectedNotifier;
-  late void Function() onlineWordSelectedNotifierListener;
-
-  TextEditingController dutchWordController = TextEditingController();
-  TextEditingController englishWordController = TextEditingController();
-  TextEditingController dutchPluralFormController = TextEditingController();
-  ValueNotifier<WordType> wordTypeController =
+  final TextEditingController _dutchWordController = TextEditingController();
+  final TextEditingController _englishWordController = TextEditingController();
+  final TextEditingController _dutchPluralFormController =
+      TextEditingController();
+  final ValueNotifier<WordType> _wordTypeController =
       ValueNotifier<WordType>(WordType.none);
-  ValueNotifier<WordCollection> wordCollectionController =
+  final ValueNotifier<WordCollection> _wordCollectionController =
       ValueNotifier<WordCollection>(WordCollection(
           CollectionPermissionService.defaultCollectionId,
           CollectionPermissionService.defaultCollectionName));
 
-  //todo filter based on word type
-  List<String> headerTabs = [
+  final List<String> _headerTabs = [
     "All",
     "Main",
+    "Extra",
     "Meta",
     "Plurals",
     "Past tense",
@@ -62,25 +62,26 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     _initIsNewWord();
     _initOnlineSearch();
 
-    if (!isNewWord) {
+    if (!_isNewWord) {
       _initExistingWordAsync(widget.existingWordId!);
     }
   }
 
   void _initIsNewWord() {
-    isNewWord = widget.existingWordId == null;
-    if (!isNewWord) {
-      isLoading = true;
+    _isNewWord = widget.existingWordId == null;
+    if (!_isNewWord) {
+      _isLoading = true;
     }
   }
 
   void _initOnlineSearch() {
-    onlineWordSelectedNotifier =
+    _onlineWordSelectedNotifier =
         context.read<OnlineWordSearchSuggestionSelectedNotifier>();
-    onlineWordSelectedNotifierListener = () {
-      onlineWordSelectedNotifierAction(onlineWordSelectedNotifier.wordOption);
+    _onlineWordSelectedNotifierListener = () {
+      onlineWordSelectedNotifierAction(_onlineWordSelectedNotifier.wordOption);
     };
-    onlineWordSelectedNotifier.addListener(onlineWordSelectedNotifierListener);
+    _onlineWordSelectedNotifier
+        .addListener(_onlineWordSelectedNotifierListener);
   }
 
   // When online word is selected, apply its values to current word input fields
@@ -89,8 +90,8 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
       return;
     }
     setState(() {
-      wordTypeController.value = wordOption.partOfSpeech ?? WordType.none;
-      // dutchPluralFormTextInputController.text = wordOption.pluralForm ?? "";
+      _wordTypeController.value = wordOption.partOfSpeech ?? WordType.none;
+      _dutchPluralFormController.text = wordOption.pluralForm ?? "";
       // selectedDeHetType = wordOption.gender ?? DeHetType.none;
     });
   }
@@ -98,31 +99,31 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
   @override
   void dispose() {
     super.dispose();
-    onlineWordSelectedNotifier
-        .removeListener(onlineWordSelectedNotifierListener);
+    _onlineWordSelectedNotifier
+        .removeListener(_onlineWordSelectedNotifierListener);
   }
 
   Future<void> _initExistingWordAsync(int wordId) async {
-    var existingWord = await wordsRepository.getWordAsync(wordId);
+    var existingWord = await _wordsRepository.getWordAsync(wordId);
 
     if (existingWord == null) {
       throw Exception("Failed to edit word with id '$wordId'");
     }
 
-    dutchWordController.text = existingWord.dutchWord;
-    englishWordController.text = existingWord.englishWord;
-    wordTypeController.value = existingWord.wordType;
+    _dutchWordController.text = existingWord.dutchWord;
+    _englishWordController.text = existingWord.englishWord;
+    _wordTypeController.value = existingWord.wordType;
+    _dutchPluralFormController.text = existingWord.pluralForm ?? "";
     // selectedWordCollection = existingWord.collection;
-    // dutchPluralFormTextInputController.text = existingWord.pluralForm ?? "";
     // selectedDeHetType = existingWord.deHetType;
 
     setState(() {
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
   String getAppBarLabel() {
-    if (isNewWord) return 'Add new word';
+    if (_isNewWord) return 'Add new word';
     return 'Edit word';
   }
 
@@ -131,6 +132,8 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
       Padding(padding: ContainerStyles.containerPadding, child: _buildAllTab()),
       Padding(
           padding: ContainerStyles.containerPadding, child: _buildMainTab()),
+      Padding(
+          padding: ContainerStyles.containerPadding, child: _buildExtraTab()),
       Padding(
           padding: ContainerStyles.containerPadding, child: _buildMetaTab()),
       Padding(
@@ -145,6 +148,7 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     return Column(
       children: [
         _buildMainTab(),
+        if (ExtraTab.shouldShowTab(_wordTypeController.value)) _buildExtraTab(),
         _buildMetaTab(),
         _buildPluralsTab(),
         _buildPastTenseTab(),
@@ -154,10 +158,17 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
 
   Widget _buildMainTab() {
     return MainTab(
-      dutchWordController: dutchWordController,
-      englishWordController: englishWordController,
-      wordTypeValueNotifier: wordTypeController,
-      collectionValueNotifier: wordCollectionController,
+      dutchWordController: _dutchWordController,
+      englishWordController: _englishWordController,
+      wordTypeValueNotifier: _wordTypeController,
+      collectionValueNotifier: _wordCollectionController,
+    );
+  }
+
+  Widget _buildExtraTab() {
+    return ExtraTab(
+      wordTypeGetter: () => _wordTypeController.value,
+      dutchPluralFormController: _dutchPluralFormController,
     );
   }
 
@@ -177,7 +188,7 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     return TabBar(
       labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       isScrollable: true,
-      tabs: headerTabs.map((headerTab) => Tab(text: headerTab)).toList(),
+      tabs: _headerTabs.map((headerTab) => Tab(text: headerTab)).toList(),
     );
   }
 
@@ -203,7 +214,7 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
   }
 
   String getSubmitButtonLabel() {
-    if (isNewWord) return 'Add word';
+    if (_isNewWord) return 'Add word';
     return 'Save changes';
   }
 
@@ -211,7 +222,7 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     if (!_formKey.currentState!.validate()) return;
     var wordCreatedNotifier =
         Provider.of<WordCreatedNotifier>(context, listen: false);
-    if (isNewWord) {
+    if (_isNewWord) {
       notifyWordCreated(context);
       await createWordAsync();
       wordCreatedNotifier.notify();
@@ -225,53 +236,53 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
   }
 
   Future<void> createWordAsync() async {
-    String dutchWordInput = dutchWordController.text;
-    String englishWordInput = englishWordController.text;
-    //String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
+    String dutchWordInput = _dutchWordController.text;
+    String englishWordInput = _englishWordController.text;
+    String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var newWord = NewWord(
-      dutchWordInput, englishWordInput, selectedWordType,
+      dutchWordInput, englishWordInput, _wordTypeController.value,
       // deHetType: selectedDeHetType!,
-      // pluralForm: dutchPluralFormWordInput,
-      collection: wordCollectionController.value,
+      pluralForm: dutchPluralFormWordInput,
+      collection: _wordCollectionController.value,
     );
 
-    await wordsRepository.addAsync(newWord);
+    await _wordsRepository.addAsync(newWord);
   }
 
   Future<void> updateWordAsync() async {
-    if (isNewWord) return;
+    if (_isNewWord) return;
 
-    String dutchWordInput = dutchWordController.text;
-    String englishWordInput = englishWordController.text;
-    //String dutchPluralFormWordInput = dutchPluralFormTextInputController.text;
+    String dutchWordInput = _dutchWordController.text;
+    String englishWordInput = _englishWordController.text;
+    String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var updatedWord = Word(
       widget.existingWordId!, dutchWordInput,
-      englishWordInput, selectedWordType,
+      englishWordInput, _wordTypeController.value,
       // deHetType: selectedDeHetType!,
-      // pluralForm: dutchPluralFormWordInput,
-      collection: wordCollectionController.value,
+      pluralForm: dutchPluralFormWordInput,
+      collection: _wordCollectionController.value,
     );
 
-    await wordsRepository.updateAsync(updatedWord);
+    await _wordsRepository.updateAsync(updatedWord);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
     return Form(
       key: _formKey,
       child: DefaultTabController(
-        length: headerTabs.length,
+        length: _headerTabs.length,
         initialIndex: 1,
         child: Scaffold(
           appBar: MyAppBar(
             title: Text(getAppBarLabel()),
-            disableSettingsButton: !isNewWord,
+            disableSettingsButton: !_isNewWord,
             bottom: _buildTabBar(context),
           ),
           body: _buildBody(context),

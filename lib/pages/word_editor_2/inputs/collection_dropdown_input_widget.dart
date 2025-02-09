@@ -15,7 +15,7 @@ class CollectionDropdownInput extends StatelessWidget {
       builder: (context, value, child) {
         return PaddedFormComponent(
           child: FormInput(
-              inputLabel: "Word type",
+              inputLabel: "Collection",
               child: WordCollectionDropdown(
                 initialValue: value,
                 updateValueCallback: (newValue) =>
