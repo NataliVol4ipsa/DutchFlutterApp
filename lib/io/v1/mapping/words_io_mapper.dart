@@ -30,7 +30,7 @@ class WordsIoMapper {
     if (source.englishWord == null) {
       throw Exception("Cannot create word without englishWord");
     }
-    var wordType = source.wordType ?? WordType.none;
+    var wordType = source.wordType ?? WordType.unspecified;
     var deHetType = source.deHetType ?? DeHetType.none;
     return NewWord(source.dutchWord!, source.englishWord!, wordType,
         deHetType: deHetType, pluralForm: source.pluralForm, tag: source.tag);

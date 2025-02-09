@@ -6,8 +6,12 @@ import 'package:flutter/cupertino.dart';
 class WordTypeDropdown extends StatefulWidget {
   final Function updateValueCallback;
   final WordType? initialValue;
+  final Widget? prefixIcon;
   const WordTypeDropdown(
-      {super.key, required this.updateValueCallback, this.initialValue});
+      {super.key,
+      required this.updateValueCallback,
+      this.initialValue,
+      this.prefixIcon});
 
   @override
   State<WordTypeDropdown> createState() => _WordTypeDropdownState();
@@ -27,9 +31,10 @@ class _WordTypeDropdownState extends State<WordTypeDropdown> {
   @override
   Widget build(BuildContext context) {
     return GenericDropdownMenu(
+        prefixIcon: widget.prefixIcon,
         initialValue: widget.initialValue,
         onValueChanged: updateSelectedWordType,
         dropdownValues: wordTypeDropdownValues,
-        displayStringFunc: capitalizeEnum);
+        displayStringFunc: (wt) => wt.capitalLabel);
   }
 }

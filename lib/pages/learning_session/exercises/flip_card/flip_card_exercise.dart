@@ -25,7 +25,7 @@ class FlipCardExercise extends BaseExercise {
       inputWord = "${word.deHetType.label} $inputWord";
     }
     correctAnswer = word.englishWord;
-    if (word.wordType != WordType.none) {
+    if (word.wordType != WordType.unspecified) {
       hint = word.wordType.name;
     } else {
       hint = null;

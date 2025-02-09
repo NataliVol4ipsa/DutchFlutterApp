@@ -78,4 +78,10 @@ class TextStyles {
   static const TextStyle settingsTitleStyle = TextStyle(fontSize: 18);
 
   static const TextStyle modalDescriptionTextStyle = TextStyle(fontSize: 16);
+
+  static const TextStyle titleStyle =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+
+  static const TextStyle titleCommentStyle =
+      TextStyle(fontSize: 16, fontStyle: FontStyle.italic);
 }

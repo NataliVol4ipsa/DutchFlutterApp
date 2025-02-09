@@ -68,11 +68,11 @@ class GetWordsOnlineXmlResponseParser {
 
   WordType parseAdditionalInfoIntoSpeech(String? value) {
     if (value == null) {
-      return WordType.none;
+      return WordType.unspecified;
     }
     String result = value.replaceAll(RegExp(r'\(.*$'), '');
     if (result.trim() == "") {
-      return WordType.none;
+      return WordType.unspecified;
     }
 
     return WordTypeConverter.toWordType(result);

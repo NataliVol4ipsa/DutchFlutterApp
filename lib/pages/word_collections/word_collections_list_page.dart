@@ -9,6 +9,7 @@ import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.d
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_collection_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/word_details_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
@@ -16,6 +17,7 @@ import 'package:dutch_app/pages/word_collections/selectable_word_widget.dart';
 import 'package:dutch_app/pages/word_collections/selectable_words_collection_widget.dart';
 import 'package:dutch_app/pages/word_collections/word_collection_list_manager.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_word_dialog.dart';
+import 'package:dutch_app/pages/word_collections/word_details/word_details_widget.dart';
 import 'package:dutch_app/reusable_widgets/bottom_app_bar/more_actions_bottom_app_bar_widget.dart';
 import 'package:dutch_app/reusable_widgets/bottom_app_bar/my_bottom_app_bar_item_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -137,10 +139,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   void _selectWord(SelectableWordModel word) {
     if (!checkboxModeEnabled) {
-      _showEditWordDialog(context, word);
+      _showWordDetailsDialog(context, word);
+      //_showEditWordDialog(context, word);
       return;
     }
-    ;
     setState(() {
       word.toggleIsSelected();
     });
@@ -187,6 +189,14 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       wordIds: wordIds,
       callback: (() => _loadDataWithSnackBar(
           "Succesfully deleted '${wordIds.length}' words.")),
+    );
+  }
+
+  Future<void> _showWordDetailsDialog(
+      BuildContext context, SelectableWordModel word) async {
+    await WordDetailsDialog.show(
+      context: context,
+      word: word.value,
     );
   }
 

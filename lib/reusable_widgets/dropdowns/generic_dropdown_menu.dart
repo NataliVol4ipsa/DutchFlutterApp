@@ -7,6 +7,7 @@ class GenericDropdownMenu<T> extends StatefulWidget {
   final ValueChanged<T?> onValueChanged;
   final String Function(T value) displayStringFunc;
   final T? initialValue;
+  final Widget? prefixIcon;
 
   const GenericDropdownMenu({
     super.key,
@@ -14,6 +15,7 @@ class GenericDropdownMenu<T> extends StatefulWidget {
     required this.dropdownValues,
     required this.displayStringFunc,
     this.initialValue,
+    this.prefixIcon,
   });
 
   @override
@@ -33,7 +35,7 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
               .copyWith(canvasColor: ContainerStyles.section2Color(context)),
           child: DropdownButtonFormField<T?>(
             value: widget.initialValue,
-            focusColor: Colors.red,
+            focusColor: Colors.red, //todo is this the place of issue?
             onChanged: (T? value) {
               if (value != null) {
                 widget.onValueChanged(value);
@@ -52,6 +54,7 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
                   borderRadius: BorderStyles.defaultBorderRadius),
               contentPadding:
                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              prefixIcon: widget.prefixIcon,
             ),
           ),
         ),

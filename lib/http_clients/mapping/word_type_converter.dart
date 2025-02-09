@@ -26,7 +26,7 @@ class WordTypeConverter {
         return WordType.verb;
       case "RES":
       default:
-        return WordType.none;
+        return WordType.unspecified;
     }
   }
 
@@ -56,7 +56,7 @@ class WordTypeConverter {
         return "NUM";
       case WordType.verb:
         return "VRB";
-      case WordType.none:
+      case WordType.unspecified:
       default:
         return null;
     }

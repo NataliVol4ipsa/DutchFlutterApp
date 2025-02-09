@@ -130,7 +130,7 @@ DbWord _dbWordDeserialize(
   object.pluralForm = reader.readStringOrNull(offsets[3]);
   object.tag = reader.readStringOrNull(offsets[4]);
   object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
-      WordType.none;
+      WordType.unspecified;
   return object;
 }
 
@@ -154,7 +154,7 @@ P _dbWordDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (_DbWordtypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          WordType.none) as P;
+          WordType.unspecified) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -185,7 +185,7 @@ const _DbWordtypeEnumValueMap = {
   'phrase': 11,
 };
 const _DbWordtypeValueEnumMap = {
-  0: WordType.none,
+  0: WordType.unspecified,
   1: WordType.noun,
   2: WordType.adjective,
   3: WordType.verb,

@@ -19,15 +19,15 @@ import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class WordEditorPage extends StatefulWidget {
+class WordEditorPage2 extends StatefulWidget {
   final int? existingWordId;
-  const WordEditorPage({super.key, this.existingWordId});
+  const WordEditorPage2({super.key, this.existingWordId});
 
   @override
-  State<WordEditorPage> createState() => _WordEditorPageState();
+  State<WordEditorPage2> createState() => _WordEditorPage2State();
 }
 
-class _WordEditorPageState extends State<WordEditorPage>
+class _WordEditorPage2State extends State<WordEditorPage2>
     with TickerProviderStateMixin {
   Key key = UniqueKey();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

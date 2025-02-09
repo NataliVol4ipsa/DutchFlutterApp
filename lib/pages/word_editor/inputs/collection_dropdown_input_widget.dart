@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/models/word_collection.dart';
+import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_collection_dropdown.dart';
@@ -17,6 +18,7 @@ class CollectionDropdownInput extends StatelessWidget {
           child: FormInput(
               inputLabel: "Collection",
               child: WordCollectionDropdown(
+                prefixIcon: FormInputIcon(Icons.collections),
                 initialValue: value,
                 updateValueCallback: (newValue) =>
                     valueNotifier.value = newValue,

@@ -1,3 +1,4 @@
+import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_text_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/pages/word_editor/validation_functions.dart';
@@ -12,12 +13,14 @@ class EnglishWordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return PaddedFormComponent(
       child: FormTextInput(
-          textInputController: textEditingController,
-          inputLabel: "English",
-          hintText: "English word",
-          isRequired: true,
-          valueValidator: nonEmptyString,
-          invalidInputErrorMessage: "English word is required"),
+        textInputController: textEditingController,
+        inputLabel: "English",
+        hintText: "English word",
+        isRequired: true,
+        valueValidator: nonEmptyString,
+        invalidInputErrorMessage: "English word is required",
+        prefixIcon: FormInputIcon(Icons.translate),
+      ),
     );
   }
 }

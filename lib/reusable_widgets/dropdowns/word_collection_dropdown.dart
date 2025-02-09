@@ -2,14 +2,19 @@ import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WordCollectionDropdown extends StatefulWidget {
   final Function updateValueCallback;
   final WordCollection? initialValue;
+  final Widget? prefixIcon;
 
   const WordCollectionDropdown(
-      {super.key, required this.updateValueCallback, this.initialValue});
+      {super.key,
+      required this.updateValueCallback,
+      this.initialValue,
+      this.prefixIcon});
 
   @override
   State<WordCollectionDropdown> createState() => _WordCollectionDropdownState();
@@ -48,6 +53,7 @@ class _WordCollectionDropdownState extends State<WordCollectionDropdown> {
   @override
   Widget build(BuildContext context) {
     return GenericDropdownMenu(
+        prefixIcon: widget.prefixIcon,
         initialValue: widget.initialValue,
         onValueChanged: updateSelectedWordCollection,
         dropdownValues: wordCollectionDropdownValues,

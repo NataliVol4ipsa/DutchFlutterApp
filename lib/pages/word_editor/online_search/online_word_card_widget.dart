@@ -57,7 +57,7 @@ class OnlineWordCard extends StatelessWidget {
                     fontSize: 16),
               ),
             if (wordResponse.partOfSpeech != null &&
-                wordResponse.partOfSpeech != WordType.none)
+                wordResponse.partOfSpeech != WordType.unspecified)
               Text(
                   'Part of Speech: ${capitalizeEnum(wordResponse.partOfSpeech!)}',
                   style: const TextStyle(fontSize: 16)),
