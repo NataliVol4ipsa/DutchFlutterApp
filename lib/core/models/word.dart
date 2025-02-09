@@ -10,10 +10,12 @@ class Word extends BaseWord {
     super.dutchWord,
     super.englishWord,
     super.wordType, {
+    super.collection,
     super.deHetType = DeHetType.none,
     super.pluralForm,
-    super.tag,
-    super.collection,
+    super.contextExample,
+    super.contextExampleTranslation,
+    super.userNote,
   });
 
   String toDutchWordString() {

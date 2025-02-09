@@ -123,7 +123,9 @@ class WordsRepository {
     dbWord.type = updatedWord.wordType;
     dbWord.deHet = updatedWord.deHetType;
     dbWord.pluralForm = updatedWord.pluralForm;
-    dbWord.tag = updatedWord.tag;
+    dbWord.contextExample = updatedWord.contextExample;
+    dbWord.contextExampleTranslation = updatedWord.contextExampleTranslation;
+    dbWord.userNote = updatedWord.userNote;
   }
 
   Future<bool> deleteAsync(int id) async {

@@ -6,18 +6,18 @@ class BaseWord {
   final String dutchWord;
   final String englishWord;
   final WordType wordType;
-  DeHetType deHetType;
-  String? pluralForm;
-  String? tag;
-  WordCollection? collection;
+  final DeHetType deHetType;
+  final String? pluralForm;
+  final WordCollection? collection;
+  final String? contextExample;
+  final String? contextExampleTranslation;
+  final String? userNote;
 
-  BaseWord(
-    this.dutchWord,
-    this.englishWord,
-    this.wordType, {
-    this.deHetType = DeHetType.none,
-    this.pluralForm,
-    this.tag,
-    this.collection,
-  });
+  BaseWord(this.dutchWord, this.englishWord, this.wordType,
+      {this.collection,
+      this.deHetType = DeHetType.none,
+      this.pluralForm,
+      this.contextExample,
+      this.contextExampleTranslation,
+      this.userNote});
 }

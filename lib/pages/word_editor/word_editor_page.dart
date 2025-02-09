@@ -313,9 +313,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       dutchWordInput,
       englishWordInput,
       _wordTypeController.value,
+      collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
-      collection: _wordCollectionController.value,
     );
 
     await _wordsRepository.addAsync(newWord);
@@ -333,9 +333,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       dutchWordInput,
       englishWordInput,
       _wordTypeController.value,
+      collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
-      collection: _wordCollectionController.value,
     );
 
     await _wordsRepository.updateAsync(updatedWord);

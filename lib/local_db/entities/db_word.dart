@@ -17,8 +17,10 @@ class DbWord {
   @enumerated
   late DeHetType deHet;
   late String? pluralForm;
-  late String? tag;
   final collection = IsarLink<DbWordCollection>();
   @Backlink(to: 'word')
   final progress = IsarLinks<DbWordProgress>();
+  late String? contextExample;
+  late String? contextExampleTranslation;
+  late String? userNote;
 }

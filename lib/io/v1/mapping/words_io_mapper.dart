@@ -33,6 +33,10 @@ class WordsIoMapper {
     var wordType = source.wordType ?? WordType.unspecified;
     var deHetType = source.deHetType ?? DeHetType.none;
     return NewWord(source.dutchWord!, source.englishWord!, wordType,
-        deHetType: deHetType, pluralForm: source.pluralForm, tag: source.tag);
+        deHetType: deHetType,
+        pluralForm: source.pluralForm,
+        contextExample: source.contextExample,
+        contextExampleTranslation: source.contextExampleTranslation,
+        userNote: source.userNote);
   }
 }

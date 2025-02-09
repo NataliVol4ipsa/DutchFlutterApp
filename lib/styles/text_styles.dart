@@ -80,14 +80,14 @@ class TextStyles {
   static const TextStyle modalDescriptionTextStyle = TextStyle(fontSize: 16);
 
   static const TextStyle titleStyle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+      TextStyle(fontSize: 22, fontWeight: FontWeight.bold);
 
   static const TextStyle titleCommentStyle =
-      TextStyle(fontSize: 16, fontStyle: FontStyle.italic);
+      TextStyle(fontSize: 18, fontStyle: FontStyle.italic);
 
   static const TextStyle wordDetailsSectionTitleStyle =
-      TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+      TextStyle(fontSize: 15, fontStyle: FontStyle.italic);
 
   static const TextStyle wordDetailsSectionContentStyle =
-      TextStyle(fontSize: 16);
+      TextStyle(fontSize: 18);
 }

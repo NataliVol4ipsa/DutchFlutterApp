@@ -11,7 +11,9 @@ class WordsMapper {
     newWord.type = word.wordType;
     newWord.deHet = word.deHetType;
     newWord.pluralForm = word.pluralForm;
-    newWord.tag = word.tag;
+    newWord.contextExample = word.contextExample;
+    newWord.contextExampleTranslation = word.contextExampleTranslation;
+    newWord.userNote = word.userNote;
     return newWord;
   }
 
@@ -29,10 +31,12 @@ class WordsMapper {
       dbWord.dutchWord,
       dbWord.englishWord,
       dbWord.type,
+      collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
       deHetType: dbWord.deHet,
       pluralForm: dbWord.pluralForm,
-      tag: dbWord.tag,
-      collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
+      contextExample: dbWord.contextExample,
+      contextExampleTranslation: dbWord.contextExampleTranslation,
+      userNote: dbWord.userNote,
     );
   }
 
@@ -42,16 +46,7 @@ class WordsMapper {
 
   static Future<Word> mapWithCollectionToDomainAsync(DbWord dbWord) async {
     await dbWord.collection.load();
-    return Word(
-      dbWord.id!,
-      dbWord.dutchWord,
-      dbWord.englishWord,
-      dbWord.type,
-      deHetType: dbWord.deHet,
-      pluralForm: dbWord.pluralForm,
-      tag: dbWord.tag,
-      collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
-    );
+    return mapToDomain(dbWord)!;
   }
 
   static Future<List<Word>> mapWithCollectionToDomainListAsync(

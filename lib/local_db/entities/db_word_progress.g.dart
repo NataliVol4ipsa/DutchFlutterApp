@@ -136,7 +136,7 @@ const _DbWordProgressexerciseTypeEnumValueMap = {
   'pluralFormPick': 3,
   'pluralFormWrite': 4,
   'basicOnePick': 5,
-  'basicManyPick': 6,
+  'manyToMany': 6,
 };
 const _DbWordProgressexerciseTypeValueEnumMap = {
   0: ExerciseType.flipCard,

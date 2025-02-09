@@ -35,7 +35,6 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
               .copyWith(canvasColor: ContainerStyles.section2Color(context)),
           child: DropdownButtonFormField<T?>(
             value: widget.initialValue,
-            focusColor: Colors.red, //todo is this the place of issue?
             onChanged: (T? value) {
               if (value != null) {
                 widget.onValueChanged(value);

@@ -60,8 +60,9 @@ class ExportWordV1 {
   WordType? wordType;
   DeHetType? deHetType = DeHetType.none;
   String? pluralForm;
-  String? tag;
-  String? comment;
+  String? contextExample;
+  String? contextExampleTranslation;
+  String? userNote;
 
   ExportWordV1(
     this.dutchWord,
@@ -69,8 +70,9 @@ class ExportWordV1 {
     this.wordType, {
     this.deHetType = DeHetType.none,
     this.pluralForm,
-    this.tag,
-    this.comment,
+    this.contextExample,
+    this.contextExampleTranslation,
+    this.userNote,
   });
 
   ExportWordV1.fromWord(Word source)
@@ -79,7 +81,9 @@ class ExportWordV1 {
         wordType = source.wordType,
         deHetType = source.deHetType,
         pluralForm = source.pluralForm,
-        tag = source.tag;
+        contextExample = source.contextExample,
+        contextExampleTranslation = source.contextExampleTranslation,
+        userNote = source.userNote;
 
   ExportWordV1.fromJson(Map<String, dynamic> json)
       : dutchWord = json['dutchWord'] as String,
@@ -89,8 +93,10 @@ class ExportWordV1 {
         deHetType =
             DeHetType.values.firstWhere((e) => e.toString() == json['deHet']),
         pluralForm = json['pluralForm'] as String?,
-        tag = json['tag'] as String?,
-        comment = json['comment'] as String?;
+        contextExample = json['contextExample'] as String?,
+        contextExampleTranslation =
+            json['contextExampleTranslation'] as String?,
+        userNote = json['userNote'] as String?;
 
   Map<String, dynamic> toJson() => {
         'dutchWord': dutchWord,
@@ -98,7 +104,8 @@ class ExportWordV1 {
         'type': wordType.toString(),
         'deHet': deHetType.toString(),
         'pluralForm': pluralForm,
-        'tag': tag,
-        'comment': comment,
+        'contextExample': contextExample,
+        'contextExampleTranslation': contextExampleTranslation,
+        'userNote': userNote,
       };
 }

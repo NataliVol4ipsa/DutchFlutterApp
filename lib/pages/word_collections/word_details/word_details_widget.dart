@@ -2,19 +2,23 @@ import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class WordDetails extends StatelessWidget {
   final Word word;
-  const WordDetails({super.key, required this.word});
+  WordDetails({super.key, required this.word});
+
+  final _horizontalPadding = ContainerStyles.smallPaddingAmount;
 
   Widget _buildHeader(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
       width: double.infinity,
       color: ContainerStyles.bottomNavBarColor(context),
+      padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -61,7 +65,8 @@ class WordDetails extends StatelessWidget {
       children: [
         Text(
           word.toDutchWordString(),
-          style: TextStyles.titleStyle,
+          style: TextStyles.titleStyle
+              .copyWith(color: BaseStyles.getColorScheme(context).primary),
         ),
         Text(
           word.wordType.label,
@@ -73,23 +78,21 @@ class WordDetails extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: ContainerStyles.smallPaddingAmount),
-      child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(8.0),
-          children: [
-            ..._buildTranslation(context),
-            ..._buildPlural(context),
-            ..._buildCollection(context),
-          ]),
+      padding: EdgeInsets.symmetric(
+          vertical: ContainerStyles.smallPaddingAmount,
+          horizontal: _horizontalPadding),
+      child: ListView(shrinkWrap: true, children: [
+        ..._buildTranslation(context),
+        ..._buildPlural(context),
+        ..._buildCollection(context),
+      ]),
     );
   }
 
   List<Widget> _buildPlural(BuildContext context) {
     if (word.pluralForm == null || word.pluralForm!.trim() == "") return [];
 
-    return _buildBodySection(context,
+    return _buildBodySectionGeneric(context,
         sectionName: "Plural form",
         prefixIcon: InputIcons.dutchPluralForm,
         content: Text(word.pluralForm!,
@@ -97,7 +100,7 @@ class WordDetails extends StatelessWidget {
   }
 
   List<Widget> _buildTranslation(BuildContext context) {
-    return _buildBodySection(context,
+    return _buildBodySectionGeneric(context,
         sectionName: "Translation",
         prefixIcon: InputIcons.englishWord,
         content: Text(word.englishWord,
@@ -105,35 +108,53 @@ class WordDetails extends StatelessWidget {
   }
 
   List<Widget> _buildCollection(BuildContext context) {
-    return _buildBodySection(context,
+    return _buildBodySectionGeneric(context,
         sectionName: "Collection",
         prefixIcon: InputIcons.collection,
         content: Text(word.collection!.name,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 
-  List<Widget> _buildBodySection(BuildContext context,
+  List<Widget> _buildBodySectionGeneric(BuildContext context,
       {required String sectionName,
       required Widget content,
       IconData? prefixIcon}) {
     return [
-      Row(
-        children: [
-          if (prefixIcon != null)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: ContainerStyles.betweenCardsPaddingAmount),
-              child: Icon(prefixIcon),
-            ),
-          Text(sectionName, style: TextStyles.wordDetailsSectionTitleStyle),
-        ],
-      ),
-      Divider(),
       Padding(
-        padding: const EdgeInsets.only(
-            left: 48, bottom: ContainerStyles.betweenCardsPaddingAmount),
-        child: content,
-      ),
+        padding:
+            EdgeInsets.symmetric(vertical: ContainerStyles.smallPaddingAmount2),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (prefixIcon != null)
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: ContainerStyles.smallPaddingAmount2),
+                  child: Icon(
+                    prefixIcon,
+                    size: 24,
+                    color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+                  ),
+                ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(sectionName,
+                        style: TextStyles.wordDetailsSectionTitleStyle.copyWith(
+                          color: BaseStyles.getColorScheme(context)
+                              .onSurfaceVariant,
+                        )),
+                    Divider(),
+                    content,
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ]),
+      )
     ];
   }
 
