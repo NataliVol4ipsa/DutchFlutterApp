@@ -95,7 +95,7 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
               children: [
                 _buildOptionsColumn(widget.exercise.leftOptions, true),
                 SizedBox(
-                  width: ContainerStyles.defaultPadding,
+                  width: ContainerStyles.defaultPaddingAmount,
                 ),
                 _buildOptionsColumn(widget.exercise.rightOptions, false),
               ],
@@ -114,7 +114,7 @@ class _ManyToManyExerciseWidgetState extends State<ManyToManyExerciseWidget> {
             if (index.isEven) {
               return _buildSingleOption(options[index ~/ 2], isLeftColumn);
             } else {
-              return SizedBox(height: ContainerStyles.defaultPadding);
+              return SizedBox(height: ContainerStyles.defaultPaddingAmount);
             }
           },
         ),

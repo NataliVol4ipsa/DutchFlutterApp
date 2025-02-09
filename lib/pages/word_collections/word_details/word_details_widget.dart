@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
+import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,69 @@ class WordDetails extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Text("Details");
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          vertical: ContainerStyles.smallPaddingAmount),
+      child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(8.0),
+          children: [
+            ..._buildTranslation(context),
+            ..._buildPlural(context),
+            ..._buildCollection(context),
+          ]),
+    );
+  }
+
+  List<Widget> _buildPlural(BuildContext context) {
+    if (word.pluralForm == null || word.pluralForm!.trim() == "") return [];
+
+    return _buildBodySection(context,
+        sectionName: "Plural form",
+        prefixIcon: InputIcons.dutchPluralForm,
+        content: Text(word.pluralForm!,
+            style: TextStyles.wordDetailsSectionContentStyle));
+  }
+
+  List<Widget> _buildTranslation(BuildContext context) {
+    return _buildBodySection(context,
+        sectionName: "Translation",
+        prefixIcon: InputIcons.englishWord,
+        content: Text(word.englishWord,
+            style: TextStyles.wordDetailsSectionContentStyle));
+  }
+
+  List<Widget> _buildCollection(BuildContext context) {
+    return _buildBodySection(context,
+        sectionName: "Collection",
+        prefixIcon: InputIcons.collection,
+        content: Text(word.collection!.name,
+            style: TextStyles.wordDetailsSectionContentStyle));
+  }
+
+  List<Widget> _buildBodySection(BuildContext context,
+      {required String sectionName,
+      required Widget content,
+      IconData? prefixIcon}) {
+    return [
+      Row(
+        children: [
+          if (prefixIcon != null)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: ContainerStyles.betweenCardsPaddingAmount),
+              child: Icon(prefixIcon),
+            ),
+          Text(sectionName, style: TextStyles.wordDetailsSectionTitleStyle),
+        ],
+      ),
+      Divider(),
+      Padding(
+        padding: const EdgeInsets.only(
+            left: 48, bottom: ContainerStyles.betweenCardsPaddingAmount),
+        child: content,
+      ),
+    ];
   }
 
   @override

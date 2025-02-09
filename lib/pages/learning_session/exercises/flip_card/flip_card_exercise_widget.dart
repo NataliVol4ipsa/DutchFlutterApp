@@ -120,7 +120,7 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
         Expanded(
           child: _buildAnswerOptionButton(true, "Know"),
         ),
-        const SizedBox(width: ContainerStyles.defaultPadding),
+        const SizedBox(width: ContainerStyles.defaultPaddingAmount),
         Expanded(
           child: _buildAnswerOptionButton(false, "Don't know"),
         ),

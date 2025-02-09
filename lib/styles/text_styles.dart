@@ -84,4 +84,10 @@ class TextStyles {
 
   static const TextStyle titleCommentStyle =
       TextStyle(fontSize: 16, fontStyle: FontStyle.italic);
+
+  static const TextStyle wordDetailsSectionTitleStyle =
+      TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+
+  static const TextStyle wordDetailsSectionContentStyle =
+      TextStyle(fontSize: 16);
 }

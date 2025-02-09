@@ -101,7 +101,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
       Expanded(
         child: _buildAnswerOptionButton(DeHetType.de, "De"),
       ),
-      const SizedBox(width: ContainerStyles.defaultPadding),
+      const SizedBox(width: ContainerStyles.defaultPaddingAmount),
       Expanded(
         child: _buildAnswerOptionButton(DeHetType.het, "Het"),
       ),

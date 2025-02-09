@@ -222,7 +222,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
           (word) => SelectableWord(
               word: word,
               showCheckbox: checkboxModeEnabled,
-              extraLeftPadding: ContainerStyles.defaultPadding,
+              extraLeftPadding: ContainerStyles.defaultPaddingAmount,
               onRowTap: _selectWord,
               onLongRowPress: () {
                 _longPressWord(word);

@@ -3,6 +3,7 @@ import 'package:dutch_app/pages/word_editor/online_search/online_word_search_mod
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_text_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/pages/word_editor/validation_functions.dart';
+import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:flutter/material.dart';
 
 class DutchWordInput extends StatelessWidget {
@@ -31,7 +32,7 @@ class DutchWordInput extends StatelessWidget {
         valueValidator: nonEmptyString,
         invalidInputErrorMessage: "Dutch word is required",
         suffixIcon: _buildSearchSuffixIcon(context),
-        prefixIcon: FormInputIcon(Icons.text_fields),
+        prefixIcon: FormInputIcon(InputIcons.dutchWord),
       ),
     );
   }

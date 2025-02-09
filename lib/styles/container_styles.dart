@@ -3,15 +3,18 @@ import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flutter/cupertino.dart';
 
 class ContainerStyles {
-  static const double defaultPadding = 16;
-  static const double smallPadding = 8;
-  static const double smallPadding2 = 12;
-  static const EdgeInsets containerPadding = EdgeInsets.all(defaultPadding);
-  static const EdgeInsets smallContainerPadding = EdgeInsets.all(smallPadding);
+  static const double defaultPaddingAmount = 16;
+  static const double smallPaddingAmount = 8;
+  static const double smallPaddingAmount2 = 12;
+  static const double betweenCardsPaddingAmount = 10;
+  static const EdgeInsets containerPadding =
+      EdgeInsets.all(defaultPaddingAmount);
+  static const EdgeInsets smallContainerPadding =
+      EdgeInsets.all(smallPaddingAmount);
   static const EdgeInsets smallContainerPadding2 =
-      EdgeInsets.all(smallPadding2);
+      EdgeInsets.all(smallPaddingAmount2);
   static const EdgeInsets betweenCardsPadding =
-      EdgeInsets.symmetric(vertical: 10);
+      EdgeInsets.symmetric(vertical: betweenCardsPaddingAmount);
 
   static Color backgroundColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).surface;

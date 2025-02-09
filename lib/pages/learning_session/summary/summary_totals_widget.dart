@@ -18,9 +18,9 @@ class SummaryTotals extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionContainer(
       padding: EdgeInsets.only(
-          left: ContainerStyles.defaultPadding / 2,
-          bottom: ContainerStyles.defaultPadding / 2,
-          right: ContainerStyles.defaultPadding / 2),
+          left: ContainerStyles.defaultPaddingAmount / 2,
+          bottom: ContainerStyles.defaultPaddingAmount / 2,
+          right: ContainerStyles.defaultPaddingAmount / 2),
       child: Column(
         children: [
           Padding(

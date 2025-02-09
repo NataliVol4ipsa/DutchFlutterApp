@@ -1,6 +1,7 @@
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_text_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
+import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:flutter/material.dart';
 
 class DutchPluralFormInput extends StatelessWidget {
@@ -16,7 +17,7 @@ class DutchPluralFormInput extends StatelessWidget {
         inputLabel: "Dutch plural form",
         hintText: "Dutch plural form",
         isRequired: false,
-        prefixIcon: FormInputIcon(Icons.library_books),
+        prefixIcon: FormInputIcon(InputIcons.dutchPluralForm),
       ),
     );
   }

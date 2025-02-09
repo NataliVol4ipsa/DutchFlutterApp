@@ -2,6 +2,7 @@ import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widge
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_text_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/pages/word_editor/validation_functions.dart';
+import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:flutter/material.dart';
 
 class EnglishWordInput extends StatelessWidget {
@@ -19,7 +20,7 @@ class EnglishWordInput extends StatelessWidget {
         isRequired: true,
         valueValidator: nonEmptyString,
         invalidInputErrorMessage: "English word is required",
-        prefixIcon: FormInputIcon(Icons.translate),
+        prefixIcon: FormInputIcon(InputIcons.englishWord),
       ),
     );
   }

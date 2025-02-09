@@ -14,8 +14,11 @@ class LayeredBottom extends StatelessWidget {
       right: 0,
       child: Container(
         color: Theme.of(context).colorScheme.surface,
-        padding: const EdgeInsets.fromLTRB(ContainerStyles.defaultPadding, 60,
-            ContainerStyles.defaultPadding, ContainerStyles.defaultPadding),
+        padding: const EdgeInsets.fromLTRB(
+            ContainerStyles.defaultPaddingAmount,
+            60,
+            ContainerStyles.defaultPaddingAmount,
+            ContainerStyles.defaultPaddingAmount),
         child: contentBuilder(context),
       ),
     );

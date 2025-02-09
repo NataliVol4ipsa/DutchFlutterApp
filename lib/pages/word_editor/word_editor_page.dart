@@ -59,6 +59,8 @@ class _WordEditorPageState extends State<WordEditorPage>
   final ValueNotifier<List<Widget>> _tabViewsNotifier =
       ValueNotifier<List<Widget>>([]);
 
+  bool initialized = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,11 +73,14 @@ class _WordEditorPageState extends State<WordEditorPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (initialized) return;
+
     existingWordId = ModalRoute.of(context)!.settings.arguments as int?;
     _initIsNewWord();
     if (!_isNewWord) {
       _initExistingWordAsync(existingWordId!);
     }
+    initialized = true;
   }
 
   void _initIsNewWord() {

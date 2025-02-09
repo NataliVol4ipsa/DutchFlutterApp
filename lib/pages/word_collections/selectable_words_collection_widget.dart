@@ -55,7 +55,7 @@ class SelectableWordCollectionRow extends StatelessWidget {
               if (showCheckbox)
                 Padding(
                     padding: const EdgeInsets.only(
-                        right: ContainerStyles.defaultPadding),
+                        right: ContainerStyles.defaultPaddingAmount),
                     child: MyCheckbox(
                         tristate: true,
                         value: _calculateCheckBoxValue(),
