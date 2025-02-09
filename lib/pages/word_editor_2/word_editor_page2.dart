@@ -9,6 +9,8 @@ import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor_2/tabs/meta_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor_2/tabs/past_tense_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/tabs/plurals_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/tabs/main_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
@@ -100,19 +102,23 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     final List<Tab> newTabs = [
       const Tab(text: "All"),
       const Tab(text: "Main"),
-      const Tab(text: "Meta"),
+      if (MetaTab.shouldShowTab(_wordTypeController.value))
+        const Tab(text: "Meta"),
       if (PluralsTab.shouldShowTab(_wordTypeController.value))
         const Tab(text: "Plurals"),
-      const Tab(text: "Past tense"),
+      if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+        const Tab(text: "Past tense"),
     ];
 
     final List<Widget> newTabViews = [
       _pad(_buildAllTab()),
       _pad(_buildMainTab()),
-      _pad(_buildMetaTab()),
+      if (MetaTab.shouldShowTab(_wordTypeController.value))
+        _pad(_buildMetaTab()),
       if (PluralsTab.shouldShowTab(_wordTypeController.value))
         _pad(_buildPluralsTab()),
-      _pad(_buildPastTenseTab()),
+      if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+        _pad(_buildPastTenseTab()),
     ];
 
     _tabsNotifier.value = newTabs;
@@ -180,10 +186,11 @@ class _WordEditorPage2State extends State<WordEditorPage2>
     return Column(
       children: [
         _buildMainTab(),
-        _buildMetaTab(),
+        if (MetaTab.shouldShowTab(_wordTypeController.value)) _buildMetaTab(),
         if (PluralsTab.shouldShowTab(_wordTypeController.value))
           _buildPluralsTab(),
-        _buildPastTenseTab(),
+        if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+          _buildPastTenseTab(),
       ],
     );
   }
