@@ -7,6 +7,7 @@ import 'package:dutch_app/pages/word_editor_2/inputs/word_type_dropdown_input_wi
 import 'package:flutter/material.dart';
 
 class MainTab extends StatelessWidget {
+  final WordType Function() wordTypeGetter;
   final TextEditingController dutchWordController;
   final TextEditingController englishWordController;
   final ValueNotifier<WordType> wordTypeValueNotifier;
@@ -18,6 +19,7 @@ class MainTab extends StatelessWidget {
     required this.englishWordController,
     required this.wordTypeValueNotifier,
     required this.collectionValueNotifier,
+    required this.wordTypeGetter,
   });
 
   @override

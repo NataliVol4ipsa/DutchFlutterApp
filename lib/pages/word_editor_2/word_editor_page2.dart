@@ -8,7 +8,7 @@ import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
-import 'package:dutch_app/pages/word_editor_2/tabs/extra_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor_2/tabs/plurals_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor_2/tabs/main_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
@@ -24,7 +24,8 @@ class WordEditorPage2 extends StatefulWidget {
   State<WordEditorPage2> createState() => _WordEditorPage2State();
 }
 
-class _WordEditorPage2State extends State<WordEditorPage2> {
+class _WordEditorPage2State extends State<WordEditorPage2>
+    with TickerProviderStateMixin {
   Key key = UniqueKey();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -47,20 +48,19 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
           CollectionPermissionService.defaultCollectionId,
           CollectionPermissionService.defaultCollectionName));
 
-  final List<String> _headerTabs = [
-    "All",
-    "Main",
-    "Extra",
-    "Meta",
-    "Plurals",
-    "Past tense",
-  ];
+  late TabController _tabController;
+  final ValueNotifier<List<Tab>> _tabsNotifier = ValueNotifier<List<Tab>>([]);
+  final ValueNotifier<List<Widget>> _tabViewsNotifier =
+      ValueNotifier<List<Widget>>([]);
 
   @override
   void initState() {
     super.initState();
     _initIsNewWord();
     _initOnlineSearch();
+
+    _tabController = TabController(length: 0, vsync: this);
+    _initTabs();
 
     if (!_isNewWord) {
       _initExistingWordAsync(widget.existingWordId!);
@@ -84,6 +84,44 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
         .addListener(_onlineWordSelectedNotifierListener);
   }
 
+  void _initTabs() {
+    _updateTabs();
+
+    // Listen to changes in wordType and update tabs dynamically
+    _wordTypeController.addListener(() {
+      _updateTabs();
+    });
+  }
+
+  void _updateTabs() {
+    final List<Tab> newTabs = [
+      const Tab(text: "All"),
+      const Tab(text: "Main"),
+      const Tab(text: "Meta"),
+      if (PluralsTab.shouldShowTab(_wordTypeController.value))
+        const Tab(text: "Plurals"),
+      const Tab(text: "Past tense"),
+    ];
+
+    final List<Widget> newTabViews = [
+      _pad(_buildAllTab()),
+      _pad(_buildMainTab()),
+      _pad(_buildMetaTab()),
+      if (PluralsTab.shouldShowTab(_wordTypeController.value))
+        _pad(_buildPluralsTab()),
+      _pad(_buildPastTenseTab()),
+    ];
+
+    _tabsNotifier.value = newTabs;
+    _tabViewsNotifier.value = newTabViews;
+
+    // Ensure TabController updates correctly
+    _tabController.dispose();
+    _tabController = TabController(
+        length: newTabs.length, vsync: this, initialIndex: _isNewWord ? 1 : 0);
+    setState(() {});
+  }
+
   // When online word is selected, apply its values to current word input fields
   void onlineWordSelectedNotifierAction(GetWordOnlineResponse? wordOption) {
     if (wordOption == null) {
@@ -101,6 +139,10 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     super.dispose();
     _onlineWordSelectedNotifier
         .removeListener(_onlineWordSelectedNotifierListener);
+    _tabController.dispose();
+    _wordTypeController.dispose();
+    _tabsNotifier.dispose();
+    _tabViewsNotifier.dispose();
   }
 
   Future<void> _initExistingWordAsync(int wordId) async {
@@ -127,30 +169,17 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     return 'Edit word';
   }
 
-  Widget _buildBody(BuildContext context) {
-    return TabBarView(children: [
-      Padding(padding: ContainerStyles.containerPadding, child: _buildAllTab()),
-      Padding(
-          padding: ContainerStyles.containerPadding, child: _buildMainTab()),
-      Padding(
-          padding: ContainerStyles.containerPadding, child: _buildExtraTab()),
-      Padding(
-          padding: ContainerStyles.containerPadding, child: _buildMetaTab()),
-      Padding(
-          padding: ContainerStyles.containerPadding, child: _buildPluralsTab()),
-      Padding(
-          padding: ContainerStyles.containerPadding,
-          child: _buildPastTenseTab()),
-    ]);
+  Widget _pad(Widget child) {
+    return Padding(padding: ContainerStyles.containerPadding, child: child);
   }
 
   Widget _buildAllTab() {
     return Column(
       children: [
         _buildMainTab(),
-        if (ExtraTab.shouldShowTab(_wordTypeController.value)) _buildExtraTab(),
         _buildMetaTab(),
-        _buildPluralsTab(),
+        if (PluralsTab.shouldShowTab(_wordTypeController.value))
+          _buildPluralsTab(),
         _buildPastTenseTab(),
       ],
     );
@@ -158,6 +187,7 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
 
   Widget _buildMainTab() {
     return MainTab(
+      wordTypeGetter: () => _wordTypeController.value,
       dutchWordController: _dutchWordController,
       englishWordController: _englishWordController,
       wordTypeValueNotifier: _wordTypeController,
@@ -165,8 +195,8 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     );
   }
 
-  Widget _buildExtraTab() {
-    return ExtraTab(
+  Widget _buildPluralsTab() {
+    return PluralsTab(
       wordTypeGetter: () => _wordTypeController.value,
       dutchPluralFormController: _dutchPluralFormController,
     );
@@ -176,19 +206,36 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
     return Text("Meta");
   }
 
-  Widget _buildPluralsTab() {
-    return Text("Plurals");
-  }
-
   Widget _buildPastTenseTab() {
     return Text("Past Tense");
   }
 
-  TabBar _buildTabBar(BuildContext context) {
-    return TabBar(
-      labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      isScrollable: true,
-      tabs: _headerTabs.map((headerTab) => Tab(text: headerTab)).toList(),
+  PreferredSize _buildTabBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: ValueListenableBuilder<List<Tab>>(
+        valueListenable: _tabsNotifier,
+        builder: (context, tabs, _) {
+          return TabBar(
+            labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            isScrollable: true,
+            controller: _tabController,
+            tabs: tabs,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return ValueListenableBuilder<List<Widget>>(
+      valueListenable: _tabViewsNotifier,
+      builder: (context, tabViews, _) {
+        return TabBarView(
+          controller: _tabController,
+          children: tabViews,
+        );
+      },
     );
   }
 
@@ -276,18 +323,14 @@ class _WordEditorPage2State extends State<WordEditorPage2> {
 
     return Form(
       key: _formKey,
-      child: DefaultTabController(
-        length: _headerTabs.length,
-        initialIndex: 1,
-        child: Scaffold(
-          appBar: MyAppBar(
-            title: Text(getAppBarLabel()),
-            disableSettingsButton: !_isNewWord,
-            bottom: _buildTabBar(context),
-          ),
-          body: _buildBody(context),
-          bottomSheet: _buildSubmitButton(context),
+      child: Scaffold(
+        appBar: MyAppBar(
+          title: Text(getAppBarLabel()),
+          disableSettingsButton: !_isNewWord,
+          bottom: _buildTabBar(context),
         ),
+        body: _buildBody(context),
+        bottomSheet: _buildSubmitButton(context),
       ),
     );
   }

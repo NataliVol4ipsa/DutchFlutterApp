@@ -2,11 +2,11 @@ import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor_2/inputs/dutch_plural_form_input_widget.dart';
 import 'package:flutter/material.dart';
 
-class ExtraTab extends StatelessWidget {
+class PluralsTab extends StatelessWidget {
   final WordType Function() wordTypeGetter;
   final TextEditingController dutchPluralFormController;
 
-  const ExtraTab({
+  const PluralsTab({
     super.key,
     required this.dutchPluralFormController,
     required this.wordTypeGetter,
