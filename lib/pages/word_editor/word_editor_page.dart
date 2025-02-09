@@ -20,8 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WordEditorPage extends StatefulWidget {
-  final int? existingWordId;
-  const WordEditorPage({super.key, this.existingWordId});
+  const WordEditorPage({super.key});
 
   @override
   State<WordEditorPage> createState() => _WordEditorPageState();
@@ -31,6 +30,8 @@ class _WordEditorPageState extends State<WordEditorPage>
     with TickerProviderStateMixin {
   Key key = UniqueKey();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late int? existingWordId;
 
   bool _isNewWord = false;
   bool _isLoading = false;
@@ -61,20 +62,24 @@ class _WordEditorPageState extends State<WordEditorPage>
   @override
   void initState() {
     super.initState();
-    _initIsNewWord();
-    _initOnlineSearch();
     _wordsRepository = context.read<WordsRepository>();
-
     _tabController = TabController(length: 0, vsync: this);
+    _initOnlineSearch();
     _initTabs();
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    existingWordId = ModalRoute.of(context)!.settings.arguments as int?;
+    _initIsNewWord();
     if (!_isNewWord) {
-      _initExistingWordAsync(widget.existingWordId!);
+      _initExistingWordAsync(existingWordId!);
     }
   }
 
   void _initIsNewWord() {
-    _isNewWord = widget.existingWordId == null;
+    _isNewWord = existingWordId == null;
     if (!_isNewWord) {
       _isLoading = true;
     }
@@ -319,7 +324,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var updatedWord = Word(
-      widget.existingWordId!,
+      existingWordId!,
       dutchWordInput,
       englishWordInput,
       _wordTypeController.value,

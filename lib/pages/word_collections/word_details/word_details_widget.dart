@@ -36,7 +36,10 @@ class WordDetails extends StatelessWidget {
             flex: 0,
             child: IconButton(
               icon: const FormInputIcon(Icons.edit),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/wordeditor', arguments: word.id);
+              },
             ),
           ),
           Expanded(
