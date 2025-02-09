@@ -5,20 +5,15 @@ import 'package:dutch_app/pages/word_editor_2/validation_functions.dart';
 import 'package:flutter/material.dart';
 
 class DutchWordInput extends StatelessWidget {
-  final TextEditingController dutchWordTextInputController =
-      TextEditingController();
+  final TextEditingController textEditingController;
 
-  DutchWordInput({super.key, String? initialValue}) {
-    if (initialValue != null) {
-      dutchWordTextInputController.text = initialValue;
-    }
-  }
+  const DutchWordInput({super.key, required this.textEditingController});
 
   Widget _buildSearchSuffixIcon(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (dutchWordTextInputController.text.trim() == "") return;
-        OnlineWordSearchModal.show(context, dutchWordTextInputController.text);
+        if (textEditingController.text.trim() == "") return;
+        OnlineWordSearchModal.show(context, textEditingController.text);
       },
       child: Icon(Icons.search),
     );
@@ -28,7 +23,7 @@ class DutchWordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return PaddedFormComponent(
       child: FormTextInput(
-        textInputController: dutchWordTextInputController,
+        textInputController: textEditingController,
         inputLabel: "Dutch",
         hintText: "Dutch word",
         isRequired: true,
