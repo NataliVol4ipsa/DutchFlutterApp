@@ -162,6 +162,8 @@ class _WordEditorPageState extends State<WordEditorPage>
           wordOption.partOfSpeech ?? WordType.unspecified;
       _dutchPluralFormController.text = wordOption.pluralForm ?? "";
       _deHetTypeTypeController.value = wordOption.gender ?? DeHetType.none;
+      _contextExampleController.text = wordOption.note ?? "";
+      _userNoteController.text = wordOption.note ?? "";
     });
   }
 

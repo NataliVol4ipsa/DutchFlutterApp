@@ -63,12 +63,12 @@ class WordDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        SelectableText(
           word.toDutchWordString(),
           style: TextStyles.titleStyle
               .copyWith(color: BaseStyles.getColorScheme(context).primary),
         ),
-        Text(
+        SelectableText(
           word.wordType.label,
           style: TextStyles.titleCommentStyle,
         ),
@@ -97,7 +97,7 @@ class WordDetails extends StatelessWidget {
     return _buildBodySectionGeneric(context,
         sectionName: "Plural form",
         prefixIcon: InputIcons.dutchPluralForm,
-        content: Text(word.pluralForm!,
+        content: SelectableText(word.pluralForm!,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 
@@ -105,7 +105,7 @@ class WordDetails extends StatelessWidget {
     return _buildBodySectionGeneric(context,
         sectionName: "Translation",
         prefixIcon: InputIcons.englishWord,
-        content: Text(word.englishWord,
+        content: SelectableText(word.englishWord,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 
@@ -113,7 +113,7 @@ class WordDetails extends StatelessWidget {
     return _buildBodySectionGeneric(context,
         sectionName: "Collection",
         prefixIcon: InputIcons.collection,
-        content: Text(word.collection!.name,
+        content: SelectableText(word.collection!.name,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 
@@ -129,13 +129,14 @@ class WordDetails extends StatelessWidget {
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("\"${word.contextExample!}\"",
+            SelectableText("\"${word.contextExample!}\"",
                 style: TextStyles.wordDetailsSectionContentStyle),
-            if (word.contextExampleTranslation != null) ...[
+            if (word.contextExampleTranslation != null &&
+                word.contextExampleTranslation!.trim() != "") ...[
               SizedBox(
                 height: ContainerStyles.betweenCardsPaddingAmount,
               ),
-              Text("(${word.contextExampleTranslation!})",
+              SelectableText("(${word.contextExampleTranslation!})",
                   style: TextStyles.smallWordDetailsSectionContentStyle)
             ]
           ],
@@ -149,7 +150,7 @@ class WordDetails extends StatelessWidget {
     return _buildBodySectionGeneric(context,
         sectionName: "Notes",
         prefixIcon: InputIcons.userNote,
-        content: Text(word.userNote!,
+        content: SelectableText(word.userNote!,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 
@@ -179,7 +180,7 @@ class WordDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(sectionName,
+                    SelectableText(sectionName,
                         style: TextStyles.wordDetailsSectionTitleStyle.copyWith(
                           color: BaseStyles.getColorScheme(context)
                               .onSurfaceVariant,
