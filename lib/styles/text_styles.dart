@@ -90,4 +90,7 @@ class TextStyles {
 
   static const TextStyle wordDetailsSectionContentStyle =
       TextStyle(fontSize: 18);
+
+  static const TextStyle smallWordDetailsSectionContentStyle =
+      TextStyle(fontSize: 18, fontStyle: FontStyle.italic);
 }

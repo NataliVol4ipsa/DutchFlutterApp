@@ -85,6 +85,8 @@ class WordDetails extends StatelessWidget {
         ..._buildTranslation(context),
         ..._buildPlural(context),
         ..._buildCollection(context),
+        ..._buildContextExample(context),
+        ..._buildUserNote(context),
       ]),
     );
   }
@@ -112,6 +114,42 @@ class WordDetails extends StatelessWidget {
         sectionName: "Collection",
         prefixIcon: InputIcons.collection,
         content: Text(word.collection!.name,
+            style: TextStyles.wordDetailsSectionContentStyle));
+  }
+
+  List<Widget> _buildContextExample(BuildContext context) {
+    if (word.contextExample == null || word.contextExample!.trim() == "") {
+      return [];
+    }
+
+    return _buildBodySectionGeneric(context,
+        sectionName:
+            "Example in context", //todo reuse labels here and in word editor
+        prefixIcon: InputIcons.contextExample,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("\"${word.contextExample!}\"",
+                style: TextStyles.wordDetailsSectionContentStyle),
+            if (word.contextExampleTranslation != null) ...[
+              SizedBox(
+                height: ContainerStyles.betweenCardsPaddingAmount,
+              ),
+              Text("(${word.contextExampleTranslation!})",
+                  style: TextStyles.smallWordDetailsSectionContentStyle)
+            ]
+          ],
+        ));
+  }
+
+  List<Widget> _buildUserNote(BuildContext context) {
+    if (word.userNote == null || word.userNote!.trim() == "") {
+      return [];
+    }
+    return _buildBodySectionGeneric(context,
+        sectionName: "Notes",
+        prefixIcon: InputIcons.userNote,
+        content: Text(word.userNote!,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 

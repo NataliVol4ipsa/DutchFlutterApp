@@ -1,23 +1,38 @@
 import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/pages/word_editor/inputs/context_example_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/context_example_translation_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/user_note_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class MetaTab extends StatelessWidget {
-  final WordType Function() wordTypeGetter;
+  final TextEditingController contextExampleController;
+  final TextEditingController contextExampleTranslationController;
+  final TextEditingController userNoteController;
 
   const MetaTab({
     super.key,
-    required this.wordTypeGetter,
+    required this.contextExampleController,
+    required this.contextExampleTranslationController,
+    required this.userNoteController,
   });
 
   static bool shouldShowTab(WordType wordType) {
-    return false;
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Meta"),
+        ContextExampleInput(
+          textEditingController: contextExampleController,
+        ),
+        ContextExampleTranslationInput(
+          textEditingController: contextExampleTranslationController,
+        ),
+        UserNoteInput(
+          textEditingController: userNoteController,
+        ),
       ],
     );
   }

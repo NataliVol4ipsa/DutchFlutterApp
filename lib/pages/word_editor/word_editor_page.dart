@@ -53,6 +53,11 @@ class _WordEditorPageState extends State<WordEditorPage>
           CollectionPermissionService.defaultCollectionName));
   final ValueNotifier<DeHetType> _deHetTypeTypeController =
       ValueNotifier<DeHetType>(DeHetType.none);
+  final TextEditingController _contextExampleController =
+      TextEditingController();
+  final TextEditingController _contextExampleTranslationController =
+      TextEditingController();
+  final TextEditingController _userNoteController = TextEditingController();
 
   late TabController _tabController;
   final ValueNotifier<List<Tab>> _tabsNotifier = ValueNotifier<List<Tab>>([]);
@@ -134,9 +139,16 @@ class _WordEditorPageState extends State<WordEditorPage>
     _tabsNotifier.value = newTabs;
     _tabViewsNotifier.value = newTabViews;
 
+    int activeIndex = _tabController.index;
     _tabController.dispose();
     _tabController = TabController(
-        length: newTabs.length, vsync: this, initialIndex: _isNewWord ? 1 : 0);
+        length: newTabs.length,
+        vsync: this,
+        initialIndex: initialized
+            ? activeIndex
+            : _isNewWord
+                ? 1
+                : 0);
     setState(() {});
   }
 
@@ -178,6 +190,10 @@ class _WordEditorPageState extends State<WordEditorPage>
     _wordCollectionController.value =
         existingWord.collection ?? _wordCollectionController.value;
     _deHetTypeTypeController.value = existingWord.deHetType;
+    _contextExampleController.text = existingWord.contextExample ?? "";
+    _contextExampleTranslationController.text =
+        existingWord.contextExampleTranslation ?? "";
+    _userNoteController.text = existingWord.userNote ?? "";
 
     setState(() {
       _isLoading = false;
@@ -225,7 +241,11 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   Widget _buildMetaTab() {
-    return Text("Meta");
+    return MetaTab(
+      contextExampleController: _contextExampleController,
+      contextExampleTranslationController: _contextExampleTranslationController,
+      userNoteController: _userNoteController,
+    );
   }
 
   Widget _buildPastTenseTab() {
@@ -316,6 +336,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
+      contextExample: _contextExampleController.text,
+      contextExampleTranslation: _contextExampleTranslationController.text,
+      userNote: _userNoteController.text,
     );
 
     await _wordsRepository.addAsync(newWord);
@@ -336,6 +359,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
       pluralForm: dutchPluralFormWordInput,
+      contextExample: _contextExampleController.text,
+      contextExampleTranslation: _contextExampleTranslationController.text,
+      userNote: _userNoteController.text,
     );
 
     await _wordsRepository.updateAsync(updatedWord);
