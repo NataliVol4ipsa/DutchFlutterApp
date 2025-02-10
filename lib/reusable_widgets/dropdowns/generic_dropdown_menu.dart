@@ -34,6 +34,7 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
           data: Theme.of(context)
               .copyWith(canvasColor: ContainerStyles.section2Color(context)),
           child: DropdownButtonFormField<T?>(
+            isExpanded: true,
             value: widget.initialValue,
             onChanged: (T? value) {
               if (value != null) {
