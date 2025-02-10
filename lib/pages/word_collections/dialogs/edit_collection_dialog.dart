@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/reusable_widgets/input_icons.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ void showEditCollectionDialog(
         onConfirmPressed: ((context, input) =>
             _updateCollectionAsync(collectionId, input, repository, callback)),
         validateInput: CollectionPermissionService.canRenameCollectionIntoName,
-        prefixIcon: Icon(Icons.collections_bookmark_outlined),
+        prefixIcon: Icon(InputIcons.collection),
       );
     },
   );
