@@ -8,6 +8,8 @@ class GenericDropdownMenu<T> extends StatefulWidget {
   final String Function(T value) displayStringFunc;
   final T? initialValue;
   final Widget? prefixIcon;
+  final Color? dropdownArrowColor;
+  final Color? Function(T)? dropdownOptionColorGenerator;
 
   const GenericDropdownMenu({
     super.key,
@@ -16,6 +18,8 @@ class GenericDropdownMenu<T> extends StatefulWidget {
     required this.displayStringFunc,
     this.initialValue,
     this.prefixIcon,
+    this.dropdownArrowColor,
+    this.dropdownOptionColorGenerator,
   });
 
   @override
@@ -36,6 +40,7 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
           child: DropdownButtonFormField<T?>(
             isExpanded: true,
             value: widget.initialValue,
+            iconEnabledColor: widget.dropdownArrowColor,
             onChanged: (T? value) {
               if (value != null) {
                 widget.onValueChanged(value);
@@ -44,10 +49,15 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
             },
             items: widget.dropdownValues.map<DropdownMenuItem<T>>((T value) {
               return DropdownMenuItem<T>(
-                value: value,
-                child: Text(widget.displayStringFunc(value),
-                    overflow: TextOverflow.ellipsis),
-              );
+                  value: value,
+                  child: Text(
+                    widget.displayStringFunc(value),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: widget.dropdownOptionColorGenerator == null
+                            ? null
+                            : widget.dropdownOptionColorGenerator!(value)),
+                  ));
             }).toList(),
             decoration: InputDecoration(
               border: OutlineInputBorder(

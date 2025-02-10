@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 class FormInputIcon extends StatelessWidget {
   final IconData icon;
-  const FormInputIcon(
-    this.icon, {
-    super.key,
-  });
+  final Color? overrideColor;
+  const FormInputIcon(this.icon, {super.key, this.overrideColor});
 
   @override
   Widget build(BuildContext context) {
+    var color = overrideColor ??
+        BaseStyles.getColorScheme(context).onSurface.withAlpha(200);
     return Icon(
       icon,
-      color: BaseStyles.getColorScheme(context).secondary,
+      color: color,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:dutch_app/pages/word_editor/inputs/generic/form_text_input_widge
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/pages/word_editor/validation_functions.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
 class DutchWordInput extends StatelessWidget {
@@ -17,7 +18,8 @@ class DutchWordInput extends StatelessWidget {
         if (textEditingController.text.trim() == "") return;
         OnlineWordSearchModal.show(context, textEditingController.text);
       },
-      child: Icon(Icons.search),
+      child: Icon(Icons.search,
+          color: BaseStyles.getColorScheme(context).secondary),
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_widget.dar
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/word_collection_dropdown.dart';
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
 class CollectionDropdownInput extends StatelessWidget {
@@ -23,6 +24,9 @@ class CollectionDropdownInput extends StatelessWidget {
                 initialValue: value,
                 updateValueCallback: (newValue) =>
                     valueNotifier.value = newValue,
+                dropdownArrowColor:
+                    BaseStyles.getColorScheme(context).secondary,
+                firstOptionGrey: true,
               )),
         );
       },

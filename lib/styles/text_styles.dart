@@ -93,4 +93,7 @@ class TextStyles {
 
   static const TextStyle smallWordDetailsSectionContentStyle =
       TextStyle(fontSize: 18, fontStyle: FontStyle.italic);
+
+  static Color dropdownGreyTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSurface.withAlpha(100);
 }

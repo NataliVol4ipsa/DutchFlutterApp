@@ -1,5 +1,6 @@
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_widget.dart';
 import 'package:dutch_app/styles/border_styles.dart';
+import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class FormTextInput extends StatefulWidget {
@@ -38,6 +39,9 @@ class _FormTextInputState extends State<FormTextInput> {
           border: OutlineInputBorder(
               borderRadius: BorderStyles.defaultBorderRadius),
           hintText: widget.hintText,
+          hintStyle: TextStyle(
+            color: TextStyles.dropdownGreyTextColor(context),
+          ),
           suffixIcon: widget.suffixIcon,
           prefixIcon: widget.prefixIcon,
           contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),

@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
 class InputLabel extends StatelessWidget {
@@ -19,6 +20,9 @@ class InputLabel extends StatelessWidget {
       Text(
         value,
         textScaler: TextScaler.linear(scale),
+        style: TextStyle(
+            color: BaseStyles.getColorScheme(context).onSurface.withAlpha(200),
+            fontStyle: FontStyle.italic),
       ),
       if (isRequired)
         Text(
