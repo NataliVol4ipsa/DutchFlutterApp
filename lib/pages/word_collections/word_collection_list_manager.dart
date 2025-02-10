@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/services/batch_word_operations_service.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
@@ -26,6 +27,31 @@ class WordCollectionListManager {
             .map((col) => SelectableWordCollectionModel(col.id!, col.name,
                 col.words?.map((word) => SelectableWordModel(word)).toList()))
             .toList();
+//      words!.sort((w1, w2) => w1.value.dutchWord.compareTo(w2.value.dutchWord));
+    collections.sort(
+        (c1, c2) => c1.name.toLowerCase().compareTo(c2.name.toLowerCase()));
+
+    for (var col in collections) {
+      if (col.words != null) col.words!.sort(_sortWords);
+    }
+  }
+
+  int _sortWords(SelectableWordModel w1, SelectableWordModel w2) {
+    if (w1.value.wordType == WordType.phrase &&
+        w2.value.wordType == WordType.phrase) {
+      return w1.value.dutchWord
+          .toLowerCase()
+          .compareTo(w2.value.dutchWord.toLowerCase());
+    }
+    if (w1.value.wordType == WordType.phrase) {
+      return 1;
+    }
+    if (w1.value.wordType == WordType.phrase) {
+      return -1;
+    }
+    return w1.value.dutchWord
+        .toLowerCase()
+        .compareTo(w2.value.dutchWord.toLowerCase());
   }
 
   void unselectWordsAndCollections() {
