@@ -67,7 +67,6 @@ class _WordEditorPageState extends State<WordEditorPage>
     _wordsRepository = context.read<WordsRepository>();
     _tabController = TabController(length: 0, vsync: this);
     _initOnlineSearch();
-    _initTabs();
   }
 
   @override
@@ -80,6 +79,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     if (!_isNewWord) {
       _initExistingWordAsync(existingWordId!);
     }
+    _initTabs();
     initialized = true;
   }
 
