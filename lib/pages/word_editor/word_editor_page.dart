@@ -126,14 +126,14 @@ class _WordEditorPageState extends State<WordEditorPage>
     ];
 
     final List<Widget> newTabViews = [
-      _pad(_buildAllTab()),
-      _pad(_buildMainTab()),
+      _tab(_buildAllTab()),
+      _tab(_buildMainTab()),
       if (MetaTab.shouldShowTab(_wordTypeController.value))
-        _pad(_buildMetaTab()),
+        _tab(_buildMetaTab()),
       if (PluralsTab.shouldShowTab(_wordTypeController.value))
-        _pad(_buildPluralsTab()),
+        _tab(_buildPluralsTab()),
       if (PastTenseTab.shouldShowTab(_wordTypeController.value))
-        _pad(_buildPastTenseTab()),
+        _tab(_buildPastTenseTab()),
     ];
 
     _tabsNotifier.value = newTabs;
@@ -207,8 +207,10 @@ class _WordEditorPageState extends State<WordEditorPage>
     return 'Edit word';
   }
 
-  Widget _pad(Widget child) {
-    return Padding(padding: ContainerStyles.containerPadding, child: child);
+  Widget _tab(Widget child) {
+    return Padding(
+        padding: ContainerStyles.containerPadding,
+        child: SingleChildScrollView(child: child));
   }
 
   Widget _buildAllTab() {
@@ -384,7 +386,7 @@ class _WordEditorPageState extends State<WordEditorPage>
           bottom: _buildTabBar(context),
         ),
         body: _buildBody(context),
-        bottomSheet: _buildSubmitButton(context),
+        bottomNavigationBar: _buildSubmitButton(context),
       ),
     );
   }
