@@ -60,7 +60,7 @@ class ManyToManyExercise extends BaseExercise {
           exerciseType: ExerciseType.manyToMany,
           totalCorrectAnswers: 1,
           totalWrongAnswers: numOfMistakes[i],
-          correctAnswer: "${word.dutchWord} - ${word.englishWord}"));
+          correctAnswer: "${word.toDutchWordString()} - ${word.englishWord}"));
     }
 
     return result;
