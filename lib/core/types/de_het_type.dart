@@ -11,4 +11,15 @@ extension DeHetTypeExtension on DeHetType {
         return 'none';
     }
   }
+
+  String get emptyOnNone {
+    switch (this) {
+      case DeHetType.de:
+        return 'de';
+      case DeHetType.het:
+        return 'het';
+      case DeHetType.none:
+        return '';
+    }
+  }
 }

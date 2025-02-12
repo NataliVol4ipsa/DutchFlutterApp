@@ -217,18 +217,20 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     if (words == null) {
       return [];
     }
-    return words
-        .map(
-          (word) => SelectableWord(
-              word: word,
-              showCheckbox: checkboxModeEnabled,
-              extraLeftPadding: ContainerStyles.defaultPaddingAmount,
-              onRowTap: _selectWord,
-              onLongRowPress: () {
-                _longPressWord(word);
-              }),
-        )
-        .toList();
+    return words.asMap().entries.map(
+      (entry) {
+        return SelectableWord(
+          word: entry.value,
+          showCheckbox: checkboxModeEnabled,
+          extraLeftPadding: ContainerStyles.defaultPaddingAmount,
+          onRowTap: _selectWord,
+          onLongRowPress: () {
+            _longPressWord(entry.value);
+          },
+          isEvenRow: entry.key % 2 == 0,
+        );
+      },
+    ).toList();
   }
 
   //todo move out

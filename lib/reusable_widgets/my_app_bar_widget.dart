@@ -1,3 +1,4 @@
+import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -89,9 +90,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: scrolledUnderElevation,
       notificationPredicate: notificationPredicate,
       shadowColor: shadowColor,
-      surfaceTintColor: surfaceTintColor,
+      surfaceTintColor:
+          surfaceTintColor ?? ContainerStyles.sectionColor(context),
       shape: shape,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? ContainerStyles.sectionColor(context),
       foregroundColor: foregroundColor,
       iconTheme: iconTheme,
       actionsIconTheme: actionsIconTheme,

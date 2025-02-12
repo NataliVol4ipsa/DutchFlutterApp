@@ -18,13 +18,13 @@ class SelectableWordCollectionRow extends StatelessWidget {
   Color _textColor(BuildContext context) {
     return collection.isSelected
         ? ContainerStyles.selectedPrimaryTextColor(context)
-        : ContainerStyles.sectionTextColor(context);
+        : ContainerStyles.wordListCollectionTextColor(context);
   }
 
   Color _backgroundColor(BuildContext context) {
     return collection.isSelected
         ? ContainerStyles.selectedPrimaryColor(context)
-        : ContainerStyles.sectionColor(context);
+        : ContainerStyles.wordListCollectionColor(context);
   }
 
   bool? _calculateCheckBoxValue() {

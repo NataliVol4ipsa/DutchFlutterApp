@@ -57,4 +57,11 @@ class ContainerStyles {
         color: color ??
             (useDefaultColor ? ContainerStyles.sectionColor(context) : null),
       );
+
+  static Color wordListCollectionColor(BuildContext context) => Color.lerp(
+      BaseStyles.getColorScheme(context).surfaceContainerHigh,
+      BaseStyles.getColorScheme(context).tertiary,
+      0.1)!;
+  static Color wordListCollectionTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSurface;
 }

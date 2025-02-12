@@ -12,7 +12,7 @@ class SelectableWordModel implements SelectableItemModel<Word> {
   late String displayValue;
 
   SelectableWordModel(this.value) {
-    displayValue = "${value.toDutchWordString()} - ${value.englishWord}";
+    displayValue = "${value.dutchWord} - ${value.englishWord}";
   }
 
   void toggleIsSelected() {
