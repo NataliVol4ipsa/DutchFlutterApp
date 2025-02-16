@@ -12,11 +12,16 @@ class ExercisesGenerator {
 
   ExercisesGenerator(this.exerciseTypes, this.words);
 
-  List<BaseExercise> generateExcercises() => <BaseExercise>[
-        ...generateDeHetExcercises(),
-        ...generateFlipCardExcercises(),
-        ...generateManyToManyExcercises(),
-      ];
+  List<BaseExercise> generateExcercises() {
+    var result = <BaseExercise>[
+      ...generateDeHetExcercises(),
+      ...generateFlipCardExcercises(),
+      ...generateManyToManyExcercises(),
+    ];
+    result.shuffle();
+
+    return result;
+  }
 
   List<BaseExercise> generateDeHetExcercises() {
     if (!exerciseTypes.contains(ExerciseType.deHetPick)) return [];
