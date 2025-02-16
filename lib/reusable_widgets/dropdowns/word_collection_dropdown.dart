@@ -40,6 +40,7 @@ class _WordCollectionDropdownState extends State<WordCollectionDropdown> {
 
   void _loadCollections() async {
     var dbCollections = await wordCollectionsRepository.getAsync();
+    dbCollections.sort((c1, c2) => c1.name.compareTo(c2.name));
     setState(() {
       wordCollectionDropdownValues = dbCollections;
     });
