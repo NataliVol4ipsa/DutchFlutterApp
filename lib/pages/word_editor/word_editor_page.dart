@@ -334,15 +334,16 @@ class _WordEditorPageState extends State<WordEditorPage>
     String dutchPluralFormWordInput = _dutchPluralFormController.text;
 
     var newWord = NewWord(
-      dutchWordInput,
-      englishWordInput,
+      dutchWordInput.trim(),
+      englishWordInput.trim(),
       _wordTypeController.value,
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
-      pluralForm: dutchPluralFormWordInput,
-      contextExample: _contextExampleController.text,
-      contextExampleTranslation: _contextExampleTranslationController.text,
-      userNote: _userNoteController.text,
+      pluralForm: dutchPluralFormWordInput.trim(),
+      contextExample: _contextExampleController.text.trim(),
+      contextExampleTranslation:
+          _contextExampleTranslationController.text.trim(),
+      userNote: _userNoteController.text.trim(),
     );
 
     await _wordsRepository.addAsync(newWord);
@@ -357,15 +358,16 @@ class _WordEditorPageState extends State<WordEditorPage>
 
     var updatedWord = Word(
       existingWordId!,
-      dutchWordInput,
-      englishWordInput,
+      dutchWordInput.trim(),
+      englishWordInput.trim(),
       _wordTypeController.value,
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
-      pluralForm: dutchPluralFormWordInput,
-      contextExample: _contextExampleController.text,
-      contextExampleTranslation: _contextExampleTranslationController.text,
-      userNote: _userNoteController.text,
+      pluralForm: dutchPluralFormWordInput.trim(),
+      contextExample: _contextExampleController.text.trim(),
+      contextExampleTranslation:
+          _contextExampleTranslationController.text.trim(),
+      userNote: _userNoteController.text.trim(),
     );
 
     await _wordsRepository.updateAsync(updatedWord);

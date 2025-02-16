@@ -16,7 +16,7 @@ class DeHetOptionalToggleInput extends StatelessWidget {
       builder: (context, value, child) {
         return PaddedFormComponent(
           child: FormInput(
-            inputLabel: "De/Het type",
+            inputLabel: "Article",
             child: OptionalToggleButtons<DeHetType?>(
               items: [
                 ToggleButtonItem(label: 'De', value: DeHetType.de),

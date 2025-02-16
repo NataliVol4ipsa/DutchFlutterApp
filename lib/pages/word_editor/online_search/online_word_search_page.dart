@@ -10,11 +10,11 @@ class OnlineWordSearchPage extends StatefulWidget {
   final String word;
   final WordType? selectedWordType;
 
-  const OnlineWordSearchPage({
+  OnlineWordSearchPage({
     super.key,
-    required this.word,
+    required String word,
     this.selectedWordType,
-  });
+  }) : word = word.trim();
 
   @override
   State<OnlineWordSearchPage> createState() => _OnlineWordSearchPageState();
