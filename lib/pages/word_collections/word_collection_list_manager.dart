@@ -46,7 +46,7 @@ class WordCollectionListManager {
     if (w1.value.wordType == WordType.phrase) {
       return 1;
     }
-    if (w1.value.wordType == WordType.phrase) {
+    if (w2.value.wordType == WordType.phrase) {
       return -1;
     }
     return w1.value.dutchWord
