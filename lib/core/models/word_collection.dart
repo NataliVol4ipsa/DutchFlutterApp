@@ -4,8 +4,9 @@ class WordCollection {
   final int? id;
   final String name;
   final List<Word>? words;
+  final DateTime? lastUpdated;
 
-  WordCollection(this.id, this.name, {this.words});
+  WordCollection(this.id, this.name, {this.words, this.lastUpdated});
 
   @override
   bool operator ==(Object other) {

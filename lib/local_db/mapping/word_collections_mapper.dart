@@ -20,7 +20,8 @@ class WordCollectionsMapper {
       return null;
     }
 
-    var collection = WordCollection(dbCollection.id, dbCollection.name);
+    var collection = WordCollection(dbCollection.id, dbCollection.name,
+        lastUpdated: dbCollection.lastUpdated);
     return collection;
   }
 
@@ -30,6 +31,7 @@ class WordCollectionsMapper {
 
     WordCollection newCollection = WordCollection(
         dbCollection.id, dbCollection.name,
+        lastUpdated: dbCollection.lastUpdated,
         words: WordsMapper.mapToDomainList(dbCollection.words.toList()));
 
     return newCollection;

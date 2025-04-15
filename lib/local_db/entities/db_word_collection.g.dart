@@ -17,8 +17,13 @@ const DbWordCollectionSchema = CollectionSchema(
   name: r'DbWordCollection',
   id: -5732899757398745101,
   properties: {
-    r'name': PropertySchema(
+    r'lastUpdated': PropertySchema(
       id: 0,
+      name: r'lastUpdated',
+      type: IsarType.dateTime,
+    ),
+    r'name': PropertySchema(
+      id: 1,
       name: r'name',
       type: IsarType.string,
     )
@@ -81,7 +86,8 @@ void _dbWordCollectionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.name);
+  writer.writeDateTime(offsets[0], object.lastUpdated);
+  writer.writeString(offsets[1], object.name);
 }
 
 DbWordCollection _dbWordCollectionDeserialize(
@@ -92,7 +98,8 @@ DbWordCollection _dbWordCollectionDeserialize(
 ) {
   final object = DbWordCollection();
   object.id = id;
-  object.name = reader.readString(offsets[0]);
+  object.lastUpdated = reader.readDateTimeOrNull(offsets[0]);
+  object.name = reader.readString(offsets[1]);
   return object;
 }
 
@@ -104,6 +111,8 @@ P _dbWordCollectionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 1:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -318,6 +327,80 @@ extension DbWordCollectionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastUpdated',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastUpdated',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastUpdated',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastUpdated',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastUpdated',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterFilterCondition>
+      lastUpdatedBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastUpdated',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -546,6 +629,20 @@ extension DbWordCollectionQueryLinks
 
 extension DbWordCollectionQuerySortBy
     on QueryBuilder<DbWordCollection, DbWordCollection, QSortBy> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      sortByLastUpdated() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUpdated', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      sortByLastUpdatedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUpdated', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -575,6 +672,20 @@ extension DbWordCollectionQuerySortThenBy
     });
   }
 
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      thenByLastUpdated() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUpdated', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy>
+      thenByLastUpdatedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUpdated', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbWordCollection, DbWordCollection, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -591,6 +702,13 @@ extension DbWordCollectionQuerySortThenBy
 
 extension DbWordCollectionQueryWhereDistinct
     on QueryBuilder<DbWordCollection, DbWordCollection, QDistinct> {
+  QueryBuilder<DbWordCollection, DbWordCollection, QDistinct>
+      distinctByLastUpdated() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastUpdated');
+    });
+  }
+
   QueryBuilder<DbWordCollection, DbWordCollection, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -604,6 +722,13 @@ extension DbWordCollectionQueryProperty
   QueryBuilder<DbWordCollection, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DbWordCollection, DateTime?, QQueryOperations>
+      lastUpdatedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastUpdated');
     });
   }
 

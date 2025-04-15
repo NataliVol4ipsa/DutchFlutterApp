@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 class WordCollectionsRepository {
   Future<int> addAsync(NewWordCollection wordCollection) async {
     final newCollection = WordCollectionsMapper.mapToEntity(wordCollection);
+    newCollection.lastUpdated = DateTime.now();
     final int id = await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWordCollections.put(newCollection));
     return id;
@@ -56,6 +57,7 @@ class WordCollectionsRepository {
     }
 
     dbWordCollection.name = updatedCollection.name;
+    dbWordCollection.lastUpdated = DateTime.now();
 
     await DbContext.isar
         .writeTxn(() => DbContext.isar.dbWordCollections.put(dbWordCollection));

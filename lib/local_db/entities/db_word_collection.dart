@@ -12,4 +12,5 @@ class DbWordCollection {
   // Usage: final words = await fetchedCollection?.words.load();
   @Backlink(to: 'collection')
   final words = IsarLinks<DbWord>();
+  late DateTime? lastUpdated;
 }

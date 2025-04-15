@@ -28,6 +28,7 @@ class WordsRepository {
         newWordId = await DbContext.isar.dbWords.put(newWord);
         collection.words.add(newWord);
         await collection.words.save();
+        collection.lastUpdated = DateTime.now();
         await DbContext.isar.dbWordCollections.put(collection);
       } else {
         throw Exception("Could not find collection with id $collectionId");
@@ -45,11 +46,13 @@ class WordsRepository {
       if (collection != null) {
         collection.words.add(word);
         await collection.words.save();
+        collection.lastUpdated = DateTime.now();
+        await DbContext.isar.dbWordCollections.put(collection);
       }
     });
   }
 
-  Future<void> remodeWordFromCollectionAsync(DbWord word) async {
+  Future<void> removeWordFromCollectionAsync(DbWord word) async {
     if (word.collection.value?.id == null) return;
 
     await DbContext.isar.writeTxn(() async {
@@ -108,7 +111,7 @@ class WordsRepository {
     await DbContext.isar.writeTxn(() => DbContext.isar.dbWords.put(dbWord));
 
     if (dbWord.collection.value?.id != updatedWord.collection?.id) {
-      await remodeWordFromCollectionAsync(dbWord);
+      await removeWordFromCollectionAsync(dbWord);
       if (updatedWord.collection?.id != null) {
         await addExistingWordToCollectionAsync(
             updatedWord.collection!.id!, dbWord);
