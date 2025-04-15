@@ -8,8 +8,10 @@ class SelectableWordCollectionModel {
   final int id;
   final String name;
   final List<SelectableWordModel>? words;
+  final DateTime? lastUpdated;
 
-  SelectableWordCollectionModel(this.id, this.name, this.words) {
+  SelectableWordCollectionModel(this.id, this.name, this.words,
+      {this.lastUpdated}) {
     if (words != null && words!.isNotEmpty) {
       selectAllModel = SelectableStringModel("Select all");
     }

@@ -1,5 +1,6 @@
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
+import 'package:dutch_app/core/services/word_collection_sorter.dart';
 import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:dutch_app/styles/text_styles.dart';
@@ -40,7 +41,7 @@ class _WordCollectionDropdownState extends State<WordCollectionDropdown> {
 
   void _loadCollections() async {
     var dbCollections = await wordCollectionsRepository.getAsync();
-    dbCollections.sort((c1, c2) => c1.name.compareTo(c2.name));
+    WordCollectionSorter.sortCollections(dbCollections);
     setState(() {
       wordCollectionDropdownValues = dbCollections;
     });
