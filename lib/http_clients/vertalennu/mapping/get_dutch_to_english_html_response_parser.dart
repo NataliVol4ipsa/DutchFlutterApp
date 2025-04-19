@@ -1,3 +1,6 @@
+import 'package:collection/collection.dart';
+import 'package:dutch_app/core/types/de_het_type.dart';
+import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_result.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
@@ -5,13 +8,14 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
 class GetDutchToEnglishHtmlResponseParser {
-  DutchToEnglishSearchResult parseResponse(String htmlString) {
+  DutchToEnglishSearchResult parseResponse(
+      String htmlString, String originalWord) {
     final List<DutchToEnglishTranslation> translationResults = [];
     final rootExamples = <SentenceExample>[];
 
     final document = html_parser.parse(htmlString);
 
-    _processTranslations(document, translationResults);
+    _processTranslations(document, originalWord, translationResults);
     _processRootExampleSentences(document, rootExamples);
 
     return DutchToEnglishSearchResult(
@@ -20,37 +24,101 @@ class GetDutchToEnglishHtmlResponseParser {
     );
   }
 
-  void _processTranslations(
-      Document document, List<DutchToEnglishTranslation> translationResults) {
+  void _processTranslations(Document document, String originalWord,
+      List<DutchToEnglishTranslation> translationResults) {
     final translationRows = document.querySelectorAll('.result-item-row');
 
     for (final row in translationRows) {
-      final dutchWords = row
-          .querySelectorAll('.result-item-source .wordentry')
-          .map((e) => e.text.trim())
-          .toList();
-
-      final englishWords = row
-          .querySelectorAll('.result-item-target .wordentry')
-          .map((e) => e.text.trim())
-          .toList();
+      final dutchWords = <OnlineTranslationDutchWord>[];
 
       final partOfSpeech = row
           .querySelectorAll('.result-item-source .additional abbr')
           .map((e) => e.attributes['title']?.trim() ?? '')
           .toList();
 
+      _processDutchWords(row, dutchWords, partOfSpeech);
+
+      final englishWords = row
+          .querySelectorAll('.result-item-target .wordentry')
+          .map((e) => e.text.trim())
+          .toList();
+
       final examples = <SentenceExample>[];
 
       _processTranslationExampleSentences(row, examples);
 
+      DeHetType? entireTranslationArticle =
+          _processEntireTranslationArticle(dutchWords, originalWord);
+
       if (dutchWords.isNotEmpty && englishWords.isNotEmpty) {
         translationResults.add(
-          DutchToEnglishTranslation(dutchWords, englishWords, partOfSpeech,
+          DutchToEnglishTranslation(
+              dutchWords, englishWords, partOfSpeech, entireTranslationArticle,
               sentenceExamples: examples),
         );
       }
     }
+  }
+
+  void _processDutchWords(Element row,
+      List<OnlineTranslationDutchWord> dutchWords, List<String> partOfSpeech) {
+    final sourceContainers =
+        row.querySelectorAll('.result-item-source .lemma-container');
+    for (final container in sourceContainers) {
+      final wordEntry = container.querySelector('.wordentry');
+      if (wordEntry == null) continue;
+
+      final word = wordEntry.text.trim();
+      final genderAttr =
+          container.querySelector('.meta-info')?.attributes['title'];
+      final articleText = container
+          .querySelector('.meta-info.article')
+          ?.text
+          .trim()
+          .toLowerCase();
+
+      GenderType? gender;
+      DeHetType? article;
+
+      if (partOfSpeech.contains("zelfstandig naamwoord")) {
+        gender = _processGender(genderAttr);
+        article = _processArticle(articleText, gender);
+      }
+
+      dutchWords.add(
+          OnlineTranslationDutchWord(word, gender: gender, article: article));
+    }
+  }
+
+  DeHetType? _processArticle(String? articleText, GenderType? gender) {
+    var article = articleText == '(het ~)'
+        ? DeHetType.het
+        : articleText == '(de ~)'
+            ? DeHetType.de
+            : DeHetType.none;
+
+    if (article == DeHetType.none &&
+        gender != null &&
+        gender != GenderType.none) {
+      if (gender == GenderType.onzijdig) {
+        article = DeHetType.het;
+      } else {
+        article = DeHetType.de;
+      }
+    }
+
+    return article;
+  }
+
+  GenderType? _processGender(String? genderAttr) {
+    final gender = genderAttr == 'mannelijk'
+        ? GenderType.mannelijk
+        : genderAttr == 'vrouwelijk'
+            ? GenderType.vrouwelijk
+            : genderAttr == 'onzijdig'
+                ? GenderType.onzijdig
+                : GenderType.none;
+    return gender;
   }
 
   void _processTranslationExampleSentences(
@@ -80,5 +148,16 @@ class GetDutchToEnglishHtmlResponseParser {
         rootExamples.add(SentenceExample(nlHtml, enHtml));
       }
     }
+  }
+
+  DeHetType? _processEntireTranslationArticle(
+      List<OnlineTranslationDutchWord> dutchWords, String originalWord) {
+    if (dutchWords.isEmpty) return null;
+
+    var originalLower = originalWord.toLowerCase();
+
+    return dutchWords
+        .firstWhereOrNull((w) => w.word.toLowerCase() == originalLower)
+        ?.article;
   }
 }
