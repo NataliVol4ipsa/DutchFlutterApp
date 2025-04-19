@@ -39,16 +39,17 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
     setState(() {
       isLoading = true;
     });
+    final wordToLookup = widget.word.trim();
     var response = await WoordenlijstClient().findAsync(
       context,
-      widget.word,
+      wordToLookup,
       wordType: widget.selectedWordType,
     );
 
     if (!mounted) return;
 
     var responseV2 =
-        await VertalenNuClient().findDutchToEnglishAsync(context, widget.word);
+        await VertalenNuClient().findDutchToEnglishAsync(context, wordToLookup);
 
     setState(() {
       onlineWordOptions = response?.onlineWords;

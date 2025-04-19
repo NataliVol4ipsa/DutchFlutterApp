@@ -4,6 +4,9 @@ import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_fonts.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_main_word.dart';
+import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -31,20 +34,24 @@ class OnlineTranslationCardV2 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RichText(
-              text: TextSpan(
-                style: TextStyle(
-                    fontSize: 20,
-                    color: ContainerStyles.sectionTextColor(context)),
-                children: <TextSpan>[
-                  ..._generateDutchTextSpans(translation),
-                  //     TextSpan(
-                  //       text: translation.word,
-                  //       style: const TextStyle(fontWeight: FontWeight.bold),
-                  //     ),
-                ],
+            OnlineTranslationMainWord(translation: translation),
+            if (translation.synonyms.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                      fontSize: OnlineTranslationFonts.synonymsFontSize,
+                      color: ContainerStyles.sectionTextColor(context)),
+                  children: <TextSpan>[
+                    ..._generateDutchTextSpans(translation),
+                    //     TextSpan(
+                    //       text: translation.word,
+                    //       style: const TextStyle(fontWeight: FontWeight.bold),
+                    //     ),
+                  ],
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 8),
             //     if (translation.note != null && translation.note != "")
             //       Text(
@@ -53,10 +60,7 @@ class OnlineTranslationCardV2 extends StatelessWidget {
             //             color: ContainerStyles.sectionTextColor(context),
             //             fontSize: 16),
             //       ),
-            if (translation.partOfSpeech.isNotEmpty)
-              Text(
-                  'Part of Speech: ${capitalizeEnum(translation.partOfSpeech.first)}', //todo more
-                  style: const TextStyle(fontSize: 16)),
+
             //     if (translation.pluralForm != null)
             //       Text('Plural: ${translation.pluralForm}',
             //           style: const TextStyle(fontSize: 16)),
@@ -77,9 +81,13 @@ class OnlineTranslationCardV2 extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: OnlineTranslationFonts.translationsFontSize,
                     color: ContainerStyles.sectionTextColor(context)),
                 children: <TextSpan>[
+                  // TextSpan(
+                  //   text: 'English:\n',
+                  //   style: TextStyle(fontStyle: FontStyle.italic),
+                  // ),
                   ..._generateEnglishTextSpans(translation),
                 ],
               ),
@@ -92,30 +100,13 @@ class OnlineTranslationCardV2 extends StatelessWidget {
 
   List<TextSpan> _generateDutchTextSpans(
       DutchToEnglishTranslation translation) {
-    final List<OnlineTranslationDutchWord> words = translation.dutchWords;
+    final List<OnlineTranslationDutchWord> words = translation.synonyms;
 
     return List<TextSpan>.generate(words.length, (i) {
       final isLast = i == words.length - 1;
-      final displayValue = _generateDisplayDutchWord(words[i]);
+      final displayValue = words[i].word;
       return TextSpan(text: isLast ? displayValue : '$displayValue, ');
     });
-  }
-
-  String _generateDisplayDutchWord(OnlineTranslationDutchWord word) {
-    final buffer = StringBuffer();
-
-    if (word.article != null && word.article != DeHetType.none) {
-      buffer.write('${word.article!.emptyOnNone} ');
-    }
-
-    buffer.write(word.word);
-
-    final genderAbbr = word.gender?.letter;
-    if (genderAbbr != null && genderAbbr != '') {
-      buffer.write(' ($genderAbbr)');
-    }
-
-    return buffer.toString();
   }
 
   List<TextSpan> _generateEnglishTextSpans(
@@ -123,8 +114,7 @@ class OnlineTranslationCardV2 extends StatelessWidget {
     final words = translation.englishWords;
 
     return List<TextSpan>.generate(words.length, (i) {
-      final isLast = i == words.length - 1;
-      return TextSpan(text: isLast ? words[i] : '${words[i]}, ');
+      return TextSpan(text: ' • ${words[i]}\n');
     });
   }
 }

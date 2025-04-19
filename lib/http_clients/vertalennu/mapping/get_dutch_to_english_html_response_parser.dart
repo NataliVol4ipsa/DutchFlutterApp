@@ -49,9 +49,19 @@ class GetDutchToEnglishHtmlResponseParser {
           _processEntireTranslationArticle(dutchWords, originalWord);
 
       if (dutchWords.isNotEmpty && englishWords.isNotEmpty) {
+        final lowerOriginal = originalWord.toLowerCase();
+        OnlineTranslationDutchWord? mainWord = dutchWords
+            .firstWhereOrNull((w) => w.word.toLowerCase() == lowerOriginal);
+        mainWord ??= dutchWords.firstWhereOrNull(
+            (w) => w.word.toLowerCase().contains(lowerOriginal));
+        mainWord ??= dutchWords.first;
+
+        final remainingDutchWords =
+            dutchWords.where((w) => w != mainWord).toList();
+
         translationResults.add(
-          DutchToEnglishTranslation(
-              dutchWords, englishWords, partsOfSpeech, entireTranslationArticle,
+          DutchToEnglishTranslation(mainWord, remainingDutchWords, englishWords,
+              partsOfSpeech, entireTranslationArticle,
               sentenceExamples: examples),
         );
       }
