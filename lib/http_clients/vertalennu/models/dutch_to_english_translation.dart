@@ -1,11 +1,12 @@
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/gender_type.dart';
+import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
 
 class DutchToEnglishTranslation {
   List<OnlineTranslationDutchWord> dutchWords;
   List<String> englishWords;
-  List<String> partOfSpeech;
+  List<WordType> partOfSpeech;
   DeHetType? article;
   late List<SentenceExample> sentenceExamples;
   DutchToEnglishTranslation(

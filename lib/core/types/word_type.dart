@@ -1,13 +1,14 @@
 enum WordType {
   unspecified,
   noun,
+  article,
   adjective,
   verb,
   adverb,
   preposition,
   interjection,
-  conjuction,
-  fixedConjuction,
+  conjunction,
+  fixedConjunction, //todo rm and migrate data
   pronoun,
   numeral,
 
@@ -19,6 +20,8 @@ extension WordTypeExtension on WordType {
     switch (this) {
       case WordType.noun:
         return 'noun';
+      case WordType.article:
+        return 'article';
       case WordType.adjective:
         return 'adjective';
       case WordType.verb:
@@ -29,10 +32,10 @@ extension WordTypeExtension on WordType {
         return 'preposition';
       case WordType.interjection:
         return 'interjection';
-      case WordType.conjuction:
-        return 'conjuction';
-      case WordType.fixedConjuction:
-        return 'fixed conjuction';
+      case WordType.conjunction:
+        return 'conjunction';
+      case WordType.fixedConjunction:
+        return 'fixed conjunction';
       case WordType.pronoun:
         return 'pronoun';
       case WordType.numeral:
@@ -48,6 +51,8 @@ extension WordTypeExtension on WordType {
     switch (this) {
       case WordType.noun:
         return 'Noun';
+      case WordType.article:
+        return 'Article';
       case WordType.adjective:
         return 'Adjective';
       case WordType.verb:
@@ -58,10 +63,10 @@ extension WordTypeExtension on WordType {
         return 'Preposition';
       case WordType.interjection:
         return 'Interjection';
-      case WordType.conjuction:
-        return 'Conjuction';
-      case WordType.fixedConjuction:
-        return 'Fixed Conjuction';
+      case WordType.conjunction:
+        return 'Conjunction';
+      case WordType.fixedConjunction:
+        return 'Fixed Conjunction';
       case WordType.pronoun:
         return 'Pronoun';
       case WordType.numeral:

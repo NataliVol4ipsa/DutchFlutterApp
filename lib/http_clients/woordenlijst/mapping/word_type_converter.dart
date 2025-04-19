@@ -15,9 +15,9 @@ class WordTypeConverter {
       case "INT":
         return WordType.interjection;
       case "CONJ":
-        return WordType.conjuction;
+        return WordType.conjunction;
       case "COLL":
-        return WordType.fixedConjuction;
+        return WordType.fixedConjunction;
       case "PD":
         return WordType.pronoun;
       case "NUM":
@@ -46,9 +46,9 @@ class WordTypeConverter {
         return "NOU-C|NOU-P";
       case WordType.interjection:
         return "INT";
-      case WordType.conjuction:
+      case WordType.conjunction:
         return "CONJ";
-      case WordType.fixedConjuction:
+      case WordType.fixedConjunction:
         return "COLL";
       case WordType.pronoun:
         return "PD";

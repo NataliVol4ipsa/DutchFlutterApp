@@ -27,59 +27,58 @@ class OnlineTranslationCardV2 extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Padding(
         padding: ContainerStyles.containerPadding,
-        // child: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     RichText(
-        //       text: TextSpan(
-        //         style: TextStyle(
-        //             fontSize: 20,
-        //             color: ContainerStyles.sectionTextColor(context)),
-        //         children: <TextSpan>[
-        //           if (translation.gender != null &&
-        //               translation.gender != DeHetType.none) ...[
-        //             TextSpan(text: translation.gender!.label),
-        //             const TextSpan(text: ' '),
-        //           ],
-        //           TextSpan(
-        //             text: translation.word,
-        //             style: const TextStyle(fontWeight: FontWeight.bold),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     const SizedBox(height: 8),
-        //     if (translation.note != null && translation.note != "")
-        //       Text(
-        //         'Note: ${translation.note}',
-        //         style: TextStyle(
-        //             color: ContainerStyles.sectionTextColor(context),
-        //             fontSize: 16),
-        //       ),
-        //     if (translation.partOfSpeech != null &&
-        //         translation.partOfSpeech != WordType.unspecified)
-        //       Text(
-        //           'Part of Speech: ${capitalizeEnum(translation.partOfSpeech!)}',
-        //           style: const TextStyle(fontSize: 16)),
-        //     if (translation.pluralForm != null)
-        //       Text('Plural: ${translation.pluralForm}',
-        //           style: const TextStyle(fontSize: 16)),
-        //     if (translation.diminutive != null)
-        //       Text('Diminutive: ${translation.diminutive}',
-        //           style: const TextStyle(fontSize: 16)),
-        //     Align(
-        //       alignment: Alignment.bottomRight,
-        //       child: TextButton(
-        //         onPressed: () {
-        //           wordSelectedNotifier.notify(translation);
-        //           Navigator.pop(context);
-        //         },
-        //         style: ButtonStyles.mediumPrimaryButtonStyle(context),
-        //         child: const Text('Apply'),
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //     RichText(
+            //       text: TextSpan(
+            //         style: TextStyle(
+            //             fontSize: 20,
+            //             color: ContainerStyles.sectionTextColor(context)),
+            //         children: <TextSpan>[
+            //           if (translation.gender != null &&
+            //               translation.gender != DeHetType.none) ...[
+            //             TextSpan(text: translation.gender!.label),
+            //             const TextSpan(text: ' '),
+            //           ],
+            //           TextSpan(
+            //             text: translation.word,
+            //             style: const TextStyle(fontWeight: FontWeight.bold),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            const SizedBox(height: 8),
+            //     if (translation.note != null && translation.note != "")
+            //       Text(
+            //         'Note: ${translation.note}',
+            //         style: TextStyle(
+            //             color: ContainerStyles.sectionTextColor(context),
+            //             fontSize: 16),
+            //       ),
+            if (translation.partOfSpeech.isNotEmpty)
+              Text(
+                  'Part of Speech: ${capitalizeEnum(translation.partOfSpeech.first)}', //todo more
+                  style: const TextStyle(fontSize: 16)),
+            //     if (translation.pluralForm != null)
+            //       Text('Plural: ${translation.pluralForm}',
+            //           style: const TextStyle(fontSize: 16)),
+            //     if (translation.diminutive != null)
+            //       Text('Diminutive: ${translation.diminutive}',
+            //           style: const TextStyle(fontSize: 16)),
+            //     Align(
+            //       alignment: Alignment.bottomRight,
+            //       child: TextButton(
+            //         onPressed: () {
+            //           wordSelectedNotifier.notify(translation);
+            //           Navigator.pop(context);
+            //         },
+            //         style: ButtonStyles.mediumPrimaryButtonStyle(context),
+            //         child: const Text('Apply'),
+            //       ),
+            //     ),
+          ],
+        ),
       ),
     );
   }
