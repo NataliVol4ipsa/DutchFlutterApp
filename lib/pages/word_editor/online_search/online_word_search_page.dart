@@ -63,41 +63,43 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Column(
-      children: [
-        WordSearchExceptionListener(),
-        if (onlineWordOptions == null || onlineWordOptions!.isEmpty) ...{
-          WordsNotFoundError(),
-        },
-        if (onlineWordOptions != null && onlineWordOptions!.isNotEmpty) ...{
-          ListView.builder(
-            shrinkWrap: true,
-            //physics: const NeverScrollableScrollPhysics(),
-            itemCount: onlineWordOptions?.length ?? 0,
-            itemBuilder: (context, index) {
-              final word = onlineWordOptions![index];
-              return OnlineWordCard(wordResponse: word);
-            },
-          ),
-        },
-        Text('=======V2========\n'),
-        if (onlineWordOptions2 == null ||
-            onlineWordOptions2!.translations.isEmpty) ...{
-          WordsNotFoundError(),
-        },
-        if (onlineWordOptions != null &&
-            onlineWordOptions2!.translations.isNotEmpty) ...{
-          ListView.builder(
-            shrinkWrap: true,
-            //physics: const NeverScrollableScrollPhysics(),
-            itemCount: onlineWordOptions2!.translations.length,
-            itemBuilder: (context, index) {
-              final translation = onlineWordOptions2!.translations[index];
-              return OnlineTranslationCardV2(translation: translation);
-            },
-          ),
-        }
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          WordSearchExceptionListener(),
+          if (onlineWordOptions == null || onlineWordOptions!.isEmpty) ...{
+            WordsNotFoundError(),
+          },
+          if (onlineWordOptions != null && onlineWordOptions!.isNotEmpty) ...{
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: onlineWordOptions?.length ?? 0,
+              itemBuilder: (context, index) {
+                final word = onlineWordOptions![index];
+                return OnlineWordCard(wordResponse: word);
+              },
+            ),
+          },
+          Text('=======V2========\n'),
+          if (onlineWordOptions2 == null ||
+              onlineWordOptions2!.translations.isEmpty) ...{
+            WordsNotFoundError(),
+          },
+          if (onlineWordOptions != null &&
+              onlineWordOptions2!.translations.isNotEmpty) ...{
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: onlineWordOptions2!.translations.length,
+              itemBuilder: (context, index) {
+                final translation = onlineWordOptions2!.translations[index];
+                return OnlineTranslationCardV2(translation: translation);
+              },
+            ),
+          }
+        ],
+      ),
     );
   }
 }
