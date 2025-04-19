@@ -2,7 +2,7 @@ import 'package:dutch_app/core/functions/capitalize_enum.dart';
 import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';

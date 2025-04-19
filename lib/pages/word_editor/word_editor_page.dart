@@ -7,7 +7,7 @@ import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';

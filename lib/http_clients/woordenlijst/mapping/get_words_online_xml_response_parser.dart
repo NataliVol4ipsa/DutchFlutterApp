@@ -1,10 +1,10 @@
-import 'package:dutch_app/http_clients/get_word_online_response.dart';
-import 'package:dutch_app/http_clients/get_words_online_response.dart';
-import 'package:dutch_app/http_clients/mapping/gender_converter.dart';
-import 'package:dutch_app/http_clients/mapping/word_type_converter.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_words_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/mapping/gender_converter.dart';
+import 'package:dutch_app/http_clients/woordenlijst/mapping/word_type_converter.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/xml_extensions.dart';
+import 'package:dutch_app/http_clients/woordenlijst/xml_extensions.dart';
 import 'package:xml/xml.dart' as xml;
 
 class GetWordsOnlineXmlResponseParser {
