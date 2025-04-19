@@ -1,4 +1,4 @@
-import 'package:dutch_app/http_clients/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
 import 'package:flutter/material.dart';
 
 class OnlineWordSearchSuggestionSelectedNotifier extends ChangeNotifier {

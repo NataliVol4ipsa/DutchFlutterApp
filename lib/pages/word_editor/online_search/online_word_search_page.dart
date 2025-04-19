@@ -2,8 +2,8 @@ import 'package:dutch_app/pages/word_editor/online_search/error_handling/word_se
 import 'package:dutch_app/pages/word_editor/online_search/error_handling/words_not_found_error_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_word_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:dutch_app/http_clients/get_word_online_response.dart';
-import 'package:dutch_app/http_clients/woordenlijst_client.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/woordenlijst_client.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 
 class OnlineWordSearchPage extends StatefulWidget {
