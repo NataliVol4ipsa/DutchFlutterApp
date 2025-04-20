@@ -2,7 +2,7 @@ import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search
 import 'package:dutch_app/http_clients/vertalennu/vertalenu_client.dart';
 import 'package:dutch_app/pages/word_editor/online_search/error_handling/word_search_exception_listener_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/error_handling/words_not_found_error_widget.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_card_v2_widget.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_card_v2_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_word_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';

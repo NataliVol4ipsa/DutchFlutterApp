@@ -9,4 +9,5 @@ class InputIcons {
   static final IconData contextExample = Icons.format_quote;
   static final IconData contextExampleTranslation = Icons.translate;
   static final IconData userNote = Icons.edit_note;
+  static final IconData synonyms = Icons.autorenew;
 }

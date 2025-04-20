@@ -1,19 +1,13 @@
-import 'package:dutch_app/core/functions/capitalize_enum.dart';
-import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/core/types/gender_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
+//import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_fonts.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_word_attributes.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_word_header.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_word_synonyms.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_word_translations.dart';
-import 'package:dutch_app/styles/base_styles.dart';
-import 'package:dutch_app/styles/button_styles.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_attributes.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_examples.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_header.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_synonyms.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_translations.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 class OnlineTranslationCardV2 extends StatelessWidget {
   const OnlineTranslationCardV2({
@@ -25,9 +19,9 @@ class OnlineTranslationCardV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var wordSelectedNotifier =
-        Provider.of<OnlineWordSearchSuggestionSelectedNotifier>(context,
-            listen: false);
+    // var wordSelectedNotifier =
+    //     Provider.of<OnlineWordSearchSuggestionSelectedNotifier>(context,
+    //         listen: false);
     return Card(
       color: ContainerStyles.sectionColor(context),
       elevation: 3,
@@ -41,6 +35,7 @@ class OnlineTranslationCardV2 extends StatelessWidget {
             OnlineTranslationWordAttributes(translation: translation),
             OnlineTranslationWordTranslations(translation: translation),
             OnlineTranslationWordSynonyms(translation: translation),
+            OnlineTranslationWordExamples(translation: translation),
           ],
         ),
       ),

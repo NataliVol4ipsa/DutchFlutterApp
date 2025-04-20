@@ -1,7 +1,7 @@
 import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_fonts.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
         translation.mainWord.gender != GenderType.none;
     return Column(
       children: [
-        if (showPartOfSpeech || showGender) const SizedBox(height: 8),
+        if (showPartOfSpeech || showGender) const SizedBox(height: 4),
         RichText(
           text: TextSpan(
             style: TextStyle(

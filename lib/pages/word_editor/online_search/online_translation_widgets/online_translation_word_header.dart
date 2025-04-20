@@ -1,6 +1,6 @@
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_fonts.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:flutter/material.dart';
 
