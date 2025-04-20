@@ -51,6 +51,9 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
     var responseV2 =
         await VertalenNuClient().findDutchToEnglishAsync(context, wordToLookup);
 
+    responseV2?.translations
+        .sort((a, b) => b.translationScore.compareTo(a.translationScore));
+
     setState(() {
       onlineWordOptions = response?.onlineWords;
       onlineWordOptions2 = responseV2;

@@ -4,6 +4,7 @@ import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_result.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
