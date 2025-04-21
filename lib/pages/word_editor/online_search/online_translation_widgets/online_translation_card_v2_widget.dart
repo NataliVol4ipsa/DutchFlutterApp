@@ -1,13 +1,14 @@
-//import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
+import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_attributes.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_examples.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_header.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_synonyms.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_translations.dart';
+import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 class OnlineTranslationCardV2 extends StatelessWidget {
   const OnlineTranslationCardV2({
@@ -19,9 +20,6 @@ class OnlineTranslationCardV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var wordSelectedNotifier =
-    //     Provider.of<OnlineWordSearchSuggestionSelectedNotifier>(context,
-    //         listen: false);
     return Card(
       color: ContainerStyles.sectionColor(context),
       elevation: 3,
@@ -33,7 +31,7 @@ class OnlineTranslationCardV2 extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: Container(
               width: double.infinity,
-              color: ContainerStyles.selectedSecondaryColor(context),
+              color: ContainerStyles.secondaryHeaderColor(context),
               child: Padding(
                 padding: ContainerStyles.containerPadding,
                 child: Column(
@@ -56,7 +54,47 @@ class OnlineTranslationCardV2 extends StatelessWidget {
               ],
             ),
           ),
+          _generateApplyButton(context),
         ],
+      ),
+    );
+  }
+
+  Align _generateApplyButton(BuildContext context) {
+    var translationSelectedNotifier =
+        Provider.of<OnlineTranslationSearchSuggestionSelectedNotifier>(context,
+            listen: false);
+
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: EdgeInsets.only(
+            bottom: ContainerStyles.defaultPaddingAmount,
+            right: ContainerStyles.defaultPaddingAmount,
+            left: ContainerStyles.defaultPaddingAmount),
+        child: ElevatedButton.icon(
+          onPressed: () {
+            translationSelectedNotifier.notify(translation);
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.check,
+            size: 20,
+          ),
+          label: Text(
+            'Apply',
+            style: TextStyle(fontSize: ButtonStyles.mediumButtonFontSize),
+          ),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(48), // Makes full-width and tall
+            backgroundColor: ContainerStyles.section3Color(context),
+            foregroundColor: ContainerStyles.section3TextColor(context),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+        ),
       ),
     );
   }

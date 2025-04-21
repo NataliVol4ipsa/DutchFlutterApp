@@ -18,7 +18,7 @@ class OnlineTranslationWordHeader extends StatelessWidget {
       text: TextSpan(
         style: TextStyle(
           fontSize: OnlineTranslationFonts.mainWordFontSize,
-          color: ContainerStyles.selectedSecondaryTextColor(context),
+          color: ContainerStyles.secondaryHeaderTextColor(context),
         ),
         children: <TextSpan>[
           if (translation.mainWord.article != null &&

@@ -2,13 +2,16 @@ import 'package:dutch_app/core/models/new_word.dart';
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
+import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/plurals_tab_widget.dart';
@@ -39,7 +42,10 @@ class _WordEditorPageState extends State<WordEditorPage>
   late WordsRepository _wordsRepository;
 
   late OnlineWordSearchSuggestionSelectedNotifier _onlineWordSelectedNotifier;
+  late OnlineTranslationSearchSuggestionSelectedNotifier
+      _onlineTranslationSelectedNotifier;
   late void Function() _onlineWordSelectedNotifierListener;
+  late void Function() _onlineTranslationSelectedNotifierListener;
 
   final TextEditingController _dutchWordController = TextEditingController();
   final TextEditingController _englishWordController = TextEditingController();
@@ -103,6 +109,15 @@ class _WordEditorPageState extends State<WordEditorPage>
     };
     _onlineWordSelectedNotifier
         .addListener(_onlineWordSelectedNotifierListener);
+
+    _onlineTranslationSelectedNotifier =
+        context.read<OnlineTranslationSearchSuggestionSelectedNotifier>();
+    _onlineTranslationSelectedNotifierListener = () {
+      onlineTranslationSelectedNotifierAction(
+          _onlineTranslationSelectedNotifier.translation);
+    };
+    _onlineTranslationSelectedNotifier
+        .addListener(_onlineTranslationSelectedNotifierListener);
   }
 
   void _initTabs() {
@@ -167,11 +182,42 @@ class _WordEditorPageState extends State<WordEditorPage>
     });
   }
 
+  // When online translation is selected, apply its values to current word input fields
+  void onlineTranslationSelectedNotifierAction(
+      DutchToEnglishTranslation? translation) {
+    if (translation == null) {
+      return;
+    }
+
+    String? pluralForm =
+        OnlineTranslationPostProcessingService.findNounPluralForm(
+            translation.partOfSpeech.first);
+
+    setState(() {
+      _wordTypeController.value =
+          translation.partOfSpeech.firstOrNull ?? WordType.unspecified;
+      //_englishWordController.text = translation.englishWords.join(";");
+      _englishWordController.text = translation.englishWords.firstOrNull ?? "";
+      _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
+      _contextExampleController.text = translation
+              .sentenceExamples.firstOrNull?.dutchSentence
+              .replaceAll(RegExp(r'<[^>]*>'), '') ??
+          "";
+      _contextExampleTranslationController.text = translation
+              .sentenceExamples.firstOrNull?.englishSentence
+              .replaceAll(RegExp(r'<[^>]*>'), '') ??
+          "";
+      _dutchPluralFormController.text = pluralForm ?? "";
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
     _onlineWordSelectedNotifier
         .removeListener(_onlineWordSelectedNotifierListener);
+    _onlineTranslationSelectedNotifier
+        .removeListener(_onlineTranslationSelectedNotifierListener);
     _tabController.dispose();
     _wordTypeController.dispose();
     _tabsNotifier.dispose();

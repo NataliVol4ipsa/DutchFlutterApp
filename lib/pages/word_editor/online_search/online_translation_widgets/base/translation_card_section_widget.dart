@@ -7,52 +7,58 @@ class TranslationCardSection extends StatelessWidget {
   final Widget child;
   final String name;
   final IconData icon;
+  final bool buildChildWithoutPadding;
 
   const TranslationCardSection({
     super.key,
     required this.child,
     required this.name,
     required this.icon,
+    this.buildChildWithoutPadding = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Padding(
-            padding:
-                EdgeInsets.only(right: ContainerStyles.smallPaddingAmount2),
-            child: Icon(
-              icon,
-              size: 20,
-              color: BaseStyles.getColorScheme(context).onSurfaceVariant,
-            )),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: OnlineTranslationFonts.sectionTitleFontSize,
-                    color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+                padding:
+                    EdgeInsets.only(right: ContainerStyles.smallPaddingAmount2),
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+                )),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: OnlineTranslationFonts.sectionTitleFontSize,
+                        color:
+                            BaseStyles.getColorScheme(context).onSurfaceVariant,
+                      ),
+                      text: name,
+                    ),
                   ),
-                  text: name,
-                ),
+                  Divider(),
+                  if (!buildChildWithoutPadding) child,
+                ],
               ),
-              Divider(),
-              child,
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              //   child: child,
-              // )
-            ],
-          ),
+            ),
+          ],
         ),
+        if (buildChildWithoutPadding) child,
       ],
     );
   }
