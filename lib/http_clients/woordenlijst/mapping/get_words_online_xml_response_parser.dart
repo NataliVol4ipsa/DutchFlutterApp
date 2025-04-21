@@ -1,5 +1,5 @@
-import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_words_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_words_grammar_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst/mapping/gender_converter.dart';
 import 'package:dutch_app/http_clients/woordenlijst/mapping/word_type_converter.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
@@ -8,19 +8,21 @@ import 'package:dutch_app/http_clients/woordenlijst/xml_extensions.dart';
 import 'package:xml/xml.dart' as xml;
 
 class GetWordsOnlineXmlResponseParser {
-  GetWordsOnlineResponse parseResponse(String searchText, String xmlString) {
+  GetWordsGrammarOnlineResponse parseResponse(
+      String searchText, String xmlString) {
     var sections = identifyWordSection(searchText, xmlString);
-    var response = GetWordsOnlineResponse();
+    var response = GetWordsGrammarOnlineResponse();
     for (var section in sections) {
-      GetWordOnlineResponse wordResponse = processSection(searchText, section);
+      GetWordGrammarOnlineResponse wordResponse =
+          processSection(searchText, section);
       response.onlineWords.add(wordResponse);
     }
     return response;
   }
 
-  GetWordOnlineResponse processSection(
+  GetWordGrammarOnlineResponse processSection(
       String searchText, xml.XmlElement section) {
-    var result = GetWordOnlineResponse(searchText);
+    var result = GetWordGrammarOnlineResponse(searchText);
     result.diminutive = findDiminutive(section);
     result.pluralForm = findPluralForm(section);
     var additionalInfo = findAdditionalProperties(section);

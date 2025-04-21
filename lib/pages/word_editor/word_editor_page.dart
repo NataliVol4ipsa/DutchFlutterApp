@@ -3,13 +3,12 @@ import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/models/word_collection.dart';
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
 import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
-import 'package:dutch_app/core/notifiers/online_word_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_word_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
@@ -41,10 +40,8 @@ class _WordEditorPageState extends State<WordEditorPage>
 
   late WordsRepository _wordsRepository;
 
-  late OnlineWordSearchSuggestionSelectedNotifier _onlineWordSelectedNotifier;
   late OnlineTranslationSearchSuggestionSelectedNotifier
       _onlineTranslationSelectedNotifier;
-  late void Function() _onlineWordSelectedNotifierListener;
   late void Function() _onlineTranslationSelectedNotifierListener;
 
   final TextEditingController _dutchWordController = TextEditingController();
@@ -102,19 +99,12 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   void _initOnlineSearch() {
-    _onlineWordSelectedNotifier =
-        context.read<OnlineWordSearchSuggestionSelectedNotifier>();
-    _onlineWordSelectedNotifierListener = () {
-      onlineWordSelectedNotifierAction(_onlineWordSelectedNotifier.wordOption);
-    };
-    _onlineWordSelectedNotifier
-        .addListener(_onlineWordSelectedNotifierListener);
-
     _onlineTranslationSelectedNotifier =
         context.read<OnlineTranslationSearchSuggestionSelectedNotifier>();
     _onlineTranslationSelectedNotifierListener = () {
       onlineTranslationSelectedNotifierAction(
-          _onlineTranslationSelectedNotifier.translation);
+          _onlineTranslationSelectedNotifier.translation,
+          _onlineTranslationSelectedNotifier.grammarOptions);
     };
     _onlineTranslationSelectedNotifier
         .addListener(_onlineTranslationSelectedNotifierListener);
@@ -132,23 +122,23 @@ class _WordEditorPageState extends State<WordEditorPage>
     final List<Tab> newTabs = [
       const Tab(text: "All"),
       const Tab(text: "Main"),
-      if (MetaTab.shouldShowTab(_wordTypeController.value))
-        const Tab(text: "Meta"),
       if (PluralsTab.shouldShowTab(_wordTypeController.value))
         const Tab(text: "Plurals"),
       if (PastTenseTab.shouldShowTab(_wordTypeController.value))
         const Tab(text: "Past tense"),
+      if (MetaTab.shouldShowTab(_wordTypeController.value))
+        const Tab(text: "Meta"),
     ];
 
     final List<Widget> newTabViews = [
       _tab(_buildAllTab()),
       _tab(_buildMainTab()),
-      if (MetaTab.shouldShowTab(_wordTypeController.value))
-        _tab(_buildMetaTab()),
       if (PluralsTab.shouldShowTab(_wordTypeController.value))
         _tab(_buildPluralsTab()),
       if (PastTenseTab.shouldShowTab(_wordTypeController.value))
         _tab(_buildPastTenseTab()),
+      if (MetaTab.shouldShowTab(_wordTypeController.value))
+        _tab(_buildMetaTab()),
     ];
 
     _tabsNotifier.value = newTabs;
@@ -167,35 +157,22 @@ class _WordEditorPageState extends State<WordEditorPage>
     setState(() {});
   }
 
-  // When online word is selected, apply its values to current word input fields
-  void onlineWordSelectedNotifierAction(GetWordOnlineResponse? wordOption) {
-    if (wordOption == null) {
-      return;
-    }
-    setState(() {
-      _wordTypeController.value =
-          wordOption.partOfSpeech ?? WordType.unspecified;
-      _dutchPluralFormController.text = wordOption.pluralForm ?? "";
-      _deHetTypeTypeController.value = wordOption.gender ?? DeHetType.none;
-      _contextExampleController.text = wordOption.note ?? "";
-      _userNoteController.text = wordOption.note ?? "";
-    });
-  }
-
   // When online translation is selected, apply its values to current word input fields
   void onlineTranslationSelectedNotifierAction(
-      DutchToEnglishTranslation? translation) {
+      DutchToEnglishTranslation? translation,
+      List<GetWordGrammarOnlineResponse>? grammarOptions) {
     if (translation == null) {
       return;
     }
 
     String? pluralForm =
         OnlineTranslationPostProcessingService.findNounPluralForm(
-            translation.partOfSpeech.first);
+            translation.partOfSpeech.firstOrNull ?? WordType.phrase,
+            grammarOptions);
 
     setState(() {
       _wordTypeController.value =
-          translation.partOfSpeech.firstOrNull ?? WordType.unspecified;
+          translation.partOfSpeech.firstOrNull ?? WordType.phrase;
       //_englishWordController.text = translation.englishWords.join(";");
       _englishWordController.text = translation.englishWords.firstOrNull ?? "";
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
@@ -214,8 +191,6 @@ class _WordEditorPageState extends State<WordEditorPage>
   @override
   void dispose() {
     super.dispose();
-    _onlineWordSelectedNotifier
-        .removeListener(_onlineWordSelectedNotifierListener);
     _onlineTranslationSelectedNotifier
         .removeListener(_onlineTranslationSelectedNotifierListener);
     _tabController.dispose();
@@ -263,11 +238,11 @@ class _WordEditorPageState extends State<WordEditorPage>
     return Column(
       children: [
         _buildMainTab(),
-        if (MetaTab.shouldShowTab(_wordTypeController.value)) _buildMetaTab(),
         if (PluralsTab.shouldShowTab(_wordTypeController.value))
           _buildPluralsTab(),
         if (PastTenseTab.shouldShowTab(_wordTypeController.value))
           _buildPastTenseTab(),
+        if (MetaTab.shouldShowTab(_wordTypeController.value)) _buildMetaTab(),
       ],
     );
   }
