@@ -17,36 +17,42 @@ class TranslationCardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: ContainerStyles.smallPaddingAmount2),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: BaseStyles.getColorScheme(context).onSurfaceVariant,
-                )),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: OnlineTranslationFonts.sectionTitleFontSize,
-                  color: BaseStyles.getColorScheme(context).onSurfaceVariant,
-                ),
-                text: name,
-              ),
-            ),
-          ],
-        ),
-        Divider(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: child,
-        )
+            padding:
+                EdgeInsets.only(right: ContainerStyles.smallPaddingAmount2),
+            child: Icon(
+              icon,
+              size: 20,
+              color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+            )),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: OnlineTranslationFonts.sectionTitleFontSize,
+                    color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+                  ),
+                  text: name,
+                ),
+              ),
+              Divider(),
+              child,
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //   child: child,
+              // )
+            ],
+          ),
+        ),
       ],
     );
   }

@@ -26,18 +26,37 @@ class OnlineTranslationCardV2 extends StatelessWidget {
       color: ContainerStyles.sectionColor(context),
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Padding(
-        padding: ContainerStyles.containerPadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            OnlineTranslationWordHeader(translation: translation),
-            OnlineTranslationWordAttributes(translation: translation),
-            OnlineTranslationWordTranslations(translation: translation),
-            OnlineTranslationWordSynonyms(translation: translation),
-            OnlineTranslationWordExamples(translation: translation),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Container(
+              width: double.infinity,
+              color: ContainerStyles.selectedSecondaryColor(context),
+              child: Padding(
+                padding: ContainerStyles.containerPadding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    OnlineTranslationWordHeader(translation: translation),
+                    OnlineTranslationWordAttributes(translation: translation),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: ContainerStyles.containerPadding,
+            child: Column(
+              children: [
+                OnlineTranslationWordTranslations(translation: translation),
+                OnlineTranslationWordSynonyms(translation: translation),
+                OnlineTranslationWordExamples(translation: translation),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

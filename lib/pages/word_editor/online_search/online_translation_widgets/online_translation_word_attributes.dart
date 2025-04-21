@@ -13,6 +13,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
   });
 
   final DutchToEnglishTranslation translation;
+  final int _alpha = 175; //0..255
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                     fontSize: OnlineTranslationFonts.attributeFontSize,
                     color: ContainerStyles.sectionTextColor(context)
-                        .withAlpha(150),
+                        .withAlpha(_alpha),
                   ),
                 ),
               if (showGender)
@@ -46,7 +47,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                     fontSize: OnlineTranslationFonts.attributeFontSize,
                     color: ContainerStyles.sectionTextColor(context)
-                        .withAlpha(150),
+                        .withAlpha(_alpha),
                   ),
                 ),
             ],

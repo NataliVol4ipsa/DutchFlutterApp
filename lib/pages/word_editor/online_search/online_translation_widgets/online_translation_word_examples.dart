@@ -40,22 +40,30 @@ class OnlineTranslationWordExamples extends StatelessWidget {
 
   Widget _generateSentenceExampleText(String inputString) {
     final spans = <TextSpan>[];
-    final regex = RegExp(r'(.*?)<span class="hl">(.*?)<\/span>(.*)');
-    final match = regex.firstMatch(inputString);
+    final regex = RegExp(r'<span class="hl">(.*?)<\/span>');
+    int currentIndex = 0;
 
-    if (match != null) {
-      spans.add(TextSpan(text: match.group(1))); // before <span>
+    for (final match in regex.allMatches(inputString)) {
+      // Add the normal text before the match
+      if (match.start > currentIndex) {
+        spans.add(
+            TextSpan(text: inputString.substring(currentIndex, match.start)));
+      }
+
+      // Add the bolded span
       spans.add(TextSpan(
-        text: match.group(2), // inside <span>
-        style: TextStyle(fontWeight: FontWeight.bold),
+        text: match.group(1),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ));
-      spans.add(TextSpan(text: match.group(3))); // after </span>
-    } else {
-      spans.add(TextSpan(text: inputString)); // no matches
+
+      currentIndex = match.end;
     }
 
-    return RichText(
-        text: TextSpan(
+    // Add any trailing text after the last match
+    if (currentIndex < inputString.length) {
+      spans.add(TextSpan(text: inputString.substring(currentIndex)));
+    }
+    return SelectableText.rich(TextSpan(
       children: spans,
       style: TextStyle(
         fontSize: OnlineTranslationFonts.sectionContentFontSize,
