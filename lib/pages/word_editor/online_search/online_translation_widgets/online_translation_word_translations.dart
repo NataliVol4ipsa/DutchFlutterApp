@@ -1,4 +1,4 @@
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/base/translation_card_section_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/reusable_widgets/input_icons.dart';
@@ -11,11 +11,11 @@ class OnlineTranslationWordTranslations extends StatelessWidget {
     required this.translation,
   });
 
-  final DutchToEnglishTranslation translation;
+  final TranslationSearchResult translation;
 
   List<TextSpan> _generateEnglishTextSpans(
-      DutchToEnglishTranslation translation) {
-    final words = translation.englishWords;
+      TranslationSearchResult translation) {
+    final words = translation.translationWords;
 
     return List<TextSpan>.generate(words.length, (i) {
       var result = '•  ${words[i]}'; // •

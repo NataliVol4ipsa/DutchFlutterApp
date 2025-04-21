@@ -1,8 +1,9 @@
 import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_result.dart';
 import 'package:dutch_app/http_clients/vertalennu/vertalenu_client.dart';
 import 'package:dutch_app/pages/word_editor/online_search/error_handling/word_search_exception_listener_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/error_handling/words_not_found_error_widget.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translations_search_result.dart';
+import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_card_v2_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
@@ -27,7 +28,7 @@ class OnlineWordSearchPage extends StatefulWidget {
 class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
   bool isLoading = false;
   List<GetWordGrammarOnlineResponse>? grammarOptions;
-  DutchToEnglishSearchResult? onlineWordOptions2;
+  TranslationsSearchResult? onlineTranslationOptions;
 
   late OnlineTranslationSearchSuggestionSelectedNotifier
       _onlineTranslationSelectedNotifier;
@@ -55,15 +56,15 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
 
     if (!mounted) return;
 
-    var responseV2 =
+    final searchResponse =
         await VertalenNuClient().findDutchToEnglishAsync(context, wordToLookup);
 
-    responseV2?.translations
-        .sort((a, b) => b.translationScore.compareTo(a.translationScore));
+    final mappedSearchResponse =
+        OnlineTranslationPostProcessingService.mapToResult(searchResponse);
 
     setState(() {
       grammarOptions = response?.onlineWords;
-      onlineWordOptions2 = responseV2;
+      onlineTranslationOptions = mappedSearchResponse;
       isLoading = false;
     });
     _onlineTranslationSelectedNotifier.setGrammarOptions(grammarOptions);
@@ -79,18 +80,19 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
       child: Column(
         children: [
           WordSearchExceptionListener(),
-          if (onlineWordOptions2 == null ||
-              onlineWordOptions2!.translations.isEmpty) ...{
+          if (onlineTranslationOptions == null ||
+              onlineTranslationOptions!.translations.isEmpty) ...{
             WordsNotFoundError(),
           },
-          if (grammarOptions != null &&
-              onlineWordOptions2!.translations.isNotEmpty) ...{
+          if (onlineTranslationOptions != null &&
+              onlineTranslationOptions!.translations.isNotEmpty) ...{
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: onlineWordOptions2!.translations.length,
+              itemCount: onlineTranslationOptions!.translations.length,
               itemBuilder: (context, index) {
-                final translation = onlineWordOptions2!.translations[index];
+                final translation =
+                    onlineTranslationOptions!.translations[index];
                 return OnlineTranslationCardV2(translation: translation);
               },
             ),

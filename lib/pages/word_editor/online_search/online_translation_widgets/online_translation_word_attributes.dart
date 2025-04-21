@@ -1,6 +1,6 @@
 import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -12,15 +12,14 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
     required this.translation,
   });
 
-  final DutchToEnglishTranslation translation;
+  final TranslationSearchResult translation;
   final int _alpha = 175; //0..255
 
   @override
   Widget build(BuildContext context) {
-    bool showPartOfSpeech = translation.partOfSpeech.isNotEmpty &&
-        translation.partOfSpeech.first != WordType.unspecified;
-    bool showGender = translation.mainWord.gender != null &&
-        translation.mainWord.gender != GenderType.none;
+    bool showPartOfSpeech = translation.partOfSpeech != WordType.unspecified;
+    bool showGender =
+        translation.gender != null && translation.gender != GenderType.none;
     return Column(
       children: [
         if (showPartOfSpeech || showGender) const SizedBox(height: 4),
@@ -32,7 +31,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
             children: <TextSpan>[
               if (showPartOfSpeech)
                 TextSpan(
-                  text: translation.partOfSpeech.first.capitalLabel,
+                  text: translation.partOfSpeech?.capitalLabel,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     fontSize: OnlineTranslationFonts.attributeFontSize,
@@ -42,7 +41,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
                 ),
               if (showGender)
                 TextSpan(
-                  text: ", [${translation.mainWord.gender!.emptyOnNone}]",
+                  text: ", [${translation.gender!.emptyOnNone}]",
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     fontSize: OnlineTranslationFonts.attributeFontSize,

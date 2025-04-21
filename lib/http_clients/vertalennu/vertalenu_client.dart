@@ -1,13 +1,13 @@
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
-import 'package:dutch_app/http_clients/vertalennu/mapping/get_dutch_to_english_html_response_parser.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_result.dart';
+import 'package:dutch_app/http_clients/vertalennu/parsing/get_dutch_to_english_html_response_parser.dart';
+import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class VertalenNuClient {
   static String baseUrl = "https://www.vertalen.nu/";
 
-  Future<DutchToEnglishSearchResult?> findDutchToEnglishAsync(
+  Future<DutchToEnglishSearchResponse?> findDutchToEnglishAsync(
       BuildContext context, String word) async {
     final uri = Uri.parse('$baseUrl/vertaal'
         '?van=nl'

@@ -7,9 +7,9 @@ import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/core/services/collection_permission_service.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
@@ -159,7 +159,7 @@ class _WordEditorPageState extends State<WordEditorPage>
 
   // When online translation is selected, apply its values to current word input fields
   void onlineTranslationSelectedNotifierAction(
-      DutchToEnglishTranslation? translation,
+      TranslationSearchResult? translation,
       List<GetWordGrammarOnlineResponse>? grammarOptions) {
     if (translation == null) {
       return;
@@ -167,14 +167,13 @@ class _WordEditorPageState extends State<WordEditorPage>
 
     String? pluralForm =
         OnlineTranslationPostProcessingService.findNounPluralForm(
-            translation.partOfSpeech.firstOrNull ?? WordType.phrase,
-            grammarOptions);
+            translation.partOfSpeech ?? WordType.phrase, grammarOptions);
 
     setState(() {
-      _wordTypeController.value =
-          translation.partOfSpeech.firstOrNull ?? WordType.phrase;
+      _wordTypeController.value = translation.partOfSpeech ?? WordType.phrase;
       //_englishWordController.text = translation.englishWords.join(";");
-      _englishWordController.text = translation.englishWords.firstOrNull ?? "";
+      _englishWordController.text =
+          translation.translationWords.firstOrNull ?? "";
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
       _contextExampleController.text = translation
               .sentenceExamples.firstOrNull?.dutchSentence

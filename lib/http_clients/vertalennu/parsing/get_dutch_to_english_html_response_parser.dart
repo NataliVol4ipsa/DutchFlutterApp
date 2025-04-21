@@ -1,8 +1,7 @@
-import 'package:collection/collection.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_result.dart';
+import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
@@ -10,69 +9,51 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
 class GetDutchToEnglishHtmlResponseParser {
-  DutchToEnglishSearchResult parseResponse(
+  DutchToEnglishSearchResponse parseResponse(
       String htmlString, String originalWord) {
-    final List<DutchToEnglishTranslation> translationResults = [];
     final rootExamples = <SentenceExample>[];
 
     final document = html_parser.parse(htmlString);
 
-    _processTranslations(document, originalWord, translationResults);
+    final translationResults = _processTranslations(document, originalWord);
     _processRootExampleSentences(document, rootExamples);
 
-    return DutchToEnglishSearchResult(
+    return DutchToEnglishSearchResponse(
       translationResults,
+      originalWord,
       sentenceExamples: rootExamples,
     );
   }
 
-  void _processTranslations(Document document, String originalWord,
-      List<DutchToEnglishTranslation> translationResults) {
+  List<DutchToEnglishTranslation> _processTranslations(
+      Document document, String originalWord) {
+    List<DutchToEnglishTranslation> translationResults = [];
+
     final translationRows = document.querySelectorAll('.result-item-row');
 
     for (final row in translationRows) {
-      final dutchWords = <OnlineTranslationDutchWord>[];
-
       final List<WordType> partsOfSpeech = _processPartsOfSpeech(row);
-
-      _processDutchWords(row, dutchWords, partsOfSpeech);
-
+      List<OnlineTranslationDutchWord> dutchWords =
+          _processDutchWords(row, partsOfSpeech);
       final englishWords = row
           .querySelectorAll('.result-item-target .wordentry')
           .map((e) => e.text.trim())
           .toList();
-
-      final examples = <SentenceExample>[];
-
-      _processTranslationExampleSentences(row, examples);
-
-      DeHetType? entireTranslationArticle =
-          _processEntireTranslationArticle(dutchWords, originalWord);
+      List<SentenceExample> examples = _processTranslationExampleSentences(row);
 
       if (dutchWords.isNotEmpty && englishWords.isNotEmpty) {
-        final lowerOriginal = originalWord.toLowerCase();
-        OnlineTranslationDutchWord? mainWord = dutchWords
-            .firstWhereOrNull((w) => w.word.toLowerCase() == lowerOriginal);
-        mainWord ??= dutchWords.firstWhereOrNull(
-            (w) => w.word.toLowerCase().contains(lowerOriginal));
-        mainWord ??= dutchWords.first;
-
-        final remainingDutchWords =
-            dutchWords.where((w) => w != mainWord).toList();
-
         translationResults.add(
-          DutchToEnglishTranslation(mainWord, remainingDutchWords, englishWords,
-              partsOfSpeech, entireTranslationArticle,
+          DutchToEnglishTranslation(dutchWords, englishWords, partsOfSpeech,
               sentenceExamples: examples),
         );
       }
     }
+    return translationResults;
   }
 
-  void _processDutchWords(
-      Element row,
-      List<OnlineTranslationDutchWord> dutchWords,
-      List<WordType> partOfSpeech) {
+  List<OnlineTranslationDutchWord> _processDutchWords(
+      Element row, List<WordType> partOfSpeech) {
+    List<OnlineTranslationDutchWord> dutchWords = [];
     final sourceContainers =
         row.querySelectorAll('.result-item-source .lemma-container');
     for (final container in sourceContainers) {
@@ -93,32 +74,25 @@ class GetDutchToEnglishHtmlResponseParser {
 
       if (partOfSpeech.contains(WordType.noun)) {
         gender = _processGender(genderAttr);
-        article = _processArticle(articleText, gender);
+        article = _processArticle(articleText);
       }
 
       dutchWords.add(
           OnlineTranslationDutchWord(word, gender: gender, article: article));
     }
+    return dutchWords;
   }
 
-  DeHetType? _processArticle(String? articleText, GenderType? gender) {
-    var article = articleText == '(het ~)'
+  DeHetType? _processArticle(String? articleText) {
+    if (articleText == null) {
+      return null;
+    }
+
+    return articleText == '(het ~)'
         ? DeHetType.het
         : articleText == '(de ~)'
             ? DeHetType.de
             : DeHetType.none;
-
-    if (article == DeHetType.none &&
-        gender != null &&
-        gender != GenderType.none) {
-      if (gender == GenderType.onzijdig) {
-        article = DeHetType.het;
-      } else {
-        article = DeHetType.de;
-      }
-    }
-
-    return article;
   }
 
   GenderType? _processGender(String? genderAttr) {
@@ -132,8 +106,8 @@ class GetDutchToEnglishHtmlResponseParser {
     return gender;
   }
 
-  void _processTranslationExampleSentences(
-      Element row, List<SentenceExample> examples) {
+  List<SentenceExample> _processTranslationExampleSentences(Element row) {
+    final examples = <SentenceExample>[];
     final exampleRows = row.querySelectorAll('.result-item-examples');
     for (final exRow in exampleRows) {
       final cols = exRow.querySelectorAll('.result-example');
@@ -143,6 +117,7 @@ class GetDutchToEnglishHtmlResponseParser {
         examples.add(SentenceExample(nlHtml, enHtml));
       }
     }
+    return examples;
   }
 
   void _processRootExampleSentences(
@@ -159,17 +134,6 @@ class GetDutchToEnglishHtmlResponseParser {
         rootExamples.add(SentenceExample(nlHtml, enHtml));
       }
     }
-  }
-
-  DeHetType? _processEntireTranslationArticle(
-      List<OnlineTranslationDutchWord> dutchWords, String originalWord) {
-    if (dutchWords.isEmpty) return null;
-
-    var originalLower = originalWord.toLowerCase();
-
-    return dutchWords
-        .firstWhereOrNull((w) => w.word.toLowerCase() == originalLower)
-        ?.article;
   }
 
   List<WordType> _processPartsOfSpeech(Element row) {

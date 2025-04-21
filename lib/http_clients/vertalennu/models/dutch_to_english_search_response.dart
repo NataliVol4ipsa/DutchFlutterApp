@@ -1,11 +1,14 @@
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
 
-class DutchToEnglishSearchResult {
+class DutchToEnglishSearchResponse {
   List<DutchToEnglishTranslation> translations;
+  final String searchedWord;
   late List<SentenceExample> sentenceExamples;
-  DutchToEnglishSearchResult(
-    this.translations, {
+
+  DutchToEnglishSearchResponse(
+    this.translations,
+    this.searchedWord, {
     List<SentenceExample>? sentenceExamples,
   }) {
     this.sentenceExamples = sentenceExamples ?? [];

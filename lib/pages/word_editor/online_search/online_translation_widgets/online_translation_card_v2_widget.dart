@@ -1,5 +1,5 @@
 import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_attributes.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_examples.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_header.dart';
@@ -16,7 +16,7 @@ class OnlineTranslationCardV2 extends StatelessWidget {
     required this.translation,
   });
 
-  final DutchToEnglishTranslation translation;
+  final TranslationSearchResult translation;
 
   @override
   Widget build(BuildContext context) {

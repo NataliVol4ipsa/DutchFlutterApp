@@ -1,5 +1,4 @@
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/base/translation_card_section_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/reusable_widgets/input_icons.dart';
@@ -12,15 +11,14 @@ class OnlineTranslationWordSynonyms extends StatelessWidget {
     required this.translation,
   });
 
-  final DutchToEnglishTranslation translation;
+  final TranslationSearchResult translation;
 
-  List<TextSpan> _generateDutchTextSpans(
-      DutchToEnglishTranslation translation) {
-    final List<OnlineTranslationDutchWord> words = translation.synonyms;
+  List<TextSpan> _generateDutchTextSpans(TranslationSearchResult translation) {
+    final List<String> words = translation.synonyms;
 
     return List<TextSpan>.generate(words.length, (i) {
       final isLast = i == words.length - 1;
-      final displayValue = words[i].word;
+      final displayValue = words[i];
       return TextSpan(text: isLast ? displayValue : '$displayValue, ');
     });
   }

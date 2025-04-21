@@ -1,5 +1,5 @@
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/base/translation_card_section_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/reusable_widgets/input_icons.dart';
@@ -11,16 +11,16 @@ class OnlineTranslationWordExamples extends StatelessWidget {
     required this.translation,
   });
 
-  final DutchToEnglishTranslation translation;
+  final TranslationSearchResult translation;
 
-  List<Widget> _generateSentenceExamples(
-      DutchToEnglishTranslation translation) {
+  List<Widget> _generateSentenceExamples(TranslationSearchResult translation) {
     return translation.sentenceExamples
         .map((example) => _generateSentenceExample(example))
         .toList();
   }
 
-  Widget _generateSentenceExample(SentenceExample example) {
+  Widget _generateSentenceExample(
+      TranslationSearchResultSentenceExample example) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
