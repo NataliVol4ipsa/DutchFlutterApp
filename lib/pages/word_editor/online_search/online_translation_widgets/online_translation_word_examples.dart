@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 
 class OnlineTranslationWordExamples extends StatefulWidget {
   final TranslationSearchResult translation;
-  final int maxSentences;
+  final int maxVisible;
 
   const OnlineTranslationWordExamples({
     super.key,
     required this.translation,
-    required this.maxSentences,
+    required this.maxVisible,
   });
 
   @override
@@ -30,7 +30,7 @@ class _OnlineTranslationWordExamplesState
   List<Widget> _generateSentenceExamples(TranslationSearchResult translation) {
     final visibleTranslations = _isExpanded
         ? translation.sentenceExamples
-        : translation.sentenceExamples.take(widget.maxSentences).toList();
+        : translation.sentenceExamples.take(widget.maxVisible).toList();
 
     return visibleTranslations
         .map((example) => _generateSentenceExample(example))
@@ -59,7 +59,7 @@ class _OnlineTranslationWordExamplesState
   @override
   Widget build(BuildContext context) {
     int hiddenCount =
-        widget.translation.sentenceExamples.length - widget.maxSentences;
+        widget.translation.sentenceExamples.length - widget.maxVisible;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (widget.translation.sentenceExamples.isNotEmpty) ...[

@@ -8,12 +8,14 @@ import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
 
 class OnlineTranslationWordTranslations extends StatefulWidget {
+  final TranslationSearchResult translation;
+  final int maxVisible;
+
   const OnlineTranslationWordTranslations({
     super.key,
     required this.translation,
+    required this.maxVisible,
   });
-
-  final TranslationSearchResult translation;
 
   @override
   State<OnlineTranslationWordTranslations> createState() =>
@@ -22,6 +24,7 @@ class OnlineTranslationWordTranslations extends StatefulWidget {
 
 class _OnlineTranslationWordTranslationsState
     extends State<OnlineTranslationWordTranslations> {
+  bool _isExpanded = false;
   @override
   void initState() {
     super.initState();
@@ -47,6 +50,57 @@ class _OnlineTranslationWordTranslationsState
     });
   }
 
+  List<Widget> _buildChips() {
+    final visibleTranslations = _isExpanded
+        ? widget.translation.translationWords
+        : widget.translation.translationWords.take(widget.maxVisible).toList();
+
+    List<Container> chips = visibleTranslations.map((word) {
+      return Container(
+        child: FilterChip(
+          selectedColor: ContainerStyles.chipColor(context),
+          label: Text(word.value,
+              style: TextStyle(
+                  fontSize:
+                      OnlineTranslationFonts.sectionChipMultiselectFontSize,
+                  color: ContainerStyles.chipTextColor(context))),
+          showCheckmark: false,
+          selected: word.isSelected,
+          onSelected: (selected) => toggleSelection(word),
+        ),
+      );
+    }).toList();
+
+    if (widget.translation.translationWords.length > widget.maxVisible) {
+      chips.add(_buildMoreChip());
+    }
+
+    return chips;
+  }
+
+  Container _buildMoreChip() {
+    int hiddenCount =
+        widget.translation.translationWords.length - widget.maxVisible;
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: GestureDetector(
+          onTap: () => setState(() => _isExpanded = !_isExpanded),
+          child: SizedBox(
+            height: 48,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_isExpanded ? "show less" : "+$hiddenCount more",
+                    style: TextStyle(
+                        fontSize: OnlineTranslationFonts.sectionTooltipFontSize,
+                        color: BaseStyles.getColorScheme(context).secondary)),
+              ],
+            ),
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -62,19 +116,7 @@ class _OnlineTranslationWordTranslationsState
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: widget.translation.translationWords.map((word) {
-                  return FilterChip(
-                    selectedColor: ContainerStyles.chipColor(context),
-                    label: Text(word.value,
-                        style: TextStyle(
-                            fontSize: OnlineTranslationFonts
-                                .sectionChipMultiselectFontSize,
-                            color: ContainerStyles.chipTextColor(context))),
-                    showCheckmark: false,
-                    selected: word.isSelected,
-                    onSelected: (selected) => toggleSelection(word),
-                  );
-                }).toList(),
+                children: _buildChips(),
               ),
             ],
           )),

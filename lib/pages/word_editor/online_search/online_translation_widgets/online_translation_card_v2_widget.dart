@@ -48,11 +48,14 @@ class OnlineTranslationCardV2 extends StatelessWidget {
             padding: ContainerStyles.containerPadding,
             child: Column(
               children: [
-                OnlineTranslationWordTranslations(translation: translation),
+                OnlineTranslationWordTranslations(
+                  translation: translation,
+                  maxVisible: 10,
+                ),
                 OnlineTranslationWordSynonyms(translation: translation),
                 OnlineTranslationWordExamples(
                   translation: translation,
-                  maxSentences: 2,
+                  maxVisible: 2,
                 ),
               ],
             ),
