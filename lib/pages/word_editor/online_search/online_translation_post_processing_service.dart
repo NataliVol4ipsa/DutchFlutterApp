@@ -93,8 +93,14 @@ class OnlineTranslationPostProcessingService {
     final first = mappedTranslations.first;
     final mergedSynonyms =
         mappedTranslations.expand((e) => e.synonyms).toSet().toList();
-    final mergedTranslations =
-        mappedTranslations.expand((e) => e.translationWords).toSet().toList();
+    final mergedTranslations = mappedTranslations
+        .expand((e) => e.translationWords)
+        .fold<Map<String, SelectableString>>({}, (map, item) {
+          map[item.value] ??= item;
+          return map;
+        })
+        .values
+        .toList();
     final mergedSentenceExamples = {
       for (var e in mappedTranslations.expand((r) => r.sentenceExamples))
         e.dutchSentence.toLowerCase(): e
