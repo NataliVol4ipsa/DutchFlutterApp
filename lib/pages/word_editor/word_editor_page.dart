@@ -169,20 +169,24 @@ class _WordEditorPageState extends State<WordEditorPage>
         OnlineTranslationPostProcessingService.findNounPluralForm(
             translation.partOfSpeech ?? WordType.phrase, grammarOptions);
 
+    final englishTranslations = translation.translationWords
+        .where((w) => w.isSelected)
+        .map((w) => w.value)
+        .join(";");
+    final contextExampleTranslation = translation
+        .sentenceExamples.firstOrNull?.englishSentence
+        .replaceAll(RegExp(r'<[^>]*>'), '');
+    final contextExample = translation
+        .sentenceExamples.firstOrNull?.dutchSentence
+        .replaceAll(RegExp(r'<[^>]*>'), '');
+
     setState(() {
       _wordTypeController.value = translation.partOfSpeech ?? WordType.phrase;
-      //_englishWordController.text = translation.englishWords.join(";");
-      _englishWordController.text =
-          translation.translationWords.firstOrNull?.value ?? "";
+      _englishWordController.text = englishTranslations;
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
-      _contextExampleController.text = translation
-              .sentenceExamples.firstOrNull?.dutchSentence
-              .replaceAll(RegExp(r'<[^>]*>'), '') ??
-          "";
-      _contextExampleTranslationController.text = translation
-              .sentenceExamples.firstOrNull?.englishSentence
-              .replaceAll(RegExp(r'<[^>]*>'), '') ??
-          "";
+      _contextExampleController.text = contextExample ?? "";
+      _contextExampleTranslationController.text =
+          contextExampleTranslation ?? "";
       _dutchPluralFormController.text = pluralForm ?? "";
     });
   }
