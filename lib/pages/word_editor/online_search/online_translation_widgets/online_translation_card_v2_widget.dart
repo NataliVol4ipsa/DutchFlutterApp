@@ -50,7 +50,10 @@ class OnlineTranslationCardV2 extends StatelessWidget {
               children: [
                 OnlineTranslationWordTranslations(translation: translation),
                 OnlineTranslationWordSynonyms(translation: translation),
-                OnlineTranslationWordExamples(translation: translation),
+                OnlineTranslationWordExamples(
+                  translation: translation,
+                  maxSentences: 2,
+                ),
               ],
             ),
           ),
