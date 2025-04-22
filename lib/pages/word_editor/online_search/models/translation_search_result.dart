@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/gender_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
 
 class TranslationSearchResult {
@@ -8,7 +9,7 @@ class TranslationSearchResult {
   final List<String> synonyms;
   final GenderType? gender;
   final DeHetType? article;
-  final List<String> translationWords;
+  final List<SelectableString> translationWords;
   final WordType? partOfSpeech;
   late List<TranslationSearchResultSentenceExample> sentenceExamples;
   late int translationScore;

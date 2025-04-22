@@ -1,3 +1,4 @@
+import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/base/translation_card_section_widget.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
@@ -21,23 +22,27 @@ class OnlineTranslationWordTranslations extends StatefulWidget {
 
 class _OnlineTranslationWordTranslationsState
     extends State<OnlineTranslationWordTranslations> {
-  final List<String> selectedWords = [];
   @override
   void initState() {
     super.initState();
 
     if (widget.translation.translationWords.isNotEmpty) {
-      selectedWords.add(widget.translation.translationWords.first);
+      widget.translation.translationWords.first.select();
     }
   }
 
-  void toggleSelection(String word) {
+  void toggleSelection(SelectableString word) {
     setState(() {
-      if (selectedWords.contains(word)) {
-        if (selectedWords.length == 1) return;
-        selectedWords.remove(word);
+      if (word.isSelected) {
+        if (widget.translation.translationWords
+                .where((w) => w.isSelected)
+                .length <=
+            1) {
+          return;
+        }
+        word.unselect();
       } else {
-        selectedWords.add(word);
+        word.select();
       }
     });
   }
@@ -60,13 +65,13 @@ class _OnlineTranslationWordTranslationsState
                 children: widget.translation.translationWords.map((word) {
                   return FilterChip(
                     selectedColor: ContainerStyles.chipColor(context),
-                    label: Text(word,
+                    label: Text(word.value,
                         style: TextStyle(
                             fontSize: OnlineTranslationFonts
                                 .sectionChipMultiselectFontSize,
                             color: ContainerStyles.chipTextColor(context))),
                     showCheckmark: false,
-                    selected: selectedWords.contains(word),
+                    selected: word.isSelected,
                     onSelected: (selected) => toggleSelection(word),
                   );
                 }).toList(),

@@ -8,6 +8,7 @@ import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutc
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_words_grammar_online_response.dart';
+import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translations_search_result.dart';
@@ -57,11 +58,14 @@ class OnlineTranslationPostProcessingService {
         onlineResult.dutchWords.where((w) => w != mainWord).toList();
     final article = _defineArticle(mainWord.article, mainWord.gender);
     final examples = _mapExamples(onlineResult.sentenceExamples);
+    final translationWords = onlineResult.englishWords
+        .map((w) => SelectableString(value: w))
+        .toList();
 
     return TranslationSearchResult(
         mainWord: mainWord.word,
         synonyms: remainingDutchWords.map((w) => w.word).toList(),
-        translationWords: onlineResult.englishWords,
+        translationWords: translationWords,
         partOfSpeech: onlineResult.partsOfSpeech.firstOrNull,
         article: article,
         gender: mainWord.gender,

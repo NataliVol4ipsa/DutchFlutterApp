@@ -173,7 +173,7 @@ class _WordEditorPageState extends State<WordEditorPage>
       _wordTypeController.value = translation.partOfSpeech ?? WordType.phrase;
       //_englishWordController.text = translation.englishWords.join(";");
       _englishWordController.text =
-          translation.translationWords.firstOrNull ?? "";
+          translation.translationWords.firstOrNull?.value ?? "";
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
       _contextExampleController.text = translation
               .sentenceExamples.firstOrNull?.dutchSentence
