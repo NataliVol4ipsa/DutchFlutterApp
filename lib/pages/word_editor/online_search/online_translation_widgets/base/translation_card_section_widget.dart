@@ -8,6 +8,7 @@ class TranslationCardSection extends StatelessWidget {
   final String name;
   final IconData icon;
   final bool buildChildWithoutPadding;
+  final double? topPaddingOverride;
 
   const TranslationCardSection({
     super.key,
@@ -15,51 +16,55 @@ class TranslationCardSection extends StatelessWidget {
     required this.name,
     required this.icon,
     this.buildChildWithoutPadding = false,
+    this.topPaddingOverride,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-                padding:
-                    EdgeInsets.only(right: ContainerStyles.smallPaddingAmount2),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: BaseStyles.getColorScheme(context).onSurfaceVariant,
-                )),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: OnlineTranslationFonts.sectionTitleFontSize,
-                        color:
-                            BaseStyles.getColorScheme(context).onSurfaceVariant,
+    return Padding(
+      padding: EdgeInsets.only(top: topPaddingOverride ?? 4.0, bottom: 4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                  padding: EdgeInsets.only(
+                      right: ContainerStyles.smallPaddingAmount2),
+                  child: Icon(
+                    icon,
+                    size: 20,
+                    color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+                  )),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: OnlineTranslationFonts.sectionTitleFontSize,
+                          color: BaseStyles.getColorScheme(context)
+                              .onSurfaceVariant,
+                        ),
+                        text: name,
                       ),
-                      text: name,
                     ),
-                  ),
-                  Divider(),
-                  if (!buildChildWithoutPadding) child,
-                ],
+                    Divider(),
+                    if (!buildChildWithoutPadding) child,
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        if (buildChildWithoutPadding) child,
-      ],
+            ],
+          ),
+          if (buildChildWithoutPadding) child,
+        ],
+      ),
     );
   }
 }

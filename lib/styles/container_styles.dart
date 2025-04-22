@@ -1,7 +1,6 @@
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ContainerStyles {
@@ -57,9 +56,15 @@ class ContainerStyles {
           BuildContext context) =>
       _themedAdjustedColorByPercent(
           context, BaseStyles.getColorScheme(context).surfaceContainerHighest,
-          darkenLightPercent: 10, lightenDarkPercent: 10);
+          darkenLightPercent: 10, lightenDarkPercent: 20);
   static Color section3TextColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).onSurface;
+
+  static Color chipColor(BuildContext context) => _themedAdjustedColorByPercent(
+      context, BaseStyles.getColorScheme(context).surfaceContainerHighest,
+      darkenLightPercent: 5, lightenDarkPercent: 10);
+  static Color chipTextColor(BuildContext context) =>
+      BaseStyles.getColorScheme(context).onSecondaryContainer;
 
   static Color bottomNavBarColor(BuildContext context) => sectionColor(context);
   static Color bottomNavBarTextColor(BuildContext context) =>
