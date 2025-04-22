@@ -48,7 +48,8 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
       isLoading = true;
     });
     final wordToLookup = widget.word.trim();
-    var response = await WoordenlijstClient().findAsync(
+
+    var grammarOptionsResponse = await WoordenlijstClient().findAsync(
       context,
       wordToLookup,
       wordType: widget.selectedWordType,
@@ -56,14 +57,15 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
 
     if (!mounted) return;
 
-    final searchResponse =
+    final translationOptionsResponse =
         await VertalenNuClient().findDutchToEnglishAsync(context, wordToLookup);
 
     final mappedSearchResponse =
-        OnlineTranslationPostProcessingService.mapToResult(searchResponse);
+        OnlineTranslationPostProcessingService.mapToResult(
+            translationOptionsResponse, grammarOptionsResponse);
 
     setState(() {
-      grammarOptions = response?.onlineWords;
+      grammarOptions = grammarOptionsResponse?.onlineWords;
       onlineTranslationOptions = mappedSearchResponse;
       isLoading = false;
     });

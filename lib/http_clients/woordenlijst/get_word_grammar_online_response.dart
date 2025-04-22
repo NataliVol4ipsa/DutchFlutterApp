@@ -6,6 +6,7 @@ class GetWordGrammarOnlineResponse {
   late WordType? partOfSpeech;
   late DeHetType? gender;
   late String? pluralForm;
+  late String? infinitive;
   late String? diminutive;
   late String? note;
 

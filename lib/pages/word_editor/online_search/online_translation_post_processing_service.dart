@@ -7,27 +7,33 @@ import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_transl
 import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
 import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/get_words_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translations_search_result.dart';
 
 class OnlineTranslationPostProcessingService {
   static TranslationsSearchResult? mapToResult(
-      DutchToEnglishSearchResponse? response) {
+      DutchToEnglishSearchResponse? response,
+      GetWordsGrammarOnlineResponse? grammarOptions) {
     if (response == null) {
       return null;
     }
 
     return TranslationsSearchResult(
-        _mapTranslations(response.translations, response.searchedWord),
+        _mapTranslations(
+            response.translations, response.searchedWord, grammarOptions),
         sentenceExamples: _mapExamples(response.sentenceExamples));
   }
 
   // Entire list of translations
   static List<TranslationSearchResult> _mapTranslations(
-      List<DutchToEnglishTranslation> onlineResults, String searchedWord) {
+      List<DutchToEnglishTranslation> onlineResults,
+      String searchedWord,
+      GetWordsGrammarOnlineResponse? grammarOptions) {
     List<TranslationSearchResult> mappedTranslations = onlineResults
-        .map((onlineResult) => _mapTranslation(onlineResult, searchedWord))
+        .map((onlineResult) =>
+            _mapTranslation(onlineResult, searchedWord, grammarOptions))
         .whereType<TranslationSearchResult>()
         .toList();
 
@@ -39,9 +45,12 @@ class OnlineTranslationPostProcessingService {
 
   // Whole translation: word, synonyms, translations, examples
   static TranslationSearchResult? _mapTranslation(
-      DutchToEnglishTranslation onlineResult, String searchedWord) {
+      DutchToEnglishTranslation onlineResult,
+      String searchedWord,
+      GetWordsGrammarOnlineResponse? grammarOptions) {
     if (onlineResult.dutchWords.isEmpty) return null;
-    final mainWord = _findMainWord(onlineResult.dutchWords, searchedWord);
+    final mainWord =
+        _findMainWord(onlineResult.dutchWords, searchedWord, grammarOptions);
     final remainingDutchWords =
         onlineResult.dutchWords.where((w) => w != mainWord).toList();
     final article = _defineArticle(mainWord.article, mainWord.gender);
@@ -75,7 +84,9 @@ class OnlineTranslationPostProcessingService {
   }
 
   static OnlineTranslationDutchWord _findMainWord(
-      List<OnlineTranslationDutchWord> dutchWords, String searchedWord) {
+      List<OnlineTranslationDutchWord> dutchWords,
+      String searchedWord,
+      GetWordsGrammarOnlineResponse? grammarOptions) {
     //todo improve search by looking at infinitive for verb and some base form of adjective. Check all word types
     final lowerOriginal = searchedWord.toLowerCase();
 
@@ -85,9 +96,30 @@ class OnlineTranslationPostProcessingService {
     mainWord ??= dutchWords
         .firstWhereOrNull((w) => w.word.toLowerCase().contains(lowerOriginal));
 
+    mainWord ??=
+        _findInfinitiveMainWord(dutchWords, searchedWord, grammarOptions);
+
     mainWord ??= dutchWords.first;
 
     return mainWord;
+  }
+
+  static OnlineTranslationDutchWord? _findInfinitiveMainWord(
+      List<OnlineTranslationDutchWord> dutchWords,
+      String searchedWord,
+      GetWordsGrammarOnlineResponse? grammarOptions) {
+    final infinitive = grammarOptions?.onlineWords
+        .firstWhereOrNull(
+            (w) => w.partOfSpeech == WordType.verb && w.infinitive != null)
+        ?.infinitive;
+
+    if (infinitive == null) return null;
+    final lowerInfinitive = infinitive.toLowerCase();
+
+    return dutchWords
+            .firstWhereOrNull((w) => w.word.toLowerCase() == lowerInfinitive) ??
+        dutchWords.firstWhereOrNull(
+            (w) => w.word.toLowerCase().contains(lowerInfinitive));
   }
 
   static List<TranslationSearchResultSentenceExample> _mapExamples(

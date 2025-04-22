@@ -25,6 +25,7 @@ class GetWordsOnlineXmlResponseParser {
     var result = GetWordGrammarOnlineResponse(searchText);
     result.diminutive = findDiminutive(section);
     result.pluralForm = findPluralForm(section);
+    result.infinitive = findInfinitiveForm(section);
     var additionalInfo = findAdditionalProperties(section);
     result.partOfSpeech = parseAdditionalInfoIntoSpeech(additionalInfo);
     result.gender = parseAdditionalInfoIntoGender(additionalInfo);
@@ -57,6 +58,13 @@ class GetWordsOnlineXmlResponseParser {
     return section
         .findFirst('paradigm')
         .findFirstWithChildText('paradigm', 'label', 'meervoud')
+        .findFirstText('wordform');
+  }
+
+  String? findInfinitiveForm(xml.XmlElement section) {
+    return section
+        .findFirst('paradigm')
+        .findFirstWithChildText('paradigm', 'group_label', 'infinitief')
         .findFirstText('wordform');
   }
 
