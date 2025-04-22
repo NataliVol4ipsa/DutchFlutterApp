@@ -40,7 +40,9 @@ class OnlineTranslationPostProcessingService {
     mappedTranslations
         .sort((a, b) => b.translationScore.compareTo(a.translationScore));
 
-    return mappedTranslations;
+    final grouppedTranslations = _groupTranslations(mappedTranslations);
+
+    return grouppedTranslations;
   }
 
   // Whole translation: word, synonyms, translations, examples
@@ -66,6 +68,44 @@ class OnlineTranslationPostProcessingService {
         sentenceExamples: examples);
   }
 
+  // Works with sorted translations
+  static List<TranslationSearchResult> _groupTranslations(
+      List<TranslationSearchResult> mappedTranslations) {
+    final Map<String, List<TranslationSearchResult>> groupped = {};
+
+    for (var result in mappedTranslations) {
+      final key = '${result.mainWord}_${result.partOfSpeech}';
+      groupped.putIfAbsent(key, () => []).add(result);
+    }
+
+    final mergedTranslations =
+        groupped.values.map((value) => _mergeTranslations(value)).toList();
+    return mergedTranslations;
+  }
+
+  // Works with sorted translations because first has to contain all info
+  static TranslationSearchResult _mergeTranslations(
+      List<TranslationSearchResult> mappedTranslations) {
+    final first = mappedTranslations.first;
+    final mergedSynonyms =
+        mappedTranslations.expand((e) => e.synonyms).toSet().toList();
+    final mergedTranslations =
+        mappedTranslations.expand((e) => e.translationWords).toSet().toList();
+    final mergedSentenceExamples = {
+      for (var e in mappedTranslations.expand((r) => r.sentenceExamples))
+        e.dutchSentence.toLowerCase(): e
+    }.values.toList();
+
+    return TranslationSearchResult(
+        mainWord: first.mainWord,
+        gender: first.gender,
+        article: first.article,
+        partOfSpeech: first.partOfSpeech,
+        synonyms: mergedSynonyms,
+        translationWords: mergedTranslations,
+        sentenceExamples: mergedSentenceExamples);
+  }
+
   static DeHetType? _defineArticle(
       DeHetType? onlineArticle, GenderType? onlineGender) {
     if (onlineArticle != null && onlineArticle != DeHetType.none) {
@@ -87,7 +127,6 @@ class OnlineTranslationPostProcessingService {
       List<OnlineTranslationDutchWord> dutchWords,
       String searchedWord,
       GetWordsGrammarOnlineResponse? grammarOptions) {
-    //todo improve search by looking at infinitive for verb and some base form of adjective. Check all word types
     final lowerOriginal = searchedWord.toLowerCase();
 
     OnlineTranslationDutchWord? mainWord = dutchWords
@@ -147,213 +186,3 @@ class OnlineTranslationPostProcessingService {
     return null;
   }
 }
-
-/*
-class GetDutchToEnglishHtmlResponseParser {
-  DutchToEnglishSearchResponse parseResponse(
-      String htmlString, String originalWord) {
-    final rootExamples = <SentenceExample>[];
-
-    final document = html_parser.parse(htmlString);
-
-    final translationResults = _processTranslations(document, originalWord);
-    _processRootExampleSentences(document, rootExamples);
-
-    return DutchToEnglishSearchResponse(
-      translationResults,
-      originalWord,
-      sentenceExamples: rootExamples,
-    );
-  }
-
-  List<DutchToEnglishTranslation> _processTranslations(
-      Document document, String originalWord) {
-    List<DutchToEnglishTranslation> translationResults = [];
-
-    final translationRows = document.querySelectorAll('.result-item-row');
-
-    for (final row in translationRows) {
-      final List<WordType> partsOfSpeech = _processPartsOfSpeech(row);
-      List<OnlineTranslationDutchWord> dutchWords =
-          _processDutchWords(row, partsOfSpeech);
-      final englishWords = row
-          .querySelectorAll('.result-item-target .wordentry')
-          .map((e) => e.text.trim())
-          .toList();
-      List<SentenceExample> examples = _processTranslationExampleSentences(row);
-
-      DeHetType? entireTranslationArticle =
-          _processEntireTranslationArticle(dutchWords, originalWord);
-
-      if (dutchWords.isNotEmpty && englishWords.isNotEmpty) {
-        final lowerOriginal = originalWord.toLowerCase();
-        OnlineTranslationDutchWord? mainWord = dutchWords
-            .firstWhereOrNull((w) => w.word.toLowerCase() == lowerOriginal);
-        mainWord ??= dutchWords.firstWhereOrNull(
-            (w) => w.word.toLowerCase().contains(lowerOriginal));
-        mainWord ??= dutchWords.first;
-
-        final remainingDutchWords =
-            dutchWords.where((w) => w != mainWord).toList();
-
-        translationResults.add(
-          DutchToEnglishTranslation(remainingDutchWords, englishWords,
-              partsOfSpeech, entireTranslationArticle,
-              sentenceExamples: examples),
-        );
-      }
-    }
-    return translationResults;
-  }
-
-  List<OnlineTranslationDutchWord> _processDutchWords(
-      Element row, List<WordType> partOfSpeech) {
-    List<OnlineTranslationDutchWord> dutchWords = [];
-    final sourceContainers =
-        row.querySelectorAll('.result-item-source .lemma-container');
-    for (final container in sourceContainers) {
-      final wordEntry = container.querySelector('.wordentry');
-      if (wordEntry == null) continue;
-
-      final word = wordEntry.text.trim();
-      final genderAttr =
-          container.querySelector('.meta-info')?.attributes['title'];
-      final articleText = container
-          .querySelector('.meta-info.article')
-          ?.text
-          .trim()
-          .toLowerCase();
-
-      GenderType? gender;
-      DeHetType? article;
-
-      if (partOfSpeech.contains(WordType.noun)) {
-        gender = _processGender(genderAttr);
-        article = _processArticle(articleText, gender);
-      }
-
-      dutchWords.add(
-          OnlineTranslationDutchWord(word, gender: gender, article: article));
-    }
-    return dutchWords;
-  }
-
-  DeHetType? _processArticle(String? articleText, GenderType? gender) {
-    var article = articleText == '(het ~)'
-        ? DeHetType.het
-        : articleText == '(de ~)'
-            ? DeHetType.de
-            : DeHetType.none;
-
-    if (article == DeHetType.none &&
-        gender != null &&
-        gender != GenderType.none) {
-      if (gender == GenderType.onzijdig) {
-        article = DeHetType.het;
-      } else {
-        article = DeHetType.de;
-      }
-    }
-
-    return article;
-  }
-
-  GenderType? _processGender(String? genderAttr) {
-    final gender = genderAttr == 'mannelijk'
-        ? GenderType.mannelijk
-        : genderAttr == 'vrouwelijk'
-            ? GenderType.vrouwelijk
-            : genderAttr == 'onzijdig'
-                ? GenderType.onzijdig
-                : GenderType.none;
-    return gender;
-  }
-
-  List<SentenceExample> _processTranslationExampleSentences(Element row) {
-    final examples = <SentenceExample>[];
-    final exampleRows = row.querySelectorAll('.result-item-examples');
-    for (final exRow in exampleRows) {
-      final cols = exRow.querySelectorAll('.result-example');
-      if (cols.length >= 2) {
-        final nlHtml = cols[0].innerHtml.trim();
-        final enHtml = cols[1].innerHtml.trim();
-        examples.add(SentenceExample(nlHtml, enHtml));
-      }
-    }
-    return examples;
-  }
-
-  void _processRootExampleSentences(
-      Document document, List<SentenceExample> rootExamples) {
-    // Root-level sentence examples under #voorbeelden
-    final exampleRows = document.querySelectorAll('.result-item-phrasebook');
-
-    for (final row in exampleRows) {
-      final nlHtml =
-          row.querySelector('.result-item-source p')?.innerHtml.trim() ?? '';
-      final enHtml =
-          row.querySelector('.result-item-target p')?.innerHtml.trim() ?? '';
-      if (nlHtml.isNotEmpty && enHtml.isNotEmpty) {
-        rootExamples.add(SentenceExample(nlHtml, enHtml));
-      }
-    }
-  }
-
-  DeHetType? _processEntireTranslationArticle(
-      List<OnlineTranslationDutchWord> dutchWords, String originalWord) {
-    if (dutchWords.isEmpty) return null;
-
-    var originalLower = originalWord.toLowerCase();
-
-    return dutchWords
-        .firstWhereOrNull((w) => w.word.toLowerCase() == originalLower)
-        ?.article;
-  }
-
-  List<WordType> _processPartsOfSpeech(Element row) {
-    final partOfSpeechItems = row
-        .querySelectorAll('.result-item-source .additional abbr')
-        .map((e) => e.attributes['title']?.trim() ?? '')
-        .toList();
-
-    List<WordType> result = [];
-    for (final item in partOfSpeechItems) {
-      switch (item.toLowerCase()) {
-        case "zelfstandig naamwoord":
-          result.add(WordType.noun);
-          break;
-        case "werkwoord":
-          result.add(WordType.verb);
-          break;
-        case "bijvoeglijk naamwoord":
-          result.add(WordType.adjective);
-          break;
-        case "bijwoord":
-          result.add(WordType.adverb);
-          break;
-        case "voornaamwoord":
-        case "persoonlijk voornaamwoord":
-          result.add(WordType.pronoun);
-          break;
-        case "lidwoord":
-          result.add(WordType.article);
-          break;
-        case "voorzetsel":
-          result.add(WordType.preposition);
-          break;
-        case "voegwoord":
-          result.add(WordType.conjunction);
-          break;
-        case "tussenwerpsel":
-          result.add(WordType.interjection);
-          break;
-        case "telwoord":
-          result.add(WordType.numeral);
-          break;
-      }
-    }
-
-    return result;
-  }
-}
-*/
