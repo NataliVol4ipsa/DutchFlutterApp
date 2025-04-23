@@ -1,18 +1,18 @@
 enum WordType {
   unspecified,
   noun,
-  article,
   adjective,
   verb,
   adverb,
   preposition,
   interjection,
   conjunction,
-  fixedConjunction, //todo rm and migrate data
+  fixedConjunction, //todo rm and migrate data DO NOT REMOVE MINDLESSLY BECAUE IT WILL BREAK DB
   pronoun,
   numeral,
 
   phrase,
+  article,
 }
 
 extension WordTypeExtension on WordType {

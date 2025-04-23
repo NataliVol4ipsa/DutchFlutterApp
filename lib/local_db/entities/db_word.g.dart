@@ -208,11 +208,12 @@ const _DbWordtypeEnumValueMap = {
   'adverb': 4,
   'preposition': 5,
   'interjection': 6,
-  'conjuction': 7,
-  'fixedConjuction': 8,
+  'conjunction': 7,
+  'fixedConjunction': 8,
   'pronoun': 9,
   'numeral': 10,
   'phrase': 11,
+  'article': 12,
 };
 const _DbWordtypeValueEnumMap = {
   0: WordType.unspecified,
@@ -227,6 +228,7 @@ const _DbWordtypeValueEnumMap = {
   9: WordType.pronoun,
   10: WordType.numeral,
   11: WordType.phrase,
+  12: WordType.article,
 };
 
 Id _dbWordGetId(DbWord object) {
