@@ -6,7 +6,7 @@ import 'package:dutch_app/pages/word_editor/online_search/models/translations_se
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_card_v2_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst/woordenlijst_client.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:provider/provider.dart';

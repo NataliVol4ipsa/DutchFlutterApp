@@ -1,5 +1,5 @@
-import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_words_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst/mapping/gender_converter.dart';
 import 'package:dutch_app/http_clients/woordenlijst/mapping/word_type_converter.dart';
 import 'package:dutch_app/core/types/de_het_type.dart';

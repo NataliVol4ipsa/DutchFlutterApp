@@ -6,8 +6,8 @@ import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search
 import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
 import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_word_grammar_online_response.dart';
-import 'package:dutch_app/http_clients/woordenlijst/get_words_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
