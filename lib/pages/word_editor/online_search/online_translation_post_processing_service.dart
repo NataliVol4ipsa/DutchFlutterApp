@@ -158,9 +158,10 @@ class OnlineTranslationPostProcessingService {
       String searchedWord,
       GetWordsGrammarOnlineResponse? grammarOptions) {
     final infinitive = grammarOptions?.onlineWords
-        .firstWhereOrNull(
-            (w) => w.partOfSpeech == WordType.verb && w.infinitive != null)
-        ?.infinitive;
+        .firstWhereOrNull((w) =>
+            w.partOfSpeech == WordType.verb && w.verbDetails.infinitive != null)
+        ?.verbDetails
+        .infinitive;
 
     if (infinitive == null) return null;
     final lowerInfinitive = infinitive.toLowerCase();

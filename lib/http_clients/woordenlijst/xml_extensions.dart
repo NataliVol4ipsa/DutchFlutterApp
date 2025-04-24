@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:xml/xml.dart' as xml;
 
 extension XmlExtensionsNullable on xml.XmlElement? {
@@ -27,6 +28,31 @@ extension XmlExtensionsNullable on xml.XmlElement? {
       return null;
     }
     return filteredSections.first;
+  }
+
+  List<xml.XmlElement> findAllWithChildText(
+      String sectionName, String childSectionName, String childSectionValue) {
+    var sections = this!.findAllElements(sectionName);
+    return sections
+        .where((element) =>
+            element.findFirstText(childSectionName) == childSectionValue)
+        .toList();
+  }
+
+  xml.XmlElement? findFirstWhereChildTextEquals({
+    required String sectionName,
+    required Map<String, String> conditions,
+  }) {
+    if (this == null) return null;
+
+    var candidates = this!.findAllElements(sectionName);
+    return candidates.firstWhereOrNull(
+      (element) {
+        return conditions.entries.every((entry) {
+          return element.findFirstText(entry.key) == entry.value;
+        });
+      },
+    );
   }
 }
 
