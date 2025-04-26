@@ -193,9 +193,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   Future<void> _showWordDetailsDialog(
       BuildContext context, SelectableWordModel word) async {
     await WordDetailsDialog.show(
-      context: context,
-      word: word.value,
-    );
+        context: context,
+        word: word.value,
+        deletionCallback: () async {
+          await _loadDataWithSnackBar("Succesfully deleted word.");
+        });
   }
 
   List<Widget> _buildSingleCollectionAndItsWords(

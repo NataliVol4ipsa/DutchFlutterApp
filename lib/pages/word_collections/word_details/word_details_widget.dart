@@ -1,5 +1,6 @@
 import 'package:dutch_app/core/models/word.dart';
 import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:dutch_app/styles/base_styles.dart';
@@ -9,9 +10,24 @@ import 'package:flutter/material.dart';
 
 class WordDetails extends StatelessWidget {
   final Word word;
-  WordDetails({super.key, required this.word});
+  final Future<void> Function()? deletionCallback;
+  WordDetails({super.key, required this.word, this.deletionCallback});
 
   final _horizontalPadding = ContainerStyles.smallPaddingAmount;
+
+  void _showDeleteSingleWordDialog(BuildContext context) {
+    showDeleteWordsDialog(
+      context: context,
+      collectionIds: [],
+      wordIds: [word.id],
+      callback: (() async {
+        Navigator.pop(context);
+        if (deletionCallback != null) {
+          await deletionCallback!();
+        }
+      }),
+    );
+  }
 
   Widget _buildHeader(BuildContext context) {
     return Container(
@@ -51,7 +67,9 @@ class WordDetails extends StatelessWidget {
             flex: 0,
             child: IconButton(
               icon: const FormInputIcon(Icons.delete),
-              onPressed: () {},
+              onPressed: () {
+                _showDeleteSingleWordDialog(context);
+              },
             ),
           ),
         ],

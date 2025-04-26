@@ -15,7 +15,7 @@ void showDeleteWordsDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete following items?'),
+          title: const Text('Delete following item(s)?'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
