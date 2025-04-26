@@ -61,15 +61,19 @@ class OnlineTranslationPostProcessingService {
     final translationWords = onlineResult.englishWords
         .map((w) => SelectableString(value: w))
         .toList();
+    final partOfSpeech = onlineResult.partsOfSpeech.firstOrNull;
+    final infinitive =
+        _findInfinitive(partOfSpeech, grammarOptions?.onlineWords);
 
     return TranslationSearchResult(
         mainWord: mainWord.word,
         synonyms: remainingDutchWords.map((w) => w.word).toList(),
         translationWords: translationWords,
-        partOfSpeech: onlineResult.partsOfSpeech.firstOrNull,
+        partOfSpeech: partOfSpeech,
         article: article,
         gender: mainWord.gender,
-        sentenceExamples: examples);
+        sentenceExamples: examples,
+        infinitive: infinitive);
   }
 
   // Works with sorted translations
@@ -113,7 +117,8 @@ class OnlineTranslationPostProcessingService {
         partOfSpeech: first.partOfSpeech,
         synonyms: mergedSynonyms,
         translationWords: mergedTranslations,
-        sentenceExamples: mergedSentenceExamples);
+        sentenceExamples: mergedSentenceExamples,
+        infinitive: first.verbDetails.infinitive);
   }
 
   static DeHetType? _defineArticle(
@@ -178,6 +183,23 @@ class OnlineTranslationPostProcessingService {
         .map((e) => TranslationSearchResultSentenceExample(
             e.dutchSentence, e.englishSentence))
         .toList();
+  }
+
+  static String? _findInfinitive(WordType? translationWordType,
+      List<GetWordGrammarOnlineResponse>? grammarOptions) {
+    if (translationWordType != WordType.verb || grammarOptions == null) {
+      return null;
+    }
+
+    for (var option in grammarOptions) {
+      if (option.partOfSpeech == WordType.verb &&
+          option.verbDetails.infinitive != null &&
+          option.verbDetails.infinitive!.trim().isNotEmpty) {
+        return option.verbDetails.infinitive;
+      }
+    }
+
+    return null;
   }
 
   static String? findNounPluralForm(WordType translationWordType,

@@ -181,6 +181,7 @@ class _WordEditorPageState extends State<WordEditorPage>
         .replaceAll(RegExp(r'<[^>]*>'), '');
 
     setState(() {
+      _dutchWordController.text = translation.mainWord;
       _wordTypeController.value = translation.partOfSpeech ?? WordType.phrase;
       _englishWordController.text = englishTranslations;
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
