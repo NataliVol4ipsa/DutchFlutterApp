@@ -7,6 +7,7 @@ class WordCollectionsMapper {
   static DbWordCollection mapToEntity(NewWordCollection collection) {
     var newCollection = DbWordCollection();
     newCollection.name = collection.name;
+    newCollection.lastUpdated = DateTime.now();
     return newCollection;
   }
 

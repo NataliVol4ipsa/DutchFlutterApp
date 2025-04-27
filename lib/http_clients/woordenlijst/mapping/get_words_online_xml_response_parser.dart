@@ -13,22 +13,23 @@ class GetWordsOnlineXmlResponseParser {
       String searchText, String xmlString) {
     var sections = identifyWordSection(searchText, xmlString);
     var response = GetWordsGrammarOnlineResponse();
-    for (var section in sections) {
-      GetWordGrammarOnlineResponse wordResponse =
-          processSection(searchText, section);
-      response.onlineWords.add(wordResponse);
-    }
+    response.onlineWords = sections
+        .map((section) => processSection(searchText, section))
+        .whereType<GetWordGrammarOnlineResponse>()
+        .toList();
     return response;
   }
 
-  GetWordGrammarOnlineResponse processSection(
+  GetWordGrammarOnlineResponse? processSection(
       String searchText, xml.XmlElement section) {
-    var result = GetWordGrammarOnlineResponse(searchText);
-    result.diminutive = findDiminutive(section);
-    result.pluralForm = findPluralForm(section);
+    var lemma = findLemma(section);
+    if (lemma == null) return null;
+    var result = GetWordGrammarOnlineResponse(lemma);
+    result.nounDetails.diminutive = findDiminutive(section);
+    result.nounDetails.pluralForm = findPluralForm(section);
     var additionalInfo = findAdditionalProperties(section);
     result.partOfSpeech = parseAdditionalInfoIntoSpeech(additionalInfo);
-    result.gender = parseAdditionalInfoIntoGender(additionalInfo);
+    result.nounDetails.gender = parseAdditionalInfoIntoGender(additionalInfo);
     result.note = findNote(section);
     result.verbDetails.infinitive =
         _findWordFormByGroupLabel(section, 'infinitief');
@@ -56,6 +57,10 @@ class GetWordsOnlineXmlResponseParser {
     xml.XmlDocument document = xml.XmlDocument.parse(xmlString);
 
     return document.findAllElements('found_lemmata').toList();
+  }
+
+  String? findLemma(xml.XmlElement section) {
+    return section.findFirstText('lemma');
   }
 
   String? findDiminutive(xml.XmlElement section) {

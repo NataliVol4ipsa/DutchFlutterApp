@@ -9,8 +9,8 @@ import 'package:dutch_app/core/types/de_het_type.dart';
 import 'package:dutch_app/core/types/word_type.dart';
 import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_list_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
-import 'package:dutch_app/pages/word_editor/online_search/online_translation_post_processing_service.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/plurals_tab_widget.dart';
@@ -165,9 +165,8 @@ class _WordEditorPageState extends State<WordEditorPage>
       return;
     }
 
-    String? pluralForm =
-        OnlineTranslationPostProcessingService.findNounPluralForm(
-            translation.partOfSpeech ?? WordType.phrase, grammarOptions);
+    String? pluralForm = OnlineTranslationListMappingService.findNounPluralForm(
+        translation.partOfSpeech ?? WordType.phrase, grammarOptions);
 
     final englishTranslations = translation.translationWords
         .where((w) => w.isSelected)

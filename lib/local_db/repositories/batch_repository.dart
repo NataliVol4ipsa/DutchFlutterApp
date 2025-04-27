@@ -46,6 +46,7 @@ class BatchRepository {
 
     await DbContext.isar.dbWords.putAll(newWords);
     defaultCollection.words.addAll(newWords);
+    defaultCollection.lastUpdated = DateTime.now();
     await defaultCollection.words.save();
   }
 

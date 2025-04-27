@@ -4,14 +4,20 @@ import 'package:dutch_app/core/types/word_type.dart';
 class GetWordGrammarOnlineResponse {
   final String word;
   late WordType? partOfSpeech;
+  late String? note;
+  late final GetWordGrammarNounDetailsDto nounDetails;
+  late final GetWordGrammarVerbDetailsDto verbDetails;
+  GetWordGrammarOnlineResponse(this.word) {
+    nounDetails = GetWordGrammarNounDetailsDto();
+    verbDetails = GetWordGrammarVerbDetailsDto();
+  }
+}
+
+class GetWordGrammarNounDetailsDto {
   late DeHetType? gender;
   late String? pluralForm;
   late String? diminutive;
-  late String? note;
-  late final GetWordGrammarVerbDetailsDto verbDetails;
-  GetWordGrammarOnlineResponse(this.word) {
-    verbDetails = GetWordGrammarVerbDetailsDto();
-  }
+  GetWordGrammarNounDetailsDto();
 }
 
 class GetWordGrammarVerbDetailsDto {

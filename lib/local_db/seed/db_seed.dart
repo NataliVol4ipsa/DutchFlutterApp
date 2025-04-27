@@ -25,6 +25,7 @@ Future<DbWordCollection> getOrCreateDefaultCollectionIdAsync() async {
 
   var newCollection = DbWordCollection();
   newCollection.name = CollectionPermissionService.defaultCollectionName;
+  newCollection.lastUpdated = DateTime.now();
 
   await isar.writeTxn(() async {
     await isar.dbWordCollections.put(newCollection);

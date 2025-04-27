@@ -43,7 +43,8 @@ class GetDutchToEnglishHtmlResponseParser {
 
       if (dutchWords.isNotEmpty && englishWords.isNotEmpty) {
         translationResults.add(
-          DutchToEnglishTranslation(dutchWords, englishWords, partsOfSpeech,
+          DutchToEnglishTranslation(
+              dutchWords, englishWords, partsOfSpeech.first,
               sentenceExamples: examples),
         );
       }
