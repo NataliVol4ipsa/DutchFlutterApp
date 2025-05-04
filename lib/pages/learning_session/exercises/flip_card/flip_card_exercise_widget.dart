@@ -1,7 +1,7 @@
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_content_widget.dart';
-import 'package:dutch_app/core/notifiers/notifier_tools.dart';
+import 'package:dutch_app/domain/notifiers/notifier_tools.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';

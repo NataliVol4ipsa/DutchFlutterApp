@@ -1,5 +1,5 @@
-import 'package:dutch_app/core/types/gender_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/gender_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/styles/base_styles.dart';

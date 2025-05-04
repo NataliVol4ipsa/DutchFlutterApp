@@ -1,6 +1,6 @@
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/core/types/gender_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/de_het_type.dart';
+import 'package:dutch_app/domain/types/gender_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result_sentence_example.dart';
 

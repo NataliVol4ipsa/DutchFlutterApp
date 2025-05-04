@@ -1,9 +1,9 @@
-import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
-import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
-import 'package:dutch_app/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/sentence_example.dart';
+import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/core/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_group_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_groupping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';

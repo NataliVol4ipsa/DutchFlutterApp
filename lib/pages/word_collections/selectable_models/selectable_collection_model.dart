@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/models/word.dart';
+import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_string_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 

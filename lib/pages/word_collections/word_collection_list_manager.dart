@@ -1,9 +1,9 @@
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/models/word_collection.dart';
-import 'package:dutch_app/core/services/batch_word_operations_service.dart';
-import 'package:dutch_app/core/services/word_collection_sorter.dart';
-import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/local_db/repositories/word_collections_repository.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/models/word_collection.dart';
+import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
+import 'package:dutch_app/domain/services/word_collection_sorter.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/core/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:flutter/material.dart';

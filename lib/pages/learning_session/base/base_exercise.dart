@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercise_answer_summary.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';

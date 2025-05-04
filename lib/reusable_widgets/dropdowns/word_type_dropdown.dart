@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/cupertino.dart';

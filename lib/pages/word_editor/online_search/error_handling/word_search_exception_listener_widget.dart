@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/notifiers/online_word_search_error_notifier.dart';
+import 'package:dutch_app/domain/notifiers/online_word_search_error_notifier.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

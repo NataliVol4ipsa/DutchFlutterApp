@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
+import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_attributes.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_word_examples.dart';

@@ -1,8 +1,8 @@
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/de_het_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';

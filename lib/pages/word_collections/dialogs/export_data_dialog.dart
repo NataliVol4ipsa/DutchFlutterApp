@@ -1,5 +1,5 @@
-import 'package:dutch_app/core/models/word_collection.dart';
-import 'package:dutch_app/io/v1/words_io_json_service_v1.dart';
+import 'package:dutch_app/domain/models/word_collection.dart';
+import 'package:dutch_app/core/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/reusable_widgets/text_input_modal.dart';
 import 'package:flutter/material.dart';
 

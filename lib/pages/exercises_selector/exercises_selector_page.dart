@@ -1,9 +1,9 @@
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
-import 'package:dutch_app/core/types/exercise_type.dart';
-import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
-import 'package:dutch_app/local_db/repositories/words_repository.dart';
-import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
+import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';

@@ -1,11 +1,11 @@
 import 'dart:collection';
-import 'package:dutch_app/local_db/repositories/word_progress_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
-import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 
 // Manage order of tasks and moving pointer of current task during session

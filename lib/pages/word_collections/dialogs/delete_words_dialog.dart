@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/services/batch_word_operations_service.dart';
+import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

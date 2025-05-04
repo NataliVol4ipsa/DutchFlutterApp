@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:flutter/material.dart';
 
 class PastTenseTab extends StatelessWidget {

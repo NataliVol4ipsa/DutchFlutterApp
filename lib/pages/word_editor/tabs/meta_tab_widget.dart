@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/inputs/context_example_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/context_example_translation_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/user_note_input_widget.dart';

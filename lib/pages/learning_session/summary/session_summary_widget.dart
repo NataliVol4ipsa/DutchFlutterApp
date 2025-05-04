@@ -1,5 +1,5 @@
-import 'package:dutch_app/core/services/practice_session_stateful_service.dart';
-import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:dutch_app/pages/learning_session/summary/exercise_total_cards_builder.dart';

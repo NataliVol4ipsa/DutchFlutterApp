@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/types/word_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component_widget.dart';

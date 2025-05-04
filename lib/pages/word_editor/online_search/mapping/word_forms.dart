@@ -1,9 +1,9 @@
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/core/types/gender_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/online_translation_dutch_word.dart';
-import 'package:dutch_app/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/domain/types/de_het_type.dart';
+import 'package:dutch_app/domain/types/gender_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/online_translation_dutch_word.dart';
+import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 
 class WordForms {
   late WordType partOfSpeech;

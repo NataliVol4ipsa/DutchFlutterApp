@@ -1,6 +1,6 @@
-import 'package:dutch_app/core/models/settings.dart';
-import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
-import 'package:dutch_app/core/services/settings_service.dart';
+import 'package:dutch_app/domain/models/settings.dart';
+import 'package:dutch_app/domain/notifiers/dark_theme_toggled_notifier.dart';
+import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/pages/settings/setting_tiles/setting_switch_tile_widget.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';

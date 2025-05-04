@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:dutch_app/core/dependency_injections.dart';
-import 'package:dutch_app/core/notifiers/dark_theme_toggled_notifier.dart';
-import 'package:dutch_app/core/services/settings_service.dart';
-import 'package:dutch_app/local_db/db_context.dart';
-import 'package:dutch_app/local_db/repositories/settings_repository.dart';
-import 'package:dutch_app/local_db/seed/db_seed.dart';
+import 'package:dutch_app/domain/dependency_injections.dart';
+import 'package:dutch_app/domain/notifiers/dark_theme_toggled_notifier.dart';
+import 'package:dutch_app/domain/services/settings_service.dart';
+import 'package:dutch_app/core/local_db/db_context.dart';
+import 'package:dutch_app/core/local_db/repositories/settings_repository.dart';
+import 'package:dutch_app/core/local_db/seed/db_seed.dart';
 import 'package:dutch_app/pages/dependency_injections.dart';
 import 'package:dutch_app/pages/exercises_selector/exercises_selector_page.dart';
 import 'package:dutch_app/pages/settings/settings_page.dart';
@@ -15,7 +15,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'local_db/dependency_injections.dart';
+import 'core/local_db/dependency_injections.dart';
 import 'pages/home_page.dart';
 
 // ctrl + shift + p: launch command line

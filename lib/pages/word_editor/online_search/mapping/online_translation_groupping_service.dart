@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/dutch_to_english_translation.dart';
-import 'package:dutch_app/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
+import 'package:dutch_app/core/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_group.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/word_forms.dart';
 

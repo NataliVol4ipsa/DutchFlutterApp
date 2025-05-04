@@ -1,5 +1,5 @@
-import 'package:dutch_app/core/models/word.dart';
-import 'package:dutch_app/core/types/exercise_type.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/types/exercise_type.dart';
 
 class ExerciseSummaryDetailed {
   final Word word;

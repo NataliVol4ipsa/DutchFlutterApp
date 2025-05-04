@@ -1,8 +1,8 @@
-import 'package:dutch_app/core/notifiers/exercise_answered_notifier.dart';
-import 'package:dutch_app/core/notifiers/online_translation_search_suggestion_selected_notifier.dart';
-import 'package:dutch_app/core/notifiers/online_word_search_error_notifier.dart';
-import 'package:dutch_app/core/notifiers/session_completed_notifier.dart';
-import 'package:dutch_app/core/notifiers/word_created_notifier.dart';
+import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_selected_notifier.dart';
+import 'package:dutch_app/domain/notifiers/online_word_search_error_notifier.dart';
+import 'package:dutch_app/domain/notifiers/session_completed_notifier.dart';
+import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
 import 'package:provider/provider.dart';
 
 List<ChangeNotifierProvider> notifierProviders() {

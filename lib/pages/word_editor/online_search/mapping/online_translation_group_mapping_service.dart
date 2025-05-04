@@ -1,7 +1,7 @@
-import 'package:dutch_app/core/types/de_het_type.dart';
-import 'package:dutch_app/core/types/gender_type.dart';
-import 'package:dutch_app/core/types/word_type.dart';
-import 'package:dutch_app/http_clients/vertalennu/models/sentence_example.dart';
+import 'package:dutch_app/domain/types/de_het_type.dart';
+import 'package:dutch_app/domain/types/gender_type.dart';
+import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/core/http_clients/vertalennu/models/sentence_example.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_group.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/word_forms.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/selectable_string.dart';
