@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dutch_app/core/notifiers/notifier_tools.dart';
 import 'package:dutch_app/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/http_clients/woordenlijst/mapping/get_words_online_xml_response_parser.dart';
@@ -26,8 +28,9 @@ class WoordenlijstClient {
     try {
       final http.Response response = await http.get(uri);
       if (response.statusCode >= 200 && response.statusCode <= 299) {
+        final decodedBody = utf8.decode(response.bodyBytes);
         return GetWordsOnlineXmlResponseParser()
-            .parseResponse(word, response.body);
+            .parseResponse(word, decodedBody);
       } else {
         notifyOnlineWordSearchErrorOccurred(context,
             errorStatusCode: response.statusCode,
