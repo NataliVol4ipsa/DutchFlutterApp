@@ -25,7 +25,6 @@ import 'pages/home_page.dart';
 // flutter pub run build_runner build - generate db tables .g.dart
 
 //todo is notifier for db changes really needed?
-//todo floating action button bottom right at list of words to add new word - 3:29:47 of guide
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

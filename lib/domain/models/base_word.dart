@@ -12,6 +12,7 @@ class BaseWord {
   final String? contextExample;
   final String? contextExampleTranslation;
   final String? userNote;
+  final String? audioCode;
 
   BaseWord(this.dutchWord, this.englishWord, this.wordType,
       {this.collection,
@@ -19,5 +20,6 @@ class BaseWord {
       this.pluralForm,
       this.contextExample,
       this.contextExampleTranslation,
-      this.userNote});
+      this.userNote,
+      this.audioCode});
 }

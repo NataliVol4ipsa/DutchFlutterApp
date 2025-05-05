@@ -14,6 +14,7 @@ class TranslationSearchResult {
   late List<TranslationSearchResultSentenceExample> sentenceExamples;
   late int translationScore;
   late VerbDetails verbDetails;
+  late String? audioCode;
   TranslationSearchResult({
     required this.mainWord,
     required this.synonyms,
@@ -22,6 +23,7 @@ class TranslationSearchResult {
     required this.article,
     required this.gender,
     String? infinitive,
+    String? audioCode,
     List<TranslationSearchResultSentenceExample>? sentenceExamples,
   }) {
     this.sentenceExamples = sentenceExamples ?? [];

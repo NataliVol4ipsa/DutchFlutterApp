@@ -67,6 +67,8 @@ class _WordEditorPageState extends State<WordEditorPage>
   final ValueNotifier<List<Widget>> _tabViewsNotifier =
       ValueNotifier<List<Widget>>([]);
 
+  late String? _audioCode;
+
   bool initialized = false;
 
   @override
@@ -188,6 +190,7 @@ class _WordEditorPageState extends State<WordEditorPage>
       _contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
       _dutchPluralFormController.text = pluralForm ?? "";
+      _audioCode = translation.audioCode;
     });
   }
 

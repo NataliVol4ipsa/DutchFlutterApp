@@ -19,13 +19,14 @@ class OnlineTranslationGroupMappingService {
     final translationWords = _mapTranslationWords(group);
     final partOfSpeech = group.partOfSpeech;
     return TranslationSearchResult(
-        mainWord: mainWord,
-        synonyms: remainingDutchWords,
-        translationWords: translationWords,
-        partOfSpeech: partOfSpeech,
-        article: article,
-        gender: gender,
-        sentenceExamples: examples);
+      mainWord: mainWord,
+      synonyms: remainingDutchWords,
+      translationWords: translationWords,
+      partOfSpeech: partOfSpeech,
+      article: article,
+      gender: gender,
+      sentenceExamples: examples,
+    );
   }
 
   static String _findMainWord(

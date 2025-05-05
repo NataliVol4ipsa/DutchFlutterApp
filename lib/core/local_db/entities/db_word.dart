@@ -23,4 +23,5 @@ class DbWord {
   late String? contextExample;
   late String? contextExampleTranslation;
   late String? userNote;
+  late String? audioCode;
 }

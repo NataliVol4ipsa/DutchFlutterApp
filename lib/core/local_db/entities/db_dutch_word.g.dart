@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'db_word_audio.dart';
+part of 'db_dutch_word.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,17 +9,17 @@ part of 'db_word_audio.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetDbWordAudioCollection on Isar {
-  IsarCollection<DbWordAudio> get dbWordAudios => this.collection();
+extension GetDbDutchWordCollection on Isar {
+  IsarCollection<DbDutchWord> get dbDutchWords => this.collection();
 }
 
-const DbWordAudioSchema = CollectionSchema(
-  name: r'DbWordAudio',
-  id: 964692343777929176,
+const DbDutchWordSchema = CollectionSchema(
+  name: r'DbDutchWord',
+  id: 361822241573683924,
   properties: {
-    r'code': PropertySchema(
+    r'audioCode': PropertySchema(
       id: 0,
-      name: r'code',
+      name: r'audioCode',
       type: IsarType.string,
     ),
     r'word': PropertySchema(
@@ -28,10 +28,10 @@ const DbWordAudioSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _dbWordAudioEstimateSize,
-  serialize: _dbWordAudioSerialize,
-  deserialize: _dbWordAudioDeserialize,
-  deserializeProp: _dbWordAudioDeserializeProp,
+  estimateSize: _dbDutchWordEstimateSize,
+  serialize: _dbDutchWordSerialize,
+  deserialize: _dbDutchWordDeserialize,
+  deserializeProp: _dbDutchWordDeserializeProp,
   idName: r'id',
   indexes: {
     r'word': IndexSchema(
@@ -50,47 +50,47 @@ const DbWordAudioSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _dbWordAudioGetId,
-  getLinks: _dbWordAudioGetLinks,
-  attach: _dbWordAudioAttach,
+  getId: _dbDutchWordGetId,
+  getLinks: _dbDutchWordGetLinks,
+  attach: _dbDutchWordAttach,
   version: '3.1.0+1',
 );
 
-int _dbWordAudioEstimateSize(
-  DbWordAudio object,
+int _dbDutchWordEstimateSize(
+  DbDutchWord object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.code.length * 3;
+  bytesCount += 3 + object.audioCode.length * 3;
   bytesCount += 3 + object.word.length * 3;
   return bytesCount;
 }
 
-void _dbWordAudioSerialize(
-  DbWordAudio object,
+void _dbDutchWordSerialize(
+  DbDutchWord object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.code);
+  writer.writeString(offsets[0], object.audioCode);
   writer.writeString(offsets[1], object.word);
 }
 
-DbWordAudio _dbWordAudioDeserialize(
+DbDutchWord _dbDutchWordDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = DbWordAudio();
-  object.code = reader.readString(offsets[0]);
+  final object = DbDutchWord();
+  object.audioCode = reader.readString(offsets[0]);
   object.id = id;
   object.word = reader.readString(offsets[1]);
   return object;
 }
 
-P _dbWordAudioDeserializeProp<P>(
+P _dbDutchWordDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -106,25 +106,25 @@ P _dbWordAudioDeserializeProp<P>(
   }
 }
 
-Id _dbWordAudioGetId(DbWordAudio object) {
+Id _dbDutchWordGetId(DbDutchWord object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _dbWordAudioGetLinks(DbWordAudio object) {
+List<IsarLinkBase<dynamic>> _dbDutchWordGetLinks(DbDutchWord object) {
   return [];
 }
 
-void _dbWordAudioAttach(
-    IsarCollection<dynamic> col, Id id, DbWordAudio object) {
+void _dbDutchWordAttach(
+    IsarCollection<dynamic> col, Id id, DbDutchWord object) {
   object.id = id;
 }
 
-extension DbWordAudioByIndex on IsarCollection<DbWordAudio> {
-  Future<DbWordAudio?> getByWord(String word) {
+extension DbDutchWordByIndex on IsarCollection<DbDutchWord> {
+  Future<DbDutchWord?> getByWord(String word) {
     return getByIndex(r'word', [word]);
   }
 
-  DbWordAudio? getByWordSync(String word) {
+  DbDutchWord? getByWordSync(String word) {
     return getByIndexSync(r'word', [word]);
   }
 
@@ -136,12 +136,12 @@ extension DbWordAudioByIndex on IsarCollection<DbWordAudio> {
     return deleteByIndexSync(r'word', [word]);
   }
 
-  Future<List<DbWordAudio?>> getAllByWord(List<String> wordValues) {
+  Future<List<DbDutchWord?>> getAllByWord(List<String> wordValues) {
     final values = wordValues.map((e) => [e]).toList();
     return getAllByIndex(r'word', values);
   }
 
-  List<DbWordAudio?> getAllByWordSync(List<String> wordValues) {
+  List<DbDutchWord?> getAllByWordSync(List<String> wordValues) {
     final values = wordValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'word', values);
   }
@@ -156,36 +156,36 @@ extension DbWordAudioByIndex on IsarCollection<DbWordAudio> {
     return deleteAllByIndexSync(r'word', values);
   }
 
-  Future<Id> putByWord(DbWordAudio object) {
+  Future<Id> putByWord(DbDutchWord object) {
     return putByIndex(r'word', object);
   }
 
-  Id putByWordSync(DbWordAudio object, {bool saveLinks = true}) {
+  Id putByWordSync(DbDutchWord object, {bool saveLinks = true}) {
     return putByIndexSync(r'word', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByWord(List<DbWordAudio> objects) {
+  Future<List<Id>> putAllByWord(List<DbDutchWord> objects) {
     return putAllByIndex(r'word', objects);
   }
 
-  List<Id> putAllByWordSync(List<DbWordAudio> objects,
+  List<Id> putAllByWordSync(List<DbDutchWord> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'word', objects, saveLinks: saveLinks);
   }
 }
 
-extension DbWordAudioQueryWhereSort
-    on QueryBuilder<DbWordAudio, DbWordAudio, QWhere> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhere> anyId() {
+extension DbDutchWordQueryWhereSort
+    on QueryBuilder<DbDutchWord, DbDutchWord, QWhere> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension DbWordAudioQueryWhere
-    on QueryBuilder<DbWordAudio, DbWordAudio, QWhereClause> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> idEqualTo(Id id) {
+extension DbDutchWordQueryWhere
+    on QueryBuilder<DbDutchWord, DbDutchWord, QWhereClause> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -194,7 +194,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> idNotEqualTo(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> idNotEqualTo(
       Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -217,7 +217,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -226,7 +226,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -235,7 +235,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> idBetween(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -251,7 +251,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> wordEqualTo(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> wordEqualTo(
       String word) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -261,7 +261,7 @@ extension DbWordAudioQueryWhere
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterWhereClause> wordNotEqualTo(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterWhereClause> wordNotEqualTo(
       String word) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -297,22 +297,24 @@ extension DbWordAudioQueryWhere
   }
 }
 
-extension DbWordAudioQueryFilter
-    on QueryBuilder<DbWordAudio, DbWordAudio, QFilterCondition> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeEqualTo(
+extension DbDutchWordQueryFilter
+    on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeGreaterThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -320,14 +322,15 @@ extension DbWordAudioQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeLessThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -335,14 +338,15 @@ extension DbWordAudioQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeBetween(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -351,7 +355,7 @@ extension DbWordAudioQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'code',
+        property: r'audioCode',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -361,76 +365,77 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeStartsWith(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeEndsWith(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'code',
+        property: r'audioCode',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'code',
+        property: r'audioCode',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> codeIsEmpty() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'code',
+        property: r'audioCode',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition>
-      codeIsNotEmpty() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'code',
+        property: r'audioCode',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idIsNull() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'id',
@@ -438,7 +443,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idIsNotNull() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'id',
@@ -446,7 +451,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idEqualTo(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idEqualTo(
       Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -456,7 +461,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idGreaterThan(
     Id? value, {
     bool include = false,
   }) {
@@ -469,7 +474,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idLessThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idLessThan(
     Id? value, {
     bool include = false,
   }) {
@@ -482,7 +487,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> idBetween(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> idBetween(
     Id? lower,
     Id? upper, {
     bool includeLower = true,
@@ -499,7 +504,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordEqualTo(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -512,7 +517,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordGreaterThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -527,7 +532,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordLessThan(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -542,7 +547,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordBetween(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -561,7 +566,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordStartsWith(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -574,7 +579,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordEndsWith(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -587,7 +592,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordContains(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -599,7 +604,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordMatches(
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -611,7 +616,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition> wordIsEmpty() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'word',
@@ -620,7 +625,7 @@ extension DbWordAudioQueryFilter
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterFilterCondition>
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
       wordIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -631,88 +636,88 @@ extension DbWordAudioQueryFilter
   }
 }
 
-extension DbWordAudioQueryObject
-    on QueryBuilder<DbWordAudio, DbWordAudio, QFilterCondition> {}
+extension DbDutchWordQueryObject
+    on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {}
 
-extension DbWordAudioQueryLinks
-    on QueryBuilder<DbWordAudio, DbWordAudio, QFilterCondition> {}
+extension DbDutchWordQueryLinks
+    on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {}
 
-extension DbWordAudioQuerySortBy
-    on QueryBuilder<DbWordAudio, DbWordAudio, QSortBy> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> sortByCode() {
+extension DbDutchWordQuerySortBy
+    on QueryBuilder<DbDutchWord, DbDutchWord, QSortBy> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> sortByAudioCode() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'code', Sort.asc);
+      return query.addSortBy(r'audioCode', Sort.asc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> sortByCodeDesc() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> sortByAudioCodeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'code', Sort.desc);
+      return query.addSortBy(r'audioCode', Sort.desc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> sortByWord() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> sortByWord() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'word', Sort.asc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> sortByWordDesc() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> sortByWordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'word', Sort.desc);
     });
   }
 }
 
-extension DbWordAudioQuerySortThenBy
-    on QueryBuilder<DbWordAudio, DbWordAudio, QSortThenBy> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenByCode() {
+extension DbDutchWordQuerySortThenBy
+    on QueryBuilder<DbDutchWord, DbDutchWord, QSortThenBy> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenByAudioCode() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'code', Sort.asc);
+      return query.addSortBy(r'audioCode', Sort.asc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenByCodeDesc() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenByAudioCodeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'code', Sort.desc);
+      return query.addSortBy(r'audioCode', Sort.desc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenById() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenByWord() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenByWord() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'word', Sort.asc);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QAfterSortBy> thenByWordDesc() {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterSortBy> thenByWordDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'word', Sort.desc);
     });
   }
 }
 
-extension DbWordAudioQueryWhereDistinct
-    on QueryBuilder<DbWordAudio, DbWordAudio, QDistinct> {
-  QueryBuilder<DbWordAudio, DbWordAudio, QDistinct> distinctByCode(
+extension DbDutchWordQueryWhereDistinct
+    on QueryBuilder<DbDutchWord, DbDutchWord, QDistinct> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QDistinct> distinctByAudioCode(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'code', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'audioCode', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<DbWordAudio, DbWordAudio, QDistinct> distinctByWord(
+  QueryBuilder<DbDutchWord, DbDutchWord, QDistinct> distinctByWord(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'word', caseSensitive: caseSensitive);
@@ -720,21 +725,21 @@ extension DbWordAudioQueryWhereDistinct
   }
 }
 
-extension DbWordAudioQueryProperty
-    on QueryBuilder<DbWordAudio, DbWordAudio, QQueryProperty> {
-  QueryBuilder<DbWordAudio, int, QQueryOperations> idProperty() {
+extension DbDutchWordQueryProperty
+    on QueryBuilder<DbDutchWord, DbDutchWord, QQueryProperty> {
+  QueryBuilder<DbDutchWord, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<DbWordAudio, String, QQueryOperations> codeProperty() {
+  QueryBuilder<DbDutchWord, String, QQueryOperations> audioCodeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'code');
+      return query.addPropertyName(r'audioCode');
     });
   }
 
-  QueryBuilder<DbWordAudio, String, QQueryOperations> wordProperty() {
+  QueryBuilder<DbDutchWord, String, QQueryOperations> wordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'word');
     });

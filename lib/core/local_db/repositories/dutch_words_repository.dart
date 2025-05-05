@@ -1,0 +1,28 @@
+import 'package:dutch_app/core/assets/models/dutch_word_asset.dart';
+import 'package:dutch_app/core/local_db/db_context.dart';
+import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
+import 'package:dutch_app/core/local_db/mapping/dutch_word_mapper.dart';
+import 'package:dutch_app/domain/models/word_audio.dart';
+import 'package:isar/isar.dart';
+
+class DutchWordsRepository {
+  Future<List<int>> addBatchAsync(List<DutchWordAsset> words) async {
+    final newWords = DutchWordMapper.mapToEntityList(words);
+
+    final List<int> ids = await DbContext.isar
+        .writeTxn(() => DbContext.isar.dbDutchWords.putAll(newWords));
+
+    return ids;
+  }
+
+  Future<List<WordAudio>> getBatchAsync(List<String> words) async {
+    final audios = await Future.wait(words.map((word) {
+      return DbContext.isar.dbDutchWords.where().wordEqualTo(word).findFirst();
+    }));
+
+    final dbAudios = audios.whereType<DbDutchWord>().toList();
+    List<WordAudio> wordAudios = DutchWordMapper.mapToDomainList(dbAudios);
+
+    return wordAudios;
+  }
+}

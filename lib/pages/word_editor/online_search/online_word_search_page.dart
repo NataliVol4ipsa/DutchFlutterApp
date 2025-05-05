@@ -64,12 +64,20 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
         OnlineTranslationListMappingService.mapToResult(
             translationOptionsResponse, grammarOptionsResponse);
 
+    await addAudioCodesAsync(mappedSearchResponse);
+
     setState(() {
       grammarOptions = grammarOptionsResponse?.onlineWords;
       onlineTranslationOptions = mappedSearchResponse;
       isLoading = false;
     });
     _onlineTranslationSelectedNotifier.setGrammarOptions(grammarOptions);
+  }
+
+  Future<void> addAudioCodesAsync(
+      TranslationsSearchResult? mappedSearchResponse) async {
+    // todo think whether to store audio code or wordAudioId.
+    // think how to cache audio
   }
 
   @override
