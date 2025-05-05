@@ -3,24 +3,6 @@ import 'package:dutch_app/core/local_db/entities/db_english_word.dart';
 import 'package:isar/isar.dart';
 
 class EnglishWordsRepository {
-  //todo send list of english words instead of one merged word
-  Future<List<DbEnglishWord>> getOrCreateRawListFromMergedStringAsync(
-      String englishWords) async {
-    var words = englishWords
-        .split(';')
-        .map((w) => _cleanEnglishWord(w.trim().toLowerCase()))
-        .toSet()
-        .toList();
-
-    return await getOrCreateRawListAsync(words);
-  }
-
-  static String _cleanEnglishWord(String word) {
-    final isInfinitive = word.startsWith('to ');
-    final cleanedWord = isInfinitive ? word.substring(3).trim() : word;
-    return cleanedWord;
-  }
-
   Future<List<DbEnglishWord>> getOrCreateRawListAsync(
       List<String> englishWords) async {
     return await Future.wait(

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/word_type.dart';
@@ -26,7 +27,9 @@ class ManyToManyExercise extends BaseExercise {
     for (int i = 0; i < words.length; i++) {
       leftOptions
           .add(ManyToManyOption(id: i, word: words[i].toDutchWordString()));
-      rightOptions.add(ManyToManyOption(id: i, word: words[i].englishWord));
+      rightOptions.add(ManyToManyOption(
+          id: i,
+          word: SemicolonWordsConverter.toSingleString(words[i].englishWords)));
     }
 
     leftOptions.shuffle(Random());
@@ -60,7 +63,8 @@ class ManyToManyExercise extends BaseExercise {
           exerciseType: ExerciseType.manyToMany,
           totalCorrectAnswers: 1,
           totalWrongAnswers: numOfMistakes[i],
-          correctAnswer: "${word.toDutchWordString()} - ${word.englishWord}"));
+          correctAnswer:
+              "${word.toDutchWordString()} - ${SemicolonWordsConverter.toSingleString(word.englishWords)}"));
     }
 
     return result;

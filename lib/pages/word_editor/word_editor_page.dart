@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/local_db/repositories/words_repository_v2.dart';
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/models/word_collection.dart';
@@ -210,7 +211,8 @@ class _WordEditorPageState extends State<WordEditorPage>
     }
 
     _dutchWordController.text = existingWord.dutchWord;
-    _englishWordController.text = existingWord.englishWord;
+    _englishWordController.text =
+        SemicolonWordsConverter.toSingleString(existingWord.englishWords);
     _wordTypeController.value = existingWord.wordType;
     _dutchPluralFormController.text = existingWord.pluralForm ?? "";
     _wordCollectionController.value =
@@ -359,7 +361,7 @@ class _WordEditorPageState extends State<WordEditorPage>
 
     var newWord = NewWord(
       dutchWordInput.trim(),
-      englishWordInput.trim(),
+      SemicolonWordsConverter.fromString(englishWordInput.trim()),
       _wordTypeController.value,
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,
@@ -383,7 +385,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     var updatedWord = Word(
       existingWordId!,
       dutchWordInput.trim(),
-      englishWordInput.trim(),
+      SemicolonWordsConverter.fromString(englishWordInput),
       _wordTypeController.value,
       collection: _wordCollectionController.value,
       deHetType: _deHetTypeTypeController.value,

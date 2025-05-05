@@ -1,3 +1,5 @@
+import 'package:dutch_app/core/io/v1/models/export_word_collection_v1.dart';
+import 'package:dutch_app/core/io/v1/models/export_word_v1.dart';
 import 'package:dutch_app/domain/models/new_word_collection.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word_collection.dart';
@@ -27,12 +29,12 @@ class WordsIoMapper {
     if (source.dutchWord == null) {
       throw Exception("Cannot create word without dutchWord");
     }
-    if (source.englishWord == null) {
+    if (source.englishWords == null) {
       throw Exception("Cannot create word without englishWord");
     }
     var wordType = source.wordType ?? WordType.unspecified;
     var deHetType = source.deHetType ?? DeHetType.none;
-    return NewWord(source.dutchWord!, source.englishWord!, wordType,
+    return NewWord(source.dutchWord!, source.englishWords!, wordType,
         deHetType: deHetType,
         pluralForm: source.pluralForm,
         contextExample: source.contextExample,

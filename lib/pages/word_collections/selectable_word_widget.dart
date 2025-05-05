@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
 import 'package:dutch_app/reusable_widgets/my_checkbox.dart';
@@ -77,7 +78,8 @@ class SelectableWord extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  word.value.englishWord,
+                  SemicolonWordsConverter.toSingleString(
+                      word.value.englishWords),
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

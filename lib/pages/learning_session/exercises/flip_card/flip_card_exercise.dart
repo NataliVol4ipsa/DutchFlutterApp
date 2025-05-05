@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
@@ -24,7 +25,8 @@ class FlipCardExercise extends BaseExercise {
     if (word.deHetType != DeHetType.none && word.wordType == WordType.noun) {
       inputWord = "${word.deHetType.label} $inputWord";
     }
-    correctAnswer = word.englishWord;
+
+    correctAnswer = SemicolonWordsConverter.toSingleString(word.englishWords);
     if (word.wordType != WordType.unspecified) {
       hint = word.wordType.name;
     } else {
@@ -71,7 +73,8 @@ class FlipCardExercise extends BaseExercise {
           exerciseType: ExerciseType.flipCard,
           totalCorrectAnswers: answerSummary.totalCorrectAnswers,
           totalWrongAnswers: answerSummary.totalWrongAnswers,
-          correctAnswer: "${word.toDutchWordString()} - ${word.englishWord}")
+          correctAnswer:
+              "${word.toDutchWordString()} - ${SemicolonWordsConverter.toSingleString(word.englishWords)}")
     ];
   }
 }

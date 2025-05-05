@@ -1,4 +1,3 @@
-// Degree to which user knows word
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:isar/isar.dart';
 

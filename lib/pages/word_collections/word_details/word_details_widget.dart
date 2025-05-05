@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
@@ -123,7 +124,8 @@ class WordDetails extends StatelessWidget {
     return _buildBodySectionGeneric(context,
         sectionName: "Translation",
         prefixIcon: InputIcons.englishWord,
-        content: SelectableText(word.englishWord,
+        content: SelectableText(
+            SemicolonWordsConverter.toSingleString(word.englishWords),
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 

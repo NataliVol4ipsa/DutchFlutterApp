@@ -31,7 +31,7 @@ class WordsMapper {
     return Word(
       dbWord.id!,
       dbWord.dutchWordLink.value?.word ?? "ERROR",
-      dbWord.englishWordLinks.map((l) => l.word).join(';'),
+      dbWord.englishWordLinks.map((l) => l.word).toList(),
       dbWord.type,
       collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
       deHetType: dbWord.deHet,

@@ -46,7 +46,7 @@ class WordsRepositoryV2 {
     await DbContext.isar.dbWordCollections.put(collection);
 
     await _updateWordDutchLinkAsync(word.dutchWord, newWord);
-    await _updateWordEnglishLinkAsync(word.englishWord, newWord);
+    await _updateWordEnglishLinkAsync(word.englishWords, newWord);
 
     return newWordId;
   }
@@ -60,11 +60,11 @@ class WordsRepositoryV2 {
   }
 
   Future<void> _updateWordEnglishLinkAsync(
-      String englishWord, DbWord dbWord) async {
+      List<String> englishWords, DbWord dbWord) async {
     dbWord.englishWordLinks.reset();
 
-    final englishWordLinks = await englishWordsRepository
-        .getOrCreateRawListFromMergedStringAsync(englishWord);
+    final englishWordLinks =
+        await englishWordsRepository.getOrCreateRawListAsync(englishWords);
     dbWord.englishWordLinks.addAll(englishWordLinks);
     await dbWord.englishWordLinks.save();
   }
@@ -106,7 +106,7 @@ class WordsRepositoryV2 {
 
     await DbContext.isar.writeTxn(() async {
       await _updateWordDutchLinkAsync(updatedWord.dutchWord, dbWord);
-      await _updateWordEnglishLinkAsync(updatedWord.englishWord, dbWord);
+      await _updateWordEnglishLinkAsync(updatedWord.englishWords, dbWord);
     });
 
     if (dbWord.collection.value?.id != updatedWord.collection?.id) {

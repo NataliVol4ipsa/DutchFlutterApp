@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_content_widget.dart';
@@ -82,7 +83,8 @@ class _FlipCardExerciseWidgetState extends State<FlipCardExerciseWidget> {
         Opacity(
           opacity: showTranslation ? 1.0 : 0.0,
           child: Text(
-            widget.exercise.word.englishWord,
+            SemicolonWordsConverter.toSingleString(
+                widget.exercise.word.englishWords),
             style: TextStyles.exerciseInputDataAnswerStyle(context),
           ),
         ),

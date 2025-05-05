@@ -1,7 +1,4 @@
-import 'package:dutch_app/domain/models/word.dart';
-import 'package:dutch_app/domain/models/word_collection.dart';
-import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/core/io/v1/models/export_word_collection_v1.dart';
 
 class ExportPackageV1 {
   final List<ExportWordCollectionV1> collections;
@@ -23,89 +20,4 @@ class ExportPackageV1 {
 
     return ExportPackageV1(collections);
   }
-}
-
-class ExportWordCollectionV1 {
-  final List<ExportWordV1> words;
-  final String name;
-
-  ExportWordCollectionV1(this.words, this.name);
-
-  ExportWordCollectionV1.fromCollection(WordCollection source)
-      : name = source.name,
-        words =
-            source.words!.map((word) => ExportWordV1.fromWord(word)).toList();
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'words': words.map((word) => word.toJson()).toList(),
-    };
-  }
-
-  factory ExportWordCollectionV1.fromJson(Map<String, dynamic> json) {
-    var wordsList = (json['words'] as List)
-        .map((wordJson) => ExportWordV1.fromJson(wordJson))
-        .toList();
-
-    var name = json['name'] as String;
-
-    return ExportWordCollectionV1(wordsList, name);
-  }
-}
-
-class ExportWordV1 {
-  String? dutchWord;
-  String? englishWord;
-  WordType? wordType;
-  DeHetType? deHetType = DeHetType.none;
-  String? pluralForm;
-  String? contextExample;
-  String? contextExampleTranslation;
-  String? userNote;
-
-  ExportWordV1(
-    this.dutchWord,
-    this.englishWord,
-    this.wordType, {
-    this.deHetType = DeHetType.none,
-    this.pluralForm,
-    this.contextExample,
-    this.contextExampleTranslation,
-    this.userNote,
-  });
-
-  ExportWordV1.fromWord(Word source)
-      : dutchWord = source.dutchWord,
-        englishWord = source.englishWord,
-        wordType = source.wordType,
-        deHetType = source.deHetType,
-        pluralForm = source.pluralForm,
-        contextExample = source.contextExample,
-        contextExampleTranslation = source.contextExampleTranslation,
-        userNote = source.userNote;
-
-  ExportWordV1.fromJson(Map<String, dynamic> json)
-      : dutchWord = json['dutchWord'] as String,
-        englishWord = json['englishWord'] as String,
-        wordType =
-            WordType.values.firstWhere((e) => e.toString() == json['type']),
-        deHetType =
-            DeHetType.values.firstWhere((e) => e.toString() == json['deHet']),
-        pluralForm = json['pluralForm'] as String?,
-        contextExample = json['contextExample'] as String?,
-        contextExampleTranslation =
-            json['contextExampleTranslation'] as String?,
-        userNote = json['userNote'] as String?;
-
-  Map<String, dynamic> toJson() => {
-        'dutchWord': dutchWord,
-        'englishWord': englishWord,
-        'type': wordType.toString(),
-        'deHet': deHetType.toString(),
-        'pluralForm': pluralForm,
-        'contextExample': contextExample,
-        'contextExampleTranslation': contextExampleTranslation,
-        'userNote': userNote,
-      };
 }

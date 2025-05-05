@@ -4,7 +4,7 @@ import 'package:dutch_app/domain/types/word_type.dart';
 
 class BaseWord {
   final String dutchWord;
-  final String englishWord;
+  final List<String> englishWords;
   final WordType wordType;
   final DeHetType deHetType;
   final String? pluralForm;
@@ -14,7 +14,7 @@ class BaseWord {
   final String? userNote;
   final String? audioCode;
 
-  BaseWord(this.dutchWord, this.englishWord, this.wordType,
+  BaseWord(this.dutchWord, this.englishWords, this.wordType,
       {this.collection,
       this.deHetType = DeHetType.none,
       this.pluralForm,

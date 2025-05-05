@@ -4,7 +4,7 @@ import 'package:dutch_app/domain/types/de_het_type.dart';
 class NewWord extends BaseWord {
   NewWord(
     super.dutchWord,
-    super.englishWord,
+    super.englishWords,
     super.wordType, {
     super.collection,
     super.deHetType = DeHetType.none,
