@@ -34,7 +34,6 @@ class WordCollectionsRepository {
   Future<List<WordCollection>> getCollectionsWithWordsAsync() async {
     List<DbWordCollection> dbWordCollections =
         await DbContext.isar.dbWordCollections.where().findAll();
-
     List<WordCollection> result =
         await WordCollectionsMapper.mapWithWordsToDomainListAsync(
             dbWordCollections);

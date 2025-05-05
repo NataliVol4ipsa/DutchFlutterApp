@@ -30,6 +30,13 @@ class WordCollectionsMapper {
       DbWordCollection dbCollection) async {
     await dbCollection.words.load();
 
+    if (dbCollection.words.isNotEmpty) {
+      await Future.wait([
+        ...dbCollection.words.map((w) => w.dutchWordLink.load()),
+        ...dbCollection.words.map((w) => w.englishWordLinks.load()),
+      ]);
+    }
+
     WordCollection newCollection = WordCollection(
         dbCollection.id, dbCollection.name,
         lastUpdated: dbCollection.lastUpdated,

@@ -1,7 +1,7 @@
-class WordAudio {
+class DutchWord {
   int? id;
   final String word;
   String? audioCode;
 
-  WordAudio(this.word);
+  DutchWord(this.word);
 }

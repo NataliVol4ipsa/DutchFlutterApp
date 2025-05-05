@@ -129,8 +129,18 @@ int _dbWordEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.dutchWord.length * 3;
-  bytesCount += 3 + object.englishWord.length * 3;
+  {
+    final value = object.dutchWord;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.englishWord;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.pluralForm;
     if (value != null) {
@@ -175,8 +185,8 @@ DbWord _dbWordDeserialize(
   object.contextExampleTranslation = reader.readStringOrNull(offsets[2]);
   object.deHet = _DbWorddeHetValueEnumMap[reader.readByteOrNull(offsets[3])] ??
       DeHetType.none;
-  object.dutchWord = reader.readString(offsets[4]);
-  object.englishWord = reader.readString(offsets[5]);
+  object.dutchWord = reader.readStringOrNull(offsets[4]);
+  object.englishWord = reader.readStringOrNull(offsets[5]);
   object.id = id;
   object.pluralForm = reader.readStringOrNull(offsets[6]);
   object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[7])] ??
@@ -202,9 +212,9 @@ P _dbWordDeserializeProp<P>(
       return (_DbWorddeHetValueEnumMap[reader.readByteOrNull(offset)] ??
           DeHetType.none) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
@@ -862,8 +872,24 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dutchWord',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dutchWord',
+      ));
+    });
+  }
+
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -876,7 +902,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -891,7 +917,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -906,8 +932,8 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -992,8 +1018,24 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'englishWord',
+      ));
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'englishWord',
+      ));
+    });
+  }
+
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1006,7 +1048,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1021,7 +1063,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1036,8 +1078,8 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -2015,13 +2057,13 @@ extension DbWordQueryProperty on QueryBuilder<DbWord, DbWord, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbWord, String, QQueryOperations> dutchWordProperty() {
+  QueryBuilder<DbWord, String?, QQueryOperations> dutchWordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'dutchWord');
     });
   }
 
-  QueryBuilder<DbWord, String, QQueryOperations> englishWordProperty() {
+  QueryBuilder<DbWord, String?, QQueryOperations> englishWordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'englishWord');
     });

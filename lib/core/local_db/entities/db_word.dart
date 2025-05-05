@@ -12,8 +12,8 @@ part 'db_word.g.dart';
 class DbWord {
   Id? id;
 
-  late String dutchWord;
-  late String englishWord;
+  late String? dutchWord;
+  late String? englishWord;
   @enumerated
   late WordType type;
   @enumerated

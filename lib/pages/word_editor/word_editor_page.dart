@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/local_db/repositories/words_repository_v2.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/models/word_collection.dart';
@@ -8,7 +9,6 @@ import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
-import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_list_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
@@ -38,7 +38,7 @@ class _WordEditorPageState extends State<WordEditorPage>
   bool _isNewWord = false;
   bool _isLoading = false;
 
-  late WordsRepository _wordsRepository;
+  late WordsRepositoryV2 _wordsRepository;
 
   late OnlineTranslationSearchSuggestionSelectedNotifier
       _onlineTranslationSelectedNotifier;
@@ -67,14 +67,12 @@ class _WordEditorPageState extends State<WordEditorPage>
   final ValueNotifier<List<Widget>> _tabViewsNotifier =
       ValueNotifier<List<Widget>>([]);
 
-  late String? _audioCode;
-
   bool initialized = false;
 
   @override
   void initState() {
     super.initState();
-    _wordsRepository = context.read<WordsRepository>();
+    _wordsRepository = context.read<WordsRepositoryV2>();
     _tabController = TabController(length: 0, vsync: this);
     _initOnlineSearch();
   }
@@ -190,7 +188,6 @@ class _WordEditorPageState extends State<WordEditorPage>
       _contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
       _dutchPluralFormController.text = pluralForm ?? "";
-      _audioCode = translation.audioCode;
     });
   }
 

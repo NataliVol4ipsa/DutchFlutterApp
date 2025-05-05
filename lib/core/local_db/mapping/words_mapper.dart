@@ -6,8 +6,8 @@ import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
     var newWord = DbWord();
-    newWord.dutchWord = word.dutchWord;
-    newWord.englishWord = word.englishWord;
+    newWord.dutchWord = null;
+    newWord.englishWord = null;
     newWord.type = word.wordType;
     newWord.deHet = word.deHetType;
     newWord.pluralForm = word.pluralForm;
@@ -27,10 +27,11 @@ class WordsMapper {
       return null;
     }
 
+//todo semicolon into array
     return Word(
       dbWord.id!,
-      dbWord.dutchWord,
-      dbWord.englishWord,
+      dbWord.dutchWordLink.value?.word ?? "ERROR",
+      dbWord.englishWordLinks.map((l) => l.word).join(';'),
       dbWord.type,
       collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
       deHetType: dbWord.deHet,
