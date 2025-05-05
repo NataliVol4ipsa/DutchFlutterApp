@@ -77,6 +77,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       isLoading = true;
     });
     await dataManager.loadCollectionsAsync();
+    if (!mounted) return;
     setState(() {
       collectionsAndWords = _buildWordsAndCollections(context);
     });

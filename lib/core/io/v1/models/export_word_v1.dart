@@ -35,7 +35,7 @@ class ExportWordV1 {
 
   ExportWordV1.fromJson(Map<String, dynamic> json)
       : dutchWord = json['dutchWord'] as String,
-        englishWords = json['englishWords'] as List<String>,
+        englishWords = List<String>.from(json['englishWords'] as List),
         wordType =
             WordType.values.firstWhere((e) => e.toString() == json['type']),
         deHetType =

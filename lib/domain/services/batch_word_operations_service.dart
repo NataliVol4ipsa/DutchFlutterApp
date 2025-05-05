@@ -1,12 +1,15 @@
+import 'package:dutch_app/core/local_db/repositories/batch_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
 import 'package:dutch_app/domain/models/new_word_collection.dart';
 import 'package:dutch_app/core/io/v1/mapping/words_io_mapper.dart';
 import 'package:dutch_app/core/io/v1/models/export_package_v1.dart';
-import 'package:dutch_app/core/local_db/repositories/batch_repository.dart';
 
 class BatchWordOperationsService {
+  final WordsImportRepository importRepository;
   final BatchRepository batchRepository;
 
-  BatchWordOperationsService({required this.batchRepository});
+  BatchWordOperationsService(
+      {required this.batchRepository, required this.importRepository});
 
 //todo progress bar for import
 //todo logs
@@ -15,7 +18,7 @@ class BatchWordOperationsService {
     List<NewWordCollection> newCollections =
         WordsIoMapper.toNewCollectionList(package);
 
-    await batchRepository.importCollectionsAsync(newCollections);
+    await importRepository.importAsync(newCollections);
   }
 
   Future<void> deleteAsync(

@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/local_db/repositories/words_repository_v2.dart';
+import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
@@ -21,7 +21,7 @@ class ExercisesSelectorPage extends StatefulWidget {
 Widget customPadding() => const SizedBox(height: 10);
 
 class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
-  late WordsRepositoryV2 wordsRepository;
+  late WordsRepository wordsRepository;
 
   List<ExerciseType> learningModes = ExerciseType.values.toList();
   final Set<ExerciseType> selectedModes = {};
@@ -29,7 +29,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   @override
   void initState() {
     super.initState();
-    wordsRepository = context.read<WordsRepositoryV2>();
+    wordsRepository = context.read<WordsRepository>();
   }
 
   void onStartButtonClick() {

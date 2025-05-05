@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
@@ -14,6 +15,7 @@ List<Provider> serviceProviders() {
     ),
     Provider<BatchWordOperationsService>(
       create: (context) => BatchWordOperationsService(
+        importRepository: context.read<WordsImportRepository>(),
         batchRepository: context.read<BatchRepository>(),
       ),
     ),

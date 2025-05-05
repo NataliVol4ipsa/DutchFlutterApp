@@ -1,4 +1,4 @@
-import 'package:dutch_app/core/local_db/repositories/words_repository_v2.dart';
+import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
@@ -39,7 +39,7 @@ class _WordEditorPageState extends State<WordEditorPage>
   bool _isNewWord = false;
   bool _isLoading = false;
 
-  late WordsRepositoryV2 _wordsRepository;
+  late WordsRepository _wordsRepository;
 
   late OnlineTranslationSearchSuggestionSelectedNotifier
       _onlineTranslationSelectedNotifier;
@@ -73,7 +73,7 @@ class _WordEditorPageState extends State<WordEditorPage>
   @override
   void initState() {
     super.initState();
-    _wordsRepository = context.read<WordsRepositoryV2>();
+    _wordsRepository = context.read<WordsRepository>();
     _tabController = TabController(length: 0, vsync: this);
     _initOnlineSearch();
   }

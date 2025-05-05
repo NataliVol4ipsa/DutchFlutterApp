@@ -1,56 +1,8 @@
-import 'package:dutch_app/domain/models/new_word.dart';
-import 'package:dutch_app/domain/models/new_word_collection.dart';
-import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_collection.dart';
-import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
-import 'package:dutch_app/core/local_db/mapping/words_mapper.dart';
 
 class BatchRepository {
-  Future<void> importCollectionsAsync(
-      List<NewWordCollection> newCollections) async {
-    await DbContext.isar.writeTxn(() async {
-      for (int i = 0; i < newCollections.length; i++) {
-        if (CollectionPermissionService.isDefaultCollectionName(
-            newCollections[i].name)) {
-          await _importDefaultCollectionAsync(newCollections[i]);
-        } else {
-          await _importCollectionAsync(newCollections[i]);
-        }
-      }
-    });
-  }
-
-  Future<void> _importCollectionAsync(NewWordCollection wordCollection) async {
-    final newCollection = WordCollectionsMapper.mapToEntity(wordCollection);
-    await DbContext.isar.dbWordCollections.put(newCollection);
-
-    await _putWordsIntoCollection(wordCollection.words, newCollection);
-  }
-
-  Future<void> _importDefaultCollectionAsync(
-      NewWordCollection wordCollection) async {
-    final defaultCollection = await DbContext.isar.dbWordCollections
-        .get(CollectionPermissionService.defaultCollectionId);
-    if (defaultCollection == null) {
-      throw Exception("Could not find default collection");
-    }
-
-    _putWordsIntoCollection(wordCollection.words, defaultCollection);
-  }
-
-  Future<void> _putWordsIntoCollection(
-      List<NewWord> words, DbWordCollection collection) async {
-    final newWords = WordsMapper.mapToEntityList(words);
-    await DbContext.isar.dbWords.putAll(newWords);
-    collection.words.addAll(newWords);
-    collection.lastUpdated = DateTime.now();
-
-    await collection.words.save();
-    await DbContext.isar.dbWordCollections.put(collection);
-  }
-
   Future<void> deleteAsync(List<int> wordIds, List<int> collectionIds) async {
     await DbContext.isar.writeTxn(() async {
       await DbContext.isar.dbWords.deleteAll(wordIds);

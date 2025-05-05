@@ -5,16 +5,19 @@ import 'package:dutch_app/core/local_db/repositories/english_words_repository.da
 import 'package:dutch_app/core/local_db/repositories/settings_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
-import 'package:dutch_app/core/local_db/repositories/words_repository_v2.dart';
+import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:provider/provider.dart';
 
 List<Provider> databaseProviders() {
   return [
     Provider<DbContext>(create: (_) => DbContext()),
-    Provider<WordsRepositoryV2>(
-        create: (_) => WordsRepositoryV2(
-            EnglishWordsRepository(), DutchWordsRepository())),
+    Provider<WordsRepository>(
+        create: (context) => WordsRepository(
+            context.read<EnglishWordsRepository>(),
+            context.read<DutchWordsRepository>())),
     Provider<BatchRepository>(create: (_) => BatchRepository()),
+    Provider<WordsImportRepository>(create: (_) => WordsImportRepository()),
     Provider<WordCollectionsRepository>(
         create: (_) => WordCollectionsRepository()),
     Provider<WordProgressRepository>(create: (_) => WordProgressRepository()),

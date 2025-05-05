@@ -25,6 +25,15 @@ class DutchWordsRepository {
     return wordAudios;
   }
 
+  Future<List<DbDutchWord>> getOrCreateRawListAsync(
+      List<String> dutchWords) async {
+    return await Future.wait(
+      dutchWords.map(
+        (word) => getOrCreateRawAsync(word),
+      ),
+    );
+  }
+
   Future<DbDutchWord> getOrCreateRawAsync(String dutchWord) async {
     var existingWord = await _getRawAsync(dutchWord);
     if (existingWord != null) {
