@@ -62,7 +62,12 @@ int _dbDutchWordEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.audioCode.length * 3;
+  {
+    final value = object.audioCode;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.word.length * 3;
   return bytesCount;
 }
@@ -84,7 +89,7 @@ DbDutchWord _dbDutchWordDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbDutchWord();
-  object.audioCode = reader.readString(offsets[0]);
+  object.audioCode = reader.readStringOrNull(offsets[0]);
   object.id = id;
   object.word = reader.readString(offsets[1]);
   return object;
@@ -98,7 +103,7 @@ P _dbDutchWordDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
     default:
@@ -300,8 +305,26 @@ extension DbDutchWordQueryWhere
 extension DbDutchWordQueryFilter
     on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {
   QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'audioCode',
+      ));
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      audioCodeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'audioCode',
+      ));
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
       audioCodeEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -315,7 +338,7 @@ extension DbDutchWordQueryFilter
 
   QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
       audioCodeGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -331,7 +354,7 @@ extension DbDutchWordQueryFilter
 
   QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
       audioCodeLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -347,8 +370,8 @@ extension DbDutchWordQueryFilter
 
   QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
       audioCodeBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -733,7 +756,7 @@ extension DbDutchWordQueryProperty
     });
   }
 
-  QueryBuilder<DbDutchWord, String, QQueryOperations> audioCodeProperty() {
+  QueryBuilder<DbDutchWord, String?, QQueryOperations> audioCodeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'audioCode');
     });

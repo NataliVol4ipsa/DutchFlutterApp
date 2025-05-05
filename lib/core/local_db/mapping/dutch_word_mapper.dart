@@ -17,7 +17,7 @@ class DutchWordMapper {
   static WordAudio mapToDomain(DbDutchWord dbWordAudio) {
     var dbWord = WordAudio(dbWordAudio.word.toLowerCase());
     dbWord.id = dbWordAudio.id;
-    dbWord.code = dbWordAudio.audioCode;
+    dbWord.audioCode = dbWordAudio.audioCode;
     return dbWord;
   }
 

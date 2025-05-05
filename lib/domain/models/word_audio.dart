@@ -1,7 +1,7 @@
 class WordAudio {
   int? id;
   final String word;
-  String? code;
+  String? audioCode;
 
   WordAudio(this.word);
 }
