@@ -20,7 +20,7 @@ class DbWordMigrationPhase1 {
     final distinctEnglishWords = dbWords
         .expand((w) => w.englishWord
             .split(';')
-            .map((word) => cleanEnglishWord(word.trim().toLowerCase())))
+            .map((word) => _cleanEnglishWord(word.trim().toLowerCase())))
         .toSet()
         .toList();
 
@@ -28,7 +28,7 @@ class DbWordMigrationPhase1 {
     await seedEnglishWordsAsync(isar, distinctEnglishWords);
   }
 
-  static String cleanEnglishWord(String word) {
+  static String _cleanEnglishWord(String word) {
     final isInfinitive = word.startsWith('to ');
     final cleanedWord = isInfinitive ? word.substring(3).trim() : word;
     return cleanedWord;

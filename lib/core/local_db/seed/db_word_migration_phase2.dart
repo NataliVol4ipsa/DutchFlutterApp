@@ -8,67 +8,50 @@ class DbWordMigrationPhase2 {
   static Future<void> runAsync() async {
     final isar = DbContext.isar;
 
-    final alreadyComplete =
-        await isar.dbEnglishWords.where().limit(1).findFirst() != null;
-    if (alreadyComplete) {
-      return;
+    final words = await isar.dbWords.where().findAll();
+
+    for (final word in words) {
+      // Lookup Dutch word
+      final dutch = await isar.dbDutchWords
+          .where()
+          .wordEqualTo(word.dutchWord.toLowerCase().trim())
+          .findFirst();
+
+      if (dutch != null) {
+        word.dutchWordLink.value = dutch;
+      }
+
+      // Lookup English words (may be multiple)
+      final englishWords = word.englishWord
+          .split(';')
+          .map((w) => _cleanEnglishWord(w.trim().toLowerCase()))
+          .toSet();
+
+      final englishMatches = <DbEnglishWord>[];
+      for (final ew in englishWords) {
+        final english =
+            await isar.dbEnglishWords.where().wordEqualTo(ew).findFirst();
+        if (english != null) {
+          englishMatches.add(english);
+        }
+      }
+
+      word.englishWordLinks.clear();
+      word.englishWordLinks.addAll(englishMatches);
     }
 
-    List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
-    final distinctDutchWords =
-        dbWords.map((w) => w.dutchWord.toLowerCase().trim()).toSet().toList();
-    final distinctEnglishWords = dbWords
-        .expand((w) => w.englishWord
-            .split(';')
-            .map((word) => cleanEnglishWord(word.trim().toLowerCase())))
-        .toSet()
-        .toList();
-
-    await seedDutchWordsAsync(isar, distinctDutchWords);
-    await seedEnglishWordsAsync(isar, distinctEnglishWords);
+    await isar.writeTxn(() async {
+      for (final word in words) {
+        await word.dutchWordLink.save();
+        await word.englishWordLinks.save();
+        await isar.dbWords.put(word);
+      }
+    });
   }
 
-  static String cleanEnglishWord(String word) {
+  static String _cleanEnglishWord(String word) {
     final isInfinitive = word.startsWith('to ');
     final cleanedWord = isInfinitive ? word.substring(3).trim() : word;
     return cleanedWord;
-  }
-
-  static Future<void> seedDutchWordsAsync(
-      Isar isar, List<String> distinctDutchWords) async {
-    // Query all existing words in parallel
-    final existingWordEntries = await Future.wait(
-      distinctDutchWords.map(
-        (word) => isar.dbDutchWords.where().wordEqualTo(word).findFirst(),
-      ),
-    );
-
-    // Filter the words that are missing (i.e., where findFirst() returned null)
-    final wordsToCreate = <String>[];
-    for (int i = 0; i < distinctDutchWords.length; i++) {
-      if (existingWordEntries[i] == null) {
-        wordsToCreate.add(distinctDutchWords[i]);
-      }
-    }
-
-    // Insert them into DB
-    if (wordsToCreate.isNotEmpty) {
-      final newWords = wordsToCreate.map((word) {
-        var result = DbDutchWord();
-        result.word = word;
-        result.audioCode = null;
-        return result;
-      }).toList();
-      await isar.writeTxn(() => isar.dbDutchWords.putAll(newWords));
-    }
-  }
-
-  static Future<void> seedEnglishWordsAsync(
-      Isar isar, List<String> distinctEnglishWords) async {
-    final newWords = distinctEnglishWords
-        .map((word) => DbEnglishWord()..word = word)
-        .toList();
-
-    await isar.writeTxn(() => isar.dbEnglishWords.putAll(newWords));
   }
 }
