@@ -43,7 +43,15 @@ const DbEnglishWordSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'words': LinkSchema(
+      id: 3179852848815915298,
+      name: r'words',
+      target: r'DbWord',
+      single: false,
+      linkName: r'englishWordLinks',
+    )
+  },
   embeddedSchemas: {},
   getId: _dbEnglishWordGetId,
   getLinks: _dbEnglishWordGetLinks,
@@ -101,12 +109,13 @@ Id _dbEnglishWordGetId(DbEnglishWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbEnglishWordGetLinks(DbEnglishWord object) {
-  return [];
+  return [object.words];
 }
 
 void _dbEnglishWordAttach(
     IsarCollection<dynamic> col, Id id, DbEnglishWord object) {
   object.id = id;
+  object.words.attach(col, col.isar.collection<DbWord>(), r'words', id);
 }
 
 extension DbEnglishWordByIndex on IsarCollection<DbEnglishWord> {
@@ -503,7 +512,68 @@ extension DbEnglishWordQueryObject
     on QueryBuilder<DbEnglishWord, DbEnglishWord, QFilterCondition> {}
 
 extension DbEnglishWordQueryLinks
-    on QueryBuilder<DbEnglishWord, DbEnglishWord, QFilterCondition> {}
+    on QueryBuilder<DbEnglishWord, DbEnglishWord, QFilterCondition> {
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition> words(
+      FilterQuery<DbWord> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'words');
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbEnglishWord, DbEnglishWord, QAfterFilterCondition>
+      wordsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'words', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension DbEnglishWordQuerySortBy
     on QueryBuilder<DbEnglishWord, DbEnglishWord, QSortBy> {

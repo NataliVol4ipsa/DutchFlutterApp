@@ -48,7 +48,15 @@ const DbDutchWordSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'words': LinkSchema(
+      id: -5342020939926090335,
+      name: r'words',
+      target: r'DbWord',
+      single: false,
+      linkName: r'dutchWordLink',
+    )
+  },
   embeddedSchemas: {},
   getId: _dbDutchWordGetId,
   getLinks: _dbDutchWordGetLinks,
@@ -116,12 +124,13 @@ Id _dbDutchWordGetId(DbDutchWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbDutchWordGetLinks(DbDutchWord object) {
-  return [];
+  return [object.words];
 }
 
 void _dbDutchWordAttach(
     IsarCollection<dynamic> col, Id id, DbDutchWord object) {
   object.id = id;
+  object.words.attach(col, col.isar.collection<DbWord>(), r'words', id);
 }
 
 extension DbDutchWordByIndex on IsarCollection<DbDutchWord> {
@@ -663,7 +672,67 @@ extension DbDutchWordQueryObject
     on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {}
 
 extension DbDutchWordQueryLinks
-    on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {}
+    on QueryBuilder<DbDutchWord, DbDutchWord, QFilterCondition> {
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> words(
+      FilterQuery<DbWord> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'words');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      wordsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> wordsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      wordsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      wordsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      wordsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'words', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      wordsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'words', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension DbDutchWordQuerySortBy
     on QueryBuilder<DbDutchWord, DbDutchWord, QSortBy> {

@@ -1,4 +1,5 @@
 // Degree to which user knows word
+import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:isar/isar.dart';
 
 part 'db_english_word.g.dart';
@@ -9,4 +10,7 @@ class DbEnglishWord {
 
   @Index(type: IndexType.hash, unique: true)
   late String word;
+
+  @Backlink(to: 'englishWordLinks')
+  final words = IsarLinks<DbWord>();
 }

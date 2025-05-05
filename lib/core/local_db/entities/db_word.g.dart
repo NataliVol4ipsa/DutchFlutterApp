@@ -84,6 +84,18 @@ const DbWordSchema = CollectionSchema(
       target: r'DbWordProgress',
       single: false,
       linkName: r'word',
+    ),
+    r'dutchWordLink': LinkSchema(
+      id: -9211722451160612912,
+      name: r'dutchWordLink',
+      target: r'DbDutchWord',
+      single: true,
+    ),
+    r'englishWordLinks': LinkSchema(
+      id: 6243495803116140330,
+      name: r'englishWordLinks',
+      target: r'DbEnglishWord',
+      single: false,
     )
   },
   embeddedSchemas: {},
@@ -251,7 +263,12 @@ Id _dbWordGetId(DbWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
-  return [object.collection, object.progress];
+  return [
+    object.collection,
+    object.progress,
+    object.dutchWordLink,
+    object.englishWordLinks
+  ];
 }
 
 void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
@@ -260,6 +277,10 @@ void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
       .attach(col, col.isar.collection<DbWordCollection>(), r'collection', id);
   object.progress
       .attach(col, col.isar.collection<DbWordProgress>(), r'progress', id);
+  object.dutchWordLink
+      .attach(col, col.isar.collection<DbDutchWord>(), r'dutchWordLink', id);
+  object.englishWordLinks.attach(
+      col, col.isar.collection<DbEnglishWord>(), r'englishWordLinks', id);
 }
 
 extension DbWordQueryWhereSort on QueryBuilder<DbWord, DbWord, QWhere> {
@@ -1584,6 +1605,81 @@ extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'progress', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordLink(
+      FilterQuery<DbDutchWord> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'dutchWordLink');
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordLinkIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'dutchWordLink', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordLinks(
+      FilterQuery<DbEnglishWord> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'englishWordLinks');
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'englishWordLinks', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'englishWordLinks', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'englishWordLinks', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'englishWordLinks', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'englishWordLinks', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition>
+      englishWordLinksLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'englishWordLinks', lower, includeLower, upper, includeUpper);
     });
   }
 }

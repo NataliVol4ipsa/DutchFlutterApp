@@ -1,3 +1,5 @@
+import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
+import 'package:dutch_app/core/local_db/entities/db_english_word.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/word_type.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_collection.dart';
@@ -24,4 +26,7 @@ class DbWord {
   late String? contextExampleTranslation;
   late String? userNote;
   late String? audioCode;
+
+  final dutchWordLink = IsarLink<DbDutchWord>();
+  final englishWordLinks = IsarLinks<DbEnglishWord>();
 }
