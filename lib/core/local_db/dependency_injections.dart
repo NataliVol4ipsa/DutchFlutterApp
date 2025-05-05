@@ -12,17 +12,17 @@ import 'package:provider/provider.dart';
 List<Provider> databaseProviders() {
   return [
     Provider<DbContext>(create: (_) => DbContext()),
-    Provider<WordsRepository>(
-        create: (context) => WordsRepository(
-            context.read<EnglishWordsRepository>(),
-            context.read<DutchWordsRepository>())),
+    Provider<DutchWordsRepository>(create: (_) => DutchWordsRepository()),
+    Provider<EnglishWordsRepository>(create: (_) => EnglishWordsRepository()),
     Provider<BatchRepository>(create: (_) => BatchRepository()),
     Provider<WordsImportRepository>(create: (_) => WordsImportRepository()),
     Provider<WordCollectionsRepository>(
         create: (_) => WordCollectionsRepository()),
     Provider<WordProgressRepository>(create: (_) => WordProgressRepository()),
     Provider<SettingsRepository>(create: (_) => SettingsRepository()),
-    Provider<DutchWordsRepository>(create: (_) => DutchWordsRepository()),
-    Provider<EnglishWordsRepository>(create: (_) => EnglishWordsRepository()),
+    Provider<WordsRepository>(
+        create: (context) => WordsRepository(
+            context.read<EnglishWordsRepository>(),
+            context.read<DutchWordsRepository>())),
   ];
 }

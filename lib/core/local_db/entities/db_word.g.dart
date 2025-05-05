@@ -38,29 +38,19 @@ const DbWordSchema = CollectionSchema(
       type: IsarType.byte,
       enumMap: _DbWorddeHetEnumValueMap,
     ),
-    r'dutchWord': PropertySchema(
-      id: 4,
-      name: r'dutchWord',
-      type: IsarType.string,
-    ),
-    r'englishWord': PropertySchema(
-      id: 5,
-      name: r'englishWord',
-      type: IsarType.string,
-    ),
     r'pluralForm': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'pluralForm',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 7,
+      id: 5,
       name: r'type',
       type: IsarType.byte,
       enumMap: _DbWordtypeEnumValueMap,
     ),
     r'userNote': PropertySchema(
-      id: 8,
+      id: 6,
       name: r'userNote',
       type: IsarType.string,
     )
@@ -130,18 +120,6 @@ int _dbWordEstimateSize(
     }
   }
   {
-    final value = object.dutchWord;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.englishWord;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.pluralForm;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -166,11 +144,9 @@ void _dbWordSerialize(
   writer.writeString(offsets[1], object.contextExample);
   writer.writeString(offsets[2], object.contextExampleTranslation);
   writer.writeByte(offsets[3], object.deHet.index);
-  writer.writeString(offsets[4], object.dutchWord);
-  writer.writeString(offsets[5], object.englishWord);
-  writer.writeString(offsets[6], object.pluralForm);
-  writer.writeByte(offsets[7], object.type.index);
-  writer.writeString(offsets[8], object.userNote);
+  writer.writeString(offsets[4], object.pluralForm);
+  writer.writeByte(offsets[5], object.type.index);
+  writer.writeString(offsets[6], object.userNote);
 }
 
 DbWord _dbWordDeserialize(
@@ -185,13 +161,11 @@ DbWord _dbWordDeserialize(
   object.contextExampleTranslation = reader.readStringOrNull(offsets[2]);
   object.deHet = _DbWorddeHetValueEnumMap[reader.readByteOrNull(offsets[3])] ??
       DeHetType.none;
-  object.dutchWord = reader.readStringOrNull(offsets[4]);
-  object.englishWord = reader.readStringOrNull(offsets[5]);
   object.id = id;
-  object.pluralForm = reader.readStringOrNull(offsets[6]);
-  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[7])] ??
+  object.pluralForm = reader.readStringOrNull(offsets[4]);
+  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
       WordType.unspecified;
-  object.userNote = reader.readStringOrNull(offsets[8]);
+  object.userNote = reader.readStringOrNull(offsets[6]);
   return object;
 }
 
@@ -214,13 +188,9 @@ P _dbWordDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
-    case 6:
-      return (reader.readStringOrNull(offset)) as P;
-    case 7:
       return (_DbWordtypeValueEnumMap[reader.readByteOrNull(offset)] ??
           WordType.unspecified) as P;
-    case 8:
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -872,298 +842,6 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'dutchWord',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'dutchWord',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dutchWord',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'dutchWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'dutchWord',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dutchWord',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> dutchWordIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'dutchWord',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'englishWord',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'englishWord',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'englishWord',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'englishWord',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'englishWord',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'englishWord',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> englishWordIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'englishWord',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1776,30 +1454,6 @@ extension DbWordQuerySortBy on QueryBuilder<DbWord, DbWord, QSortBy> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByDutchWord() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dutchWord', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByDutchWordDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dutchWord', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByEnglishWord() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'englishWord', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByEnglishWordDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'englishWord', Sort.desc);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByPluralForm() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pluralForm', Sort.asc);
@@ -1887,30 +1541,6 @@ extension DbWordQuerySortThenBy on QueryBuilder<DbWord, DbWord, QSortThenBy> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByDutchWord() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dutchWord', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByDutchWordDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'dutchWord', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByEnglishWord() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'englishWord', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByEnglishWordDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'englishWord', Sort.desc);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1990,20 +1620,6 @@ extension DbWordQueryWhereDistinct on QueryBuilder<DbWord, DbWord, QDistinct> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QDistinct> distinctByDutchWord(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'dutchWord', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QDistinct> distinctByEnglishWord(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'englishWord', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QDistinct> distinctByPluralForm(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2054,18 +1670,6 @@ extension DbWordQueryProperty on QueryBuilder<DbWord, DbWord, QQueryProperty> {
   QueryBuilder<DbWord, DeHetType, QQueryOperations> deHetProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'deHet');
-    });
-  }
-
-  QueryBuilder<DbWord, String?, QQueryOperations> dutchWordProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'dutchWord');
-    });
-  }
-
-  QueryBuilder<DbWord, String?, QQueryOperations> englishWordProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'englishWord');
     });
   }
 
