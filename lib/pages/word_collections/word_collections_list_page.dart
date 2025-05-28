@@ -42,7 +42,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   final ScrollController scrollController = ScrollController();
   late BatchWordOperationsService wordsStorageService;
 
-  bool checkboxModeEnabled = false;
+  bool _isSearchingModeEnabled = false;
+  bool _isCheckboxModeEnabled = false;
 
   @override
   void initState() {
@@ -62,10 +63,21 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Future<void> onAfterPopAsync(bool didPop, Object? result) async {
-    if (checkboxModeEnabled) {
+    if (_isCheckboxModeEnabled) {
       _toggleCheckboxMode();
       return;
     }
+    if (_isSearchingModeEnabled) {
+      _disableSearchMode();
+      return;
+    }
+  }
+
+  void _disableSearchMode() {
+    setState(() {
+      _isSearchingModeEnabled = false;
+      dataManager.makeAllWordsAndCollectionsVisible();
+    });
   }
 
   Future<void> _loadDataAsync() async {
@@ -93,7 +105,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   Future<void> _loadDataWithSnackBar(String? message) async {
     var snackBar = ScaffoldMessenger.of(context);
-    if (checkboxModeEnabled) {
+    if (_isCheckboxModeEnabled) {
       _toggleCheckboxMode();
     }
     await _loadDataAsync();
@@ -127,7 +139,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _onCollectionRowTap(SelectableWordCollectionModel collection) {
-    if (!checkboxModeEnabled) {
+    if (!_isCheckboxModeEnabled) {
       if (CollectionPermissionService.canRenameCollection(collection.id)) {
         _showUpdateCollectionDialog(collection);
       }
@@ -137,7 +149,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _selectWord(SelectableWordModel word) {
-    if (!checkboxModeEnabled) {
+    if (!_isCheckboxModeEnabled) {
       _showWordDetailsDialog(context, word);
       //_showEditWordDialog(context, word);
       return;
@@ -148,21 +160,21 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   void _longPressCollection(SelectableWordCollectionModel collection) {
-    if (checkboxModeEnabled) return;
+    if (_isCheckboxModeEnabled) return;
     _toggleCheckboxMode();
     _toggleIsSelectedCollection(collection);
   }
 
   void _longPressWord(SelectableWordModel word) {
-    if (checkboxModeEnabled) return;
+    if (_isCheckboxModeEnabled) return;
     _toggleCheckboxMode();
     _selectWord(word);
   }
 
   void _toggleCheckboxMode() {
     setState(() {
-      checkboxModeEnabled = !checkboxModeEnabled;
-      if (checkboxModeEnabled == false) {
+      _isCheckboxModeEnabled = !_isCheckboxModeEnabled;
+      if (_isCheckboxModeEnabled == false) {
         dataManager.unselectWordsAndCollections();
       }
     });
@@ -203,11 +215,14 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   List<Widget> _buildSingleCollectionAndItsWords(
       BuildContext context, SelectableWordCollectionModel collection) {
+    if (!collection.isVisible) {
+      return [];
+    }
     return [
       SelectableWordCollectionRow(
           collection: collection,
           onRowTap: _onCollectionRowTap,
-          showCheckbox: checkboxModeEnabled,
+          showCheckbox: _isCheckboxModeEnabled,
           onLongRowPress: () {
             _longPressCollection(collection);
           }),
@@ -220,11 +235,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     if (words == null) {
       return [];
     }
-    return words.asMap().entries.map(
+    return words.asMap().entries.where((entry) => entry.value.isVisible).map(
       (entry) {
         return SelectableWord(
           word: entry.value,
-          showCheckbox: checkboxModeEnabled,
+          showCheckbox: _isCheckboxModeEnabled,
           extraLeftPadding: ContainerStyles.defaultPaddingAmount,
           onRowTap: _selectWord,
           onLongRowPress: () {
@@ -259,13 +274,56 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
         "Succesfully imported ${importPackage.collections.length} collection(s) with $totalWords words");
   }
 
+  void _onSearchPressed() {
+    if (_isCheckboxModeEnabled) return;
+    setState(() {
+      _isSearchingModeEnabled = true;
+    });
+  }
+
+  void _onSearchTermChanged(String value) {
+    setState(() {
+      dataManager.adjustVisibilityBySearchTerm(value);
+    });
+  }
+
+  Widget _buildAppBarTitle() {
+    if (!_isSearchingModeEnabled) {
+      return Text(_appBarTitle());
+    }
+    return TextField(
+      autofocus: true,
+      style: TextStyle(
+        fontSize: 20,
+      ),
+      decoration: InputDecoration(
+        hintText: 'Search...',
+        border: InputBorder.none,
+      ),
+      onChanged: _onSearchTermChanged,
+    );
+  }
+
+  bool _shouldShowSearchIcon() {
+    return !_isCheckboxModeEnabled && !_isSearchingModeEnabled;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: !checkboxModeEnabled,
+        canPop: !_isCheckboxModeEnabled && !_isSearchingModeEnabled,
         onPopInvokedWithResult: onAfterPopAsync,
         child: Scaffold(
-            appBar: MyAppBar(title: Text(_appBarTitle())),
+            appBar: MyAppBar(
+              title: _buildAppBarTitle(),
+              actions: [
+                if (_shouldShowSearchIcon())
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: _onSearchPressed,
+                  ),
+              ],
+            ),
             body: _buildPage(context),
             bottomNavigationBar: _buildBottomNavBar(context)));
   }
@@ -280,7 +338,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   String _appBarTitle() {
-    return checkboxModeEnabled
+    return _isCheckboxModeEnabled
         ? _multiselectAppBarTitle()
         : "Words and collections";
   }
@@ -304,7 +362,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
-    if (checkboxModeEnabled) {
+    if (_isCheckboxModeEnabled) {
       return _buildCheckboxNavBar(context);
     }
     return _buildRegularNavBar(context);

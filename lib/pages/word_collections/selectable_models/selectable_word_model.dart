@@ -5,6 +5,7 @@ import 'package:dutch_app/pages/word_collections/selectable_models/selectable_it
 class SelectableWordModel implements SelectableItemModel<Word> {
   @override
   bool isSelected = false;
+  bool isVisible = true;
 
   @override
   final Word value;

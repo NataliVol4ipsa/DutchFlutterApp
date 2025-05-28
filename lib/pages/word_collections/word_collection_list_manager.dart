@@ -125,4 +125,33 @@ class WordCollectionListManager {
 
     return false;
   }
+
+  void makeAllWordsAndCollectionsVisible() {
+    for (var collection in collections) {
+      collection.isVisible = true;
+      for (var word in collection.words ?? []) {
+        word.isVisible = true;
+      }
+    }
+  }
+
+  void adjustVisibilityBySearchTerm(String searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+    for (var collection in collections) {
+      bool hasVisibleWords = false;
+      for (var word in collection.words ?? []) {
+        if (word.value.dutchWord.toLowerCase().contains(searchTerm)) {
+          word.isVisible = true;
+          hasVisibleWords = true;
+        } else {
+          word.isVisible = false;
+        }
+      }
+      if (collection.name.toLowerCase().contains(searchTerm)) {
+        collection.isVisible = true;
+      } else {
+        collection.isVisible = hasVisibleWords;
+      }
+    }
+  }
 }
