@@ -106,26 +106,33 @@ class WordsRepository {
     bool isChangedDutchWord =
         dbWord.dutchWordLink.value?.word != updatedWord.dutchWord;
 
-    _mapUpdatedWordToEntity(dbWord, updatedWord);
-    await DbContext.isar.writeTxn(() => DbContext.isar.dbWords.put(dbWord));
-
-    if (isChangedDutchWord) {
-      await _removeWordFromDutchWordsLinksAsync(
-          dbWord, dbWord.dutchWordLink.value?.id);
-    }
-
     await DbContext.isar.writeTxn(() async {
+      // Main word update
+      _mapUpdatedWordToEntity(dbWord, updatedWord);
+      DbContext.isar.dbWords.put(dbWord);
+
+      // Process changed dutch word
+      if (isChangedDutchWord) {
+        await _removeWordFromDutchWordsLinksAsync(
+            dbWord, dbWord.dutchWordLink.value?.id);
+      }
+
+      // Update word links
       await _updateWordDutchLinkAsync(updatedWord.dutchWord, dbWord);
       await _updateWordEnglishLinksAsync(updatedWord.englishWords, dbWord);
+      await nounDetailsRepository.upsertNounDetailsAsync(updatedWord, dbWord);
+      await verbDetailsRepository.upsertNounDetailsAsync(updatedWord, dbWord);
+
+      // Process change of collection
+      if (dbWord.collection.value?.id != updatedWord.collection?.id) {
+        await _removeWordFromCollectionAsync(dbWord);
+        if (updatedWord.collection?.id != null) {
+          await _addExistingWordToCollectionAsync(
+              updatedWord.collection!.id!, dbWord);
+        }
+      }
     });
 
-    if (dbWord.collection.value?.id != updatedWord.collection?.id) {
-      await _removeWordFromCollectionAsync(dbWord);
-      if (updatedWord.collection?.id != null) {
-        await addExistingWordToCollectionAsync(
-            updatedWord.collection!.id!, dbWord);
-      }
-    }
     return true;
   }
 
@@ -142,44 +149,36 @@ class WordsRepository {
       DbWord word, int? oldDutchWordId) async {
     if (oldDutchWordId == null) return;
 
-    await DbContext.isar.writeTxn(() async {
-      final oldDutchWord =
-          await DbContext.isar.dbDutchWords.get(oldDutchWordId);
-      if (oldDutchWord != null) {
-        oldDutchWord.words.remove(word);
-        await oldDutchWord.words.save();
-        if (oldDutchWord.audioCode == null && oldDutchWord.words.isEmpty) {
-          DbContext.isar.dbWords.delete(oldDutchWordId);
-        }
+    final oldDutchWord = await DbContext.isar.dbDutchWords.get(oldDutchWordId);
+    if (oldDutchWord != null) {
+      oldDutchWord.words.remove(word);
+      await oldDutchWord.words.save();
+      if (oldDutchWord.audioCode == null && oldDutchWord.words.isEmpty) {
+        DbContext.isar.dbWords.delete(oldDutchWordId);
       }
-    });
+    }
   }
 
   Future<void> _removeWordFromCollectionAsync(DbWord word) async {
     if (word.collection.value?.id == null) return;
 
-    await DbContext.isar.writeTxn(() async {
-      final oldCollection = await DbContext.isar.dbWordCollections
-          .get(word.collection.value!.id!);
-      if (oldCollection != null) {
-        oldCollection.words.remove(word);
-        await oldCollection.words.save();
-      }
-    });
+    final oldCollection =
+        await DbContext.isar.dbWordCollections.get(word.collection.value!.id!);
+    if (oldCollection != null) {
+      oldCollection.words.remove(word);
+      await oldCollection.words.save();
+    }
   }
 
-  Future<void> addExistingWordToCollectionAsync(
+  Future<void> _addExistingWordToCollectionAsync(
       int collectionId, DbWord word) async {
-    await DbContext.isar.writeTxn(() async {
-      final collection =
-          await DbContext.isar.dbWordCollections.get(collectionId);
-      if (collection != null) {
-        collection.words.add(word);
-        await collection.words.save();
-        collection.lastUpdated = DateTime.now();
-        await DbContext.isar.dbWordCollections.put(collection);
-      }
-    });
+    final collection = await DbContext.isar.dbWordCollections.get(collectionId);
+    if (collection != null) {
+      collection.words.add(word);
+      await collection.words.save();
+      collection.lastUpdated = DateTime.now();
+      await DbContext.isar.dbWordCollections.put(collection);
+    }
   }
 
   // Future<List<DbWord>> _getWordsWithWordLinksAsync() async {
