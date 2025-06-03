@@ -2,6 +2,8 @@ import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_english_word.dart';
 import 'package:dutch_app/core/local_db/repositories/dutch_words_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/english_words_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/word_noun_details_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/word_verb_details_repository.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/new_word_collection.dart';
 import 'package:dutch_app/domain/services/collection_permission_service.dart';
@@ -12,6 +14,14 @@ import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
 import 'package:dutch_app/core/local_db/mapping/words_mapper.dart';
 
 class WordsImportRepository {
+  final DutchWordsRepository dutchWordsRepository;
+  final EnglishWordsRepository englishWordsRepository;
+  final WordNounDetailsRepository nounDetailsRepository;
+  final WordVerbDetailsRepository verbDetailsRepository;
+
+  WordsImportRepository(this.englishWordsRepository, this.dutchWordsRepository,
+      this.nounDetailsRepository, this.verbDetailsRepository);
+
   Future<void> importAsync(List<NewWordCollection> newCollections) async {
     await DbContext.isar.writeTxn(() async {
       Map<String, DbDutchWord> duMaps =
@@ -38,9 +48,9 @@ class WordsImportRepository {
             (word) => word.englishWords.map((e) => e.toLowerCase().trim())))
         .toSet()
         .toList();
-    var enRepo = EnglishWordsRepository();
     final enMaps = <String, DbEnglishWord>{};
-    var enEntities = await enRepo.getOrCreateRawListAsync(englishWords);
+    var enEntities =
+        await englishWordsRepository.getOrCreateRawListAsync(englishWords);
     for (int i = 0; i < englishWords.length; i++) {
       enMaps[englishWords[i]] = enEntities[i];
     }
@@ -54,9 +64,9 @@ class WordsImportRepository {
             col.words.map((word) => word.dutchWord.toLowerCase().trim()))
         .toSet()
         .toList();
-    var duRepo = DutchWordsRepository();
     final duMaps = <String, DbDutchWord>{};
-    var duEntities = await duRepo.getOrCreateRawListAsync(dutchWords);
+    var duEntities =
+        await dutchWordsRepository.getOrCreateRawListAsync(dutchWords);
     for (int i = 0; i < dutchWords.length; i++) {
       duMaps[dutchWords[i]] = duEntities[i];
     }
@@ -109,6 +119,9 @@ class WordsImportRepository {
     await DbContext.isar.dbWords.put(newWord);
     await _updateWordDutchLinkAsync(duMaps, newWord, word.dutchWord);
     await _updateWordEnglishLinksAsync(enMaps, newWord, word.englishWords);
+    await nounDetailsRepository.maybeCreateNounDetailsAsync(word, newWord);
+    await verbDetailsRepository.maybeCreateVerbDetailsAsync(word, newWord);
+
     return newWord;
   }
 

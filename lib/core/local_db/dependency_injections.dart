@@ -17,7 +17,6 @@ List<Provider> databaseProviders() {
     Provider<DutchWordsRepository>(create: (_) => DutchWordsRepository()),
     Provider<EnglishWordsRepository>(create: (_) => EnglishWordsRepository()),
     Provider<BatchRepository>(create: (_) => BatchRepository()),
-    Provider<WordsImportRepository>(create: (_) => WordsImportRepository()),
     Provider<WordCollectionsRepository>(
         create: (_) => WordCollectionsRepository()),
     Provider<WordProgressRepository>(create: (_) => WordProgressRepository()),
@@ -30,6 +29,12 @@ List<Provider> databaseProviders() {
             WordVerbDetailsRepository(context.read<DutchWordsRepository>())),
     Provider<WordsRepository>(
         create: (context) => WordsRepository(
+            context.read<EnglishWordsRepository>(),
+            context.read<DutchWordsRepository>(),
+            context.read<WordNounDetailsRepository>(),
+            context.read<WordVerbDetailsRepository>())),
+    Provider<WordsImportRepository>(
+        create: (context) => WordsImportRepository(
             context.read<EnglishWordsRepository>(),
             context.read<DutchWordsRepository>(),
             context.read<WordNounDetailsRepository>(),
