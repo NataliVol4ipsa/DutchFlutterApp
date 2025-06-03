@@ -83,6 +83,8 @@ class WordsRepository {
     await dbWord?.collection.load();
     await dbWord?.dutchWordLink.load();
     await dbWord?.englishWordLinks.load();
+    await nounDetailsRepository.loadNounDetailsLinks(dbWord?.nounDetailsLink);
+    await verbDetailsRepository.loadVerbDetailsLinks(dbWord?.verbDetailsLink);
 
     return dbWord;
   }

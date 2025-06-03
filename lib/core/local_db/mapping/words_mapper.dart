@@ -2,6 +2,7 @@ import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
+import 'package:dutch_app/domain/types/de_het_type.dart';
 
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
@@ -31,8 +32,8 @@ class WordsMapper {
       dbWord.englishWordLinks.map((l) => l.word).toList(),
       dbWord.type,
       collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
-      deHetType: dbWord.deHet,
-      pluralForm: dbWord.pluralForm,
+      deHetType: dbWord.nounDetailsLink.value?.deHet ?? DeHetType.none,
+      pluralForm: dbWord.nounDetailsLink.value?.pluralFormWordLink.value?.word,
       contextExample: dbWord.contextExample,
       contextExampleTranslation: dbWord.contextExampleTranslation,
       userNote: dbWord.userNote,

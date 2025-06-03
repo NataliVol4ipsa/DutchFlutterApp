@@ -3,6 +3,7 @@ import 'package:dutch_app/core/local_db/repositories/dutch_words_repository.dart
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
+import 'package:isar/isar.dart';
 
 class WordNounDetailsRepository {
   final DutchWordsRepository dutchWordsRepository;
@@ -42,5 +43,11 @@ class WordNounDetailsRepository {
     //       .getOrCreateRawAsync(word.diminutive!.toLowerCase().trim());
     //   nounDetails.diminutiveWordLink.value = diminutive;
     // }
+  }
+
+  Future<void> loadNounDetailsLinks(IsarLink<DbWordNounDetails>? link) async {
+    await link?.load();
+    await link?.value?.pluralFormWordLink.load();
+    await link?.value?.diminutiveWordLink.load();
   }
 }
