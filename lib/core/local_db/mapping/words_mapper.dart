@@ -12,7 +12,6 @@ class WordsMapper {
     newWord.contextExample = word.contextExample;
     newWord.contextExampleTranslation = word.contextExampleTranslation;
     newWord.userNote = word.userNote;
-    newWord.audioCode = word.audioCode;
     return newWord;
   }
 
@@ -37,7 +36,7 @@ class WordsMapper {
       contextExample: dbWord.contextExample,
       contextExampleTranslation: dbWord.contextExampleTranslation,
       userNote: dbWord.userNote,
-      audioCode: dbWord.audioCode,
+      audioCode: dbWord.dutchWordLink.value?.audioCode,
     );
   }
 
