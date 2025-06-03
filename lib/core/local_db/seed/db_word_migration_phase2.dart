@@ -7,6 +7,11 @@ import 'package:isar/isar.dart';
 class DbWordMigrationPhase2 {
   static Future<void> runAsync() async {
     final isar = DbContext.isar;
+    final alreadyComplete =
+        await isar.dbWordNounDetails.where().limit(1).findFirst() != null;
+    if (alreadyComplete) {
+      return;
+    }
 
     final words = await isar.dbWords.filter().pluralFormIsNotNull().findAll();
 

@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
+import 'package:dutch_app/core/local_db/entities/db_word_noun_details.dart';
 import 'package:isar/isar.dart';
 
 part 'db_dutch_word.g.dart';
@@ -13,4 +14,9 @@ class DbDutchWord {
 
   @Backlink(to: 'dutchWordLink')
   final words = IsarLinks<DbWord>();
+
+  @Backlink(to: 'pluralFormWordLink')
+  final pluralFormWords = IsarLinks<DbWordNounDetails>();
+  @Backlink(to: 'diminutiveWordLink')
+  final diminutiveWords = IsarLinks<DbWordNounDetails>();
 }

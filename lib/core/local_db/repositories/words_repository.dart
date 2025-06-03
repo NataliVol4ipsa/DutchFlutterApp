@@ -1,6 +1,8 @@
 import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
 import 'package:dutch_app/core/local_db/repositories/dutch_words_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/english_words_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/word_noun_details_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/word_verb_details_repository.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/core/local_db/db_context.dart';
@@ -13,8 +15,11 @@ import '../mapping/words_mapper.dart';
 class WordsRepository {
   final DutchWordsRepository dutchWordsRepository;
   final EnglishWordsRepository englishWordsRepository;
+  final WordNounDetailsRepository nounDetailsRepository;
+  final WordVerbDetailsRepository verbDetailsRepository;
 
-  WordsRepository(this.englishWordsRepository, this.dutchWordsRepository);
+  WordsRepository(this.englishWordsRepository, this.dutchWordsRepository,
+      this.nounDetailsRepository, this.verbDetailsRepository);
 
   Future<int> addAsync(NewWord word) async {
     final newWord = WordsMapper.mapToEntity(word);
@@ -47,6 +52,9 @@ class WordsRepository {
 
     await _updateWordDutchLinkAsync(word.dutchWord, newWord);
     await _updateWordEnglishLinksAsync(word.englishWords, newWord);
+
+    await nounDetailsRepository.maybeCreateNounDetailsAsync(word, newWord);
+    await verbDetailsRepository.maybeCreateVerbDetailsAsync(word, newWord);
 
     return newWordId;
   }

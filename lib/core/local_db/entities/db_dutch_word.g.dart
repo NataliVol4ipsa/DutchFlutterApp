@@ -55,6 +55,20 @@ const DbDutchWordSchema = CollectionSchema(
       target: r'DbWord',
       single: false,
       linkName: r'dutchWordLink',
+    ),
+    r'pluralFormWords': LinkSchema(
+      id: 252001335742526826,
+      name: r'pluralFormWords',
+      target: r'DbWordNounDetails',
+      single: false,
+      linkName: r'pluralFormWordLink',
+    ),
+    r'diminutiveWords': LinkSchema(
+      id: 2466636593009372208,
+      name: r'diminutiveWords',
+      target: r'DbWordNounDetails',
+      single: false,
+      linkName: r'diminutiveWordLink',
     )
   },
   embeddedSchemas: {},
@@ -124,13 +138,17 @@ Id _dbDutchWordGetId(DbDutchWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbDutchWordGetLinks(DbDutchWord object) {
-  return [object.words];
+  return [object.words, object.pluralFormWords, object.diminutiveWords];
 }
 
 void _dbDutchWordAttach(
     IsarCollection<dynamic> col, Id id, DbDutchWord object) {
   object.id = id;
   object.words.attach(col, col.isar.collection<DbWord>(), r'words', id);
+  object.pluralFormWords.attach(
+      col, col.isar.collection<DbWordNounDetails>(), r'pluralFormWords', id);
+  object.diminutiveWords.attach(
+      col, col.isar.collection<DbWordNounDetails>(), r'diminutiveWords', id);
 }
 
 extension DbDutchWordByIndex on IsarCollection<DbDutchWord> {
@@ -730,6 +748,130 @@ extension DbDutchWordQueryLinks
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'words', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pluralFormWords(
+      FilterQuery<DbWordNounDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pluralFormWords');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pluralFormWords', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pluralFormWords', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pluralFormWords', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pluralFormWords', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pluralFormWords', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pluralFormWordsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pluralFormWords', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> diminutiveWords(
+      FilterQuery<DbWordNounDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'diminutiveWords');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'diminutiveWords', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'diminutiveWords', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'diminutiveWords', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'diminutiveWords', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'diminutiveWords', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      diminutiveWordsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'diminutiveWords', lower, includeLower, upper, includeUpper);
     });
   }
 }
