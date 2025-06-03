@@ -34,6 +34,8 @@ class WordCollectionsMapper {
       await Future.wait([
         ...dbCollection.words.map((w) => w.dutchWordLink.load()),
         ...dbCollection.words.map((w) => w.englishWordLinks.load()),
+        ...dbCollection.words.map((w) => w.nounDetailsLink.load()),
+        ...dbCollection.words.map((w) => w.verbDetailsLink.load()),
       ]);
     }
 

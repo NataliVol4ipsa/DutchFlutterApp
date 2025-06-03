@@ -63,9 +63,4 @@ class WordCollectionsRepository {
 
     return true;
   }
-
-  Future<bool> deleteAsync(int id) async {
-    return await DbContext.isar
-        .writeTxn(() => DbContext.isar.dbWordCollections.delete(id));
-  }
 }

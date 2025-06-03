@@ -180,40 +180,4 @@ class WordsRepository {
       await DbContext.isar.dbWordCollections.put(collection);
     }
   }
-
-  // Future<List<DbWord>> _getWordsWithWordLinksAsync() async {
-  //   List<DbWord> dbWords = await DbContext.isar.dbWords.where().findAll();
-
-  //   await Future.wait([
-  //     ...dbWords.map((w) => w.dutchWordLink.load()),
-  //     ...dbWords.map((w) => w.englishWordLinks.load()),
-  //   ]);
-
-  //   return dbWords;
-  // }
-
-  // Future<List<Word>> getWordsAsync() async {
-  //   final dbWords = await _getWordsWithWordLinksAsync();
-
-  //   List<Word> words = WordsMapper.mapToDomainList(dbWords);
-  //   return words;
-  // }
-
-  // Future<List<Word>> getWordsWithCollectionAsync() async {
-  //   final dbWords = await _getWordsWithWordLinksAsync();
-
-  //   List<Word> words =
-  //       await WordsMapper.mapWithCollectionToDomainListAsync(dbWords);
-  //   return words;
-  // }
-
-//   Future<bool> deleteAsync(int id) async {
-//     return await DbContext.isar
-//         .writeTxn(() => DbContext.isar.dbWords.delete(id));
-//   }
-
-//   Future<int> deleteBatchAsync(List<int> ids) async {
-//     return await DbContext.isar
-//         .writeTxn(() => DbContext.isar.dbWords.deleteAll(ids));
-//   }
 }
