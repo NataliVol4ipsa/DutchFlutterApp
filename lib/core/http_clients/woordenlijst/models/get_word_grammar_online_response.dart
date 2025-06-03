@@ -1,9 +1,9 @@
 import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 
 class GetWordGrammarOnlineResponse {
   final String word;
-  late WordType? partOfSpeech;
+  late PartOfSpeech? partOfSpeech;
   late String? note;
   late final GetWordGrammarNounDetailsDto nounDetails;
   late final GetWordGrammarVerbDetailsDto verbDetails;

@@ -5,7 +5,7 @@ class NewWord extends BaseWord {
   NewWord(
     super.dutchWord,
     super.englishWords,
-    super.wordType, {
+    super.partOfSpeech, {
     super.collection,
     super.deHetType = DeHetType.none,
     super.pluralForm,

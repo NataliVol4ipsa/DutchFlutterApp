@@ -1,4 +1,4 @@
-enum WordType {
+enum PartOfSpeech {
   unspecified,
   noun,
   adjective,
@@ -15,65 +15,65 @@ enum WordType {
   article,
 }
 
-extension WordTypeExtension on WordType {
+extension PartOfSpeechExtension on PartOfSpeech {
   String get label {
     switch (this) {
-      case WordType.noun:
+      case PartOfSpeech.noun:
         return 'noun';
-      case WordType.article:
+      case PartOfSpeech.article:
         return 'article';
-      case WordType.adjective:
+      case PartOfSpeech.adjective:
         return 'adjective';
-      case WordType.verb:
+      case PartOfSpeech.verb:
         return 'Verb';
-      case WordType.adverb:
+      case PartOfSpeech.adverb:
         return 'adverb';
-      case WordType.preposition:
+      case PartOfSpeech.preposition:
         return 'preposition';
-      case WordType.interjection:
+      case PartOfSpeech.interjection:
         return 'interjection';
-      case WordType.conjunction:
+      case PartOfSpeech.conjunction:
         return 'conjunction';
-      case WordType.fixedConjunction:
+      case PartOfSpeech.fixedConjunction:
         return 'fixed conjunction';
-      case WordType.pronoun:
+      case PartOfSpeech.pronoun:
         return 'pronoun';
-      case WordType.numeral:
+      case PartOfSpeech.numeral:
         return 'numeral';
-      case WordType.phrase:
+      case PartOfSpeech.phrase:
         return 'phrase';
-      case WordType.unspecified:
+      case PartOfSpeech.unspecified:
         return 'unspecified';
     }
   }
 
   String get capitalLabel {
     switch (this) {
-      case WordType.noun:
+      case PartOfSpeech.noun:
         return 'Noun';
-      case WordType.article:
+      case PartOfSpeech.article:
         return 'Article';
-      case WordType.adjective:
+      case PartOfSpeech.adjective:
         return 'Adjective';
-      case WordType.verb:
+      case PartOfSpeech.verb:
         return 'Verb';
-      case WordType.adverb:
+      case PartOfSpeech.adverb:
         return 'Adverb';
-      case WordType.preposition:
+      case PartOfSpeech.preposition:
         return 'Preposition';
-      case WordType.interjection:
+      case PartOfSpeech.interjection:
         return 'Interjection';
-      case WordType.conjunction:
+      case PartOfSpeech.conjunction:
         return 'Conjunction';
-      case WordType.fixedConjunction:
+      case PartOfSpeech.fixedConjunction:
         return 'Fixed Conjunction';
-      case WordType.pronoun:
+      case PartOfSpeech.pronoun:
         return 'Pronoun';
-      case WordType.numeral:
+      case PartOfSpeech.numeral:
         return 'Numeral';
-      case WordType.phrase:
+      case PartOfSpeech.phrase:
         return 'Phrase';
-      case WordType.unspecified:
+      case PartOfSpeech.unspecified:
         return 'Unspecified';
     }
   }

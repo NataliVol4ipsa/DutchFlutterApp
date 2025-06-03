@@ -4,7 +4,7 @@ import 'package:dutch_app/core/http_clients/woordenlijst/models/get_words_gramma
 import 'package:dutch_app/core/http_clients/woordenlijst/mapping/gender_converter.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/mapping/word_type_converter.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/xml_extensions.dart';
 import 'package:xml/xml.dart' as xml;
 
@@ -185,13 +185,13 @@ class GetWordsOnlineXmlResponseParser {
     return section.findFirstText('lemma_part_of_speech');
   }
 
-  WordType parseAdditionalInfoIntoSpeech(String? value) {
+  PartOfSpeech parseAdditionalInfoIntoSpeech(String? value) {
     if (value == null) {
-      return WordType.unspecified;
+      return PartOfSpeech.unspecified;
     }
     String result = value.replaceAll(RegExp(r'\(.*$'), '');
     if (result.trim() == "") {
-      return WordType.unspecified;
+      return PartOfSpeech.unspecified;
     }
 
     return WordTypeConverter.toWordType(result);

@@ -120,7 +120,7 @@ class WordsRepository {
   }
 
   static void _mapUpdatedWordToEntity(DbWord dbWord, Word updatedWord) {
-    dbWord.type = updatedWord.wordType;
+    dbWord.type = updatedWord.partOfSpeech;
     dbWord.deHet = updatedWord.deHetType;
     dbWord.pluralForm = updatedWord.pluralForm;
     dbWord.contextExample = updatedWord.contextExample;

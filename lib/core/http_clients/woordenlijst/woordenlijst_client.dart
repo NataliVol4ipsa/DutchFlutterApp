@@ -4,7 +4,7 @@ import 'package:dutch_app/domain/notifiers/notifier_tools.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/mapping/get_words_online_xml_response_parser.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/mapping/word_type_converter.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +13,7 @@ class WoordenlijstClient {
 
   Future<GetWordsGrammarOnlineResponse?> findAsync(
       BuildContext context, String word,
-      {WordType? wordType}) async {
+      {PartOfSpeech? wordType}) async {
     String? partOfSpeech = WordTypeConverter.toPartOfSpeechCode(wordType);
     String partOfSpeechQueryParam =
         partOfSpeech == null ? "" : "&part_of_speech=$partOfSpeech";

@@ -1,4 +1,4 @@
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/sentence_example.dart';
@@ -55,14 +55,14 @@ class OnlineTranslationListMappingService {
         .toList();
   }
 
-  static String? findNounPluralForm(WordType translationWordType,
+  static String? findNounPluralForm(PartOfSpeech translationWordType,
       List<GetWordGrammarOnlineResponse>? grammarOptions) {
-    if (translationWordType != WordType.noun || grammarOptions == null) {
+    if (translationWordType != PartOfSpeech.noun || grammarOptions == null) {
       return null;
     }
 
     for (var option in grammarOptions) {
-      if (option.partOfSpeech == WordType.noun &&
+      if (option.partOfSpeech == PartOfSpeech.noun &&
           option.nounDetails.pluralForm != null &&
           option.nounDetails.pluralForm!.trim().isNotEmpty) {
         return option.nounDetails.pluralForm;

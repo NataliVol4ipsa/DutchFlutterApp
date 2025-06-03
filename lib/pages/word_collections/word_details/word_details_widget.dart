@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/word.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
@@ -88,7 +88,7 @@ class WordDetails extends StatelessWidget {
               .copyWith(color: BaseStyles.getColorScheme(context).primary),
         ),
         SelectableText(
-          word.wordType.label,
+          word.partOfSpeech.label,
           style: TextStyles.titleCommentStyle,
         ),
       ],

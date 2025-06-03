@@ -1,62 +1,62 @@
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 
 class WordTypeConverter {
-  static WordType toWordType(String woordenlijstPartOfSpeechCode) {
+  static PartOfSpeech toWordType(String woordenlijstPartOfSpeechCode) {
     switch (woordenlijstPartOfSpeechCode) {
       case "AA":
-        return WordType.adjective;
+        return PartOfSpeech.adjective;
       case "ADV":
-        return WordType.adverb;
+        return PartOfSpeech.adverb;
       case "ADP":
-        return WordType.preposition;
+        return PartOfSpeech.preposition;
       case "NOU-C":
       case "NOU-P":
-        return WordType.noun;
+        return PartOfSpeech.noun;
       case "INT":
-        return WordType.interjection;
+        return PartOfSpeech.interjection;
       case "CONJ":
-        return WordType.conjunction;
+        return PartOfSpeech.conjunction;
       case "COLL":
-        return WordType.fixedConjunction;
+        return PartOfSpeech.fixedConjunction;
       case "PD":
-        return WordType.pronoun;
+        return PartOfSpeech.pronoun;
       case "NUM":
-        return WordType.numeral;
+        return PartOfSpeech.numeral;
       case "VRB":
-        return WordType.verb;
+        return PartOfSpeech.verb;
       case "RES":
       default:
-        return WordType.unspecified;
+        return PartOfSpeech.unspecified;
     }
   }
 
-  static String? toPartOfSpeechCode(WordType? wordType) {
+  static String? toPartOfSpeechCode(PartOfSpeech? wordType) {
     if (wordType == null) {
       return null;
     }
 
     switch (wordType) {
-      case WordType.adjective:
+      case PartOfSpeech.adjective:
         return "AA";
-      case WordType.adverb:
+      case PartOfSpeech.adverb:
         return "ADV";
-      case WordType.preposition:
+      case PartOfSpeech.preposition:
         return "ADP";
-      case WordType.noun:
+      case PartOfSpeech.noun:
         return "NOU-C|NOU-P";
-      case WordType.interjection:
+      case PartOfSpeech.interjection:
         return "INT";
-      case WordType.conjunction:
+      case PartOfSpeech.conjunction:
         return "CONJ";
-      case WordType.fixedConjunction:
+      case PartOfSpeech.fixedConjunction:
         return "COLL";
-      case WordType.pronoun:
+      case PartOfSpeech.pronoun:
         return "PD";
-      case WordType.numeral:
+      case PartOfSpeech.numeral:
         return "NUM";
-      case WordType.verb:
+      case PartOfSpeech.verb:
         return "VRB";
-      case WordType.unspecified:
+      case PartOfSpeech.unspecified:
       default:
         return null;
     }

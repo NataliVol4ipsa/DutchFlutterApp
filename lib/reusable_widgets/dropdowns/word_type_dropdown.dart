@@ -1,11 +1,11 @@
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/reusable_widgets/dropdowns/generic_dropdown_menu.dart';
 import 'package:dutch_app/styles/text_styles.dart';
 import 'package:flutter/cupertino.dart';
 
 class WordTypeDropdown extends StatefulWidget {
   final Function updateValueCallback;
-  final WordType? initialValue;
+  final PartOfSpeech? initialValue;
   final Widget? prefixIcon;
   final Color? dropdownArrowColor;
   final bool firstOptionGrey;
@@ -22,18 +22,18 @@ class WordTypeDropdown extends StatefulWidget {
 }
 
 class _WordTypeDropdownState extends State<WordTypeDropdown> {
-  List<WordType> wordTypeDropdownValues = WordType.values.toList();
-  WordType? selectedWordType;
+  List<PartOfSpeech> wordTypeDropdownValues = PartOfSpeech.values.toList();
+  PartOfSpeech? selectedWordType;
 
-  void updateSelectedWordType(WordType? value) {
+  void updateSelectedWordType(PartOfSpeech? value) {
     setState(() {
       selectedWordType = value;
     });
     widget.updateValueCallback(value);
   }
 
-  static Color? _firstOptionGrey(WordType wordType, BuildContext context) {
-    return wordType == WordType.unspecified
+  static Color? _firstOptionGrey(PartOfSpeech wordType, BuildContext context) {
+    return wordType == PartOfSpeech.unspecified
         ? TextStyles.dropdownGreyTextColor(context)
         : null;
   }
@@ -48,7 +48,7 @@ class _WordTypeDropdownState extends State<WordTypeDropdown> {
       displayStringFunc: (wt) => wt.capitalLabel,
       dropdownArrowColor: widget.dropdownArrowColor,
       dropdownOptionColorGenerator: widget.firstOptionGrey
-          ? (WordType wordType) => _firstOptionGrey(wordType, context)
+          ? (PartOfSpeech wordType) => _firstOptionGrey(wordType, context)
           : null,
     );
   }

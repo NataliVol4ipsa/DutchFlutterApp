@@ -2,7 +2,7 @@ import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,8 @@ class DeHetPickExercise extends BaseExercise {
   }
 
   static bool isSupportedWord(Word word) {
-    return word.wordType == WordType.noun && word.deHetType != DeHetType.none;
+    return word.partOfSpeech == PartOfSpeech.noun &&
+        word.deHetType != DeHetType.none;
   }
 
   bool isCorrectAnswer(DeHetType userAnswer) {

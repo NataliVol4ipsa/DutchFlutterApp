@@ -8,12 +8,12 @@ import 'package:dutch_app/pages/word_editor/online_search/online_translation_wid
 import 'package:flutter/material.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/woordenlijst_client.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:provider/provider.dart';
 
 class OnlineWordSearchPage extends StatefulWidget {
   final String word;
-  final WordType? selectedWordType;
+  final PartOfSpeech? selectedWordType;
 
   OnlineWordSearchPage({
     super.key,

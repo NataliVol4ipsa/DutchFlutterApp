@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_option.dart';
@@ -37,7 +37,7 @@ class ManyToManyExercise extends BaseExercise {
   }
 
   static bool isSupportedWord(Word word) {
-    return word.wordType != WordType.phrase;
+    return word.partOfSpeech != PartOfSpeech.phrase;
   }
 
   bool processAnswer(ManyToManyOption left, ManyToManyOption right) {

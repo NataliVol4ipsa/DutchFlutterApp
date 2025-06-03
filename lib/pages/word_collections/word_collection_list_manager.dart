@@ -2,7 +2,7 @@ import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/models/word_collection.dart';
 import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
 import 'package:dutch_app/domain/services/word_collection_sorter.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/local_db/repositories/word_collections_repository.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_collection_model.dart';
 import 'package:dutch_app/pages/word_collections/selectable_models/selectable_word_model.dart';
@@ -38,16 +38,16 @@ class WordCollectionListManager {
   }
 
   int _sortWords(SelectableWordModel w1, SelectableWordModel w2) {
-    if (w1.value.wordType == WordType.phrase &&
-        w2.value.wordType == WordType.phrase) {
+    if (w1.value.partOfSpeech == PartOfSpeech.phrase &&
+        w2.value.partOfSpeech == PartOfSpeech.phrase) {
       return w1.value.dutchWord
           .toLowerCase()
           .compareTo(w2.value.dutchWord.toLowerCase());
     }
-    if (w1.value.wordType == WordType.phrase) {
+    if (w1.value.partOfSpeech == PartOfSpeech.phrase) {
       return 1;
     }
-    if (w2.value.wordType == WordType.phrase) {
+    if (w2.value.partOfSpeech == PartOfSpeech.phrase) {
       return -1;
     }
     return w1.value.dutchWord

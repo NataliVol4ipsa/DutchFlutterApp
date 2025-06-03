@@ -1,12 +1,12 @@
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/gender_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/online_translation_dutch_word.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 
 class WordForms {
-  late WordType partOfSpeech;
+  late PartOfSpeech partOfSpeech;
   late Set<String> values;
   late GetWordGrammarOnlineResponse grammarOption;
   WordForms({required String searchedWord, required this.grammarOption}) {
@@ -46,7 +46,7 @@ class WordForms {
           _isMatchingArticle(item) && values.contains(item.word.toLowerCase()));
 
   bool _isMatchingArticle(OnlineTranslationDutchWord word) {
-    if (partOfSpeech != WordType.noun) return true;
+    if (partOfSpeech != PartOfSpeech.noun) return true;
     if (word.article != null && word.article != DeHetType.none) {
       return word.article == grammarOption.nounDetails.gender;
     }

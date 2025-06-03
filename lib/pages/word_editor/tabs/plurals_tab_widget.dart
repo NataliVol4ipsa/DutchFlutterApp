@@ -1,9 +1,9 @@
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/word_editor/inputs/dutch_plural_form_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class PluralsTab extends StatelessWidget {
-  final WordType Function() wordTypeGetter;
+  final PartOfSpeech Function() wordTypeGetter;
   final TextEditingController dutchPluralFormController;
 
   const PluralsTab({
@@ -12,15 +12,15 @@ class PluralsTab extends StatelessWidget {
     required this.wordTypeGetter,
   });
 
-  static bool shouldShowTab(WordType wordType) {
-    return wordType == WordType.noun;
+  static bool shouldShowTab(PartOfSpeech wordType) {
+    return wordType == PartOfSpeech.noun;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (wordTypeGetter() == WordType.noun)
+        if (wordTypeGetter() == PartOfSpeech.noun)
           DutchPluralFormInput(
             textEditingController: dutchPluralFormController,
           ),

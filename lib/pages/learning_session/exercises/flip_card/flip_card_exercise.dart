@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
@@ -22,13 +22,14 @@ class FlipCardExercise extends BaseExercise {
       throw Exception("Tried to create Exercise for unsupported word");
     }
     inputWord = word.dutchWord;
-    if (word.deHetType != DeHetType.none && word.wordType == WordType.noun) {
+    if (word.deHetType != DeHetType.none &&
+        word.partOfSpeech == PartOfSpeech.noun) {
       inputWord = "${word.deHetType.label} $inputWord";
     }
 
     correctAnswer = SemicolonWordsConverter.toSingleString(word.englishWords);
-    if (word.wordType != WordType.unspecified) {
-      hint = word.wordType.name;
+    if (word.partOfSpeech != PartOfSpeech.unspecified) {
+      hint = word.partOfSpeech.name;
     } else {
       hint = null;
     }

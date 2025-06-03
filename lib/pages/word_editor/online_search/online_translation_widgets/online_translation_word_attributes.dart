@@ -1,5 +1,5 @@
 import 'package:dutch_app/domain/types/gender_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/online_search/online_translation_widgets/online_translation_fonts.dart';
 import 'package:dutch_app/styles/base_styles.dart';
@@ -17,7 +17,8 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool showPartOfSpeech = translation.partOfSpeech != WordType.unspecified;
+    bool showPartOfSpeech =
+        translation.partOfSpeech != PartOfSpeech.unspecified;
     bool showGender =
         translation.gender != null && translation.gender != GenderType.none;
     return Column(

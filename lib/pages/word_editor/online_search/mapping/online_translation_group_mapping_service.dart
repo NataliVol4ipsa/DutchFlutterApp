@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/gender_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/sentence_example.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_group.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/word_forms.dart';
@@ -52,7 +52,7 @@ class OnlineTranslationGroupMappingService {
   //todo get from woordenlijst instead?
   static GenderType? _findGender(
       String searchedWord, String mainWord, OnlineTranslationGroup group) {
-    if (group.partOfSpeech != WordType.noun) return null;
+    if (group.partOfSpeech != PartOfSpeech.noun) return null;
 
     for (var translation in group.values) {
       for (var dutch in translation.dutchWords) {
@@ -69,7 +69,7 @@ class OnlineTranslationGroupMappingService {
 
   static DeHetType? _findArticle(
       String searchedWord, String mainWord, OnlineTranslationGroup group) {
-    if (group.partOfSpeech != WordType.noun) return null;
+    if (group.partOfSpeech != PartOfSpeech.noun) return null;
 
     var article = group.wordForms?.grammarOption.nounDetails.gender;
     if (article != null) {

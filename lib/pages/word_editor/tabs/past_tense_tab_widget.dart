@@ -1,15 +1,15 @@
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:flutter/material.dart';
 
 class PastTenseTab extends StatelessWidget {
-  final WordType Function() wordTypeGetter;
+  final PartOfSpeech Function() wordTypeGetter;
 
   const PastTenseTab({
     super.key,
     required this.wordTypeGetter,
   });
 
-  static bool shouldShowTab(WordType wordType) {
+  static bool shouldShowTab(PartOfSpeech wordType) {
     return false;
   }
 

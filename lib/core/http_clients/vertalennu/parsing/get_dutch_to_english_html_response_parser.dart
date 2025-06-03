@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/gender_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/online_translation_dutch_word.dart';
@@ -32,7 +32,7 @@ class GetDutchToEnglishHtmlResponseParser {
     final translationRows = document.querySelectorAll('.result-item-row');
 
     for (final row in translationRows) {
-      final List<WordType> partsOfSpeech = _processPartsOfSpeech(row);
+      final List<PartOfSpeech> partsOfSpeech = _processPartsOfSpeech(row);
       List<OnlineTranslationDutchWord> dutchWords =
           _processDutchWords(row, partsOfSpeech);
       final englishWords = row
@@ -53,7 +53,7 @@ class GetDutchToEnglishHtmlResponseParser {
   }
 
   List<OnlineTranslationDutchWord> _processDutchWords(
-      Element row, List<WordType> partOfSpeech) {
+      Element row, List<PartOfSpeech> partOfSpeech) {
     List<OnlineTranslationDutchWord> dutchWords = [];
     final sourceContainers =
         row.querySelectorAll('.result-item-source .lemma-container');
@@ -73,7 +73,7 @@ class GetDutchToEnglishHtmlResponseParser {
       GenderType? gender;
       DeHetType? article;
 
-      if (partOfSpeech.contains(WordType.noun)) {
+      if (partOfSpeech.contains(PartOfSpeech.noun)) {
         gender = _processGender(genderAttr);
         article = _processArticle(articleText);
       }
@@ -137,45 +137,45 @@ class GetDutchToEnglishHtmlResponseParser {
     }
   }
 
-  List<WordType> _processPartsOfSpeech(Element row) {
+  List<PartOfSpeech> _processPartsOfSpeech(Element row) {
     final partOfSpeechItems = row
         .querySelectorAll('.result-item-source .additional abbr')
         .map((e) => e.attributes['title']?.trim() ?? '')
         .toList();
 
-    List<WordType> result = [];
+    List<PartOfSpeech> result = [];
     for (final item in partOfSpeechItems) {
       switch (item.toLowerCase()) {
         case "zelfstandig naamwoord":
-          result.add(WordType.noun);
+          result.add(PartOfSpeech.noun);
           break;
         case "werkwoord":
-          result.add(WordType.verb);
+          result.add(PartOfSpeech.verb);
           break;
         case "bijvoeglijk naamwoord":
-          result.add(WordType.adjective);
+          result.add(PartOfSpeech.adjective);
           break;
         case "bijwoord":
-          result.add(WordType.adverb);
+          result.add(PartOfSpeech.adverb);
           break;
         case "voornaamwoord":
         case "persoonlijk voornaamwoord":
-          result.add(WordType.pronoun);
+          result.add(PartOfSpeech.pronoun);
           break;
         case "lidwoord":
-          result.add(WordType.article);
+          result.add(PartOfSpeech.article);
           break;
         case "voorzetsel":
-          result.add(WordType.preposition);
+          result.add(PartOfSpeech.preposition);
           break;
         case "voegwoord":
-          result.add(WordType.conjunction);
+          result.add(PartOfSpeech.conjunction);
           break;
         case "tussenwerpsel":
-          result.add(WordType.interjection);
+          result.add(PartOfSpeech.interjection);
           break;
         case "telwoord":
-          result.add(WordType.numeral);
+          result.add(PartOfSpeech.numeral);
           break;
       }
     }

@@ -164,7 +164,7 @@ DbWord _dbWordDeserialize(
   object.id = id;
   object.pluralForm = reader.readStringOrNull(offsets[4]);
   object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
-      WordType.unspecified;
+      PartOfSpeech.unspecified;
   object.userNote = reader.readStringOrNull(offsets[6]);
   return object;
 }
@@ -189,7 +189,7 @@ P _dbWordDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (_DbWordtypeValueEnumMap[reader.readByteOrNull(offset)] ??
-          WordType.unspecified) as P;
+          PartOfSpeech.unspecified) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -223,19 +223,19 @@ const _DbWordtypeEnumValueMap = {
   'article': 12,
 };
 const _DbWordtypeValueEnumMap = {
-  0: WordType.unspecified,
-  1: WordType.noun,
-  2: WordType.adjective,
-  3: WordType.verb,
-  4: WordType.adverb,
-  5: WordType.preposition,
-  6: WordType.interjection,
-  7: WordType.conjunction,
-  8: WordType.fixedConjunction,
-  9: WordType.pronoun,
-  10: WordType.numeral,
-  11: WordType.phrase,
-  12: WordType.article,
+  0: PartOfSpeech.unspecified,
+  1: PartOfSpeech.noun,
+  2: PartOfSpeech.adjective,
+  3: PartOfSpeech.verb,
+  4: PartOfSpeech.adverb,
+  5: PartOfSpeech.preposition,
+  6: PartOfSpeech.interjection,
+  7: PartOfSpeech.conjunction,
+  8: PartOfSpeech.fixedConjunction,
+  9: PartOfSpeech.pronoun,
+  10: PartOfSpeech.numeral,
+  11: PartOfSpeech.phrase,
+  12: PartOfSpeech.article,
 };
 
 Id _dbWordGetId(DbWord object) {
@@ -1057,7 +1057,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> typeEqualTo(
-      WordType value) {
+      PartOfSpeech value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'type',
@@ -1067,7 +1067,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> typeGreaterThan(
-    WordType value, {
+    PartOfSpeech value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1080,7 +1080,7 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> typeLessThan(
-    WordType value, {
+    PartOfSpeech value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1093,8 +1093,8 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   }
 
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> typeBetween(
-    WordType lower,
-    WordType upper, {
+    PartOfSpeech lower,
+    PartOfSpeech upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1679,7 +1679,7 @@ extension DbWordQueryProperty on QueryBuilder<DbWord, DbWord, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbWord, WordType, QQueryOperations> typeProperty() {
+  QueryBuilder<DbWord, PartOfSpeech, QQueryOperations> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'type');
     });

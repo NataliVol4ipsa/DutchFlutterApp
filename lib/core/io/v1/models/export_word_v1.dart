@@ -1,11 +1,11 @@
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 
 class ExportWordV1 {
   String? dutchWord;
   List<String>? englishWords;
-  WordType? wordType;
+  PartOfSpeech? partOfSpeech;
   DeHetType? deHetType = DeHetType.none;
   String? pluralForm;
   String? contextExample;
@@ -15,7 +15,7 @@ class ExportWordV1 {
   ExportWordV1(
     this.dutchWord,
     this.englishWords,
-    this.wordType, {
+    this.partOfSpeech, {
     this.deHetType = DeHetType.none,
     this.pluralForm,
     this.contextExample,
@@ -26,7 +26,7 @@ class ExportWordV1 {
   ExportWordV1.fromWord(Word source)
       : dutchWord = source.dutchWord,
         englishWords = source.englishWords,
-        wordType = source.wordType,
+        partOfSpeech = source.partOfSpeech,
         deHetType = source.deHetType,
         pluralForm = source.pluralForm,
         contextExample = source.contextExample,
@@ -36,8 +36,8 @@ class ExportWordV1 {
   ExportWordV1.fromJson(Map<String, dynamic> json)
       : dutchWord = json['dutchWord'] as String,
         englishWords = List<String>.from(json['englishWords'] as List),
-        wordType =
-            WordType.values.firstWhere((e) => e.toString() == json['type']),
+        partOfSpeech = PartOfSpeech.values
+            .firstWhere((e) => e.toString() == json['partOfSpeech']),
         deHetType =
             DeHetType.values.firstWhere((e) => e.toString() == json['deHet']),
         pluralForm = json['pluralForm'] as String?,
@@ -49,7 +49,7 @@ class ExportWordV1 {
   Map<String, dynamic> toJson() => {
         'dutchWord': dutchWord,
         'englishWords': englishWords,
-        'type': wordType.toString(),
+        'partOfSpeech': partOfSpeech.toString(),
         'deHet': deHetType.toString(),
         'pluralForm': pluralForm,
         'contextExample': contextExample,

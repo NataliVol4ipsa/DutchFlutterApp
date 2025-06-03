@@ -8,7 +8,7 @@ import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_
 import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
-import 'package:dutch_app/domain/types/word_type.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_list_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
@@ -49,8 +49,8 @@ class _WordEditorPageState extends State<WordEditorPage>
   final TextEditingController _englishWordController = TextEditingController();
   final TextEditingController _dutchPluralFormController =
       TextEditingController();
-  final ValueNotifier<WordType> _wordTypeController =
-      ValueNotifier<WordType>(WordType.unspecified);
+  final ValueNotifier<PartOfSpeech> _wordTypeController =
+      ValueNotifier<PartOfSpeech>(PartOfSpeech.unspecified);
   final ValueNotifier<WordCollection> _wordCollectionController =
       ValueNotifier<WordCollection>(WordCollection(
           CollectionPermissionService.defaultCollectionId,
@@ -167,7 +167,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     }
 
     String? pluralForm = OnlineTranslationListMappingService.findNounPluralForm(
-        translation.partOfSpeech ?? WordType.phrase, grammarOptions);
+        translation.partOfSpeech ?? PartOfSpeech.phrase, grammarOptions);
 
     final englishTranslations = translation.translationWords
         .where((w) => w.isSelected)
@@ -182,7 +182,8 @@ class _WordEditorPageState extends State<WordEditorPage>
 
     setState(() {
       _dutchWordController.text = translation.mainWord;
-      _wordTypeController.value = translation.partOfSpeech ?? WordType.phrase;
+      _wordTypeController.value =
+          translation.partOfSpeech ?? PartOfSpeech.phrase;
       _englishWordController.text = englishTranslations;
       _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
       _contextExampleController.text = contextExample ?? "";
@@ -213,7 +214,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     _dutchWordController.text = existingWord.dutchWord;
     _englishWordController.text =
         SemicolonWordsConverter.toSingleString(existingWord.englishWords);
-    _wordTypeController.value = existingWord.wordType;
+    _wordTypeController.value = existingWord.partOfSpeech;
     _dutchPluralFormController.text = existingWord.pluralForm ?? "";
     _wordCollectionController.value =
         existingWord.collection ?? _wordCollectionController.value;

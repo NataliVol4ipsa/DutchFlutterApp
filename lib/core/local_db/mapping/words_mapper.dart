@@ -6,7 +6,7 @@ import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
     var newWord = DbWord();
-    newWord.type = word.wordType;
+    newWord.type = word.partOfSpeech;
     newWord.deHet = word.deHetType;
     newWord.pluralForm = word.pluralForm;
     newWord.contextExample = word.contextExample;
