@@ -8,8 +8,6 @@ class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
     var newWord = DbWord();
     newWord.type = word.partOfSpeech;
-    newWord.deHet = word.deHetType;
-    newWord.pluralForm = word.pluralForm;
     newWord.contextExample = word.contextExample;
     newWord.contextExampleTranslation = word.contextExampleTranslation;
     newWord.userNote = word.userNote;

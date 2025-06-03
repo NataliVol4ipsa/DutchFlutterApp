@@ -27,25 +27,14 @@ const DbWordSchema = CollectionSchema(
       name: r'contextExampleTranslation',
       type: IsarType.string,
     ),
-    r'deHet': PropertySchema(
-      id: 2,
-      name: r'deHet',
-      type: IsarType.byte,
-      enumMap: _DbWorddeHetEnumValueMap,
-    ),
-    r'pluralForm': PropertySchema(
-      id: 3,
-      name: r'pluralForm',
-      type: IsarType.string,
-    ),
     r'type': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'type',
       type: IsarType.byte,
       enumMap: _DbWordtypeEnumValueMap,
     ),
     r'userNote': PropertySchema(
-      id: 5,
+      id: 3,
       name: r'userNote',
       type: IsarType.string,
     )
@@ -121,12 +110,6 @@ int _dbWordEstimateSize(
     }
   }
   {
-    final value = object.pluralForm;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.userNote;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -143,10 +126,8 @@ void _dbWordSerialize(
 ) {
   writer.writeString(offsets[0], object.contextExample);
   writer.writeString(offsets[1], object.contextExampleTranslation);
-  writer.writeByte(offsets[2], object.deHet.index);
-  writer.writeString(offsets[3], object.pluralForm);
-  writer.writeByte(offsets[4], object.type.index);
-  writer.writeString(offsets[5], object.userNote);
+  writer.writeByte(offsets[2], object.type.index);
+  writer.writeString(offsets[3], object.userNote);
 }
 
 DbWord _dbWordDeserialize(
@@ -158,13 +139,10 @@ DbWord _dbWordDeserialize(
   final object = DbWord();
   object.contextExample = reader.readStringOrNull(offsets[0]);
   object.contextExampleTranslation = reader.readStringOrNull(offsets[1]);
-  object.deHet = _DbWorddeHetValueEnumMap[reader.readByteOrNull(offsets[2])] ??
-      DeHetType.none;
   object.id = id;
-  object.pluralForm = reader.readStringOrNull(offsets[3]);
-  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[4])] ??
+  object.type = _DbWordtypeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
       PartOfSpeech.unspecified;
-  object.userNote = reader.readStringOrNull(offsets[5]);
+  object.userNote = reader.readStringOrNull(offsets[3]);
   return object;
 }
 
@@ -180,30 +158,15 @@ P _dbWordDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (_DbWorddeHetValueEnumMap[reader.readByteOrNull(offset)] ??
-          DeHetType.none) as P;
-    case 3:
-      return (reader.readStringOrNull(offset)) as P;
-    case 4:
       return (_DbWordtypeValueEnumMap[reader.readByteOrNull(offset)] ??
           PartOfSpeech.unspecified) as P;
-    case 5:
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _DbWorddeHetEnumValueMap = {
-  'none': 0,
-  'de': 1,
-  'het': 2,
-};
-const _DbWorddeHetValueEnumMap = {
-  0: DeHetType.none,
-  1: DeHetType.de,
-  2: DeHetType.het,
-};
 const _DbWordtypeEnumValueMap = {
   'unspecified': 0,
   'noun': 1,
@@ -646,59 +609,6 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> deHetEqualTo(
-      DeHetType value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'deHet',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> deHetGreaterThan(
-    DeHetType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'deHet',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> deHetLessThan(
-    DeHetType value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'deHet',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> deHetBetween(
-    DeHetType lower,
-    DeHetType upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'deHet',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -763,152 +673,6 @@ extension DbWordQueryFilter on QueryBuilder<DbWord, DbWord, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'pluralForm',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'pluralForm',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'pluralForm',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'pluralForm',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'pluralForm',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pluralForm',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> pluralFormIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'pluralForm',
-        value: '',
       ));
     });
   }
@@ -1313,30 +1077,6 @@ extension DbWordQuerySortBy on QueryBuilder<DbWord, DbWord, QSortBy> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByDeHet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deHet', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByDeHetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deHet', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByPluralForm() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pluralForm', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByPluralFormDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pluralForm', Sort.desc);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterSortBy> sortByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -1388,18 +1128,6 @@ extension DbWordQuerySortThenBy on QueryBuilder<DbWord, DbWord, QSortThenBy> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByDeHet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deHet', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByDeHetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deHet', Sort.desc);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1409,18 +1137,6 @@ extension DbWordQuerySortThenBy on QueryBuilder<DbWord, DbWord, QSortThenBy> {
   QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByPluralForm() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pluralForm', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterSortBy> thenByPluralFormDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pluralForm', Sort.desc);
     });
   }
 
@@ -1466,19 +1182,6 @@ extension DbWordQueryWhereDistinct on QueryBuilder<DbWord, DbWord, QDistinct> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QDistinct> distinctByDeHet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'deHet');
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QDistinct> distinctByPluralForm(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'pluralForm', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QDistinct> distinctByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'type');
@@ -1510,18 +1213,6 @@ extension DbWordQueryProperty on QueryBuilder<DbWord, DbWord, QQueryProperty> {
       contextExampleTranslationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'contextExampleTranslation');
-    });
-  }
-
-  QueryBuilder<DbWord, DeHetType, QQueryOperations> deHetProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'deHet');
-    });
-  }
-
-  QueryBuilder<DbWord, String?, QQueryOperations> pluralFormProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'pluralForm');
     });
   }
 

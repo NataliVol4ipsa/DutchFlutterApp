@@ -2,7 +2,6 @@ import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_english_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_noun_details.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_verb_details.dart';
-import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_collection.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
@@ -17,8 +16,6 @@ class DbWord {
   @enumerated
   late PartOfSpeech type;
   @enumerated
-  late DeHetType deHet;
-  late String? pluralForm;
   final collection = IsarLink<DbWordCollection>();
   @Backlink(to: 'word')
   final progress = IsarLinks<DbWordProgress>();
