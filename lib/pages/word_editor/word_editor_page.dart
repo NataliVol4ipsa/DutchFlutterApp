@@ -2,14 +2,16 @@ import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
-import 'package:dutch_app/domain/models/word_collection.dart';
+import 'package:dutch_app/domain/models/word_noun_details.dart';
+import 'package:dutch_app/domain/models/word_verb_details.dart';
 import 'package:dutch_app/domain/notifiers/notifier_tools.dart';
 import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
-import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/pages/word_editor/controllers/main_controllers.dart';
+import 'package:dutch_app/pages/word_editor/controllers/noun_controllers.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_list_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
@@ -45,23 +47,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       _onlineTranslationSelectedNotifier;
   late void Function() _onlineTranslationSelectedNotifierListener;
 
-  final TextEditingController _dutchWordController = TextEditingController();
-  final TextEditingController _englishWordController = TextEditingController();
-  final TextEditingController _dutchPluralFormController =
-      TextEditingController();
-  final ValueNotifier<PartOfSpeech> _wordTypeController =
-      ValueNotifier<PartOfSpeech>(PartOfSpeech.unspecified);
-  final ValueNotifier<WordCollection> _wordCollectionController =
-      ValueNotifier<WordCollection>(WordCollection(
-          CollectionPermissionService.defaultCollectionId,
-          CollectionPermissionService.defaultCollectionName));
-  final ValueNotifier<DeHetType> _deHetTypeTypeController =
-      ValueNotifier<DeHetType>(DeHetType.none);
-  final TextEditingController _contextExampleController =
-      TextEditingController();
-  final TextEditingController _contextExampleTranslationController =
-      TextEditingController();
-  final TextEditingController _userNoteController = TextEditingController();
+  final MainControllers _mainControllers = MainControllers();
+  final NounControllers _nounControllers = NounControllers();
+  //final VerbControllers _verbControllers = VerbControllers();
 
   late TabController _tabController;
   final ValueNotifier<List<Tab>> _tabsNotifier = ValueNotifier<List<Tab>>([]);
@@ -114,7 +102,7 @@ class _WordEditorPageState extends State<WordEditorPage>
   void _initTabs() {
     _updateTabs();
 
-    _wordTypeController.addListener(() {
+    _mainControllers.wordTypeController.addListener(() {
       _updateTabs();
     });
   }
@@ -123,22 +111,22 @@ class _WordEditorPageState extends State<WordEditorPage>
     final List<Tab> newTabs = [
       const Tab(text: "All"),
       const Tab(text: "Main"),
-      if (PluralsTab.shouldShowTab(_wordTypeController.value))
+      if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Plurals"),
-      if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+      if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Past tense"),
-      if (MetaTab.shouldShowTab(_wordTypeController.value))
+      if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Meta"),
     ];
 
     final List<Widget> newTabViews = [
       _tab(_buildAllTab()),
       _tab(_buildMainTab()),
-      if (PluralsTab.shouldShowTab(_wordTypeController.value))
+      if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildPluralsTab()),
-      if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+      if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildPastTenseTab()),
-      if (MetaTab.shouldShowTab(_wordTypeController.value))
+      if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildMetaTab()),
     ];
 
@@ -166,6 +154,7 @@ class _WordEditorPageState extends State<WordEditorPage>
       return;
     }
 
+    // todo move it elsewhere, it does not belong to this layer
     String? pluralForm = OnlineTranslationListMappingService.findNounPluralForm(
         translation.partOfSpeech ?? PartOfSpeech.phrase, grammarOptions);
 
@@ -179,17 +168,18 @@ class _WordEditorPageState extends State<WordEditorPage>
     final contextExample = translation
         .sentenceExamples.firstOrNull?.dutchSentence
         .replaceAll(RegExp(r'<[^>]*>'), '');
+    // end of todo
 
     setState(() {
-      _dutchWordController.text = translation.mainWord;
-      _wordTypeController.value =
+      _mainControllers.dutchWordController.text = translation.mainWord;
+      _mainControllers.wordTypeController.value =
           translation.partOfSpeech ?? PartOfSpeech.phrase;
-      _englishWordController.text = englishTranslations;
-      _deHetTypeTypeController.value = translation.article ?? DeHetType.none;
-      _contextExampleController.text = contextExample ?? "";
-      _contextExampleTranslationController.text =
+      _mainControllers.englishWordController.text = englishTranslations;
+      _nounControllers.deHetType.value = translation.article ?? DeHetType.none;
+      _mainControllers.contextExampleController.text = contextExample ?? "";
+      _mainControllers.contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
-      _dutchPluralFormController.text = pluralForm ?? "";
+      _nounControllers.dutchPluralForm.text = pluralForm ?? "";
     });
   }
 
@@ -199,30 +189,20 @@ class _WordEditorPageState extends State<WordEditorPage>
     _onlineTranslationSelectedNotifier
         .removeListener(_onlineTranslationSelectedNotifierListener);
     _tabController.dispose();
-    _wordTypeController.dispose();
+    _mainControllers.wordTypeController.dispose();
     _tabsNotifier.dispose();
     _tabViewsNotifier.dispose();
   }
 
   Future<void> _initExistingWordAsync(int wordId) async {
-    var existingWord = await _wordsRepository.getWordAsync(wordId);
+    Word? existingWord = await _wordsRepository.getWordAsync(wordId);
 
     if (existingWord == null) {
       throw Exception("Failed to edit word with id '$wordId'");
     }
 
-    _dutchWordController.text = existingWord.dutchWord;
-    _englishWordController.text =
-        SemicolonWordsConverter.toSingleString(existingWord.englishWords);
-    _wordTypeController.value = existingWord.partOfSpeech;
-    _dutchPluralFormController.text = existingWord.pluralForm ?? "";
-    _wordCollectionController.value =
-        existingWord.collection ?? _wordCollectionController.value;
-    _deHetTypeTypeController.value = existingWord.deHetType;
-    _contextExampleController.text = existingWord.contextExample ?? "";
-    _contextExampleTranslationController.text =
-        existingWord.contextExampleTranslation ?? "";
-    _userNoteController.text = existingWord.userNote ?? "";
+    _mainControllers.initializeFromWord(existingWord);
+    _nounControllers.initializeFromDetails(existingWord.nounDetails);
 
     setState(() {
       _isLoading = false;
@@ -244,38 +224,41 @@ class _WordEditorPageState extends State<WordEditorPage>
     return Column(
       children: [
         _buildMainTab(),
-        if (PluralsTab.shouldShowTab(_wordTypeController.value))
+        if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
           _buildPluralsTab(),
-        if (PastTenseTab.shouldShowTab(_wordTypeController.value))
+        if (PastTenseTab.shouldShowTab(
+            _mainControllers.wordTypeController.value))
           _buildPastTenseTab(),
-        if (MetaTab.shouldShowTab(_wordTypeController.value)) _buildMetaTab(),
+        if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
+          _buildMetaTab(),
       ],
     );
   }
 
   Widget _buildMainTab() {
     return MainTab(
-      wordTypeGetter: () => _wordTypeController.value,
-      dutchWordController: _dutchWordController,
-      englishWordController: _englishWordController,
-      wordTypeValueNotifier: _wordTypeController,
-      collectionValueNotifier: _wordCollectionController,
-      deHetValueNotifier: _deHetTypeTypeController,
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      dutchWordController: _mainControllers.dutchWordController,
+      englishWordController: _mainControllers.englishWordController,
+      wordTypeValueNotifier: _mainControllers.wordTypeController,
+      collectionValueNotifier: _mainControllers.wordCollectionController,
+      deHetValueNotifier: _nounControllers.deHetType,
     );
   }
 
   Widget _buildPluralsTab() {
     return PluralsTab(
-      wordTypeGetter: () => _wordTypeController.value,
-      dutchPluralFormController: _dutchPluralFormController,
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      dutchPluralFormController: _nounControllers.dutchPluralForm,
     );
   }
 
   Widget _buildMetaTab() {
     return MetaTab(
-      contextExampleController: _contextExampleController,
-      contextExampleTranslationController: _contextExampleTranslationController,
-      userNoteController: _userNoteController,
+      contextExampleController: _mainControllers.contextExampleController,
+      contextExampleTranslationController:
+          _mainControllers.contextExampleTranslationController,
+      userNoteController: _mainControllers.userNoteController,
     );
   }
 
@@ -356,21 +339,24 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   Future<void> createWordAsync() async {
-    String dutchWordInput = _dutchWordController.text;
-    String englishWordInput = _englishWordController.text;
-    String dutchPluralFormWordInput = _dutchPluralFormController.text;
+    String dutchWordInput = _mainControllers.dutchWordController.text;
+    String englishWordInput = _mainControllers.englishWordController.text;
+    String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
 
     var newWord = NewWord(
       dutchWordInput.trim(),
       SemicolonWordsConverter.fromString(englishWordInput.trim()),
-      _wordTypeController.value,
-      collection: _wordCollectionController.value,
-      deHetType: _deHetTypeTypeController.value,
-      pluralForm: dutchPluralFormWordInput.trim(),
-      contextExample: _contextExampleController.text.trim(),
+      _mainControllers.wordTypeController.value,
+      collection: _mainControllers.wordCollectionController.value,
+      contextExample: _mainControllers.contextExampleController.text.trim(),
       contextExampleTranslation:
-          _contextExampleTranslationController.text.trim(),
-      userNote: _userNoteController.text.trim(),
+          _mainControllers.contextExampleTranslationController.text.trim(),
+      userNote: _mainControllers.userNoteController.text.trim(),
+      nounDetails: WordNounDetails(
+          deHetType: _nounControllers.deHetType.value,
+          pluralForm: dutchPluralFormWordInput.trim(),
+          diminutive: "todo map in editor"),
+      verbDetails: WordVerbDetails(),
     );
 
     await _wordsRepository.addAsync(newWord);
@@ -379,22 +365,25 @@ class _WordEditorPageState extends State<WordEditorPage>
   Future<void> updateWordAsync() async {
     if (_isNewWord) return;
 
-    String dutchWordInput = _dutchWordController.text;
-    String englishWordInput = _englishWordController.text;
-    String dutchPluralFormWordInput = _dutchPluralFormController.text;
+    String dutchWordInput = _mainControllers.dutchWordController.text;
+    String englishWordInput = _mainControllers.englishWordController.text;
+    String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
 
     var updatedWord = Word(
       existingWordId!,
       dutchWordInput.trim(),
       SemicolonWordsConverter.fromString(englishWordInput),
-      _wordTypeController.value,
-      collection: _wordCollectionController.value,
-      deHetType: _deHetTypeTypeController.value,
-      pluralForm: dutchPluralFormWordInput.trim(),
-      contextExample: _contextExampleController.text.trim(),
+      _mainControllers.wordTypeController.value,
+      collection: _mainControllers.wordCollectionController.value,
+      contextExample: _mainControllers.contextExampleController.text.trim(),
       contextExampleTranslation:
-          _contextExampleTranslationController.text.trim(),
-      userNote: _userNoteController.text.trim(),
+          _mainControllers.contextExampleTranslationController.text.trim(),
+      userNote: _mainControllers.userNoteController.text.trim(),
+      nounDetails: WordNounDetails(
+        deHetType: _nounControllers.deHetType.value,
+        pluralForm: dutchPluralFormWordInput.trim(),
+      ),
+      verbDetails: WordVerbDetails(),
     );
 
     await _wordsRepository.updateAsync(updatedWord);

@@ -7,16 +7,18 @@ class Word extends BaseWord {
 
   Word(this.id, super.dutchWord, super.englishWord, super.partOfSpeech,
       {super.collection,
-      super.deHetType = DeHetType.none,
-      super.pluralForm,
       super.contextExample,
       super.contextExampleTranslation,
       super.userNote,
-      super.audioCode});
+      super.audioCode,
+      required super.nounDetails,
+      required super.verbDetails});
 
   String toDutchWordString() {
-    if (deHetType != DeHetType.none && partOfSpeech == PartOfSpeech.noun) {
-      return "${deHetType.label} $dutchWord";
+    if (partOfSpeech == PartOfSpeech.noun &&
+        nounDetails != null &&
+        nounDetails!.deHetType != DeHetType.none) {
+      return "${nounDetails!.deHetType.label} $dutchWord";
     }
 
     return dutchWord;

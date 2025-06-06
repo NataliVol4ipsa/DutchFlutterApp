@@ -22,9 +22,10 @@ class FlipCardExercise extends BaseExercise {
       throw Exception("Tried to create Exercise for unsupported word");
     }
     inputWord = word.dutchWord;
-    if (word.deHetType != DeHetType.none &&
+    if (word.nounDetails?.deHetType != null &&
+        word.nounDetails?.deHetType != DeHetType.none &&
         word.partOfSpeech == PartOfSpeech.noun) {
-      inputWord = "${word.deHetType.label} $inputWord";
+      inputWord = "${word.nounDetails!.deHetType.label} $inputWord";
     }
 
     correctAnswer = SemicolonWordsConverter.toSingleString(word.englishWords);

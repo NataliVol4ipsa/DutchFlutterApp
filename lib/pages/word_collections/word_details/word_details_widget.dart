@@ -111,12 +111,15 @@ class WordDetails extends StatelessWidget {
   }
 
   List<Widget> _buildPlural(BuildContext context) {
-    if (word.pluralForm == null || word.pluralForm!.trim() == "") return [];
+    if (word.nounDetails?.pluralForm == null ||
+        word.nounDetails!.pluralForm!.trim() == "") {
+      return [];
+    }
 
     return _buildBodySectionGeneric(context,
         sectionName: "Plural form",
         prefixIcon: InputIcons.dutchPluralForm,
-        content: SelectableText(word.pluralForm!,
+        content: SelectableText(word.nounDetails!.pluralForm!,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 

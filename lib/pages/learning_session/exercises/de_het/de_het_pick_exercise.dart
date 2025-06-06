@@ -18,12 +18,13 @@ class DeHetPickExercise extends BaseExercise {
     if (!isSupportedWord(word)) {
       throw Exception("Tried to create Exercise for unsupported word");
     }
-    correctAnswer = word.deHetType;
+    correctAnswer = word.nounDetails!.deHetType;
   }
 
   static bool isSupportedWord(Word word) {
     return word.partOfSpeech == PartOfSpeech.noun &&
-        word.deHetType != DeHetType.none;
+        word.nounDetails != null &&
+        word.nounDetails?.deHetType != DeHetType.none;
   }
 
   bool isCorrectAnswer(DeHetType userAnswer) {

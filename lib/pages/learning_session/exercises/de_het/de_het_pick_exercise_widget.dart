@@ -75,7 +75,7 @@ class _DeHetPickExerciseWidgetState extends State<DeHetPickExerciseWidget> {
         ? TextStyles.successTextColor
         : TextStyles.failureTextColor;
     return TextSpan(
-        text: widget.exercise.word.deHetType.name,
+        text: widget.exercise.word.nounDetails!.deHetType.name,
         style: TextStyle(color: color));
   }
 

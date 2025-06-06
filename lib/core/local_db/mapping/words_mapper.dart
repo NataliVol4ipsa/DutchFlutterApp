@@ -1,8 +1,11 @@
+import 'package:dutch_app/core/local_db/entities/db_word_noun_details.dart';
+import 'package:dutch_app/core/local_db/entities/db_word_verb_details.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
-import 'package:dutch_app/domain/types/de_het_type.dart';
+import 'package:dutch_app/domain/models/word_noun_details.dart';
+import 'package:dutch_app/domain/models/word_verb_details.dart';
 
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
@@ -30,13 +33,26 @@ class WordsMapper {
       dbWord.englishWordLinks.map((l) => l.word).toList(),
       dbWord.type,
       collection: WordCollectionsMapper.mapToDomain(dbWord.collection.value),
-      deHetType: dbWord.nounDetailsLink.value?.deHet ?? DeHetType.none,
-      pluralForm: dbWord.nounDetailsLink.value?.pluralFormWordLink.value?.word,
       contextExample: dbWord.contextExample,
       contextExampleTranslation: dbWord.contextExampleTranslation,
       userNote: dbWord.userNote,
       audioCode: dbWord.dutchWordLink.value?.audioCode,
+      nounDetails: _mapNounDetailsToDomain(dbWord.nounDetailsLink.value),
+      verbDetails: _mapVerbDetailsToDomain(dbWord.verbDetailsLink.value),
     );
+  }
+
+  static WordNounDetails? _mapNounDetailsToDomain(DbWordNounDetails? details) {
+    if (details == null) return null;
+    return WordNounDetails(
+        deHetType: details.deHet,
+        diminutive: details.diminutiveWordLink.value?.word,
+        pluralForm: details.pluralFormWordLink.value?.word);
+  }
+
+  static WordVerbDetails? _mapVerbDetailsToDomain(DbWordVerbDetails? details) {
+    if (details == null) return null;
+    return WordVerbDetails();
   }
 
   static List<Word> mapToDomainList(List<DbWord> words) {

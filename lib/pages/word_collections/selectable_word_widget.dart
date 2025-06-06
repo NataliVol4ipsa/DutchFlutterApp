@@ -59,7 +59,7 @@ class SelectableWord extends StatelessWidget {
               SizedBox(
                 width: 30,
                 child: Text(
-                  word.value.deHetType.emptyOnNone,
+                  word.value.nounDetails?.deHetType.emptyOnNone ?? "",
                   style: TextStyle(color: _textColor(context)),
                   textAlign: TextAlign.center,
                 ),
