@@ -21,10 +21,10 @@ class OnlineTranslationWordHeader extends StatelessWidget {
           color: ContainerStyles.secondaryHeaderTextColor(context),
         ),
         children: <TextSpan>[
-          if (translation.article != null &&
-              translation.article != DeHetType.none) ...[
+          if (translation.nounDetails?.article != null &&
+              translation.nounDetails!.article != DeHetType.none) ...[
             TextSpan(
-              text: translation.article!.label,
+              text: translation.nounDetails!.article!.label,
             ),
             const TextSpan(text: ' '),
           ],

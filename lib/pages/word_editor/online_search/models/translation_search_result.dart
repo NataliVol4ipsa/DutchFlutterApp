@@ -7,26 +7,22 @@ import 'package:dutch_app/pages/word_editor/online_search/models/translation_sea
 class TranslationSearchResult {
   final String mainWord;
   final List<String> synonyms;
-  final GenderType? gender;
-  final DeHetType? article;
   final List<SelectableString> translationWords;
   final PartOfSpeech? partOfSpeech;
   late List<TranslationSearchResultSentenceExample> sentenceExamples;
   late int translationScore;
-  late VerbDetails verbDetails;
+  late TranslationNounDetails? nounDetails;
+  late TranslationVerbDetails? verbDetails;
   TranslationSearchResult({
     required this.mainWord,
     required this.synonyms,
     required this.translationWords,
     required this.partOfSpeech,
-    required this.article,
-    required this.gender,
-    String? infinitive,
+    required this.nounDetails,
+    required this.verbDetails,
     List<TranslationSearchResultSentenceExample>? sentenceExamples,
   }) {
     this.sentenceExamples = sentenceExamples ?? [];
-    verbDetails = VerbDetails();
-    verbDetails.infinitive = infinitive;
     _evaluateTranslationScore();
   }
 
@@ -34,14 +30,29 @@ class TranslationSearchResult {
     translationScore = 0;
     translationScore += translationWords.isNotEmpty ? 10 : 0;
     translationScore += partOfSpeech != PartOfSpeech.unspecified ? 5 : 0;
-    translationScore += article != null && article != DeHetType.none ? 3 : 0;
-    translationScore += gender != null && gender != GenderType.none ? 3 : 0;
     translationScore += sentenceExamples.isNotEmpty ? 2 : 0;
     translationScore += synonyms.isNotEmpty ? 1 : 0;
+    translationScore +=
+        nounDetails?.article != null && nounDetails!.article != DeHetType.none
+            ? 3
+            : 0;
+    translationScore +=
+        nounDetails?.gender != null && nounDetails!.gender != GenderType.none
+            ? 3
+            : 0;
   }
 }
 
-class VerbDetails {
-  late String? infinitive;
-  VerbDetails();
+class TranslationNounDetails {
+  final GenderType? gender;
+  final DeHetType? article;
+  final String? pluralForm;
+  final String? diminutive;
+  TranslationNounDetails(
+      {this.gender, this.article, this.pluralForm, this.diminutive});
+}
+
+class TranslationVerbDetails {
+  final String? infinitive;
+  TranslationVerbDetails({this.infinitive});
 }

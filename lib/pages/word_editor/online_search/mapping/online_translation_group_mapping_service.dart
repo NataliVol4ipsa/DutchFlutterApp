@@ -1,3 +1,4 @@
+import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/gender_type.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
@@ -10,23 +11,23 @@ import 'package:dutch_app/pages/word_editor/online_search/models/translation_sea
 
 class OnlineTranslationGroupMappingService {
   static TranslationSearchResult? map(
-      String searchedWord, OnlineTranslationGroup group) {
+      String searchedWord,
+      OnlineTranslationGroup group,
+      List<GetWordGrammarOnlineResponse>? grammarOptions) {
     final String mainWord = _findMainWord(searchedWord, group);
     final remainingDutchWords = _filterRemainingWords(searchedWord, group);
-    final article = _findArticle(searchedWord, mainWord, group);
-    final gender = _findGender(searchedWord, mainWord, group);
     final examples = _mapExamples(group);
     final translationWords = _mapTranslationWords(group);
     final partOfSpeech = group.partOfSpeech;
     return TranslationSearchResult(
-      mainWord: mainWord,
-      synonyms: remainingDutchWords,
-      translationWords: translationWords,
-      partOfSpeech: partOfSpeech,
-      article: article,
-      gender: gender,
-      sentenceExamples: examples,
-    );
+        mainWord: mainWord,
+        synonyms: remainingDutchWords,
+        translationWords: translationWords,
+        partOfSpeech: partOfSpeech,
+        sentenceExamples: examples,
+        nounDetails: _findNounDetails(
+            searchedWord, group, mainWord, partOfSpeech, grammarOptions),
+        verbDetails: TranslationVerbDetails(infinitive: "mapping is missing"));
   }
 
   static String _findMainWord(
@@ -123,5 +124,51 @@ class OnlineTranslationGroupMappingService {
         .toSet()
         .map((w) => SelectableString(value: w))
         .toList();
+  }
+
+  static TranslationNounDetails? _findNounDetails(
+      String searchedWord,
+      OnlineTranslationGroup group,
+      String mainWord,
+      PartOfSpeech partOfSpeech,
+      List<GetWordGrammarOnlineResponse>? grammarOptions) {
+    if (partOfSpeech != PartOfSpeech.noun || grammarOptions == null) {
+      return null;
+    }
+
+    final article = _findArticle(searchedWord, mainWord, group);
+    final gender = _findGender(searchedWord, mainWord, group);
+
+    final pluralForm = _findFirstNonEmptyGrammarValue(
+      grammarOptions,
+      (d) => d.nounDetails.pluralForm,
+    );
+
+    final diminutive = _findFirstNonEmptyGrammarValue(
+      grammarOptions,
+      (d) => d.nounDetails.diminutive,
+    );
+
+    return TranslationNounDetails(
+      gender: gender,
+      article: article,
+      pluralForm: pluralForm,
+      diminutive: diminutive,
+    );
+  }
+
+  static String? _findFirstNonEmptyGrammarValue(
+    List<GetWordGrammarOnlineResponse> options,
+    String? Function(GetWordGrammarOnlineResponse) extractor,
+  ) {
+    for (var option in options) {
+      if (option.partOfSpeech == PartOfSpeech.noun) {
+        final value = extractor(option);
+        if (value != null && value.trim().isNotEmpty) {
+          return value;
+        }
+      }
+    }
+    return null;
   }
 }

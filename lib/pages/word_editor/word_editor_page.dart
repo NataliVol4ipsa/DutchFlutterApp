@@ -12,7 +12,6 @@ import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/controllers/main_controllers.dart';
 import 'package:dutch_app/pages/word_editor/controllers/noun_controllers.dart';
-import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_list_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
@@ -155,9 +154,6 @@ class _WordEditorPageState extends State<WordEditorPage>
     }
 
     // todo move it elsewhere, it does not belong to this layer
-    String? pluralForm = OnlineTranslationListMappingService.findNounPluralForm(
-        translation.partOfSpeech ?? PartOfSpeech.phrase, grammarOptions);
-
     final englishTranslations = translation.translationWords
         .where((w) => w.isSelected)
         .map((w) => w.value)
@@ -175,11 +171,13 @@ class _WordEditorPageState extends State<WordEditorPage>
       _mainControllers.wordTypeController.value =
           translation.partOfSpeech ?? PartOfSpeech.phrase;
       _mainControllers.englishWordController.text = englishTranslations;
-      _nounControllers.deHetType.value = translation.article ?? DeHetType.none;
+      _nounControllers.deHetType.value =
+          translation.nounDetails?.article ?? DeHetType.none;
+      _nounControllers.dutchPluralForm.text =
+          translation.nounDetails?.pluralForm ?? "";
       _mainControllers.contextExampleController.text = contextExample ?? "";
       _mainControllers.contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
-      _nounControllers.dutchPluralForm.text = pluralForm ?? "";
     });
   }
 

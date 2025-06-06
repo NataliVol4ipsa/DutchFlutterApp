@@ -1,8 +1,6 @@
-import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_search_response.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/dutch_to_english_translation.dart';
 import 'package:dutch_app/core/http_clients/vertalennu/models/sentence_example.dart';
-import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_words_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_group_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/mapping/online_translation_groupping_service.dart';
@@ -38,8 +36,8 @@ class OnlineTranslationListMappingService {
         searchedWord, translationOptions, grammarOptions);
 
     List<TranslationSearchResult> mappedTranslations = grouppedTranslations
-        .map((group) =>
-            OnlineTranslationGroupMappingService.map(searchedWord, group))
+        .map((group) => OnlineTranslationGroupMappingService.map(
+            searchedWord, group, grammarOptions?.onlineWords))
         .whereType<TranslationSearchResult>()
         .toList();
 
@@ -53,22 +51,5 @@ class OnlineTranslationListMappingService {
         .map((e) => TranslationSearchResultSentenceExample(
             e.dutchSentence, e.englishSentence, true))
         .toList();
-  }
-
-  static String? findNounPluralForm(PartOfSpeech translationWordType,
-      List<GetWordGrammarOnlineResponse>? grammarOptions) {
-    if (translationWordType != PartOfSpeech.noun || grammarOptions == null) {
-      return null;
-    }
-
-    for (var option in grammarOptions) {
-      if (option.partOfSpeech == PartOfSpeech.noun &&
-          option.nounDetails.pluralForm != null &&
-          option.nounDetails.pluralForm!.trim().isNotEmpty) {
-        return option.nounDetails.pluralForm;
-      }
-    }
-
-    return null;
   }
 }

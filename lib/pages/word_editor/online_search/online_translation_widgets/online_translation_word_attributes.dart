@@ -19,8 +19,8 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
   Widget build(BuildContext context) {
     bool showPartOfSpeech =
         translation.partOfSpeech != PartOfSpeech.unspecified;
-    bool showGender =
-        translation.gender != null && translation.gender != GenderType.none;
+    bool showGender = translation.nounDetails?.gender != null &&
+        translation.nounDetails?.gender != GenderType.none;
     return Column(
       children: [
         if (showPartOfSpeech || showGender) const SizedBox(height: 4),
@@ -42,7 +42,7 @@ class OnlineTranslationWordAttributes extends StatelessWidget {
                 ),
               if (showGender)
                 TextSpan(
-                  text: ", [${translation.gender!.emptyOnNone}]",
+                  text: ", [${translation.nounDetails?.gender!.emptyOnNone}]",
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     fontSize: OnlineTranslationFonts.attributeFontSize,
