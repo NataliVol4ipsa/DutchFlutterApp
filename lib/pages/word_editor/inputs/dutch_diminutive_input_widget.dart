@@ -4,20 +4,21 @@ import 'package:dutch_app/pages/word_editor/inputs/generic/padded_form_component
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
 import 'package:flutter/material.dart';
 
-class DutchPluralFormInput extends StatelessWidget {
+class DutchDiminutiveFormInput extends StatelessWidget {
   final TextEditingController textEditingController;
 
-  const DutchPluralFormInput({super.key, required this.textEditingController});
+  const DutchDiminutiveFormInput(
+      {super.key, required this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
     return PaddedFormComponent(
       child: FormTextInput(
         textInputController: textEditingController,
-        inputLabel: "Plural form",
-        hintText: "Plural form",
+        inputLabel: "Diminutive",
+        hintText: "Diminutive",
         isRequired: false,
-        prefixIcon: FormInputIcon(InputIcons.dutchPluralForm),
+        prefixIcon: FormInputIcon(InputIcons.dutchDiminutive),
       ),
     );
   }

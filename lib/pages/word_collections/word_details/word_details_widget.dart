@@ -102,10 +102,11 @@ class WordDetails extends StatelessWidget {
           horizontal: _horizontalPadding),
       child: ListView(shrinkWrap: true, children: [
         ..._buildTranslation(context),
-        ..._buildPlural(context),
         ..._buildCollection(context),
         ..._buildContextExample(context),
         ..._buildUserNote(context),
+        ..._buildPlural(context),
+        ..._buildDiminutive(context),
       ]),
     );
   }
@@ -120,6 +121,19 @@ class WordDetails extends StatelessWidget {
         sectionName: "Plural form",
         prefixIcon: InputIcons.dutchPluralForm,
         content: SelectableText(word.nounDetails!.pluralForm!,
+            style: TextStyles.wordDetailsSectionContentStyle));
+  }
+
+  List<Widget> _buildDiminutive(BuildContext context) {
+    if (word.nounDetails?.diminutive == null ||
+        word.nounDetails!.diminutive!.trim() == "") {
+      return [];
+    }
+
+    return _buildBodySectionGeneric(context,
+        sectionName: "Diminutive",
+        prefixIcon: InputIcons.dutchDiminutive,
+        content: SelectableText(word.nounDetails!.diminutive!,
             style: TextStyles.wordDetailsSectionContentStyle));
   }
 

@@ -15,7 +15,7 @@ import 'package:dutch_app/pages/word_editor/controllers/noun_controllers.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
-import 'package:dutch_app/pages/word_editor/tabs/plurals_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/noun_forms_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/main_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
@@ -110,8 +110,8 @@ class _WordEditorPageState extends State<WordEditorPage>
     final List<Tab> newTabs = [
       const Tab(text: "All"),
       const Tab(text: "Main"),
-      if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
-        const Tab(text: "Plurals"),
+      if (NounFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
+        const Tab(text: "Forms"),
       if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Past tense"),
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
@@ -121,7 +121,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     final List<Widget> newTabViews = [
       _tab(_buildAllTab()),
       _tab(_buildMainTab()),
-      if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
+      if (NounFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildPluralsTab()),
       if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildPastTenseTab()),
@@ -175,6 +175,8 @@ class _WordEditorPageState extends State<WordEditorPage>
           translation.nounDetails?.article ?? DeHetType.none;
       _nounControllers.dutchPluralForm.text =
           translation.nounDetails?.pluralForm ?? "";
+      _nounControllers.diminutive.text =
+          translation.nounDetails?.diminutive ?? "";
       _mainControllers.contextExampleController.text = contextExample ?? "";
       _mainControllers.contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
@@ -222,7 +224,8 @@ class _WordEditorPageState extends State<WordEditorPage>
     return Column(
       children: [
         _buildMainTab(),
-        if (PluralsTab.shouldShowTab(_mainControllers.wordTypeController.value))
+        if (NounFormsTab.shouldShowTab(
+            _mainControllers.wordTypeController.value))
           _buildPluralsTab(),
         if (PastTenseTab.shouldShowTab(
             _mainControllers.wordTypeController.value))
@@ -245,9 +248,10 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   Widget _buildPluralsTab() {
-    return PluralsTab(
+    return NounFormsTab(
       wordTypeGetter: () => _mainControllers.wordTypeController.value,
       dutchPluralFormController: _nounControllers.dutchPluralForm,
+      diminutiveController: _nounControllers.diminutive,
     );
   }
 
@@ -340,6 +344,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     String dutchWordInput = _mainControllers.dutchWordController.text;
     String englishWordInput = _mainControllers.englishWordController.text;
     String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
+    String diminutiveInput = _nounControllers.diminutive.text;
 
     var newWord = NewWord(
       dutchWordInput.trim(),
@@ -353,7 +358,7 @@ class _WordEditorPageState extends State<WordEditorPage>
       nounDetails: WordNounDetails(
           deHetType: _nounControllers.deHetType.value,
           pluralForm: dutchPluralFormWordInput.trim(),
-          diminutive: "todo map in editor"),
+          diminutive: diminutiveInput.trim()),
       verbDetails: WordVerbDetails(),
     );
 
@@ -366,6 +371,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     String dutchWordInput = _mainControllers.dutchWordController.text;
     String englishWordInput = _mainControllers.englishWordController.text;
     String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
+    String diminutiveInput = _nounControllers.diminutive.text;
 
     var updatedWord = Word(
       existingWordId!,
@@ -378,9 +384,9 @@ class _WordEditorPageState extends State<WordEditorPage>
           _mainControllers.contextExampleTranslationController.text.trim(),
       userNote: _mainControllers.userNoteController.text.trim(),
       nounDetails: WordNounDetails(
-        deHetType: _nounControllers.deHetType.value,
-        pluralForm: dutchPluralFormWordInput.trim(),
-      ),
+          deHetType: _nounControllers.deHetType.value,
+          pluralForm: dutchPluralFormWordInput.trim(),
+          diminutive: diminutiveInput.trim()),
       verbDetails: WordVerbDetails(),
     );
 

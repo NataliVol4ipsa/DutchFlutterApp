@@ -93,9 +93,9 @@ class WordNounDetailsRepository {
     if (value != null) {
       final resultDutchWord = await dutchWordsRepository
           .getOrCreateRawAsync(value.toLowerCase().trim());
-      dbDetails.pluralFormWordLink.value = resultDutchWord;
+      dbDetails.diminutiveWordLink.value = resultDutchWord;
     } else {
-      dbDetails.pluralFormWordLink.value = null;
+      dbDetails.diminutiveWordLink.value = null;
     }
   }
 

@@ -1,15 +1,18 @@
 import 'package:dutch_app/domain/types/part_of_speech.dart';
+import 'package:dutch_app/pages/word_editor/inputs/dutch_diminutive_input_widget.dart';
 import 'package:dutch_app/pages/word_editor/inputs/dutch_plural_form_input_widget.dart';
 import 'package:flutter/material.dart';
 
-class PluralsTab extends StatelessWidget {
+class NounFormsTab extends StatelessWidget {
   final PartOfSpeech Function() wordTypeGetter;
   final TextEditingController dutchPluralFormController;
+  final TextEditingController diminutiveController;
 
-  const PluralsTab({
+  const NounFormsTab({
     super.key,
     required this.dutchPluralFormController,
     required this.wordTypeGetter,
+    required this.diminutiveController,
   });
 
   static bool shouldShowTab(PartOfSpeech wordType) {
@@ -24,6 +27,9 @@ class PluralsTab extends StatelessWidget {
           DutchPluralFormInput(
             textEditingController: dutchPluralFormController,
           ),
+        DutchDiminutiveFormInput(
+          textEditingController: diminutiveController,
+        ),
       ],
     );
   }
