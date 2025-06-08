@@ -1,11 +1,15 @@
 import 'package:dutch_app/core/local_db/entities/db_word_noun_details.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_verb_details.dart';
 import 'package:dutch_app/domain/models/new_word.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_imperative_details.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_past_tense_details.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_present_participle_details.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_present_tense_details.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/mapping/word_collections_mapper.dart';
 import 'package:dutch_app/domain/models/word_noun_details.dart';
-import 'package:dutch_app/domain/models/word_verb_details.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_details.dart';
 
 class WordsMapper {
   static DbWord mapToEntity(NewWord word) {
@@ -52,7 +56,38 @@ class WordsMapper {
 
   static WordVerbDetails? _mapVerbDetailsToDomain(DbWordVerbDetails? details) {
     if (details == null) return null;
-    return WordVerbDetails();
+
+    return WordVerbDetails(
+      infinitive: details.infinitiveWordLink.value?.word,
+      completedParticiple: details.completedParticipleWordLink.value?.word,
+      auxiliaryVerb: details.auxiliaryVerbWordLink.value?.word,
+      imperative: WordVerbImperativeDetails(
+        informal: details.imperativeInformalWordLink.value?.word,
+        formal: details.imperativeFormalWordLink.value?.word,
+      ),
+      presentParticiple: WordVerbPresentParticipleDetails(
+        inflected: details.presentParticipleInflectedWordLink.value?.word,
+        uninflected: details.presentParticipleUninflectedWordLink.value?.word,
+      ),
+      presentTense: WordVerbPresentTenseDetails(
+        ik: details.presentTenseIkWordLink.value?.word,
+        jijVraag: details.presentTenseJijVraagWordLink.value?.word,
+        jij: details.presentTenseJijWordLink.value?.word,
+        u: details.presentTenseUWordLink.value?.word,
+        hijZijHet: details.presentTenseHijZijHetWordLink.value?.word,
+        wij: details.presentTenseWijWordLink.value?.word,
+        jullie: details.presentTenseJullieWordLink.value?.word,
+        zij: details.presentTenseZijWordLink.value?.word,
+      ),
+      pastTense: WordVerbPastTenseDetails(
+        ik: details.pastTenseIkWordLink.value?.word,
+        jij: details.pastTenseJijWordLink.value?.word,
+        hijZijHet: details.pastTenseHijZijHetWordLink.value?.word,
+        wij: details.pastTenseWijWordLink.value?.word,
+        jullie: details.pastTenseJullieWordLink.value?.word,
+        zij: details.pastTenseZijWordLink.value?.word,
+      ),
+    );
   }
 
   static List<Word> mapToDomainList(List<DbWord> words) {

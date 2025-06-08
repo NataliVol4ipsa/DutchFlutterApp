@@ -121,7 +121,7 @@ class WordsRepository {
       await _updateWordDutchLinkAsync(updatedWord.dutchWord, dbWord);
       await _updateWordEnglishLinksAsync(updatedWord.englishWords, dbWord);
       await nounDetailsRepository.upsertNounDetailsAsync(updatedWord, dbWord);
-      await verbDetailsRepository.upsertNounDetailsAsync(updatedWord, dbWord);
+      await verbDetailsRepository.upsertVerbDetailsAsync(updatedWord, dbWord);
 
       // Process change of collection
       if (dbWord.collection.value?.id != updatedWord.collection?.id) {

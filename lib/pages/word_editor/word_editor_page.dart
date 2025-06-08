@@ -1,22 +1,23 @@
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
-import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
-import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/word.dart';
-import 'package:dutch_app/domain/models/word_noun_details.dart';
-import 'package:dutch_app/domain/models/word_verb_details.dart';
 import 'package:dutch_app/domain/notifiers/notifier_tools.dart';
 import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_selected_notifier.dart';
 import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
-import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/pages/word_editor/controllers/main_controllers.dart';
 import 'package:dutch_app/pages/word_editor/controllers/noun_controllers.dart';
+import 'package:dutch_app/pages/word_editor/controllers/verb_controllers.dart';
+import 'package:dutch_app/pages/word_editor/online_search/mapping/controllers_to_words_mapping_service.dart';
 import 'package:dutch_app/pages/word_editor/online_search/models/translation_search_result.dart';
 import 'package:dutch_app/pages/word_editor/tabs/meta_tab_widget.dart';
-import 'package:dutch_app/pages/word_editor/tabs/past_tense_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/noun_forms_tab_widget.dart';
 import 'package:dutch_app/pages/word_editor/tabs/main_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/verb_forms_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/verb_imperative_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/verb_past_tense_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/verb_present_participle_tab_widget.dart';
+import 'package:dutch_app/pages/word_editor/tabs/verb_present_tense_tab_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -48,7 +49,7 @@ class _WordEditorPageState extends State<WordEditorPage>
 
   final MainControllers _mainControllers = MainControllers();
   final NounControllers _nounControllers = NounControllers();
-  //final VerbControllers _verbControllers = VerbControllers();
+  final VerbControllers _verbControllers = VerbControllers();
 
   late TabController _tabController;
   final ValueNotifier<List<Tab>> _tabsNotifier = ValueNotifier<List<Tab>>([]);
@@ -112,8 +113,20 @@ class _WordEditorPageState extends State<WordEditorPage>
       const Tab(text: "Main"),
       if (NounFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Forms"),
-      if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
-        const Tab(text: "Past tense"),
+      if (VerbFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
+        const Tab(text: "Forms"),
+      if (VerbImperativeTab.shouldShowTab(
+          _mainControllers.wordTypeController.value))
+        const Tab(text: "Imperative"),
+      if (VerbPresentParticipleTab.shouldShowTab(
+          _mainControllers.wordTypeController.value))
+        const Tab(text: "PresentParticiple"),
+      if (VerbPresentTenseTab.shouldShowTab(
+          _mainControllers.wordTypeController.value))
+        const Tab(text: "PresentTense"),
+      if (VerbPastTenseTab.shouldShowTab(
+          _mainControllers.wordTypeController.value))
+        const Tab(text: "PastTense"),
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Meta"),
     ];
@@ -122,9 +135,15 @@ class _WordEditorPageState extends State<WordEditorPage>
       _tab(_buildAllTab()),
       _tab(_buildMainTab()),
       if (NounFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
-        _tab(_buildPluralsTab()),
-      if (PastTenseTab.shouldShowTab(_mainControllers.wordTypeController.value))
-        _tab(_buildPastTenseTab()),
+        _tab(_buildNounFormsTab()),
+      if (VerbFormsTab.shouldShowTab(
+          _mainControllers.wordTypeController.value)) ...[
+        _tab(_buildVerbFormsTab()),
+        _tab(_buildVerbImperativeTab()),
+        _tab(_buildVerbPresentParticipleTab()),
+        _tab(_buildVerbPresentTenseTab()),
+        _tab(_buildVerbPastTenseTab()),
+      ],
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildMetaTab()),
     ];
@@ -171,15 +190,12 @@ class _WordEditorPageState extends State<WordEditorPage>
       _mainControllers.wordTypeController.value =
           translation.partOfSpeech ?? PartOfSpeech.phrase;
       _mainControllers.englishWordController.text = englishTranslations;
-      _nounControllers.deHetType.value =
-          translation.nounDetails?.article ?? DeHetType.none;
-      _nounControllers.dutchPluralForm.text =
-          translation.nounDetails?.pluralForm ?? "";
-      _nounControllers.diminutive.text =
-          translation.nounDetails?.diminutive ?? "";
       _mainControllers.contextExampleController.text = contextExample ?? "";
       _mainControllers.contextExampleTranslationController.text =
           contextExampleTranslation ?? "";
+
+      _nounControllers.initializeFromTranslation(translation.nounDetails);
+      _verbControllers.initializeFromTranslation(translation.verbDetails);
     });
   }
 
@@ -203,6 +219,7 @@ class _WordEditorPageState extends State<WordEditorPage>
 
     _mainControllers.initializeFromWord(existingWord);
     _nounControllers.initializeFromDetails(existingWord.nounDetails);
+    _verbControllers.initializeFromDetails(existingWord.verbDetails);
 
     setState(() {
       _isLoading = false;
@@ -226,10 +243,15 @@ class _WordEditorPageState extends State<WordEditorPage>
         _buildMainTab(),
         if (NounFormsTab.shouldShowTab(
             _mainControllers.wordTypeController.value))
-          _buildPluralsTab(),
-        if (PastTenseTab.shouldShowTab(
-            _mainControllers.wordTypeController.value))
-          _buildPastTenseTab(),
+          _buildNounFormsTab(),
+        if (VerbFormsTab.shouldShowTab(
+            _mainControllers.wordTypeController.value)) ...[
+          _buildVerbFormsTab(),
+          _buildVerbImperativeTab(),
+          _buildVerbPresentParticipleTab(),
+          _buildVerbPresentTenseTab(),
+          _buildVerbPastTenseTab(),
+        ],
         if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
           _buildMetaTab(),
       ],
@@ -247,7 +269,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     );
   }
 
-  Widget _buildPluralsTab() {
+  Widget _buildNounFormsTab() {
     return NounFormsTab(
       wordTypeGetter: () => _mainControllers.wordTypeController.value,
       dutchPluralFormController: _nounControllers.dutchPluralForm,
@@ -264,10 +286,6 @@ class _WordEditorPageState extends State<WordEditorPage>
     );
   }
 
-  Widget _buildPastTenseTab() {
-    return Text("Past Tense");
-  }
-
   PreferredSize _buildTabBar(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
@@ -281,6 +299,70 @@ class _WordEditorPageState extends State<WordEditorPage>
             tabs: tabs,
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildVerbFormsTab() {
+    return _tab(
+      VerbFormsTab(
+        wordTypeGetter: () => _mainControllers.wordTypeController.value,
+        infinitiveController: _verbControllers.infinitive,
+        completedParticipleController: _verbControllers.completedParticiple,
+        auxiliaryVerbController: _verbControllers.auxiliaryVerb,
+      ),
+    );
+  }
+
+  Widget _buildVerbImperativeTab() {
+    return _tab(
+      VerbImperativeTab(
+        wordTypeGetter: () => _mainControllers.wordTypeController.value,
+        imperativeInformalController: _verbControllers.imperative.informal,
+        imperativeFormalController: _verbControllers.imperative.formal,
+      ),
+    );
+  }
+
+  Widget _buildVerbPresentParticipleTab() {
+    return _tab(
+      VerbPresentParticipleTab(
+        wordTypeGetter: () => _mainControllers.wordTypeController.value,
+        presentParticipleUninflectedController:
+            _verbControllers.presentParticiple.uninflected,
+        presentParticipleInflectedController:
+            _verbControllers.presentParticiple.inflected,
+      ),
+    );
+  }
+
+  Widget _buildVerbPresentTenseTab() {
+    return _tab(
+      VerbPresentTenseTab(
+        wordTypeGetter: () => _mainControllers.wordTypeController.value,
+        presentTenseIkController: _verbControllers.presentTense.ik,
+        presentTenseJijVraagController: _verbControllers.presentTense.jijVraag,
+        presentTenseJijController: _verbControllers.presentTense.jij,
+        presentTenseUController: _verbControllers.presentTense.u,
+        presentTenseHijZijHetController:
+            _verbControllers.presentTense.hijZijHet,
+        presentTenseWijController: _verbControllers.presentTense.wij,
+        presentTenseJullieController: _verbControllers.presentTense.jullie,
+        presentTenseZijController: _verbControllers.presentTense.zij,
+      ),
+    );
+  }
+
+  Widget _buildVerbPastTenseTab() {
+    return _tab(
+      VerbPastTenseTab(
+        wordTypeGetter: () => _mainControllers.wordTypeController.value,
+        pastTenseIkController: _verbControllers.pastTense.ik,
+        pastTenseJijController: _verbControllers.pastTense.jij,
+        pastTenseHijZijHetController: _verbControllers.pastTense.hijZijHet,
+        pastTenseWijController: _verbControllers.pastTense.wij,
+        pastTenseJullieController: _verbControllers.pastTense.jullie,
+        pastTenseZijController: _verbControllers.pastTense.zij,
       ),
     );
   }
@@ -341,55 +423,23 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   Future<void> createWordAsync() async {
-    String dutchWordInput = _mainControllers.dutchWordController.text;
-    String englishWordInput = _mainControllers.englishWordController.text;
-    String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
-    String diminutiveInput = _nounControllers.diminutive.text;
-
-    var newWord = NewWord(
-      dutchWordInput.trim(),
-      SemicolonWordsConverter.fromString(englishWordInput.trim()),
-      _mainControllers.wordTypeController.value,
-      collection: _mainControllers.wordCollectionController.value,
-      contextExample: _mainControllers.contextExampleController.text.trim(),
-      contextExampleTranslation:
-          _mainControllers.contextExampleTranslationController.text.trim(),
-      userNote: _mainControllers.userNoteController.text.trim(),
-      nounDetails: WordNounDetails(
-          deHetType: _nounControllers.deHetType.value,
-          pluralForm: dutchPluralFormWordInput.trim(),
-          diminutive: diminutiveInput.trim()),
-      verbDetails: WordVerbDetails(),
+    var newWord = ControllersToWordsMappingService.toNewWord(
+      main: _mainControllers,
+      noun: _nounControllers,
+      verb: _verbControllers,
     );
-
     await _wordsRepository.addAsync(newWord);
   }
 
   Future<void> updateWordAsync() async {
     if (_isNewWord) return;
 
-    String dutchWordInput = _mainControllers.dutchWordController.text;
-    String englishWordInput = _mainControllers.englishWordController.text;
-    String dutchPluralFormWordInput = _nounControllers.dutchPluralForm.text;
-    String diminutiveInput = _nounControllers.diminutive.text;
-
-    var updatedWord = Word(
-      existingWordId!,
-      dutchWordInput.trim(),
-      SemicolonWordsConverter.fromString(englishWordInput),
-      _mainControllers.wordTypeController.value,
-      collection: _mainControllers.wordCollectionController.value,
-      contextExample: _mainControllers.contextExampleController.text.trim(),
-      contextExampleTranslation:
-          _mainControllers.contextExampleTranslationController.text.trim(),
-      userNote: _mainControllers.userNoteController.text.trim(),
-      nounDetails: WordNounDetails(
-          deHetType: _nounControllers.deHetType.value,
-          pluralForm: dutchPluralFormWordInput.trim(),
-          diminutive: diminutiveInput.trim()),
-      verbDetails: WordVerbDetails(),
+    var updatedWord = ControllersToWordsMappingService.toUpdatedWord(
+      wordId: existingWordId!,
+      main: _mainControllers,
+      noun: _nounControllers,
+      verb: _verbControllers,
     );
-
     await _wordsRepository.updateAsync(updatedWord);
   }
 

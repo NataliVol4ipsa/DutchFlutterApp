@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/models/word_collection.dart';
 import 'package:dutch_app/domain/models/word_noun_details.dart';
-import 'package:dutch_app/domain/models/word_verb_details.dart';
+import 'package:dutch_app/domain/models/verb_details/word_verb_details.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 
 class BaseWord {

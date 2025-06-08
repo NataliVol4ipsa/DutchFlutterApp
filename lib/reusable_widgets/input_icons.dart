@@ -11,4 +11,12 @@ class InputIcons {
   static final IconData contextExampleTranslation = Icons.translate;
   static final IconData userNote = Icons.edit_note;
   static final IconData synonyms = Icons.autorenew;
+  //todo
+  static final IconData auxiliaryVerb = Icons.autorenew;
+  static final IconData completedParticiple = Icons.autorenew;
+  static final IconData imperative = Icons.autorenew;
+  static final IconData infinitive = Icons.autorenew;
+  static final IconData presentTense = Icons.autorenew;
+  static final IconData pastTense = Icons.autorenew;
+  static final IconData presentParticiple = Icons.autorenew;
 }

@@ -54,5 +54,75 @@ class TranslationNounDetails {
 
 class TranslationVerbDetails {
   final String? infinitive;
-  TranslationVerbDetails({this.infinitive});
+  final String? completedParticiple;
+  final String? auxiliaryVerb;
+
+  final TranslationVerbImperativeDetails imperative;
+  final TranslationVerbPresentParticipleDetails presentParticiple;
+  final TranslationVerbPresentTenseDetails presentTense;
+  final TranslationVerbPastTenseDetails pastTense;
+
+  TranslationVerbDetails({
+    this.infinitive,
+    this.completedParticiple,
+    this.auxiliaryVerb,
+    required this.imperative,
+    required this.presentParticiple,
+    required this.presentTense,
+    required this.pastTense,
+  });
+}
+
+class TranslationVerbImperativeDetails {
+  final String? informal;
+  final String? formal;
+
+  TranslationVerbImperativeDetails({this.informal, this.formal});
+}
+
+class TranslationVerbPresentParticipleDetails {
+  final String? inflected;
+  final String? uninflected;
+
+  TranslationVerbPresentParticipleDetails({this.inflected, this.uninflected});
+}
+
+class TranslationVerbPresentTenseDetails {
+  final String? ik;
+  final String? jijVraag;
+  final String? jij;
+  final String? u;
+  final String? hijZijHet;
+  final String? wij;
+  final String? jullie;
+  final String? zij;
+
+  TranslationVerbPresentTenseDetails({
+    this.ik,
+    this.jijVraag,
+    this.jij,
+    this.u,
+    this.hijZijHet,
+    this.wij,
+    this.jullie,
+    this.zij,
+  });
+}
+
+class TranslationVerbPastTenseDetails {
+  final String? ik;
+  final String? jij;
+  final String? hijZijHet;
+  final String? wij;
+  final String? jullie;
+  final String? zij;
+
+  TranslationVerbPastTenseDetails({
+    this.ik,
+    this.jij,
+    this.hijZijHet,
+    this.wij,
+    this.jullie,
+    this.zij,
+  });
 }

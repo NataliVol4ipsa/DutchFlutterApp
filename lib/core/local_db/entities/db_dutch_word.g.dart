@@ -69,6 +69,153 @@ const DbDutchWordSchema = CollectionSchema(
       target: r'DbWordNounDetails',
       single: false,
       linkName: r'diminutiveWordLink',
+    ),
+    r'infinitiveVerbs': LinkSchema(
+      id: 1577582989783596292,
+      name: r'infinitiveVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'infinitiveWordLink',
+    ),
+    r'completedParticiples': LinkSchema(
+      id: 3122449177042617869,
+      name: r'completedParticiples',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'completedParticipleWordLink',
+    ),
+    r'auxiliaryVerbs': LinkSchema(
+      id: -1224713215534773344,
+      name: r'auxiliaryVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'auxiliaryVerbWordLink',
+    ),
+    r'imperativeInformalVerbs': LinkSchema(
+      id: 7986089376064439607,
+      name: r'imperativeInformalVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'imperativeInformalWordLink',
+    ),
+    r'imperativeFormalVerbs': LinkSchema(
+      id: 3113813517160809749,
+      name: r'imperativeFormalVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'imperativeFormalWordLink',
+    ),
+    r'presentParticipleInflectedVerbs': LinkSchema(
+      id: 6748198384082531924,
+      name: r'presentParticipleInflectedVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentParticipleInflectedWordLink',
+    ),
+    r'presentParticipleUninflectedVerbs': LinkSchema(
+      id: -6904686369612939258,
+      name: r'presentParticipleUninflectedVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentParticipleUninflectedWordLink',
+    ),
+    r'presentIkVerbs': LinkSchema(
+      id: -8234783745496610211,
+      name: r'presentIkVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseIkWordLink',
+    ),
+    r'presentJijVraagVerbs': LinkSchema(
+      id: -5135423320330883408,
+      name: r'presentJijVraagVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseJijVraagWordLink',
+    ),
+    r'presentJijVerbs': LinkSchema(
+      id: -3260467922314165846,
+      name: r'presentJijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseJijWordLink',
+    ),
+    r'presentUVerbs': LinkSchema(
+      id: 8475409024159787567,
+      name: r'presentUVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseUWordLink',
+    ),
+    r'presentHijZijHetVerbs': LinkSchema(
+      id: -4022779025579163246,
+      name: r'presentHijZijHetVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseHijZijHetWordLink',
+    ),
+    r'presentWijVerbs': LinkSchema(
+      id: -3702925717203282022,
+      name: r'presentWijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseWijWordLink',
+    ),
+    r'presentJullieVerbs': LinkSchema(
+      id: 8437193898956494008,
+      name: r'presentJullieVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseJullieWordLink',
+    ),
+    r'presentZijVerbs': LinkSchema(
+      id: -469375496626317184,
+      name: r'presentZijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'presentTenseZijWordLink',
+    ),
+    r'pastIkVerbs': LinkSchema(
+      id: 3163609402973007197,
+      name: r'pastIkVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseIkWordLink',
+    ),
+    r'pastJijVerbs': LinkSchema(
+      id: 7447375991199634003,
+      name: r'pastJijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseJijWordLink',
+    ),
+    r'pastHijZijHetVerbs': LinkSchema(
+      id: 1506938080121978269,
+      name: r'pastHijZijHetVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseHijZijHetWordLink',
+    ),
+    r'pastWijVerbs': LinkSchema(
+      id: -8162402807878604074,
+      name: r'pastWijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseWijWordLink',
+    ),
+    r'pastJullieVerbs': LinkSchema(
+      id: -6702451901109988356,
+      name: r'pastJullieVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseJullieWordLink',
+    ),
+    r'pastZijVerbs': LinkSchema(
+      id: 7039030132262526367,
+      name: r'pastZijVerbs',
+      target: r'DbWordVerbDetails',
+      single: false,
+      linkName: r'pastTenseZijWordLink',
     )
   },
   embeddedSchemas: {},
@@ -138,7 +285,32 @@ Id _dbDutchWordGetId(DbDutchWord object) {
 }
 
 List<IsarLinkBase<dynamic>> _dbDutchWordGetLinks(DbDutchWord object) {
-  return [object.words, object.pluralFormWords, object.diminutiveWords];
+  return [
+    object.words,
+    object.pluralFormWords,
+    object.diminutiveWords,
+    object.infinitiveVerbs,
+    object.completedParticiples,
+    object.auxiliaryVerbs,
+    object.imperativeInformalVerbs,
+    object.imperativeFormalVerbs,
+    object.presentParticipleInflectedVerbs,
+    object.presentParticipleUninflectedVerbs,
+    object.presentIkVerbs,
+    object.presentJijVraagVerbs,
+    object.presentJijVerbs,
+    object.presentUVerbs,
+    object.presentHijZijHetVerbs,
+    object.presentWijVerbs,
+    object.presentJullieVerbs,
+    object.presentZijVerbs,
+    object.pastIkVerbs,
+    object.pastJijVerbs,
+    object.pastHijZijHetVerbs,
+    object.pastWijVerbs,
+    object.pastJullieVerbs,
+    object.pastZijVerbs
+  ];
 }
 
 void _dbDutchWordAttach(
@@ -149,6 +321,54 @@ void _dbDutchWordAttach(
       col, col.isar.collection<DbWordNounDetails>(), r'pluralFormWords', id);
   object.diminutiveWords.attach(
       col, col.isar.collection<DbWordNounDetails>(), r'diminutiveWords', id);
+  object.infinitiveVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'infinitiveVerbs', id);
+  object.completedParticiples.attach(col,
+      col.isar.collection<DbWordVerbDetails>(), r'completedParticiples', id);
+  object.auxiliaryVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'auxiliaryVerbs', id);
+  object.imperativeInformalVerbs.attach(col,
+      col.isar.collection<DbWordVerbDetails>(), r'imperativeInformalVerbs', id);
+  object.imperativeFormalVerbs.attach(col,
+      col.isar.collection<DbWordVerbDetails>(), r'imperativeFormalVerbs', id);
+  object.presentParticipleInflectedVerbs.attach(
+      col,
+      col.isar.collection<DbWordVerbDetails>(),
+      r'presentParticipleInflectedVerbs',
+      id);
+  object.presentParticipleUninflectedVerbs.attach(
+      col,
+      col.isar.collection<DbWordVerbDetails>(),
+      r'presentParticipleUninflectedVerbs',
+      id);
+  object.presentIkVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentIkVerbs', id);
+  object.presentJijVraagVerbs.attach(col,
+      col.isar.collection<DbWordVerbDetails>(), r'presentJijVraagVerbs', id);
+  object.presentJijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentJijVerbs', id);
+  object.presentUVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentUVerbs', id);
+  object.presentHijZijHetVerbs.attach(col,
+      col.isar.collection<DbWordVerbDetails>(), r'presentHijZijHetVerbs', id);
+  object.presentWijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentWijVerbs', id);
+  object.presentJullieVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentJullieVerbs', id);
+  object.presentZijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'presentZijVerbs', id);
+  object.pastIkVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastIkVerbs', id);
+  object.pastJijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastJijVerbs', id);
+  object.pastHijZijHetVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastHijZijHetVerbs', id);
+  object.pastWijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastWijVerbs', id);
+  object.pastJullieVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastJullieVerbs', id);
+  object.pastZijVerbs.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'pastZijVerbs', id);
 }
 
 extension DbDutchWordByIndex on IsarCollection<DbDutchWord> {
@@ -872,6 +1092,1322 @@ extension DbDutchWordQueryLinks
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'diminutiveWords', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> infinitiveVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'infinitiveVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'infinitiveVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'infinitiveVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'infinitiveVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'infinitiveVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'infinitiveVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      infinitiveVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'infinitiveVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiples(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'completedParticiples');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'completedParticiples', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completedParticiples', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'completedParticiples', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'completedParticiples', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'completedParticiples', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      completedParticiplesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'completedParticiples', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> auxiliaryVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'auxiliaryVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'auxiliaryVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'auxiliaryVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'auxiliaryVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'auxiliaryVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'auxiliaryVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      auxiliaryVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'auxiliaryVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'imperativeInformalVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeInformalVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'imperativeInformalVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeInformalVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeInformalVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeInformalVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeInformalVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeInformalVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'imperativeFormalVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeFormalVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'imperativeFormalVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'imperativeFormalVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeFormalVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeFormalVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      imperativeFormalVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'imperativeFormalVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentParticipleInflectedVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleInflectedVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleInflectedVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleInflectedVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleInflectedVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleInflectedVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleInflectedVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentParticipleInflectedVerbs', lower,
+          includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentParticipleUninflectedVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleUninflectedVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleUninflectedVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleUninflectedVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleUninflectedVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentParticipleUninflectedVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentParticipleUninflectedVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentParticipleUninflectedVerbs', lower,
+          includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> presentIkVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentIkVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentIkVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentIkVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentIkVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentIkVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentIkVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentIkVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentIkVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentJijVraagVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVraagVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVraagVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVraagVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVraagVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVraagVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVraagVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVraagVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> presentJijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentJijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJijVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> presentUVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentUVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentUVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentUVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentUVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentUVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentUVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentUVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentUVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentHijZijHetVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentHijZijHetVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentHijZijHetVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentHijZijHetVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentHijZijHetVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentHijZijHetVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentHijZijHetVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentHijZijHetVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> presentWijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentWijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentWijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentWijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentWijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentWijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentWijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentWijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentWijVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentJullieVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJullieVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJullieVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJullieVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentJullieVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJullieVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentJullieVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentJullieVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> presentZijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'presentZijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentZijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentZijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentZijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'presentZijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentZijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      presentZijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'presentZijVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pastIkVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastIkVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastIkVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastIkVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastIkVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastIkVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastIkVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastIkVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastIkVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pastJijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastJijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastJijVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbs(FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastHijZijHetVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastHijZijHetVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastHijZijHetVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastHijZijHetVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastHijZijHetVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastHijZijHetVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastHijZijHetVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastHijZijHetVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pastWijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastWijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastWijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastWijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastWijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastWijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastWijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastWijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastWijVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pastJullieVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastJullieVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJullieVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJullieVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJullieVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastJullieVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastJullieVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastJullieVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastJullieVerbs', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition> pastZijVerbs(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pastZijVerbs');
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastZijVerbs', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastZijVerbs', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastZijVerbs', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastZijVerbs', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pastZijVerbs', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<DbDutchWord, DbDutchWord, QAfterFilterCondition>
+      pastZijVerbsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pastZijVerbs', lower, includeLower, upper, includeUpper);
     });
   }
 }

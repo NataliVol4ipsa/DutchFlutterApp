@@ -25,6 +25,6 @@ class DbWord {
 
   final dutchWordLink = IsarLink<DbDutchWord>();
   final englishWordLinks = IsarLinks<DbEnglishWord>();
-  final verbDetailsLink = IsarLink<DbWordVerbDetails>();
   final nounDetailsLink = IsarLink<DbWordNounDetails>();
+  final verbDetailsLink = IsarLink<DbWordVerbDetails>();
 }

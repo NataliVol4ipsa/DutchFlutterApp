@@ -71,16 +71,16 @@ const DbWordSchema = CollectionSchema(
       target: r'DbEnglishWord',
       single: false,
     ),
-    r'verbDetailsLink': LinkSchema(
-      id: 7570145703745142781,
-      name: r'verbDetailsLink',
-      target: r'DbWordVerbDetails',
-      single: true,
-    ),
     r'nounDetailsLink': LinkSchema(
       id: 4604022843424113617,
       name: r'nounDetailsLink',
       target: r'DbWordNounDetails',
+      single: true,
+    ),
+    r'verbDetailsLink': LinkSchema(
+      id: 7570145703745142781,
+      name: r'verbDetailsLink',
+      target: r'DbWordVerbDetails',
       single: true,
     )
   },
@@ -208,8 +208,8 @@ List<IsarLinkBase<dynamic>> _dbWordGetLinks(DbWord object) {
     object.progress,
     object.dutchWordLink,
     object.englishWordLinks,
-    object.verbDetailsLink,
-    object.nounDetailsLink
+    object.nounDetailsLink,
+    object.verbDetailsLink
   ];
 }
 
@@ -223,10 +223,10 @@ void _dbWordAttach(IsarCollection<dynamic> col, Id id, DbWord object) {
       .attach(col, col.isar.collection<DbDutchWord>(), r'dutchWordLink', id);
   object.englishWordLinks.attach(
       col, col.isar.collection<DbEnglishWord>(), r'englishWordLinks', id);
-  object.verbDetailsLink.attach(
-      col, col.isar.collection<DbWordVerbDetails>(), r'verbDetailsLink', id);
   object.nounDetailsLink.attach(
       col, col.isar.collection<DbWordNounDetails>(), r'nounDetailsLink', id);
+  object.verbDetailsLink.attach(
+      col, col.isar.collection<DbWordVerbDetails>(), r'verbDetailsLink', id);
 }
 
 extension DbWordQueryWhereSort on QueryBuilder<DbWord, DbWord, QWhere> {
@@ -1024,19 +1024,6 @@ extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> verbDetailsLink(
-      FilterQuery<DbWordVerbDetails> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'verbDetailsLink');
-    });
-  }
-
-  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> verbDetailsLinkIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'verbDetailsLink', 0, true, 0, true);
-    });
-  }
-
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> nounDetailsLink(
       FilterQuery<DbWordNounDetails> q) {
     return QueryBuilder.apply(this, (query) {
@@ -1047,6 +1034,19 @@ extension DbWordQueryLinks on QueryBuilder<DbWord, DbWord, QFilterCondition> {
   QueryBuilder<DbWord, DbWord, QAfterFilterCondition> nounDetailsLinkIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'nounDetailsLink', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> verbDetailsLink(
+      FilterQuery<DbWordVerbDetails> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'verbDetailsLink');
+    });
+  }
+
+  QueryBuilder<DbWord, DbWord, QAfterFilterCondition> verbDetailsLinkIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'verbDetailsLink', 0, true, 0, true);
     });
   }
 }

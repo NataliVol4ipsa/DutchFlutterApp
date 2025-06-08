@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
 import 'package:dutch_app/domain/types/de_het_type.dart';
 import 'package:dutch_app/domain/types/gender_type.dart';
@@ -27,7 +28,8 @@ class OnlineTranslationGroupMappingService {
         sentenceExamples: examples,
         nounDetails: _findNounDetails(
             searchedWord, group, mainWord, partOfSpeech, grammarOptions),
-        verbDetails: TranslationVerbDetails(infinitive: "mapping is missing"));
+        verbDetails:
+            _findVerbDetails(partOfSpeech, group.wordForms?.grammarOption));
   }
 
   static String _findMainWord(
@@ -170,5 +172,46 @@ class OnlineTranslationGroupMappingService {
       }
     }
     return null;
+  }
+
+  static TranslationVerbDetails? _findVerbDetails(
+    PartOfSpeech partOfSpeech,
+    GetWordGrammarOnlineResponse? grammarOption,
+  ) {
+    if (partOfSpeech != PartOfSpeech.verb || grammarOption == null) return null;
+
+    final verb = grammarOption.verbDetails;
+
+    return TranslationVerbDetails(
+      infinitive: verb.infinitive,
+      completedParticiple: verb.completedParticiple,
+      auxiliaryVerb: verb.auxiliaryVerb,
+      imperative: TranslationVerbImperativeDetails(
+        informal: verb.imperative.informal,
+        formal: verb.imperative.formal,
+      ),
+      presentParticiple: TranslationVerbPresentParticipleDetails(
+        inflected: verb.presentParticiple.inflected,
+        uninflected: verb.presentParticiple.uninflected,
+      ),
+      presentTense: TranslationVerbPresentTenseDetails(
+        ik: verb.presentTense.ik,
+        jijVraag: verb.presentTense.jijVraag,
+        jij: verb.presentTense.jij,
+        u: verb.presentTense.u,
+        hijZijHet: verb.presentTense.hijZijHet,
+        wij: verb.presentTense.wij,
+        jullie: verb.presentTense.jullie,
+        zij: verb.presentTense.zij,
+      ),
+      pastTense: TranslationVerbPastTenseDetails(
+        ik: verb.pastTense.ik,
+        jij: verb.pastTense.jij,
+        hijZijHet: verb.pastTense.hijZijHet,
+        wij: verb.pastTense.wij,
+        jullie: verb.pastTense.jullie,
+        zij: verb.pastTense.zij,
+      ),
+    );
   }
 }
