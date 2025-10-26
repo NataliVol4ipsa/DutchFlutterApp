@@ -14,12 +14,13 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "volchipsa.studios.dutch_app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion 
-    compileSdk = 35
+    // Compile against Android SDK 36 to satisfy plugins that require it.
+    compileSdk = 36
+    ndkVersion = flutter.ndkVersion
     defaultConfig {
         minSdk = flutter.minSdkVersion
-        targetSdk = 35
+        // Keep target SDK aligned with compileSdk for compatibility
+        targetSdk = 36
     }
 
     compileOptions {

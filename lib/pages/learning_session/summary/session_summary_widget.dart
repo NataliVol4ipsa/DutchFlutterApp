@@ -25,10 +25,7 @@ import 'package:provider/provider.dart';
 class SessionSummaryWidget extends StatelessWidget {
   final SessionSummary summary;
 
-  const SessionSummaryWidget({
-    super.key,
-    required this.summary,
-  });
+  const SessionSummaryWidget({super.key, required this.summary});
 
   List<Widget> _buildSummaryPerExercise(BuildContext context) {
     return summary.summariesPerExercise
@@ -37,7 +34,9 @@ class SessionSummaryWidget extends StatelessWidget {
   }
 
   Widget _buildExerciseSummary(
-      SingleExerciseTypeSummary summary, BuildContext context) {
+    SingleExerciseTypeSummary summary,
+    BuildContext context,
+  ) {
     return SectionContainer(
       padding: ContainerStyles.containerPadding,
       child: Column(
@@ -51,11 +50,17 @@ class SessionSummaryWidget extends StatelessWidget {
             children: [
               ExerciseTotalsCardsBuilder.buildWordsTotalCard(context, summary),
               ExerciseTotalsCardsBuilder.buildMistakesTotalCard(
-                  context, summary),
+                context,
+                summary,
+              ),
               ExerciseTotalsCardsBuilder.buildSuccessRateTotalCard(
-                  context, summary),
+                context,
+                summary,
+              ),
               ExerciseTotalsCardsBuilder.buildMistakesRateTotalCard(
-                  context, summary),
+                context,
+                summary,
+              ),
             ],
           ),
           if (summary.totalMistakes > 0) ...{
@@ -70,18 +75,21 @@ class SessionSummaryWidget extends StatelessWidget {
                   ),
                 ),
                 Container(
-                    padding: ContainerStyles.containerPadding,
-                    width: double.infinity,
-                    alignment: Alignment.bottomLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderStyles.bigBorderRadius,
-                      color: ContainerStyles.section2Color(context),
+                  padding: ContainerStyles.containerPadding,
+                  width: double.infinity,
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderStyles.bigBorderRadius,
+                    color: ContainerStyles.section2Color(context),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildImprovementRecommendations(
+                      summary,
+                      context,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          _buildImprovementRecommendations(summary, context),
-                    )),
+                  ),
+                ),
               ],
             ),
           },
@@ -91,13 +99,17 @@ class SessionSummaryWidget extends StatelessWidget {
   }
 
   List<Widget> _buildImprovementRecommendations(
-      SingleExerciseTypeSummary singleExerciseTypeSummary,
-      BuildContext context) {
-    var top5Summaries = (singleExerciseTypeSummary.summaries
-            .where((item) => item.totalWrongAnswers > 0)
-            .toList()
-          ..sort((a, b) => b.totalWrongAnswers.compareTo(a.totalWrongAnswers)))
-        .take(5);
+    SingleExerciseTypeSummary singleExerciseTypeSummary,
+    BuildContext context,
+  ) {
+    var top5Summaries =
+        (singleExerciseTypeSummary.summaries
+                .where((item) => item.totalWrongAnswers > 0)
+                .toList()
+              ..sort(
+                (a, b) => b.totalWrongAnswers.compareTo(a.totalWrongAnswers),
+              ))
+            .take(5);
 
     return top5Summaries
         .map((summary) => _buildWordStat(context, summary))
@@ -108,19 +120,23 @@ class SessionSummaryWidget extends StatelessWidget {
     return Padding(
       padding: ContainerStyles.smallContainerPadding,
       child: RichText(
-          text: TextSpan(
-              style: TextStyles.sessionSummaryCardtitleTextStyle(context),
-              children: <TextSpan>[
+        text: TextSpan(
+          style: TextStyles.sessionSummaryCardtitleTextStyle(context),
+          children: <TextSpan>[
             TextSpan(text: summary.correctAnswer),
             const TextSpan(text: " ("),
             TextSpan(
-                text: summary.totalWrongAnswers.toString(),
-                style: const TextStyle(color: TextStyles.failureTextColor)),
+              text: summary.totalWrongAnswers.toString(),
+              style: const TextStyle(color: TextStyles.failureTextColor),
+            ),
             TextSpan(
-                text: summary.totalWrongAnswers == 1 ? " mistake" : " mistakes",
-                style: const TextStyle(color: TextStyles.failureTextColor)),
+              text: summary.totalWrongAnswers == 1 ? " mistake" : " mistakes",
+              style: const TextStyle(color: TextStyles.failureTextColor),
+            ),
             const TextSpan(text: ")"),
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
@@ -162,7 +178,7 @@ class SessionSummaryWidget extends StatelessWidget {
     );
   }
 
-  _onCompletePressed(BuildContext context) {
+  void _onCompletePressed(BuildContext context) {
     var service = context.read<PracticeSessionStatefulService>();
     service.cleanup();
     Navigator.pop(context);

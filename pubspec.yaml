@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ">=3.9.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -37,17 +37,17 @@ dependencies:
   provider: ^6.1.2
   flex_color_scheme: ^8.1.0
   isar: ^3.1.0+1
-  file_picker: ^8.1.7
+  file_picker: ^10.3.3
   path_provider: ^2.1.5
   xml: ^6.5.0
   http: ^1.2.2
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   isar_flutter_libs:
     git: 
       url: https://github.com/MrLittleWhite/isar_flutter_libs.git
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
-  collection: ^1.19.0
+  collection: ^1.19.1
   html: ^0.15.5+1
 
 dev_dependencies:
@@ -59,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -14,8 +14,10 @@ subprojects {
     if (project.plugins.hasPlugin("com.android.application") ||
       project.plugins.hasPlugin("com.android.library")) {
       project.android {
-        compileSdkVersion 35
-        buildToolsVersion "35.0.0"
+        // Compile against SDK 36 to satisfy plugins that require it.
+        compileSdkVersion 36
+        // Align build tools with SDK 36
+        buildToolsVersion "36.0.0"
       }
     }
     if (project.hasProperty("android")) {

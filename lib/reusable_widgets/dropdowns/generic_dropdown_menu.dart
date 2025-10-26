@@ -32,14 +32,16 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
     return SizedBox(
       width: double.infinity, // Make sure the dropdown takes full width
       child: Container(
-        decoration:
-            BoxDecoration(borderRadius: BorderStyles.defaultBorderRadius),
+        decoration: BoxDecoration(
+          borderRadius: BorderStyles.defaultBorderRadius,
+        ),
         child: Theme(
-          data: Theme.of(context)
-              .copyWith(canvasColor: ContainerStyles.section2Color(context)),
+          data: Theme.of(
+            context,
+          ).copyWith(canvasColor: ContainerStyles.section2Color(context)),
           child: DropdownButtonFormField<T?>(
             isExpanded: true,
-            value: widget.initialValue,
+            initialValue: widget.initialValue,
             iconEnabledColor: widget.dropdownArrowColor,
             onChanged: (T? value) {
               if (value != null) {
@@ -49,21 +51,26 @@ class _GenericDropdownMenuState<T> extends State<GenericDropdownMenu<T>> {
             },
             items: widget.dropdownValues.map<DropdownMenuItem<T>>((T value) {
               return DropdownMenuItem<T>(
-                  value: value,
-                  child: Text(
-                    widget.displayStringFunc(value),
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: widget.dropdownOptionColorGenerator == null
-                            ? null
-                            : widget.dropdownOptionColorGenerator!(value)),
-                  ));
+                value: value,
+                child: Text(
+                  widget.displayStringFunc(value),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: widget.dropdownOptionColorGenerator == null
+                        ? null
+                        : widget.dropdownOptionColorGenerator!(value),
+                  ),
+                ),
+              );
             }).toList(),
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                  borderRadius: BorderStyles.defaultBorderRadius),
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                borderRadius: BorderStyles.defaultBorderRadius,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 12.0,
+              ),
               prefixIcon: widget.prefixIcon,
             ),
           ),
