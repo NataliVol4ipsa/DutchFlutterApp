@@ -33,7 +33,6 @@ class LearningSessionManager {
 
   BaseExercise? get currentTask => exercisesQueue.firstOrNull;
 
-  // 1 and not 0 because there must be NEXT task, not CURRENT task
   bool get hasNextTask => exercisesQueue.length > 1;
 
   void moveToNextExercise() {

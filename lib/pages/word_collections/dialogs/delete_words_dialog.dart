@@ -1,5 +1,5 @@
 import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
-import 'package:dutch_app/styles/text_styles.dart';
+import 'package:dutch_app/reusable_widgets/modals/confirmation_modal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,53 +10,16 @@ void showDeleteWordsDialog(
     required Future<void> Function() callback,
     String? additionalText}) {
   var service = context.read<BatchWordOperationsService>();
-  //todo create custom just like text input modal
   showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete following item(s)?'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (additionalText != null)
-                Text(
-                  additionalText,
-                  style: TextStyles.modalDescriptionTextStyle,
-                ),
-              Text(
-                'This action is permanent.',
-                style: TextStyles.modalDescriptionTextStyle,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('CANCEL'),
-                ),
-                const SizedBox(
-                  height: 30,
-                  child: VerticalDivider(thickness: 1, color: Colors.grey),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _deleteDataAsync(collectionIds, wordIds, service, callback);
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'DELETE',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
-            ),
-          ],
+        return ConfirmationModal(
+          title: 'Delete following item(s)?',
+          description: 'This action is permanent.',
+          confirmButtonText: 'DELETE',
+          onConfirmPressed: (context) async {
+            await _deleteDataAsync(collectionIds, wordIds, service, callback);
+          },
         );
       });
 }
