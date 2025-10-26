@@ -5,13 +5,14 @@ class BaseSessionStepLayout extends StatefulWidget {
   final String appBarText;
   final Widget Function(BuildContext context) contentBuilder;
   final bool enableBackButton;
-  // todo disable three android buttons back button too. Or show pop up to confirm
+  final VoidCallback? onBackPressed;
 
   const BaseSessionStepLayout(
       {required this.appBarText,
       required this.contentBuilder,
       super.key,
-      this.enableBackButton = false});
+      this.enableBackButton = false,
+      this.onBackPressed});
 
   @override
   State<BaseSessionStepLayout> createState() => _BaseSessionStepLayoutState();
@@ -20,17 +21,30 @@ class BaseSessionStepLayout extends StatefulWidget {
 class _BaseSessionStepLayoutState extends State<BaseSessionStepLayout> {
   @override
   Widget build(BuildContext context) {
-    //final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      appBar: MyAppBar(
-        title: Text(
-          widget.appBarText,
-          textAlign: TextAlign.center,
+    return PopScope(
+      canPop: widget.onBackPressed == null,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (!didPop && widget.onBackPressed != null) {
+          widget.onBackPressed!();
+        }
+      },
+      child: Scaffold(
+        appBar: MyAppBar(
+          title: Text(
+            widget.appBarText,
+            textAlign: TextAlign.center,
+          ),
+          centerTitle: true,
+          automaticallyImplyLeading: widget.enableBackButton,
+          leading: widget.enableBackButton
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: widget.onBackPressed,
+                )
+              : null,
         ),
-        centerTitle: true,
-        automaticallyImplyLeading: widget.enableBackButton,
+        body: widget.contentBuilder(context),
       ),
-      body: widget.contentBuilder(context),
     );
   }
 }

@@ -5,6 +5,7 @@ class ConfirmationModal extends StatefulWidget {
   final String title;
   final String? description;
   final String? confirmButtonText;
+  final String? cancelButtonText;
   final Future<void> Function(BuildContext context) onConfirmPressed;
 
   const ConfirmationModal({
@@ -13,6 +14,7 @@ class ConfirmationModal extends StatefulWidget {
     required this.onConfirmPressed,
     this.description,
     this.confirmButtonText,
+    this.cancelButtonText,
   });
 
   @override
@@ -53,7 +55,7 @@ class _ConfirmationModalState extends State<ConfirmationModal> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('CANCEL'),
+              child: Text(widget.cancelButtonText ?? 'CANCEL'),
             ),
             const SizedBox(
               height: 30,

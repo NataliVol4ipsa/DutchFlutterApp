@@ -4,6 +4,7 @@ import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/domain/notifiers/session_completed_notifier.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary_widget.dart';
+import 'package:dutch_app/pages/learning_session/dialogs/quit_session_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,8 +69,6 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     _learningTasksCompletedNotifier?.notifyCompleted();
   }
 
-  //
-
   Widget _buildSummary(BuildContext context) {
     SessionSummary summary = widget.flowManager.sessionSummary!;
 
@@ -95,12 +94,22 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     return "Session complete";
   }
 
+  void _handleBackPress(BuildContext context) {
+    showQuitSessionDialog(
+      context: context,
+      onQuit: () {
+        Navigator.of(context).pop(); // Return to previous page
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseSessionStepLayout(
       appBarText: _buildAppBarText(),
       contentBuilder: _buildContent,
-      enableBackButton: true, //todo
+      enableBackButton: true,
+      onBackPressed: () => _handleBackPress(context),
     );
   }
 }
