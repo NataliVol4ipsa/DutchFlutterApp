@@ -23,6 +23,7 @@ import 'package:dutch_app/styles/container_styles.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dutch_app/pages/word_collections/empty_search_result_widget.dart';
 
 class WordCollectionsListPage extends StatefulWidget {
   const WordCollectionsListPage({super.key});
@@ -35,6 +36,7 @@ class WordCollectionsListPage extends StatefulWidget {
 Widget customPadding() => const SizedBox(height: 10);
 
 class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
+  String _currentSearchTerm = '';
   late WordCollectionListManager dataManager;
   bool isLoading = true;
   List<Widget> collectionsAndWords = [];
@@ -127,8 +129,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   List<Widget> _buildWordsAndCollections(BuildContext context) {
     return dataManager.collections
-        .expand((collection) =>
-            _buildSingleCollectionAndItsWords(context, collection))
+        .expand(
+          (collection) =>
+              _buildSingleCollectionAndItsWords(context, collection),
+        )
         .toList();
   }
 
@@ -187,7 +191,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       initialName: collection.name,
       callback: ((newName) async {
         await _loadDataWithSnackBar(
-            "Succesfully renamed collection '${collection.name}' to '$newName'");
+          "Succesfully renamed collection '${collection.name}' to '$newName'",
+        );
       }),
     );
   }
@@ -199,70 +204,81 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       collectionIds: [],
       wordIds: wordIds,
       callback: (() => _loadDataWithSnackBar(
-          "Succesfully deleted '${wordIds.length}' words.")),
+        "Succesfully deleted '${wordIds.length}' words.",
+      )),
     );
   }
 
   Future<void> _showWordDetailsDialog(
-      BuildContext context, SelectableWordModel word) async {
+    BuildContext context,
+    SelectableWordModel word,
+  ) async {
     await WordDetailsDialog.show(
-        context: context,
-        word: word.value,
-        deletionCallback: () async {
-          await _loadDataWithSnackBar("Succesfully deleted word.");
-        });
+      context: context,
+      word: word.value,
+      deletionCallback: () async {
+        await _loadDataWithSnackBar("Succesfully deleted word.");
+      },
+    );
   }
 
   List<Widget> _buildSingleCollectionAndItsWords(
-      BuildContext context, SelectableWordCollectionModel collection) {
+    BuildContext context,
+    SelectableWordCollectionModel collection,
+  ) {
     if (!collection.isVisible) {
       return [];
     }
     return [
       SelectableWordCollectionRow(
-          collection: collection,
-          onRowTap: _onCollectionRowTap,
-          showCheckbox: _isCheckboxModeEnabled,
-          onLongRowPress: () {
-            _longPressCollection(collection);
-          }),
-      ..._buildCollectionWordsWidgets(context, collection.words)
+        collection: collection,
+        onRowTap: _onCollectionRowTap,
+        showCheckbox: _isCheckboxModeEnabled,
+        onLongRowPress: () {
+          _longPressCollection(collection);
+        },
+      ),
+      ..._buildCollectionWordsWidgets(context, collection.words),
     ].toList();
   }
 
   List<Widget> _buildCollectionWordsWidgets(
-      BuildContext context, List<SelectableWordModel>? words) {
+    BuildContext context,
+    List<SelectableWordModel>? words,
+  ) {
     if (words == null) {
       return [];
     }
-    return words.asMap().entries.where((entry) => entry.value.isVisible).map(
-      (entry) {
-        return SelectableWord(
-          word: entry.value,
-          showCheckbox: _isCheckboxModeEnabled,
-          extraLeftPadding: ContainerStyles.defaultPaddingAmount,
-          onRowTap: _selectWord,
-          onLongRowPress: () {
-            _longPressWord(entry.value);
-          },
-          isEvenRow: entry.key % 2 == 0,
-        );
-      },
-    ).toList();
+    return words.asMap().entries.where((entry) => entry.value.isVisible).map((
+      entry,
+    ) {
+      return SelectableWord(
+        word: entry.value,
+        showCheckbox: _isCheckboxModeEnabled,
+        extraLeftPadding: ContainerStyles.defaultPaddingAmount,
+        onRowTap: _selectWord,
+        onLongRowPress: () {
+          _longPressWord(entry.value);
+        },
+        isEvenRow: entry.key % 2 == 0,
+      );
+    }).toList();
   }
 
   //todo move out
   Future<void> _onImportPressedAsync(BuildContext context) async {
     final result = await FilePicker.platform.pickFiles(
-        allowMultiple: false,
-        type: FileType.custom,
-        allowedExtensions: ["json"]);
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ["json"],
+    );
     if (result == null) {
       return;
     }
 
-    ExportPackageV1 importPackage = await WordsIoJsonServiceV1()
-        .importAsync(File(result.files.first.path!));
+    ExportPackageV1 importPackage = await WordsIoJsonServiceV1().importAsync(
+      File(result.files.first.path!),
+    );
 
     await wordsStorageService.storeInDatabaseAsync(importPackage);
     final totalWords = importPackage.collections.fold<int>(
@@ -271,7 +287,8 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     );
 
     await _loadDataWithSnackBar(
-        "Succesfully imported ${importPackage.collections.length} collection(s) with $totalWords words");
+      "Succesfully imported ${importPackage.collections.length} collection(s) with $totalWords words",
+    );
   }
 
   void _onSearchPressed() {
@@ -283,6 +300,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   void _onSearchTermChanged(String value) {
     setState(() {
+      _currentSearchTerm = value;
       dataManager.adjustVisibilityBySearchTerm(value);
     });
   }
@@ -293,9 +311,7 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     }
     return TextField(
       autofocus: true,
-      style: TextStyle(
-        fontSize: 20,
-      ),
+      style: TextStyle(fontSize: 20),
       decoration: InputDecoration(
         hintText: 'Search...',
         border: InputBorder.none,
@@ -311,21 +327,23 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: !_isCheckboxModeEnabled && !_isSearchingModeEnabled,
-        onPopInvokedWithResult: onAfterPopAsync,
-        child: Scaffold(
-            appBar: MyAppBar(
-              title: _buildAppBarTitle(),
-              actions: [
-                if (_shouldShowSearchIcon())
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: _onSearchPressed,
-                  ),
-              ],
-            ),
-            body: _buildPage(context),
-            bottomNavigationBar: _buildBottomNavBar(context)));
+      canPop: !_isCheckboxModeEnabled && !_isSearchingModeEnabled,
+      onPopInvokedWithResult: onAfterPopAsync,
+      child: Scaffold(
+        appBar: MyAppBar(
+          title: _buildAppBarTitle(),
+          actions: [
+            if (_shouldShowSearchIcon())
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: _onSearchPressed,
+              ),
+          ],
+        ),
+        body: _buildPage(context),
+        bottomNavigationBar: _buildBottomNavBar(context),
+      ),
+    );
   }
 
   String _multiselectAppBarTitle() {
@@ -349,6 +367,24 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     }
 
     collectionsAndWords = _buildWordsAndCollections(context);
+    final isSearching = _isSearchingModeEnabled;
+    final searchTerm = isSearching ? _currentSearchTerm : '';
+    final isEmptySearch =
+        isSearching && collectionsAndWords.isEmpty && searchTerm.isNotEmpty;
+
+    if (isEmptySearch) {
+      return EmptySearchResultWidget(
+        searchTerm: searchTerm,
+        onCreatePressed: () {
+          Navigator.pushNamed(
+            context,
+            '/wordeditor',
+            arguments: {'prefillDutch': searchTerm},
+          );
+        },
+      );
+    }
+
     return Container(
       padding: ContainerStyles.containerPadding,
       child: ListView.builder(
@@ -370,101 +406,109 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   Widget _buildRegularNavBar(BuildContext context) {
     return BottomAppBar(
-        height: 68,
-        color: ContainerStyles.bottomNavBarColor(context),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyBottomAppBarItem(
-                icon: Icons.add,
-                disabledIcon: Icons.add_outlined,
-                label: 'Word',
-                onTap: (() => {Navigator.pushNamed(context, '/wordeditor')})),
-            MyBottomAppBarItem(
-                icon: Icons.add,
-                disabledIcon: Icons.add_outlined,
-                label: 'Collection',
-                onTap: (() => {
-                      showAddCollectionDialog(
-                          context: context,
-                          callback: (() => _loadDataWithSnackBar(
-                              "Succesfully created new collection")))
-                    })),
-            MyBottomAppBarItem(
-                icon: Icons.file_download,
-                disabledIcon: Icons.file_download_outlined,
-                label: 'Import',
-                onTap: (() => {_onImportPressedAsync(context)})),
-            MyBottomAppBarItem(
-                icon: Icons.library_add_check,
-                disabledIcon: Icons.library_add_check_outlined,
-                label: 'Actions',
-                onTap: (() => {_toggleCheckboxMode()})),
-          ],
-        ));
+      height: 68,
+      color: ContainerStyles.bottomNavBarColor(context),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MyBottomAppBarItem(
+            icon: Icons.add,
+            disabledIcon: Icons.add_outlined,
+            label: 'Word',
+            onTap: (() => {Navigator.pushNamed(context, '/wordeditor')}),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.add,
+            disabledIcon: Icons.add_outlined,
+            label: 'Collection',
+            onTap: (() => {
+              showAddCollectionDialog(
+                context: context,
+                callback: (() => _loadDataWithSnackBar(
+                  "Succesfully created new collection",
+                )),
+              ),
+            }),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.file_download,
+            disabledIcon: Icons.file_download_outlined,
+            label: 'Import',
+            onTap: (() => {_onImportPressedAsync(context)}),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.library_add_check,
+            disabledIcon: Icons.library_add_check_outlined,
+            label: 'Actions',
+            onTap: (() => {_toggleCheckboxMode()}),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildCheckboxNavBar(BuildContext context) {
     return BottomAppBar(
-        height: 68,
-        color: ContainerStyles.bottomNavBarColor(context),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MyBottomAppBarItem(
-                icon: Icons.school,
-                disabledIcon: Icons.school_outlined,
-                isEnabled: _shouldEnableMultiselectButtons(),
-                label: 'Practice',
-                onTap: (() => {_handleOnPracticeActionTap(context)})),
-            MyBottomAppBarItem(
-                icon: Icons.drive_file_move,
-                disabledIcon: Icons.drive_file_move_outlined,
-                isEnabled: _shouldEnableMultiselectButtons(),
-                label: 'Move',
-                onTap: (() => {print('Tapped Move!')})),
-            MyBottomAppBarItem(
-                icon: Icons.file_copy,
-                disabledIcon: Icons.file_copy_outlined,
-                isEnabled: _shouldEnableMultiselectButtons(),
-                label: 'Copy',
-                onTap: (() => {print('Tapped Copy!')})),
-            MyBottomAppBarItem(
-                icon: Icons.upload_file_rounded,
-                disabledIcon: Icons.upload_file_outlined,
-                isEnabled: _shouldEnableMultiselectButtons(),
-                label: 'Export',
-                onTap: (() => {_handleOnExportActionTap(context)})),
-            _buildMoreButton(context),
-          ],
-        ));
+      height: 68,
+      color: ContainerStyles.bottomNavBarColor(context),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MyBottomAppBarItem(
+            icon: Icons.school,
+            disabledIcon: Icons.school_outlined,
+            isEnabled: _shouldEnableMultiselectButtons(),
+            label: 'Practice',
+            onTap: (() => {_handleOnPracticeActionTap(context)}),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.drive_file_move,
+            disabledIcon: Icons.drive_file_move_outlined,
+            isEnabled: _shouldEnableMultiselectButtons(),
+            label: 'Move',
+            onTap: (() => {print('Tapped Move!')}),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.file_copy,
+            disabledIcon: Icons.file_copy_outlined,
+            isEnabled: _shouldEnableMultiselectButtons(),
+            label: 'Copy',
+            onTap: (() => {print('Tapped Copy!')}),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.upload_file_rounded,
+            disabledIcon: Icons.upload_file_outlined,
+            isEnabled: _shouldEnableMultiselectButtons(),
+            label: 'Export',
+            onTap: (() => {_handleOnExportActionTap(context)}),
+          ),
+          _buildMoreButton(context),
+        ],
+      ),
+    );
   }
 
   void _handleOnPracticeActionTap(BuildContext context) {
     if (!dataManager.containsAtLeastOneSelectedWord()) return;
     var service = context.read<PracticeSessionStatefulService>();
     service.initializeWords(dataManager.getAllSelectedWords());
-    Navigator.pushNamed(
-      context,
-      '/exerciseselector',
-    );
+    Navigator.pushNamed(context, '/exerciseselector');
   }
 
   void _handleOnExportActionTap(BuildContext context) {
     if (!dataManager.containsAtLeastOneSelectedItem()) return;
     showExportDataDialog(
-        context: context,
-        collections: dataManager.getCollectionsWithAtLeastOneSelectedWord(),
-        callback: ((filePath) => _loadDataWithSnackBar(
-            "Successfully exported words and collections to $filePath")) //todo counts of words and collections
-        );
+      context: context,
+      collections: dataManager.getCollectionsWithAtLeastOneSelectedWord(),
+      callback: ((filePath) => _loadDataWithSnackBar(
+        "Successfully exported words and collections to $filePath",
+      )), //todo counts of words and collections
+    );
   }
 
-  //todo
   bool _shouldEnableMultiselectButtons() {
-    //more room for other conditions
     return dataManager.containsAtLeastOneSelectedItem();
   }
 
@@ -476,9 +520,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   Widget _buildMoreButton(BuildContext context) {
     return MoreActionsBottomAppBar(
-        actions: _buildMoreActions(context),
-        verticalOffset: 13,
-        isEnabled: _shouldEnableMultiselectButtons());
+      actions: _buildMoreActions(context),
+      verticalOffset: 13,
+      isEnabled: _shouldEnableMultiselectButtons(),
+    );
   }
 
   List<Widget> _buildMoreActions(BuildContext context) {

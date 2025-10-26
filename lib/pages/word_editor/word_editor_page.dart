@@ -71,7 +71,15 @@ class _WordEditorPageState extends State<WordEditorPage>
     super.didChangeDependencies();
     if (initialized) return;
 
-    existingWordId = ModalRoute.of(context)!.settings.arguments as int?;
+    final args = ModalRoute.of(context)!.settings.arguments;
+    if (args is int?) {
+      existingWordId = args;
+    } else if (args is Map && args['prefillDutch'] != null) {
+      existingWordId = null;
+      _mainControllers.dutchWordController.text = args['prefillDutch'] ?? '';
+    } else {
+      existingWordId = null;
+    }
     _initIsNewWord();
     if (!_isNewWord) {
       _initExistingWordAsync(existingWordId!);
