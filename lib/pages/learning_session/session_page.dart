@@ -89,7 +89,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   String _buildAppBarText() {
-    if (widget.flowManager.hasNextTask) {
+    if (widget.flowManager.totalTasks > 0) {
       return 'Exercises remaining: ${widget.flowManager.totalTasks}';
     }
     return "Session complete";
