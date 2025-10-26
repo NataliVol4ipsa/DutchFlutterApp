@@ -23,6 +23,7 @@ import 'pages/home_page.dart';
 // shift + alt + f: format document
 // flutter pub add xxx - install package xxx
 // flutter pub run build_runner build - generate db tables .g.dart
+// ctrl + shift + u: open bottom panel with output, debug console etc
 
 //todo is notifier for db changes really needed?
 
@@ -79,8 +80,9 @@ class MyApp extends StatelessWidget {
 // Load theme settings from db
 Future<DarkThemeToggledNotifier> _initializeThemeSettings() async {
   final settingsRepository = SettingsRepository();
-  final settingsService =
-      SettingsService(settingsRepository: settingsRepository);
+  final settingsService = SettingsService(
+    settingsRepository: settingsRepository,
+  );
   final platformBrightness = PlatformDispatcher.instance.platformBrightness;
   final darkThemeNotifier = DarkThemeToggledNotifier();
   await darkThemeNotifier.loadInitialTheme(settingsService, platformBrightness);

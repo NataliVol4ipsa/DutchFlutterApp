@@ -27,10 +27,14 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Capture the references to the notifiers for future disposal
-    _learningTaskAnsweredNotifier ??=
-        Provider.of<ExerciseAnsweredNotifier>(context, listen: false);
-    _learningTasksCompletedNotifier ??=
-        Provider.of<SessionCompletedNotifier>(context, listen: false);
+    _learningTaskAnsweredNotifier ??= Provider.of<ExerciseAnsweredNotifier>(
+      context,
+      listen: false,
+    );
+    _learningTasksCompletedNotifier ??= Provider.of<SessionCompletedNotifier>(
+      context,
+      listen: false,
+    );
   }
 
   @override
@@ -42,15 +46,19 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
 
   Widget _buildExercise(BuildContext context) {
     Key taskKey = UniqueKey();
-    return Stack(children: [
-      widget.flowManager.currentTask?.buildWidget(
+    return Stack(
+      children: [
+        widget.flowManager.currentTask?.buildWidget(
               key: taskKey,
               onNextButtonPressed: _onNextButtonPressedAsync,
-              nextButtonText:
-                  widget.flowManager.hasNextTask ? "Next" : "Finish") ??
-          const Text("Error: the queue is empty"),
-      //_buildNextButton(context),
-    ]);
+              nextButtonText: widget.flowManager.hasNextTask
+                  ? "Next"
+                  : "Finish",
+            ) ??
+            const Text("Error: the queue is empty"),
+        //_buildNextButton(context),
+      ],
+    );
   }
 
   Future<void> _onNextButtonPressedAsync() async {
@@ -77,14 +85,15 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
 
   Widget _buildContent(BuildContext context) {
     return Consumer<SessionCompletedNotifier>(
-        builder: (context, notifier, child) {
-      bool showSessionTasks = !notifier.isCompleted;
-      if (showSessionTasks) {
-        return _buildExercise(context);
-      } else {
-        return _buildSummary(context);
-      }
-    });
+      builder: (context, notifier, child) {
+        bool showSessionTasks = !notifier.isCompleted;
+        if (showSessionTasks) {
+          return _buildExercise(context);
+        } else {
+          return _buildSummary(context);
+        }
+      },
+    );
   }
 
   String _buildAppBarText() {
@@ -95,6 +104,11 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   void _handleBackPress(BuildContext context) {
+    if (widget.flowManager.isSessionComplete) {
+      Navigator.of(context).pop();
+      return;
+    }
+
     showQuitSessionDialog(
       context: context,
       onQuit: () {
@@ -108,7 +122,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     return BaseSessionStepLayout(
       appBarText: _buildAppBarText(),
       contentBuilder: _buildContent,
-      enableBackButton: true,
+      enableBackButton: !widget.flowManager.isSessionComplete,
       onBackPressed: () => _handleBackPress(context),
     );
   }

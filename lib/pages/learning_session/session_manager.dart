@@ -21,8 +21,12 @@ class LearningSessionManager {
   List<ExerciseSummaryDetailed>? detailedSummaries;
   SessionSummary? sessionSummary;
 
-  LearningSessionManager(this.exerciseTypes, this.words,
-      this.wordProgressRepository, this.notifier) {
+  LearningSessionManager(
+    this.exerciseTypes,
+    this.words,
+    this.wordProgressRepository,
+    this.notifier,
+  ) {
     exercises = ExercisesGenerator(exerciseTypes, words).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
@@ -34,6 +38,7 @@ class LearningSessionManager {
   BaseExercise? get currentTask => exercisesQueue.firstOrNull;
 
   bool get hasNextTask => exercisesQueue.length > 1;
+  bool get isSessionComplete => exercisesQueue.isEmpty;
 
   void moveToNextExercise() {
     if (exercisesQueue.isNotEmpty) {
@@ -52,8 +57,9 @@ class LearningSessionManager {
   }
 
   Future<void> processSessionResultsAsync() async {
-    detailedSummaries =
-        exercises.expand((ex) => ex.generateSummaries()).toList();
+    detailedSummaries = exercises
+        .expand((ex) => ex.generateSummaries())
+        .toList();
 
     await _saveDetailedSummariesAsync(detailedSummaries!);
     _generateSummary();
@@ -61,10 +67,11 @@ class LearningSessionManager {
 
   void _generateSummary() {
     sessionSummary = SessionSummary(
-        totalWords: words.length,
-        totalExercises: exercises.length,
-        exerciseTypes: exerciseTypes,
-        detailedSummaries: detailedSummaries!);
+      totalWords: words.length,
+      totalExercises: exercises.length,
+      exerciseTypes: exerciseTypes,
+      detailedSummaries: detailedSummaries!,
+    );
   }
 
   void endSession() {
@@ -72,13 +79,15 @@ class LearningSessionManager {
   }
 
   Future<void> _saveDetailedSummariesAsync(
-      List<ExerciseSummaryDetailed> detailedSummaries) async {
+    List<ExerciseSummaryDetailed> detailedSummaries,
+  ) async {
     await Future.forEach(detailedSummaries, (summary) async {
       await wordProgressRepository.updateAsync(
-          summary.wordId,
-          summary.exerciseType,
-          summary.totalCorrectAnswers,
-          summary.totalWrongAnswers);
+        summary.wordId,
+        summary.exerciseType,
+        summary.totalCorrectAnswers,
+        summary.totalWrongAnswers,
+      );
     });
   }
 

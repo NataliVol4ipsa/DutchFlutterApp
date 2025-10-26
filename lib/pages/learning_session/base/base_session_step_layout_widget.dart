@@ -6,13 +6,16 @@ class BaseSessionStepLayout extends StatefulWidget {
   final Widget Function(BuildContext context) contentBuilder;
   final bool enableBackButton;
   final VoidCallback? onBackPressed;
+  final bool isSessionOver;
 
-  const BaseSessionStepLayout(
-      {required this.appBarText,
-      required this.contentBuilder,
-      super.key,
-      this.enableBackButton = false,
-      this.onBackPressed});
+  const BaseSessionStepLayout({
+    required this.appBarText,
+    required this.contentBuilder,
+    super.key,
+    this.enableBackButton = false,
+    this.onBackPressed,
+    this.isSessionOver = false,
+  });
 
   @override
   State<BaseSessionStepLayout> createState() => _BaseSessionStepLayoutState();
@@ -22,18 +25,15 @@ class _BaseSessionStepLayoutState extends State<BaseSessionStepLayout> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: widget.onBackPressed == null,
+      canPop: widget.isSessionOver || widget.onBackPressed == null,
       onPopInvokedWithResult: (bool didPop, Object? result) {
-        if (!didPop && widget.onBackPressed != null) {
+        if (!didPop && widget.onBackPressed != null && !widget.isSessionOver) {
           widget.onBackPressed!();
         }
       },
       child: Scaffold(
         appBar: MyAppBar(
-          title: Text(
-            widget.appBarText,
-            textAlign: TextAlign.center,
-          ),
+          title: Text(widget.appBarText, textAlign: TextAlign.center),
           centerTitle: true,
           automaticallyImplyLeading: widget.enableBackButton,
           leading: widget.enableBackButton
