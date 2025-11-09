@@ -1,7 +1,7 @@
 import 'package:dutch_app/domain/types/part_of_speech.dart';
-import 'package:dutch_app/pages/word_editor/inputs/context_example_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/inputs/context_example_translation_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/inputs/user_note_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/meta/context_example_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/meta/context_example_translation_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/meta/user_note_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class MetaTab extends StatelessWidget {
@@ -24,15 +24,11 @@ class MetaTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ContextExampleInput(
-          textEditingController: contextExampleController,
-        ),
+        ContextExampleInput(textEditingController: contextExampleController),
         ContextExampleTranslationInput(
           textEditingController: contextExampleTranslationController,
         ),
-        UserNoteInput(
-          textEditingController: userNoteController,
-        ),
+        UserNoteInput(textEditingController: userNoteController),
       ],
     );
   }

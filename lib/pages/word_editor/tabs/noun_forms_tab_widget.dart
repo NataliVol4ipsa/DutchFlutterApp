@@ -1,6 +1,6 @@
 import 'package:dutch_app/domain/types/part_of_speech.dart';
-import 'package:dutch_app/pages/word_editor/inputs/dutch_diminutive_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/inputs/dutch_plural_form_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/main/dutch_diminutive_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/main/dutch_plural_form_input_widget.dart';
 import 'package:flutter/material.dart';
 
 class NounFormsTab extends StatelessWidget {
@@ -27,9 +27,7 @@ class NounFormsTab extends StatelessWidget {
           DutchPluralFormInput(
             textEditingController: dutchPluralFormController,
           ),
-        DutchDiminutiveFormInput(
-          textEditingController: diminutiveController,
-        ),
+        DutchDiminutiveFormInput(textEditingController: diminutiveController),
       ],
     );
   }

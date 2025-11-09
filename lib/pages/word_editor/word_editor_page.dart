@@ -125,14 +125,6 @@ class _WordEditorPageState extends State<WordEditorPage>
         const Tab(text: "Forms"),
       if (VerbFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Forms"),
-      if (VerbImperativeTab.shouldShowTab(
-        _mainControllers.wordTypeController.value,
-      ))
-        const Tab(text: "Imperative"),
-      if (VerbPresentParticipleTab.shouldShowTab(
-        _mainControllers.wordTypeController.value,
-      ))
-        const Tab(text: "PresentParticiple"),
       if (VerbPresentTenseTab.shouldShowTab(
         _mainControllers.wordTypeController.value,
       ))
@@ -141,6 +133,15 @@ class _WordEditorPageState extends State<WordEditorPage>
         _mainControllers.wordTypeController.value,
       ))
         const Tab(text: "PastTense"),
+      if (VerbImperativeTab.shouldShowTab(
+        _mainControllers.wordTypeController.value,
+      ))
+        const Tab(text: "Imperative"),
+      if (VerbPresentParticipleTab.shouldShowTab(
+        _mainControllers.wordTypeController.value,
+      ))
+        const Tab(text: "PresentParticiple"),
+
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Meta"),
     ];
@@ -154,10 +155,10 @@ class _WordEditorPageState extends State<WordEditorPage>
         _mainControllers.wordTypeController.value,
       )) ...[
         _tab(_buildVerbFormsTab()),
-        _tab(_buildVerbImperativeTab()),
-        _tab(_buildVerbPresentParticipleTab()),
         _tab(_buildVerbPresentTenseTab()),
         _tab(_buildVerbPastTenseTab()),
+        _tab(_buildVerbImperativeTab()),
+        _tab(_buildVerbPresentParticipleTab()),
       ],
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildMetaTab()),
@@ -272,10 +273,10 @@ class _WordEditorPageState extends State<WordEditorPage>
           _mainControllers.wordTypeController.value,
         )) ...[
           _buildVerbFormsTab(),
-          _buildVerbImperativeTab(),
-          _buildVerbPresentParticipleTab(),
           _buildVerbPresentTenseTab(),
           _buildVerbPastTenseTab(),
+          _buildVerbImperativeTab(),
+          _buildVerbPresentParticipleTab(),
         ],
         if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
           _buildMetaTab(),

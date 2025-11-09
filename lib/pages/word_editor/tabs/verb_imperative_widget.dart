@@ -1,5 +1,5 @@
-import 'package:dutch_app/pages/word_editor/inputs/verb/imperative_formal_input_widget.dart';
-import 'package:dutch_app/pages/word_editor/inputs/verb/imperative_informal_input_widget.dart';
+import 'package:dutch_app/pages/word_editor/inputs/verb/generic/verb_conjugation_row_data.dart';
+import 'package:dutch_app/pages/word_editor/inputs/verb/generic/verb_conjugation_table.dart';
 import 'package:flutter/material.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 
@@ -21,14 +21,22 @@ class VerbImperativeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (wordTypeGetter() == PartOfSpeech.verb) ...[
-          ImperativeInformalInput(
-              textEditingController: imperativeInformalController),
-          ImperativeFormalInput(
-              textEditingController: imperativeFormalController),
-        ]
+    if (wordTypeGetter() != PartOfSpeech.verb) return const SizedBox.shrink();
+
+    return VerbConjugationTable(
+      rows: [
+        VerbConjugationRowData(
+          pronoun: '',
+          controller: imperativeInformalController,
+          inputHint: 'Informal',
+          suffix: '!',
+        ),
+        VerbConjugationRowData(
+          pronoun: '',
+          controller: imperativeFormalController,
+          inputHint: 'Formal',
+          suffix: 'u !',
+        ),
       ],
     );
   }
