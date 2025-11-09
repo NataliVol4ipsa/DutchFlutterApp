@@ -44,7 +44,7 @@ class _WordEditorPageState extends State<WordEditorPage>
   late WordsRepository _wordsRepository;
 
   late OnlineTranslationSearchSuggestionSelectedNotifier
-      _onlineTranslationSelectedNotifier;
+  _onlineTranslationSelectedNotifier;
   late void Function() _onlineTranslationSelectedNotifierListener;
 
   final MainControllers _mainControllers = MainControllers();
@@ -96,15 +96,17 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   void _initOnlineSearch() {
-    _onlineTranslationSelectedNotifier =
-        context.read<OnlineTranslationSearchSuggestionSelectedNotifier>();
+    _onlineTranslationSelectedNotifier = context
+        .read<OnlineTranslationSearchSuggestionSelectedNotifier>();
     _onlineTranslationSelectedNotifierListener = () {
       onlineTranslationSelectedNotifierAction(
-          _onlineTranslationSelectedNotifier.translation,
-          _onlineTranslationSelectedNotifier.grammarOptions);
+        _onlineTranslationSelectedNotifier.translation,
+        _onlineTranslationSelectedNotifier.grammarOptions,
+      );
     };
-    _onlineTranslationSelectedNotifier
-        .addListener(_onlineTranslationSelectedNotifierListener);
+    _onlineTranslationSelectedNotifier.addListener(
+      _onlineTranslationSelectedNotifierListener,
+    );
   }
 
   void _initTabs() {
@@ -124,16 +126,20 @@ class _WordEditorPageState extends State<WordEditorPage>
       if (VerbFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Forms"),
       if (VerbImperativeTab.shouldShowTab(
-          _mainControllers.wordTypeController.value))
+        _mainControllers.wordTypeController.value,
+      ))
         const Tab(text: "Imperative"),
       if (VerbPresentParticipleTab.shouldShowTab(
-          _mainControllers.wordTypeController.value))
+        _mainControllers.wordTypeController.value,
+      ))
         const Tab(text: "PresentParticiple"),
       if (VerbPresentTenseTab.shouldShowTab(
-          _mainControllers.wordTypeController.value))
+        _mainControllers.wordTypeController.value,
+      ))
         const Tab(text: "PresentTense"),
       if (VerbPastTenseTab.shouldShowTab(
-          _mainControllers.wordTypeController.value))
+        _mainControllers.wordTypeController.value,
+      ))
         const Tab(text: "PastTense"),
       if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
         const Tab(text: "Meta"),
@@ -145,7 +151,8 @@ class _WordEditorPageState extends State<WordEditorPage>
       if (NounFormsTab.shouldShowTab(_mainControllers.wordTypeController.value))
         _tab(_buildNounFormsTab()),
       if (VerbFormsTab.shouldShowTab(
-          _mainControllers.wordTypeController.value)) ...[
+        _mainControllers.wordTypeController.value,
+      )) ...[
         _tab(_buildVerbFormsTab()),
         _tab(_buildVerbImperativeTab()),
         _tab(_buildVerbPresentParticipleTab()),
@@ -162,20 +169,22 @@ class _WordEditorPageState extends State<WordEditorPage>
     int activeIndex = _tabController.index;
     _tabController.dispose();
     _tabController = TabController(
-        length: newTabs.length,
-        vsync: this,
-        initialIndex: initialized
-            ? activeIndex
-            : _isNewWord
-                ? 1
-                : 0);
+      length: newTabs.length,
+      vsync: this,
+      initialIndex: initialized
+          ? activeIndex
+          : _isNewWord
+          ? 1
+          : 0,
+    );
     setState(() {});
   }
 
   // When online translation is selected, apply its values to current word input fields
   void onlineTranslationSelectedNotifierAction(
-      TranslationSearchResult? translation,
-      List<GetWordGrammarOnlineResponse>? grammarOptions) {
+    TranslationSearchResult? translation,
+    List<GetWordGrammarOnlineResponse>? grammarOptions,
+  ) {
     if (translation == null) {
       return;
     }
@@ -186,10 +195,14 @@ class _WordEditorPageState extends State<WordEditorPage>
         .map((w) => w.value)
         .join(";");
     final contextExampleTranslation = translation
-        .sentenceExamples.firstOrNull?.englishSentence
+        .sentenceExamples
+        .firstOrNull
+        ?.englishSentence
         .replaceAll(RegExp(r'<[^>]*>'), '');
     final contextExample = translation
-        .sentenceExamples.firstOrNull?.dutchSentence
+        .sentenceExamples
+        .firstOrNull
+        ?.dutchSentence
         .replaceAll(RegExp(r'<[^>]*>'), '');
     // end of todo
 
@@ -210,8 +223,9 @@ class _WordEditorPageState extends State<WordEditorPage>
   @override
   void dispose() {
     super.dispose();
-    _onlineTranslationSelectedNotifier
-        .removeListener(_onlineTranslationSelectedNotifierListener);
+    _onlineTranslationSelectedNotifier.removeListener(
+      _onlineTranslationSelectedNotifierListener,
+    );
     _tabController.dispose();
     _mainControllers.wordTypeController.dispose();
     _tabsNotifier.dispose();
@@ -241,8 +255,9 @@ class _WordEditorPageState extends State<WordEditorPage>
 
   Widget _tab(Widget child) {
     return Padding(
-        padding: ContainerStyles.containerPadding,
-        child: SingleChildScrollView(child: child));
+      padding: ContainerStyles.containerPadding,
+      child: SingleChildScrollView(child: child),
+    );
   }
 
   Widget _buildAllTab() {
@@ -250,10 +265,12 @@ class _WordEditorPageState extends State<WordEditorPage>
       children: [
         _buildMainTab(),
         if (NounFormsTab.shouldShowTab(
-            _mainControllers.wordTypeController.value))
+          _mainControllers.wordTypeController.value,
+        ))
           _buildNounFormsTab(),
         if (VerbFormsTab.shouldShowTab(
-            _mainControllers.wordTypeController.value)) ...[
+          _mainControllers.wordTypeController.value,
+        )) ...[
           _buildVerbFormsTab(),
           _buildVerbImperativeTab(),
           _buildVerbPresentParticipleTab(),
@@ -312,66 +329,55 @@ class _WordEditorPageState extends State<WordEditorPage>
   }
 
   Widget _buildVerbFormsTab() {
-    return _tab(
-      VerbFormsTab(
-        wordTypeGetter: () => _mainControllers.wordTypeController.value,
-        infinitiveController: _verbControllers.infinitive,
-        completedParticipleController: _verbControllers.completedParticiple,
-        auxiliaryVerbController: _verbControllers.auxiliaryVerb,
-      ),
+    return VerbFormsTab(
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      infinitiveController: _verbControllers.infinitive,
+      completedParticipleController: _verbControllers.completedParticiple,
+      auxiliaryVerbController: _verbControllers.auxiliaryVerb,
     );
   }
 
   Widget _buildVerbImperativeTab() {
-    return _tab(
-      VerbImperativeTab(
-        wordTypeGetter: () => _mainControllers.wordTypeController.value,
-        imperativeInformalController: _verbControllers.imperative.informal,
-        imperativeFormalController: _verbControllers.imperative.formal,
-      ),
+    return VerbImperativeTab(
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      imperativeInformalController: _verbControllers.imperative.informal,
+      imperativeFormalController: _verbControllers.imperative.formal,
     );
   }
 
   Widget _buildVerbPresentParticipleTab() {
-    return _tab(
-      VerbPresentParticipleTab(
-        wordTypeGetter: () => _mainControllers.wordTypeController.value,
-        presentParticipleUninflectedController:
-            _verbControllers.presentParticiple.uninflected,
-        presentParticipleInflectedController:
-            _verbControllers.presentParticiple.inflected,
-      ),
+    return VerbPresentParticipleTab(
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      presentParticipleUninflectedController:
+          _verbControllers.presentParticiple.uninflected,
+      presentParticipleInflectedController:
+          _verbControllers.presentParticiple.inflected,
     );
   }
 
   Widget _buildVerbPresentTenseTab() {
-    return _tab(
-      VerbPresentTenseTab(
-        wordTypeGetter: () => _mainControllers.wordTypeController.value,
-        presentTenseIkController: _verbControllers.presentTense.ik,
-        presentTenseJijVraagController: _verbControllers.presentTense.jijVraag,
-        presentTenseJijController: _verbControllers.presentTense.jij,
-        presentTenseUController: _verbControllers.presentTense.u,
-        presentTenseHijZijHetController:
-            _verbControllers.presentTense.hijZijHet,
-        presentTenseWijController: _verbControllers.presentTense.wij,
-        presentTenseJullieController: _verbControllers.presentTense.jullie,
-        presentTenseZijController: _verbControllers.presentTense.zij,
-      ),
+    return VerbPresentTenseTab(
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      presentTenseIkController: _verbControllers.presentTense.ik,
+      presentTenseJijVraagController: _verbControllers.presentTense.jijVraag,
+      presentTenseJijController: _verbControllers.presentTense.jij,
+      presentTenseUController: _verbControllers.presentTense.u,
+      presentTenseHijZijHetController: _verbControllers.presentTense.hijZijHet,
+      presentTenseWijController: _verbControllers.presentTense.wij,
+      presentTenseJullieController: _verbControllers.presentTense.jullie,
+      presentTenseZijController: _verbControllers.presentTense.zij,
     );
   }
 
   Widget _buildVerbPastTenseTab() {
-    return _tab(
-      VerbPastTenseTab(
-        wordTypeGetter: () => _mainControllers.wordTypeController.value,
-        pastTenseIkController: _verbControllers.pastTense.ik,
-        pastTenseJijController: _verbControllers.pastTense.jij,
-        pastTenseHijZijHetController: _verbControllers.pastTense.hijZijHet,
-        pastTenseWijController: _verbControllers.pastTense.wij,
-        pastTenseJullieController: _verbControllers.pastTense.jullie,
-        pastTenseZijController: _verbControllers.pastTense.zij,
-      ),
+    return VerbPastTenseTab(
+      wordTypeGetter: () => _mainControllers.wordTypeController.value,
+      pastTenseIkController: _verbControllers.pastTense.ik,
+      pastTenseJijController: _verbControllers.pastTense.jij,
+      pastTenseHijZijHetController: _verbControllers.pastTense.hijZijHet,
+      pastTenseWijController: _verbControllers.pastTense.wij,
+      pastTenseJullieController: _verbControllers.pastTense.jullie,
+      pastTenseZijController: _verbControllers.pastTense.zij,
     );
   }
 
@@ -379,10 +385,7 @@ class _WordEditorPageState extends State<WordEditorPage>
     return ValueListenableBuilder<List<Widget>>(
       valueListenable: _tabViewsNotifier,
       builder: (context, tabViews, _) {
-        return TabBarView(
-          controller: _tabController,
-          children: tabViews,
-        );
+        return TabBarView(controller: _tabController, children: tabViews);
       },
     );
   }
@@ -394,14 +397,17 @@ class _WordEditorPageState extends State<WordEditorPage>
         children: [
           Expanded(
             child: TextButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    _submitChangesAsync();
-                  }
-                },
-                style: ButtonStyles.mediumPrimaryButtonStyle(context,
-                    fontWeight: FontWeight.bold),
-                child: Text(getSubmitButtonLabel())),
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  _submitChangesAsync();
+                }
+              },
+              style: ButtonStyles.mediumPrimaryButtonStyle(
+                context,
+                fontWeight: FontWeight.bold,
+              ),
+              child: Text(getSubmitButtonLabel()),
+            ),
           ),
         ],
       ),
@@ -415,8 +421,10 @@ class _WordEditorPageState extends State<WordEditorPage>
 
   Future<void> _submitChangesAsync() async {
     if (!_formKey.currentState!.validate()) return;
-    var wordCreatedNotifier =
-        Provider.of<WordCreatedNotifier>(context, listen: false);
+    var wordCreatedNotifier = Provider.of<WordCreatedNotifier>(
+      context,
+      listen: false,
+    );
     if (_isNewWord) {
       notifyWordCreated(context);
       await createWordAsync();
