@@ -9,6 +9,7 @@ class VerbConjugationTable extends StatelessWidget {
   TextStyle _buildTextStyle(BuildContext context) {
     return TextStyle(
       fontSize: 16,
+      fontStyle: FontStyle.italic,
       color: Theme.of(
         context,
       ).textTheme.bodyMedium?.color?.withAlpha((0.7 * 255).round()),

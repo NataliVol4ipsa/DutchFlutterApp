@@ -5,6 +5,7 @@ import 'package:dutch_app/domain/notifiers/online_translation_search_suggestion_
 import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/core/http_clients/woordenlijst/models/get_word_grammar_online_response.dart';
+import 'package:dutch_app/pages/word_editor/tabs/all_inputs_verb_table_section_widget.dart';
 import 'package:dutch_app/pages/word_editor/controllers/main_controllers.dart';
 import 'package:dutch_app/pages/word_editor/controllers/noun_controllers.dart';
 import 'package:dutch_app/pages/word_editor/controllers/verb_controllers.dart';
@@ -113,6 +114,15 @@ class _WordEditorPageState extends State<WordEditorPage>
     _updateTabs();
 
     _mainControllers.wordTypeController.addListener(() {
+      _updateTabs();
+    });
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    // Force a rebuild after hot reload
+    setState(() {
       _updateTabs();
     });
   }
@@ -273,9 +283,21 @@ class _WordEditorPageState extends State<WordEditorPage>
           _mainControllers.wordTypeController.value,
         )) ...[
           _buildVerbFormsTab(),
-          _buildVerbPresentTenseTab(),
-          _buildVerbPastTenseTab(),
-          _buildVerbImperativeTab(),
+          AllInputsVerbTableSection(
+            context: context,
+            title: "Present Tense",
+            child: _buildVerbPresentTenseTab(),
+          ),
+          AllInputsVerbTableSection(
+            context: context,
+            title: "Past Tense",
+            child: _buildVerbPastTenseTab(),
+          ),
+          AllInputsVerbTableSection(
+            context: context,
+            title: "Imperative",
+            child: _buildVerbImperativeTab(),
+          ),
           _buildVerbPresentParticipleTab(),
         ],
         if (MetaTab.shouldShowTab(_mainControllers.wordTypeController.value))
