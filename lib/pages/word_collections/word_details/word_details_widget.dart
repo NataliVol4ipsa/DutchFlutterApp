@@ -5,7 +5,6 @@ import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
-import 'package:dutch_app/reusable_widgets/marginless_button_widget.dart';
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
@@ -51,12 +50,7 @@ class WordDetails extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: ContainerStyles.smallContainerPadding,
-              child: _buildWordTitle(context),
-            ),
-          ),
+          Expanded(child: _buildWordTitle(context)),
           Expanded(
             flex: 0,
             child: IconButton(
@@ -82,42 +76,47 @@ class WordDetails extends StatelessWidget {
   }
 
   Widget _buildWordTitle(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SelectableText(
-                word.toDutchWordString(),
-                style: TextStyles.titleStyle.copyWith(
-                  color: BaseStyles.getColorScheme(context).primary,
-                ),
-              ),
-              SelectableText(
-                word.partOfSpeech.label,
-                style: TextStyles.titleCommentStyle,
-              ),
-            ],
-          ),
-        ),
-        if (word.audioCode != null)
-          Container(
-            margin: EdgeInsets.only(
-              top: ContainerStyles.tinyPaddingAmount,
-              left: ContainerStyles.smallPaddingAmount,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: ContainerStyles.smallPaddingAmount,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: ContainerStyles.smallPaddingAmount,
             ),
-            child: MarginlessButton(
-              child: const FormInputIcon(Icons.volume_up),
-              onTap: () {
+            child: Expanded(
+              flex: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SelectableText(
+                    word.toDutchWordString(),
+                    style: TextStyles.titleStyle.copyWith(
+                      color: BaseStyles.getColorScheme(context).primary,
+                    ),
+                  ),
+                  SelectableText(
+                    word.partOfSpeech.label,
+                    style: TextStyles.titleCommentStyle,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (word.audioCode != null)
+            IconButton(
+              icon: const FormInputIcon(Icons.volume_up),
+              padding: EdgeInsets.zero,
+              onPressed: () {
                 playCachedOrUrl(word.dutchWord, word.audioCode!);
               },
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
