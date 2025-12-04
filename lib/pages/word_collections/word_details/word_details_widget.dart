@@ -83,12 +83,12 @@ class WordDetails extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: ContainerStyles.smallPaddingAmount,
-            ),
-            child: Expanded(
-              flex: 0,
+          Expanded(
+            flex: 0,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: ContainerStyles.smallPaddingAmount,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
