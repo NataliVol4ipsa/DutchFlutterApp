@@ -1,9 +1,11 @@
+import 'package:dutch_app/core/audio/word_audio_service.dart';
 import 'package:dutch_app/domain/converters/semicolon_words_converter.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_editor/inputs/generic/form_input_icon_widget.dart';
 import 'package:dutch_app/reusable_widgets/Input_icons.dart';
+import 'package:dutch_app/reusable_widgets/marginless_button_widget.dart';
 import 'package:dutch_app/styles/base_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:dutch_app/styles/text_styles.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/material.dart';
 class WordDetails extends StatelessWidget {
   final Word word;
   final Future<void> Function()? deletionCallback;
-  WordDetails({super.key, required this.word, this.deletionCallback});
+  const WordDetails({super.key, required this.word, this.deletionCallback});
 
   final _horizontalPadding = ContainerStyles.smallPaddingAmount;
 
@@ -44,8 +46,9 @@ class WordDetails extends StatelessWidget {
             child: Padding(
               padding: ContainerStyles.smallContainerPadding2,
               child: Container(
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.menu_book)),
+                alignment: Alignment.center,
+                child: const Icon(Icons.menu_book),
+              ),
             ),
           ),
           Expanded(
@@ -79,18 +82,41 @@ class WordDetails extends StatelessWidget {
   }
 
   Widget _buildWordTitle(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SelectableText(
-          word.toDutchWordString(),
-          style: TextStyles.titleStyle
-              .copyWith(color: BaseStyles.getColorScheme(context).primary),
+        Expanded(
+          flex: 0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SelectableText(
+                word.toDutchWordString(),
+                style: TextStyles.titleStyle.copyWith(
+                  color: BaseStyles.getColorScheme(context).primary,
+                ),
+              ),
+              SelectableText(
+                word.partOfSpeech.label,
+                style: TextStyles.titleCommentStyle,
+              ),
+            ],
+          ),
         ),
-        SelectableText(
-          word.partOfSpeech.label,
-          style: TextStyles.titleCommentStyle,
-        ),
+        if (word.audioCode != null)
+          Container(
+            margin: EdgeInsets.only(
+              top: ContainerStyles.tinyPaddingAmount,
+              left: ContainerStyles.smallPaddingAmount,
+            ),
+            child: MarginlessButton(
+              child: const FormInputIcon(Icons.volume_up),
+              onTap: () {
+                playCachedOrUrl(word.dutchWord, word.audioCode!);
+              },
+            ),
+          ),
       ],
     );
   }
@@ -98,16 +124,20 @@ class WordDetails extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: ContainerStyles.smallPaddingAmount,
-          horizontal: _horizontalPadding),
-      child: ListView(shrinkWrap: true, children: [
-        ..._buildTranslation(context),
-        ..._buildCollection(context),
-        ..._buildContextExample(context),
-        ..._buildUserNote(context),
-        ..._buildPlural(context),
-        ..._buildDiminutive(context),
-      ]),
+        vertical: ContainerStyles.smallPaddingAmount,
+        horizontal: _horizontalPadding,
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          ..._buildTranslation(context),
+          ..._buildCollection(context),
+          ..._buildContextExample(context),
+          ..._buildUserNote(context),
+          ..._buildPlural(context),
+          ..._buildDiminutive(context),
+        ],
+      ),
     );
   }
 
@@ -117,11 +147,15 @@ class WordDetails extends StatelessWidget {
       return [];
     }
 
-    return _buildBodySectionGeneric(context,
-        sectionName: "Plural form",
-        prefixIcon: InputIcons.dutchPluralForm,
-        content: SelectableText(word.nounDetails!.pluralForm!,
-            style: TextStyles.wordDetailsSectionContentStyle));
+    return _buildBodySectionGeneric(
+      context,
+      sectionName: "Plural form",
+      prefixIcon: InputIcons.dutchPluralForm,
+      content: SelectableText(
+        word.nounDetails!.pluralForm!,
+        style: TextStyles.wordDetailsSectionContentStyle,
+      ),
+    );
   }
 
   List<Widget> _buildDiminutive(BuildContext context) {
@@ -130,28 +164,39 @@ class WordDetails extends StatelessWidget {
       return [];
     }
 
-    return _buildBodySectionGeneric(context,
-        sectionName: "Diminutive",
-        prefixIcon: InputIcons.dutchDiminutive,
-        content: SelectableText(word.nounDetails!.diminutive!,
-            style: TextStyles.wordDetailsSectionContentStyle));
+    return _buildBodySectionGeneric(
+      context,
+      sectionName: "Diminutive",
+      prefixIcon: InputIcons.dutchDiminutive,
+      content: SelectableText(
+        word.nounDetails!.diminutive!,
+        style: TextStyles.wordDetailsSectionContentStyle,
+      ),
+    );
   }
 
   List<Widget> _buildTranslation(BuildContext context) {
-    return _buildBodySectionGeneric(context,
-        sectionName: "Translation",
-        prefixIcon: InputIcons.englishWord,
-        content: SelectableText(
-            SemicolonWordsConverter.toSingleString(word.englishWords),
-            style: TextStyles.wordDetailsSectionContentStyle));
+    return _buildBodySectionGeneric(
+      context,
+      sectionName: "Translation",
+      prefixIcon: InputIcons.englishWord,
+      content: SelectableText(
+        SemicolonWordsConverter.toSingleString(word.englishWords),
+        style: TextStyles.wordDetailsSectionContentStyle,
+      ),
+    );
   }
 
   List<Widget> _buildCollection(BuildContext context) {
-    return _buildBodySectionGeneric(context,
-        sectionName: "Collection",
-        prefixIcon: InputIcons.collection,
-        content: SelectableText(word.collection!.name,
-            style: TextStyles.wordDetailsSectionContentStyle));
+    return _buildBodySectionGeneric(
+      context,
+      sectionName: "Collection",
+      prefixIcon: InputIcons.collection,
+      content: SelectableText(
+        word.collection!.name,
+        style: TextStyles.wordDetailsSectionContentStyle,
+      ),
+    );
   }
 
   List<Widget> _buildContextExample(BuildContext context) {
@@ -159,78 +204,98 @@ class WordDetails extends StatelessWidget {
       return [];
     }
 
-    return _buildBodySectionGeneric(context,
-        sectionName:
-            "Example in context", //todo reuse labels here and in word editor
-        prefixIcon: InputIcons.contextExample,
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SelectableText("\"${word.contextExample!}\"",
-                style: TextStyles.wordDetailsSectionContentStyle),
-            if (word.contextExampleTranslation != null &&
-                word.contextExampleTranslation!.trim() != "") ...[
-              SizedBox(
-                height: ContainerStyles.betweenCardsPaddingAmount,
-              ),
-              SelectableText("(${word.contextExampleTranslation!})",
-                  style: TextStyles.smallWordDetailsSectionContentStyle)
-            ]
+    return _buildBodySectionGeneric(
+      context,
+      sectionName:
+          "Example in context", //todo reuse labels here and in word editor
+      prefixIcon: InputIcons.contextExample,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SelectableText(
+            "\"${word.contextExample!}\"",
+            style: TextStyles.wordDetailsSectionContentStyle,
+          ),
+          if (word.contextExampleTranslation != null &&
+              word.contextExampleTranslation!.trim() != "") ...[
+            SizedBox(height: ContainerStyles.betweenCardsPaddingAmount),
+            SelectableText(
+              "(${word.contextExampleTranslation!})",
+              style: TextStyles.smallWordDetailsSectionContentStyle,
+            ),
           ],
-        ));
+        ],
+      ),
+    );
   }
 
   List<Widget> _buildUserNote(BuildContext context) {
     if (word.userNote == null || word.userNote!.trim() == "") {
       return [];
     }
-    return _buildBodySectionGeneric(context,
-        sectionName: "Notes",
-        prefixIcon: InputIcons.userNote,
-        content: SelectableText(word.userNote!,
-            style: TextStyles.wordDetailsSectionContentStyle));
+    return _buildBodySectionGeneric(
+      context,
+      sectionName: "Notes",
+      prefixIcon: InputIcons.userNote,
+      content: SelectableText(
+        word.userNote!,
+        style: TextStyles.wordDetailsSectionContentStyle,
+      ),
+    );
   }
 
-  List<Widget> _buildBodySectionGeneric(BuildContext context,
-      {required String sectionName,
-      required Widget content,
-      IconData? prefixIcon}) {
+  List<Widget> _buildBodySectionGeneric(
+    BuildContext context, {
+    required String sectionName,
+    required Widget content,
+    IconData? prefixIcon,
+  }) {
     return [
       Padding(
-        padding:
-            EdgeInsets.symmetric(vertical: ContainerStyles.smallPaddingAmount2),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (prefixIcon != null)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: ContainerStyles.smallPaddingAmount2),
-                  child: Icon(
-                    prefixIcon,
-                    size: 24,
-                    color: BaseStyles.getColorScheme(context).onSurfaceVariant,
+        padding: EdgeInsets.symmetric(
+          vertical: ContainerStyles.smallPaddingAmount2,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (prefixIcon != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ContainerStyles.smallPaddingAmount2,
+                    ),
+                    child: Icon(
+                      prefixIcon,
+                      size: 24,
+                      color: BaseStyles.getColorScheme(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
+                  ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SelectableText(
+                        sectionName,
+                        style: TextStyles.wordDetailsSectionTitleStyle.copyWith(
+                          color: BaseStyles.getColorScheme(
+                            context,
+                          ).onSurfaceVariant,
+                        ),
+                      ),
+                      Divider(),
+                      content,
+                    ],
                   ),
                 ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SelectableText(sectionName,
-                        style: TextStyles.wordDetailsSectionTitleStyle.copyWith(
-                          color: BaseStyles.getColorScheme(context)
-                              .onSurfaceVariant,
-                        )),
-                    Divider(),
-                    content,
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ]),
-      )
+              ],
+            ),
+          ],
+        ),
+      ),
     ];
   }
 
@@ -238,13 +303,8 @@ class WordDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          flex: 0,
-          child: _buildHeader(context),
-        ),
-        Expanded(
-          child: _buildBody(context),
-        )
+        Expanded(flex: 0, child: _buildHeader(context)),
+        Expanded(child: _buildBody(context)),
       ],
     );
   }

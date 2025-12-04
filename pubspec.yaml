@@ -49,6 +49,8 @@ dependencies:
   build_runner: ^2.4.13
   collection: ^1.19.1
   html: ^0.15.5+1
+  audioplayers: ^6.5.1
+  
 
 dev_dependencies:
   flutter_test:
