@@ -1,4 +1,5 @@
 import 'package:dutch_app/pages/settings/setting_tiles/setting_navigation_tile_widget.dart';
+import 'package:dutch_app/pages/settings/settings_pages/session_settings_page.dart';
 import 'package:dutch_app/pages/settings/settings_pages/theme_settings_page.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
@@ -36,10 +37,10 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         SettingNavigationTile(
-          icon: Icons.brightness_4,
-          name: ThemeSettingsPage.name,
+          icon: Icons.school,
+          name: SessionSettingsPage.name,
           onTap: () {
-            _goToPage(context, const ThemeSettingsPage());
+            _goToPage(context, const SessionSettingsPage());
           },
         ),
       ],
