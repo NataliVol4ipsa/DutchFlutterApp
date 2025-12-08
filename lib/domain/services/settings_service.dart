@@ -16,21 +16,39 @@ class SettingsService {
     String: (value) => value,
   };
 
-  static final Map<String, bool Function(Settings)> propertyGetters = {
+  static final Map<String, Object Function(Settings)> propertyGetters = {
     SettingsNames.theme.useSystemModeBool: (Settings s) =>
         s.theme.useSystemMode,
     SettingsNames.theme.useDarkModeBool: (Settings s) => s.theme.useDarkMode,
+    SettingsNames.session.newWordsPerSessionInt: (Settings s) =>
+        s.session.newWordsPerSession,
+    SettingsNames.session.repetitionsPerSessionInt: (Settings s) =>
+        s.session.repetitionsPerSession,
   };
 
   Future<Settings> getSettingsAsync() async {
-    List<DbSettings> keyValues =
-        await settingsRepository.getAllKeyValuesAsync();
+    List<DbSettings> keyValues = await settingsRepository
+        .getAllKeyValuesAsync();
 
     return Settings(
-        theme: ThemeSettings(
-      useSystemMode: _getBool(keyValues, SettingsNames.theme.useSystemModeBool),
-      useDarkMode: _getBool(keyValues, SettingsNames.theme.useDarkModeBool),
-    ));
+      theme: ThemeSettings(
+        useSystemMode: _getBool(
+          keyValues,
+          SettingsNames.theme.useSystemModeBool,
+        ),
+        useDarkMode: _getBool(keyValues, SettingsNames.theme.useDarkModeBool),
+      ),
+      session: SessionSettings(
+        newWordsPerSession: _getInt(
+          keyValues,
+          SettingsNames.session.newWordsPerSessionInt,
+        ),
+        repetitionsPerSession: _getInt(
+          keyValues,
+          SettingsNames.session.repetitionsPerSessionInt,
+        ),
+      ),
+    );
   }
 
   Future<Settings> updateSettingsAsync(Settings newSettings) async {
@@ -38,10 +56,10 @@ class SettingsService {
 
     for (var entry in propertyGetters.entries) {
       final String key = entry.key;
-      final bool Function(Settings) getter = entry.value;
+      final Object Function(Settings) getter = entry.value;
 
-      final bool oldValue = getter(oldSettings);
-      final bool newValue = getter(newSettings);
+      final Object oldValue = getter(oldSettings);
+      final Object newValue = getter(newSettings);
 
       if (oldValue != newValue) {
         final Type valueType = newValue.runtimeType;
@@ -52,7 +70,8 @@ class SettingsService {
           await _updateValueAsync(key, stringValue);
         } else {
           throw UnsupportedError(
-              "Failed to update settings. No converter found for type: $valueType");
+            "Failed to update settings. No converter found for type: $valueType",
+          );
         }
       }
     }
@@ -67,6 +86,18 @@ class SettingsService {
 
     if (dbSetting != null) {
       return dbSetting.value.toLowerCase() == 'true';
+    }
+
+    return null;
+  }
+
+  int? _getInt(List<DbSettings> settings, String key) {
+    final DbSettings? dbSetting = settings.firstWhereOrNull(
+      (setting) => setting.key == key,
+    );
+
+    if (dbSetting != null) {
+      return int.parse(dbSetting.value);
     }
 
     return null;

@@ -43,6 +43,20 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
     });
   }
 
+  void _onNewWordsPerSessionChanged(double value) {
+    setState(() {
+      settings.session.newWordsPerSession = value.round();
+    });
+    settingService.updateSettingsAsync(settings);
+  }
+
+  void _onRepetitionsPerSessionChanged(double value) {
+    setState(() {
+      settings.session.repetitionsPerSession = value.round();
+    });
+    settingService.updateSettingsAsync(settings);
+  }
+
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [_buildThemeSettings(context)];
 
@@ -67,17 +81,17 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
           name: "New words per session",
           minimumValue: 1,
           maximumValue: 10,
-          initialValue: 5,
+          initialValue: settings.session.newWordsPerSession.toDouble(),
           step: 1,
-          onChanged: (value) {},
+          onChanged: _onNewWordsPerSessionChanged,
         ),
         SettingsSliderTile(
           name: "Repetitions per session",
           minimumValue: 1,
           maximumValue: 30,
-          initialValue: 5,
+          initialValue: settings.session.repetitionsPerSession.toDouble(),
           step: 1,
-          onChanged: (value) {},
+          onChanged: _onRepetitionsPerSessionChanged,
         ),
       ],
     );

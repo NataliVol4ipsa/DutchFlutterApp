@@ -49,7 +49,7 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
     super.dispose();
   }
 
-  void _setCurrentValue(double newValue, {bool notify = true}) {
+  void _setCurrentValue(double newValue) {
     // Snap to step and clamp
     final snapped = (newValue / widget.step).round() * widget.step;
     final clamped = snapped.clamp(widget.minimumValue, widget.maximumValue);
@@ -60,10 +60,6 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
       currentValue = clamped;
       _textController.text = currentValue.toInt().toString();
     });
-
-    if (notify) {
-      widget.onChanged?.call(currentValue);
-    }
   }
 
   void _onSliderChanged(double newValue) {
@@ -89,6 +85,9 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
       divisions: ((widget.maximumValue - widget.minimumValue) / widget.step)
           .round(),
       onChanged: _onSliderChanged,
+      onChangeEnd: (newValue) {
+        widget.onChanged?.call(currentValue);
+      },
       activeColor: Theme.of(context).colorScheme.secondary,
       inactiveColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       thumbColor: Theme.of(context).colorScheme.secondary,
