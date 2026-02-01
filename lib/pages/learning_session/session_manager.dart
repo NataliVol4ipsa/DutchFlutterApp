@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
@@ -7,12 +6,13 @@ import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
+import 'package:dutch_app/pages/learning_session/word_progress_service.dart';
 
 // Manage order of tasks and moving pointer of current task during session
 class LearningSessionManager {
   final List<ExerciseType> exerciseTypes;
   final List<Word> words;
-  final WordProgressRepository wordProgressRepository;
+  final WordProgressService wordProgressService;
   final ExerciseAnsweredNotifier notifier;
 
   late List<BaseExercise> exercises;
@@ -24,7 +24,7 @@ class LearningSessionManager {
   LearningSessionManager(
     this.exerciseTypes,
     this.words,
-    this.wordProgressRepository,
+    this.wordProgressService,
     this.notifier,
   ) {
     exercises = ExercisesGenerator(exerciseTypes, words).generateExcercises();
@@ -61,7 +61,7 @@ class LearningSessionManager {
         .expand((ex) => ex.generateSummaries())
         .toList();
 
-    await _saveDetailedSummariesAsync(detailedSummaries!);
+    await wordProgressService.processSessionResults(detailedSummaries!);
     _generateSummary();
   }
 
@@ -76,19 +76,6 @@ class LearningSessionManager {
 
   void endSession() {
     exercisesQueue = Queue<BaseExercise>();
-  }
-
-  Future<void> _saveDetailedSummariesAsync(
-    List<ExerciseSummaryDetailed> detailedSummaries,
-  ) async {
-    await Future.forEach(detailedSummaries, (summary) async {
-      await wordProgressRepository.updateAsync(
-        summary.wordId,
-        summary.exerciseType,
-        summary.totalCorrectAnswers,
-        summary.totalWrongAnswers,
-      );
-    });
   }
 
   void dispose() {

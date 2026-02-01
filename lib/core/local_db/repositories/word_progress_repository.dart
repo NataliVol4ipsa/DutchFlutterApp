@@ -1,12 +1,14 @@
-import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:isar/isar.dart';
 
 class WordProgressRepository {
-  Future<DbWordProgress?> _getProgressAsync(
-      int wordId, ExerciseType exerciseType) async {
+  Future<DbWordProgress?> getAsync(
+    int wordId,
+    ExerciseTypeDetailed exerciseType,
+  ) async {
     final wordProgress = await DbContext.isar.dbWordProgress
         .filter()
         .word((q) => q.idEqualTo(wordId))
@@ -18,7 +20,9 @@ class WordProgressRepository {
   }
 
   Future<DbWordProgress> _createAsync(
-      int wordId, ExerciseType exerciseType) async {
+    int wordId,
+    ExerciseTypeDetailed exerciseType,
+  ) async {
     final word = await DbContext.isar.dbWords.get(wordId);
 
     if (word == null) {
@@ -38,22 +42,33 @@ class WordProgressRepository {
   }
 
   Future<DbWordProgress> _getOrCreateAsync(
-      int wordId, ExerciseType exerciseType) async {
-    var existingEntry = await _getProgressAsync(wordId, exerciseType);
+    int wordId,
+    ExerciseTypeDetailed exerciseType,
+  ) async {
+    var existingEntry = await getAsync(wordId, exerciseType);
     if (existingEntry != null) return existingEntry;
 
     return await _createAsync(wordId, exerciseType);
   }
 
-  Future<void> updateAsync(int wordId, ExerciseType exerciseType,
-      int newCorrectAnswers, int newWrongAnswers) async {
+  Future<void> updateAsync(
+    int wordId,
+    ExerciseTypeDetailed exerciseType,
+    DateTime nextReviewDate,
+    double easinessFactor,
+    int intervalDays,
+    int consequetiveCorrectAnswers,
+  ) async {
     final wordProgress = await _getOrCreateAsync(wordId, exerciseType);
 
     wordProgress.lastPracticed = DateTime.now();
-    wordProgress.correctAnswers += newCorrectAnswers;
-    wordProgress.wrongAnswers += newWrongAnswers;
+    wordProgress.consequetiveCorrectAnswers = consequetiveCorrectAnswers;
+    wordProgress.nextReviewDate = nextReviewDate;
+    wordProgress.easinessFactor = easinessFactor;
+    wordProgress.intervalDays = intervalDays;
 
-    await DbContext.isar
-        .writeTxn(() => DbContext.isar.dbWordProgress.put(wordProgress));
+    await DbContext.isar.writeTxn(
+      () => DbContext.isar.dbWordProgress.put(wordProgress),
+    );
   }
 }

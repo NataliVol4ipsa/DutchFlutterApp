@@ -1,5 +1,5 @@
-import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:isar/isar.dart';
 
 part 'db_word_progress.g.dart';
@@ -8,14 +8,18 @@ part 'db_word_progress.g.dart';
 @Collection()
 class DbWordProgress {
   Id? id;
-  @Index(composite: [
-    CompositeIndex('exerciseType')
-  ]) // Composite index with exerciseType
+  @Index(
+    composite: [CompositeIndex('exerciseType')],
+  ) // Composite index with exerciseType
   final word = IsarLink<DbWord>();
   @enumerated
-  late ExerciseType exerciseType;
-  late int correctAnswers = 0;
-  late int wrongAnswers = 0;
+  late ExerciseTypeDetailed exerciseType;
   DateTime? lastPracticed;
   late bool dontShowAgain = false;
+  late DateTime nextReviewDate = DateTime.now();
+  // how easy is word
+  late double easinessFactor = 2.5;
+  // how many days should current interval last
+  late int intervalDays = 0;
+  late int consequetiveCorrectAnswers = 0;
 }

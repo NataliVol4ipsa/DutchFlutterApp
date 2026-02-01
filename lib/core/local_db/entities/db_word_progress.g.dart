@@ -17,9 +17,9 @@ const DbWordProgressSchema = CollectionSchema(
   name: r'DbWordProgress',
   id: -3375110943617339225,
   properties: {
-    r'correctAnswers': PropertySchema(
+    r'consequetiveCorrectAnswers': PropertySchema(
       id: 0,
-      name: r'correctAnswers',
+      name: r'consequetiveCorrectAnswers',
       type: IsarType.long,
     ),
     r'dontShowAgain': PropertySchema(
@@ -27,21 +27,31 @@ const DbWordProgressSchema = CollectionSchema(
       name: r'dontShowAgain',
       type: IsarType.bool,
     ),
-    r'exerciseType': PropertySchema(
+    r'easinessFactor': PropertySchema(
       id: 2,
+      name: r'easinessFactor',
+      type: IsarType.double,
+    ),
+    r'exerciseType': PropertySchema(
+      id: 3,
       name: r'exerciseType',
       type: IsarType.byte,
       enumMap: _DbWordProgressexerciseTypeEnumValueMap,
     ),
+    r'intervalDays': PropertySchema(
+      id: 4,
+      name: r'intervalDays',
+      type: IsarType.long,
+    ),
     r'lastPracticed': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'lastPracticed',
       type: IsarType.dateTime,
     ),
-    r'wrongAnswers': PropertySchema(
-      id: 4,
-      name: r'wrongAnswers',
-      type: IsarType.long,
+    r'nextReviewDate': PropertySchema(
+      id: 6,
+      name: r'nextReviewDate',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _dbWordProgressEstimateSize,
@@ -80,11 +90,13 @@ void _dbWordProgressSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.correctAnswers);
+  writer.writeLong(offsets[0], object.consequetiveCorrectAnswers);
   writer.writeBool(offsets[1], object.dontShowAgain);
-  writer.writeByte(offsets[2], object.exerciseType.index);
-  writer.writeDateTime(offsets[3], object.lastPracticed);
-  writer.writeLong(offsets[4], object.wrongAnswers);
+  writer.writeDouble(offsets[2], object.easinessFactor);
+  writer.writeByte(offsets[3], object.exerciseType.index);
+  writer.writeLong(offsets[4], object.intervalDays);
+  writer.writeDateTime(offsets[5], object.lastPracticed);
+  writer.writeDateTime(offsets[6], object.nextReviewDate);
 }
 
 DbWordProgress _dbWordProgressDeserialize(
@@ -94,14 +106,16 @@ DbWordProgress _dbWordProgressDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbWordProgress();
-  object.correctAnswers = reader.readLong(offsets[0]);
+  object.consequetiveCorrectAnswers = reader.readLong(offsets[0]);
   object.dontShowAgain = reader.readBool(offsets[1]);
+  object.easinessFactor = reader.readDouble(offsets[2]);
   object.exerciseType = _DbWordProgressexerciseTypeValueEnumMap[
-          reader.readByteOrNull(offsets[2])] ??
-      ExerciseType.flipCard;
+          reader.readByteOrNull(offsets[3])] ??
+      ExerciseTypeDetailed.flipCardDutchEnglish;
   object.id = id;
-  object.lastPracticed = reader.readDateTimeOrNull(offsets[3]);
-  object.wrongAnswers = reader.readLong(offsets[4]);
+  object.intervalDays = reader.readLong(offsets[4]);
+  object.lastPracticed = reader.readDateTimeOrNull(offsets[5]);
+  object.nextReviewDate = reader.readDateTime(offsets[6]);
   return object;
 }
 
@@ -117,35 +131,31 @@ P _dbWordProgressDeserializeProp<P>(
     case 1:
       return (reader.readBool(offset)) as P;
     case 2:
+      return (reader.readDouble(offset)) as P;
+    case 3:
       return (_DbWordProgressexerciseTypeValueEnumMap[
               reader.readByteOrNull(offset)] ??
-          ExerciseType.flipCard) as P;
-    case 3:
-      return (reader.readDateTimeOrNull(offset)) as P;
+          ExerciseTypeDetailed.flipCardDutchEnglish) as P;
     case 4:
       return (reader.readLong(offset)) as P;
+    case 5:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 6:
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
 const _DbWordProgressexerciseTypeEnumValueMap = {
-  'flipCard': 0,
-  'basicWrite': 1,
+  'flipCardDutchEnglish': 0,
+  'flipCardEnglishDutch': 1,
   'deHetPick': 2,
-  'pluralFormPick': 3,
-  'pluralFormWrite': 4,
-  'basicOnePick': 5,
-  'manyToMany': 6,
 };
 const _DbWordProgressexerciseTypeValueEnumMap = {
-  0: ExerciseType.flipCard,
-  1: ExerciseType.basicWrite,
-  2: ExerciseType.deHetPick,
-  3: ExerciseType.pluralFormPick,
-  4: ExerciseType.pluralFormWrite,
-  5: ExerciseType.basicOnePick,
-  6: ExerciseType.manyToMany,
+  0: ExerciseTypeDetailed.flipCardDutchEnglish,
+  1: ExerciseTypeDetailed.flipCardEnglishDutch,
+  2: ExerciseTypeDetailed.deHetPick,
 };
 
 Id _dbWordProgressGetId(DbWordProgress object) {
@@ -246,45 +256,45 @@ extension DbWordProgressQueryWhere
 extension DbWordProgressQueryFilter
     on QueryBuilder<DbWordProgress, DbWordProgress, QFilterCondition> {
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      correctAnswersEqualTo(int value) {
+      consequetiveCorrectAnswersEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'correctAnswers',
+        property: r'consequetiveCorrectAnswers',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      correctAnswersGreaterThan(
+      consequetiveCorrectAnswersGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'correctAnswers',
+        property: r'consequetiveCorrectAnswers',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      correctAnswersLessThan(
+      consequetiveCorrectAnswersLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'correctAnswers',
+        property: r'consequetiveCorrectAnswers',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      correctAnswersBetween(
+      consequetiveCorrectAnswersBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -292,7 +302,7 @@ extension DbWordProgressQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'correctAnswers',
+        property: r'consequetiveCorrectAnswers',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -312,7 +322,73 @@ extension DbWordProgressQueryFilter
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      exerciseTypeEqualTo(ExerciseType value) {
+      easinessFactorEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'easinessFactor',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      easinessFactorGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'easinessFactor',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      easinessFactorLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'easinessFactor',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      easinessFactorBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'easinessFactor',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      exerciseTypeEqualTo(ExerciseTypeDetailed value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'exerciseType',
@@ -323,7 +399,7 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       exerciseTypeGreaterThan(
-    ExerciseType value, {
+    ExerciseTypeDetailed value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -337,7 +413,7 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       exerciseTypeLessThan(
-    ExerciseType value, {
+    ExerciseTypeDetailed value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -351,8 +427,8 @@ extension DbWordProgressQueryFilter
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       exerciseTypeBetween(
-    ExerciseType lower,
-    ExerciseType upper, {
+    ExerciseTypeDetailed lower,
+    ExerciseTypeDetailed upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -441,6 +517,62 @@ extension DbWordProgressQueryFilter
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      intervalDaysEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'intervalDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      intervalDaysGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'intervalDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      intervalDaysLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'intervalDays',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
+      intervalDaysBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'intervalDays',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
       lastPracticedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -515,53 +647,53 @@ extension DbWordProgressQueryFilter
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      wrongAnswersEqualTo(int value) {
+      nextReviewDateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'wrongAnswers',
+        property: r'nextReviewDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      wrongAnswersGreaterThan(
-    int value, {
+      nextReviewDateGreaterThan(
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'wrongAnswers',
+        property: r'nextReviewDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      wrongAnswersLessThan(
-    int value, {
+      nextReviewDateLessThan(
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'wrongAnswers',
+        property: r'nextReviewDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterFilterCondition>
-      wrongAnswersBetween(
-    int lower,
-    int upper, {
+      nextReviewDateBetween(
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'wrongAnswers',
+        property: r'nextReviewDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -594,16 +726,16 @@ extension DbWordProgressQueryLinks
 extension DbWordProgressQuerySortBy
     on QueryBuilder<DbWordProgress, DbWordProgress, QSortBy> {
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      sortByCorrectAnswers() {
+      sortByConsequetiveCorrectAnswers() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'correctAnswers', Sort.asc);
+      return query.addSortBy(r'consequetiveCorrectAnswers', Sort.asc);
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      sortByCorrectAnswersDesc() {
+      sortByConsequetiveCorrectAnswersDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'correctAnswers', Sort.desc);
+      return query.addSortBy(r'consequetiveCorrectAnswers', Sort.desc);
     });
   }
 
@@ -622,6 +754,20 @@ extension DbWordProgressQuerySortBy
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      sortByEasinessFactor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'easinessFactor', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      sortByEasinessFactorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'easinessFactor', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
       sortByExerciseType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'exerciseType', Sort.asc);
@@ -632,6 +778,20 @@ extension DbWordProgressQuerySortBy
       sortByExerciseTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'exerciseType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      sortByIntervalDays() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervalDays', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      sortByIntervalDaysDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervalDays', Sort.desc);
     });
   }
 
@@ -650,16 +810,16 @@ extension DbWordProgressQuerySortBy
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      sortByWrongAnswers() {
+      sortByNextReviewDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'wrongAnswers', Sort.asc);
+      return query.addSortBy(r'nextReviewDate', Sort.asc);
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      sortByWrongAnswersDesc() {
+      sortByNextReviewDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'wrongAnswers', Sort.desc);
+      return query.addSortBy(r'nextReviewDate', Sort.desc);
     });
   }
 }
@@ -667,16 +827,16 @@ extension DbWordProgressQuerySortBy
 extension DbWordProgressQuerySortThenBy
     on QueryBuilder<DbWordProgress, DbWordProgress, QSortThenBy> {
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      thenByCorrectAnswers() {
+      thenByConsequetiveCorrectAnswers() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'correctAnswers', Sort.asc);
+      return query.addSortBy(r'consequetiveCorrectAnswers', Sort.asc);
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      thenByCorrectAnswersDesc() {
+      thenByConsequetiveCorrectAnswersDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'correctAnswers', Sort.desc);
+      return query.addSortBy(r'consequetiveCorrectAnswers', Sort.desc);
     });
   }
 
@@ -691,6 +851,20 @@ extension DbWordProgressQuerySortThenBy
       thenByDontShowAgainDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dontShowAgain', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      thenByEasinessFactor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'easinessFactor', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      thenByEasinessFactorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'easinessFactor', Sort.desc);
     });
   }
 
@@ -721,6 +895,20 @@ extension DbWordProgressQuerySortThenBy
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      thenByIntervalDays() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervalDays', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
+      thenByIntervalDaysDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervalDays', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
       thenByLastPracticed() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastPracticed', Sort.asc);
@@ -735,16 +923,16 @@ extension DbWordProgressQuerySortThenBy
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      thenByWrongAnswers() {
+      thenByNextReviewDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'wrongAnswers', Sort.asc);
+      return query.addSortBy(r'nextReviewDate', Sort.asc);
     });
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QAfterSortBy>
-      thenByWrongAnswersDesc() {
+      thenByNextReviewDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'wrongAnswers', Sort.desc);
+      return query.addSortBy(r'nextReviewDate', Sort.desc);
     });
   }
 }
@@ -752,9 +940,9 @@ extension DbWordProgressQuerySortThenBy
 extension DbWordProgressQueryWhereDistinct
     on QueryBuilder<DbWordProgress, DbWordProgress, QDistinct> {
   QueryBuilder<DbWordProgress, DbWordProgress, QDistinct>
-      distinctByCorrectAnswers() {
+      distinctByConsequetiveCorrectAnswers() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'correctAnswers');
+      return query.addDistinctBy(r'consequetiveCorrectAnswers');
     });
   }
 
@@ -766,9 +954,23 @@ extension DbWordProgressQueryWhereDistinct
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QDistinct>
+      distinctByEasinessFactor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'easinessFactor');
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QDistinct>
       distinctByExerciseType() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'exerciseType');
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QDistinct>
+      distinctByIntervalDays() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'intervalDays');
     });
   }
 
@@ -780,9 +982,9 @@ extension DbWordProgressQueryWhereDistinct
   }
 
   QueryBuilder<DbWordProgress, DbWordProgress, QDistinct>
-      distinctByWrongAnswers() {
+      distinctByNextReviewDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'wrongAnswers');
+      return query.addDistinctBy(r'nextReviewDate');
     });
   }
 }
@@ -795,9 +997,10 @@ extension DbWordProgressQueryProperty
     });
   }
 
-  QueryBuilder<DbWordProgress, int, QQueryOperations> correctAnswersProperty() {
+  QueryBuilder<DbWordProgress, int, QQueryOperations>
+      consequetiveCorrectAnswersProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'correctAnswers');
+      return query.addPropertyName(r'consequetiveCorrectAnswers');
     });
   }
 
@@ -807,10 +1010,23 @@ extension DbWordProgressQueryProperty
     });
   }
 
-  QueryBuilder<DbWordProgress, ExerciseType, QQueryOperations>
+  QueryBuilder<DbWordProgress, double, QQueryOperations>
+      easinessFactorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'easinessFactor');
+    });
+  }
+
+  QueryBuilder<DbWordProgress, ExerciseTypeDetailed, QQueryOperations>
       exerciseTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'exerciseType');
+    });
+  }
+
+  QueryBuilder<DbWordProgress, int, QQueryOperations> intervalDaysProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'intervalDays');
     });
   }
 
@@ -821,9 +1037,10 @@ extension DbWordProgressQueryProperty
     });
   }
 
-  QueryBuilder<DbWordProgress, int, QQueryOperations> wrongAnswersProperty() {
+  QueryBuilder<DbWordProgress, DateTime, QQueryOperations>
+      nextReviewDateProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'wrongAnswers');
+      return query.addPropertyName(r'nextReviewDate');
     });
   }
 }

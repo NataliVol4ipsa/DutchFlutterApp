@@ -2,10 +2,10 @@ import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
-import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
+import 'package:dutch_app/pages/learning_session/word_progress_service.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/button_styles.dart';
 import 'package:flutter/material.dart';
@@ -35,18 +35,28 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   void onStartButtonClick() {
     var service = context.read<PracticeSessionStatefulService>();
     List<Word> words = service.words;
-    var wordProgressRepository =
-        Provider.of<WordProgressRepository>(context, listen: false);
-    var notifier =
-        Provider.of<ExerciseAnsweredNotifier>(context, listen: false);
+    var wordProgressService = Provider.of<WordProgressService>(
+      context,
+      listen: false,
+    );
+    var notifier = Provider.of<ExerciseAnsweredNotifier>(
+      context,
+      listen: false,
+    );
     var flowManager = LearningSessionManager(
-        selectedModes.toList(), words, wordProgressRepository, notifier);
+      selectedModes.toList(),
+      words,
+      wordProgressService,
+      notifier,
+    );
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);
   }
 
   void navigateToLearningTaskPage(
-      BuildContext context, LearningSessionManager flowManager) {
+    BuildContext context,
+    LearningSessionManager flowManager,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
