@@ -65,25 +65,62 @@ class WordProgressService {
   ) {
     final now = DateTime.now();
     final hasWrongAnswers = summary.totalWrongAnswers > 0;
+    final quality = hasWrongAnswers
+        ? 2
+        : 5; // only for know/dont know type of answers
 
-    final currentEasinessFactor = progress.easinessFactor;
-    var updatedEasinessFactor = hasWrongAnswers
-        ? currentEasinessFactor - 0.2
-        : currentEasinessFactor + 0.1;
-    if (updatedEasinessFactor < 1.3) updatedEasinessFactor = 1.3;
-    if (updatedEasinessFactor > 2.5) updatedEasinessFactor = 2.5;
+    final updatedEasinessFactor = _calculateNewEasinessFactor(
+      progress.easinessFactor,
+      quality,
+    );
 
-    final updatedConsecutive = hasWrongAnswers
+    final updatedConsequetiveCorrectAnswers = hasWrongAnswers
         ? 0
         : progress.consequetiveCorrectAnswers + 1;
-    final updatedIntervalDays = hasWrongAnswers
-        ? 1
-        : (progress.intervalDays == 0 ? 1 : progress.intervalDays * 2);
+
+    final updatedIntervalDays = _calculateNewIntervalDays(
+      hasWrongAnswers,
+      updatedConsequetiveCorrectAnswers,
+      updatedEasinessFactor,
+      progress.intervalDays,
+    );
 
     progress.lastPracticed = now;
-    progress.consequetiveCorrectAnswers = updatedConsecutive;
+    progress.consequetiveCorrectAnswers = updatedConsequetiveCorrectAnswers;
     progress.intervalDays = updatedIntervalDays;
     progress.easinessFactor = updatedEasinessFactor;
     progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
+  }
+
+  double _calculateNewEasinessFactor(
+    double currentEasinessFactor,
+    int quality,
+  ) {
+    final easinessFactorDelta =
+        (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+    var newEasinessFactor = currentEasinessFactor + easinessFactorDelta;
+
+    if (newEasinessFactor < 1.3) newEasinessFactor = 1.3;
+    if (newEasinessFactor > 2.5) newEasinessFactor = 2.5;
+
+    return newEasinessFactor;
+  }
+
+  int _calculateNewIntervalDays(
+    bool hasWrongAnswers,
+    int updatedConsequetiveCorrectAnswers,
+    double updatedEasinessFactor,
+    int currentIntervalDays,
+  ) {
+    if (hasWrongAnswers) {
+      return 1;
+    }
+    if (updatedConsequetiveCorrectAnswers == 1) {
+      return 1;
+    }
+    if (updatedConsequetiveCorrectAnswers == 2) {
+      return 6;
+    }
+    return (currentIntervalDays * updatedEasinessFactor).round();
   }
 }
