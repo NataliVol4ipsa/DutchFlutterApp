@@ -1,25 +1,27 @@
-# first_project
+# DutchFlutterApp
 
-A new Flutter project.
+Dutch vocabulary trainer with local storage, word collections, and practice sessions.
 
-## Getting Started
+## Features
+- Word editor with part-of-speech aware tabs (noun/verb forms, metadata).
+- Online translation/grammar search to prefill word details.
+- Collections list with search, multi-select actions, and word details/editing.
+- Import/export collections and words as JSON files.
+- Practice sessions with selectable exercise modes and session summaries.
+- Spaced-repetition progress tracking per word/exercise.
+- Settings for theme and session behavior.
 
-This project is a starting point for a Flutter application.
+## Layers
+- UI: `lib/pages`, `lib/reusable_widgets`, `lib/styles`
+- Domain: `lib/domain` (models, types, services, notifiers)
+- Data: `lib/core` (local DB, repositories, IO import/export)
 
-A few resources to get you started if this is your first Flutter project:
+## Design patterns
+- Provider + ChangeNotifier for state and DI (`MultiProvider`, notifiers).
+- Repository pattern for persistence and IO boundaries.
+- Service layer for session flow, spaced repetition, and batch operations.
+- Feature-based modules under `lib/pages` (editor, collections, sessions).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-List of features:
-- create new words. New words have different fields per word type.
-- new words are stored in app localdb
-- see list of words from localdb
-- select one or multiple words and delete them
-- import words from file using file explorer
-- export words to /Downloads .json file named after user input
-- upon word list row tap, word details are shown. Word can be edited there. List of words is reloaded when complete.
+## Reusability
+- Shared UI pieces in `lib/reusable_widgets` and `lib/styles`.
+- Common dialogs and list row widgets reused across collections workflows.
