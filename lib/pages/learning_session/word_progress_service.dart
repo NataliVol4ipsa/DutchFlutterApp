@@ -24,6 +24,17 @@ class WordProgressService {
     }
   }
 
+  Future<Set<int>> getPracticedWordIdsAsync(List<int> wordIds) async {
+    final allProgress = await wordProgressRepository.getProgressForWordsAsync(
+      wordIds,
+    );
+    return allProgress
+        .where((p) => p.lastPracticed != null)
+        .map((p) => p.word.value?.id)
+        .whereType<int>()
+        .toSet();
+  }
+
   Future<void> processSessionResults(
     List<ExerciseSummaryDetailed> detailedSummaries,
   ) async {

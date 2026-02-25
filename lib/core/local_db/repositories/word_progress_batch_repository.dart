@@ -3,6 +3,7 @@ import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
+import 'package:isar/isar.dart';
 
 class WordProgressBatchRepository {
   final WordProgressRepository wordProgressRepository;
@@ -72,5 +73,19 @@ class WordProgressBatchRepository {
     await DbContext.isar.writeTxn(
       () => DbContext.isar.dbWordProgress.putAll(progressList),
     );
+  }
+
+  Future<List<DbWordProgress>> getProgressForWordsAsync(
+    List<int> wordIds,
+  ) async {
+    final result = <DbWordProgress>[];
+    for (final id in wordIds) {
+      final progress = await DbContext.isar.dbWordProgress
+          .filter()
+          .word((q) => q.idEqualTo(id))
+          .findAll();
+      result.addAll(progress);
+    }
+    return result;
   }
 }

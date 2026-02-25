@@ -13,7 +13,13 @@ import 'package:flutter/material.dart';
 class WordDetails extends StatelessWidget {
   final Word word;
   final Future<void> Function()? deletionCallback;
-  const WordDetails({super.key, required this.word, this.deletionCallback});
+  final bool allowDeletion;
+  const WordDetails({
+    super.key,
+    required this.word,
+    this.deletionCallback,
+    this.allowDeletion = true,
+  });
 
   final _horizontalPadding = ContainerStyles.smallPaddingAmount;
 
@@ -61,15 +67,16 @@ class WordDetails extends StatelessWidget {
               },
             ),
           ),
-          Expanded(
-            flex: 0,
-            child: IconButton(
-              icon: const FormInputIcon(Icons.delete),
-              onPressed: () {
-                _showDeleteSingleWordDialog(context);
-              },
+          if (allowDeletion)
+            Expanded(
+              flex: 0,
+              child: IconButton(
+                icon: const FormInputIcon(Icons.delete),
+                onPressed: () {
+                  _showDeleteSingleWordDialog(context);
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

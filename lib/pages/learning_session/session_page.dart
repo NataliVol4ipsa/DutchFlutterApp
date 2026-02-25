@@ -112,7 +112,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
     showQuitSessionDialog(
       context: context,
       onQuit: () {
-        Navigator.of(context).pop(); // Return to previous page
+        Navigator.of(context).pop();
       },
     );
   }

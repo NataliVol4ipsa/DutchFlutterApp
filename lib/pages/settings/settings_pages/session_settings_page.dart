@@ -70,6 +70,13 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
     settingService.updateSettingsAsync(settings);
   }
 
+  void _onShowPreSessionWordListChanged(bool value) {
+    setState(() {
+      settings.session.showPreSessionWordList = value;
+    });
+    settingService.updateSettingsAsync(settings);
+  }
+
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [_buildThemeSettings(context)];
 
@@ -116,6 +123,12 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
           isInitiallyEnabled: settings.session.useAnkiMode,
           isLocked: isSessionActive,
           onChanged: _onUseAnkiModeChanged,
+        ),
+        SettingsSwitchTile(
+          name: "Show word list before session",
+          isInitiallyEnabled: settings.session.showPreSessionWordList,
+          isLocked: false,
+          onChanged: _onShowPreSessionWordListChanged,
         ),
       ],
     );

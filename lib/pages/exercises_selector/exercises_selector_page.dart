@@ -4,6 +4,7 @@ import 'package:dutch_app/domain/services/practice_session_stateful_service.dart
 import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/pre_session_word_list_page.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
 import 'package:dutch_app/pages/learning_session/word_progress_service.dart';
@@ -38,6 +39,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   Future<void> onStartButtonClick() async {
     final settings = await settingsService.getSettingsAsync();
     final useAnkiMode = settings.session.useAnkiMode;
+    final showPreSessionWordList = settings.session.showPreSessionWordList;
     if (!mounted) return;
 
     final service = context.read<PracticeSessionStatefulService>();
@@ -59,19 +61,37 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
       useAnkiMode: useAnkiMode,
     );
     if (!mounted) return;
-    navigateToLearningTaskPage(context, flowManager);
+    if (showPreSessionWordList) {
+      _navigateToPreSessionWordListPage(context, flowManager);
+    } else {
+      navigateToLearningTaskPage(context, flowManager);
+    }
   }
 
-  void navigateToLearningTaskPage(
+  Future<void> navigateToLearningTaskPage(
     BuildContext context,
     LearningSessionManager flowManager,
-  ) {
-    Navigator.push(
+  ) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LearningSessionPage(flowManager: flowManager),
       ),
     );
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  Future<void> _navigateToPreSessionWordListPage(
+    BuildContext context,
+    LearningSessionManager flowManager,
+  ) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreSessionWordListPage(flowManager: flowManager),
+      ),
+    );
+    if (context.mounted) Navigator.pop(context);
   }
 
   @override

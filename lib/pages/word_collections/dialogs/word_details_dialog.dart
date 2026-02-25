@@ -3,10 +3,12 @@ import 'package:dutch_app/pages/word_collections/word_details/word_details_widge
 import 'package:flutter/material.dart';
 
 class WordDetailsDialog {
-  static Future<void> show(
-      {required BuildContext context,
-      required Word word,
-      Future<void> Function()? deletionCallback}) async {
+  static Future<void> show({
+    required BuildContext context,
+    required Word word,
+    Future<void> Function()? deletionCallback,
+    bool allowDeletion = true,
+  }) async {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -16,6 +18,7 @@ class WordDetailsDialog {
           child: WordDetails(
             word: word,
             deletionCallback: deletionCallback,
+            allowDeletion: allowDeletion,
           ),
         );
       },

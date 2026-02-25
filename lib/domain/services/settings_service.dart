@@ -26,6 +26,8 @@ class SettingsService {
         s.session.repetitionsPerSession,
     SettingsNames.session.useAnkiModeBool: (Settings s) =>
         s.session.useAnkiMode,
+    SettingsNames.session.showPreSessionWordListBool: (Settings s) =>
+        s.session.showPreSessionWordList,
   };
 
   Future<Settings> getSettingsAsync() async {
@@ -50,6 +52,10 @@ class SettingsService {
           SettingsNames.session.repetitionsPerSessionInt,
         ),
         useAnkiMode: _getBool(keyValues, SettingsNames.session.useAnkiModeBool),
+        showPreSessionWordList: _getBool(
+          keyValues,
+          SettingsNames.session.showPreSessionWordListBool,
+        ),
       ),
     );
   }
