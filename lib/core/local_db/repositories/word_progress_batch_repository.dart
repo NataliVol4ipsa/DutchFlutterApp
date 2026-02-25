@@ -3,6 +3,7 @@ import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_repository.dart';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:isar/isar.dart';
 
 class WordProgressBatchRepository {
@@ -87,5 +88,31 @@ class WordProgressBatchRepository {
       result.addAll(progress);
     }
     return result;
+  }
+
+  Future<List<DbWordProgress>> getDueProgressAsync(
+    ExerciseTypeDetailed exerciseType,
+    int limit,
+  ) async {
+    if (limit <= 0) return [];
+
+    final now = DateTime.now();
+
+    // Index traversal is ascending, so the most overdue records come first.
+    final records = await DbContext.isar.dbWordProgress
+        .where()
+        .nextReviewDateLessThan(now)
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .and()
+        .lastPracticedIsNotNull()
+        .limit(limit)
+        .findAll();
+
+    for (final r in records) {
+      await r.word.load();
+    }
+
+    return records;
   }
 }

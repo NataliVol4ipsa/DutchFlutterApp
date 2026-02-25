@@ -9,6 +9,7 @@ import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_collection.dart';
+import 'package:isar/isar.dart';
 
 import '../mapping/words_mapper.dart';
 
@@ -18,8 +19,12 @@ class WordsRepository {
   final WordNounDetailsRepository nounDetailsRepository;
   final WordVerbDetailsRepository verbDetailsRepository;
 
-  WordsRepository(this.englishWordsRepository, this.dutchWordsRepository,
-      this.nounDetailsRepository, this.verbDetailsRepository);
+  WordsRepository(
+    this.englishWordsRepository,
+    this.dutchWordsRepository,
+    this.nounDetailsRepository,
+    this.verbDetailsRepository,
+  );
 
   Future<int> addAsync(NewWord word) async {
     final newWord = WordsMapper.mapToEntity(word);
@@ -28,11 +33,16 @@ class WordsRepository {
     int newWordId = -1;
 
     await DbContext.isar.writeTxn(() async {
-      final collection =
-          await DbContext.isar.dbWordCollections.get(collectionId);
+      final collection = await DbContext.isar.dbWordCollections.get(
+        collectionId,
+      );
       if (collection != null) {
-        newWordId =
-            await _processAddAsync(newWordId, newWord, collection, word);
+        newWordId = await _processAddAsync(
+          newWordId,
+          newWord,
+          collection,
+          word,
+        );
       } else {
         throw Exception("Could not find collection with id $collectionId");
       }
@@ -41,8 +51,12 @@ class WordsRepository {
     return newWordId;
   }
 
-  Future<int> _processAddAsync(int newWordId, DbWord newWord,
-      DbWordCollection collection, NewWord word) async {
+  Future<int> _processAddAsync(
+    int newWordId,
+    DbWord newWord,
+    DbWordCollection collection,
+    NewWord word,
+  ) async {
     newWordId = await DbContext.isar.dbWords.put(newWord);
 
     collection.words.add(newWord);
@@ -60,19 +74,24 @@ class WordsRepository {
   }
 
   Future<void> _updateWordDutchLinkAsync(
-      String dutchWord, DbWord dbWord) async {
-    final dutchWordLink =
-        await dutchWordsRepository.getOrCreateRawAsync(dutchWord);
+    String dutchWord,
+    DbWord dbWord,
+  ) async {
+    final dutchWordLink = await dutchWordsRepository.getOrCreateRawAsync(
+      dutchWord,
+    );
     dutchWordLink.words.add(dbWord);
     await dutchWordLink.words.save();
   }
 
   Future<void> _updateWordEnglishLinksAsync(
-      List<String> englishWords, DbWord dbWord) async {
+    List<String> englishWords,
+    DbWord dbWord,
+  ) async {
     dbWord.englishWordLinks.reset();
 
-    final englishWordLinks =
-        await englishWordsRepository.getOrCreateRawListAsync(englishWords);
+    final englishWordLinks = await englishWordsRepository
+        .getOrCreateRawListAsync(englishWords);
     dbWord.englishWordLinks.addAll(englishWordLinks);
     await dbWord.englishWordLinks.save();
   }
@@ -96,12 +115,33 @@ class WordsRepository {
     return word;
   }
 
+  Future<List<Word>> getNewWordsAsync(int limit) async {
+    if (limit <= 0) return [];
+
+    final rawWords = await DbContext.isar.dbWords
+        .filter()
+        .progressIsEmpty()
+        .findAll();
+
+    rawWords.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+    final topWords = rawWords.take(limit).toList();
+
+    final result = <Word>[];
+    for (final dbWord in topWords) {
+      if (dbWord.id == null) continue;
+      final word = await getWordAsync(dbWord.id!);
+      if (word != null) result.add(word);
+    }
+    return result;
+  }
+
   Future<bool> updateAsync(Word updatedWord) async {
     final DbWord? dbWord = await _getWordWithWordLinksAsync(updatedWord.id);
 
     if (dbWord == null) {
       throw Exception(
-          "Tried to update word ${updatedWord.id}, but it was not found in database.");
+        "Tried to update word ${updatedWord.id}, but it was not found in database.",
+      );
     }
     bool isChangedDutchWord =
         dbWord.dutchWordLink.value?.word != updatedWord.dutchWord;
@@ -114,7 +154,9 @@ class WordsRepository {
       // Process changed dutch word
       if (isChangedDutchWord) {
         await _removeWordFromDutchWordsLinksAsync(
-            dbWord, dbWord.dutchWordLink.value?.id);
+          dbWord,
+          dbWord.dutchWordLink.value?.id,
+        );
       }
 
       // Update word links
@@ -128,7 +170,9 @@ class WordsRepository {
         await _removeWordFromCollectionAsync(dbWord);
         if (updatedWord.collection?.id != null) {
           await _addExistingWordToCollectionAsync(
-              updatedWord.collection!.id!, dbWord);
+            updatedWord.collection!.id!,
+            dbWord,
+          );
         }
       }
     });
@@ -144,7 +188,9 @@ class WordsRepository {
   }
 
   Future<void> _removeWordFromDutchWordsLinksAsync(
-      DbWord word, int? oldDutchWordId) async {
+    DbWord word,
+    int? oldDutchWordId,
+  ) async {
     if (oldDutchWordId == null) return;
 
     final oldDutchWord = await DbContext.isar.dbDutchWords.get(oldDutchWordId);
@@ -160,8 +206,9 @@ class WordsRepository {
   Future<void> _removeWordFromCollectionAsync(DbWord word) async {
     if (word.collection.value?.id == null) return;
 
-    final oldCollection =
-        await DbContext.isar.dbWordCollections.get(word.collection.value!.id!);
+    final oldCollection = await DbContext.isar.dbWordCollections.get(
+      word.collection.value!.id!,
+    );
     if (oldCollection != null) {
       oldCollection.words.remove(word);
       await oldCollection.words.save();
@@ -169,7 +216,9 @@ class WordsRepository {
   }
 
   Future<void> _addExistingWordToCollectionAsync(
-      int collectionId, DbWord word) async {
+    int collectionId,
+    DbWord word,
+  ) async {
     final collection = await DbContext.isar.dbWordCollections.get(collectionId);
     if (collection != null) {
       collection.words.add(word);

@@ -59,7 +59,21 @@ const DbWordProgressSchema = CollectionSchema(
   deserialize: _dbWordProgressDeserialize,
   deserializeProp: _dbWordProgressDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'nextReviewDate': IndexSchema(
+      id: 4152658090540413903,
+      name: r'nextReviewDate',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'nextReviewDate',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {
     r'word': LinkSchema(
       id: -9079802764190181655,
@@ -179,6 +193,15 @@ extension DbWordProgressQueryWhereSort
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhere>
+      anyNextReviewDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'nextReviewDate'),
+      );
+    });
+  }
 }
 
 extension DbWordProgressQueryWhere
@@ -247,6 +270,99 @@ extension DbWordProgressQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhereClause>
+      nextReviewDateEqualTo(DateTime nextReviewDate) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'nextReviewDate',
+        value: [nextReviewDate],
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhereClause>
+      nextReviewDateNotEqualTo(DateTime nextReviewDate) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nextReviewDate',
+              lower: [],
+              upper: [nextReviewDate],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nextReviewDate',
+              lower: [nextReviewDate],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nextReviewDate',
+              lower: [nextReviewDate],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nextReviewDate',
+              lower: [],
+              upper: [nextReviewDate],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhereClause>
+      nextReviewDateGreaterThan(
+    DateTime nextReviewDate, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nextReviewDate',
+        lower: [nextReviewDate],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhereClause>
+      nextReviewDateLessThan(
+    DateTime nextReviewDate, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nextReviewDate',
+        lower: [],
+        upper: [nextReviewDate],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<DbWordProgress, DbWordProgress, QAfterWhereClause>
+      nextReviewDateBetween(
+    DateTime lowerNextReviewDate,
+    DateTime upperNextReviewDate, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nextReviewDate',
+        lower: [lowerNextReviewDate],
+        includeLower: includeLower,
+        upper: [upperNextReviewDate],
         includeUpper: includeUpper,
       ));
     });

@@ -40,6 +40,7 @@ void main() async {
         ...databaseProviders(),
         ...notifierProviders(),
         ...serviceProviders(),
+        ...coordinatorProviders(),
         ChangeNotifierProvider(create: (_) => darkThemeNotifier),
       ],
       child: const MyApp(),

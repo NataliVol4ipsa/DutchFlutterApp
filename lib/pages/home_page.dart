@@ -1,15 +1,20 @@
+import 'package:dutch_app/pages/quick_practice/quick_practice_coordinator.dart';
 import 'package:dutch_app/reusable_widgets/bottom_app_bar/my_bottom_app_bar_item_widget.dart';
 import 'package:dutch_app/reusable_widgets/my_app_bar_widget.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-//todo move to card builder and apply DRY
+  //todo move to card builder and apply DRY
   Widget _buildNavigationCard(
-      BuildContext context, String cardText, String navigationPath) {
+    BuildContext context,
+    String cardText,
+    String navigationPath,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, navigationPath);
@@ -22,8 +27,12 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationCardWithHeader(BuildContext context,
-      String cardHeaderText, Widget cardBody, String navigationPath) {
+  Widget _buildNavigationCardWithHeader(
+    BuildContext context,
+    String cardHeaderText,
+    Widget cardBody,
+    String navigationPath,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, navigationPath);
@@ -31,37 +40,41 @@ class HomePage extends StatelessWidget {
       child: Card(
         elevation: 4,
         child: Center(
-            child: Column(
-          children: [
-            Flexible(
-              fit: FlexFit.loose, // Take only as much space as needed
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(BorderStyles.smallBorderRadiusValue),
-                  topRight:
-                      Radius.circular(BorderStyles.smallBorderRadiusValue),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      cardHeaderText,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+          child: Column(
+            children: [
+              Flexible(
+                fit: FlexFit.loose, // Take only as much space as needed
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(
+                      BorderStyles.smallBorderRadiusValue,
+                    ),
+                    topRight: Radius.circular(
+                      BorderStyles.smallBorderRadiusValue,
+                    ),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        cardHeaderText,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
-            ),
-            //const SizedBox(height: 8), // Space between header and body
-            Expanded(child: cardBody),
-          ],
-        )),
+              //const SizedBox(height: 8), // Space between header and body
+              Expanded(child: cardBody),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -74,24 +87,25 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("$percentage %"),
-          ],
+          children: [Text("$percentage %")],
         ),
       ),
     );
   }
 
-  Widget _buildGridViewTwoColumns(List<Widget> children,
-      {double childAspectRatio = 1}) {
+  Widget _buildGridViewTwoColumns(
+    List<Widget> children, {
+    double childAspectRatio = 1,
+  }) {
     return GridView.count(
-        crossAxisCount: 2, // Number of columns
-        crossAxisSpacing: 8, // Space between columns
-        mainAxisSpacing: 8, // Space between rows
-        childAspectRatio: childAspectRatio, // Aspect ratio for each tile
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        children: children);
+      crossAxisCount: 2, // Number of columns
+      crossAxisSpacing: 8, // Space between columns
+      mainAxisSpacing: 8, // Space between rows
+      childAspectRatio: childAspectRatio, // Aspect ratio for each tile
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: children,
+    );
   }
 
   // ignore: unused_element
@@ -112,7 +126,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-// or this https://www.justinmind.com/wp-content/webp-express/webp-images/uploads/2024/06/tv-shows-tracker-mobile-navigation-example.png.webp
+  // or this https://www.justinmind.com/wp-content/webp-express/webp-images/uploads/2024/06/tv-shows-tracker-mobile-navigation-example.png.webp
   // ignore: unused_element
   Widget _buildRecentCollectionsSection(BuildContext context) {
     // todo apply to cards BG colors - to reflect how complete are they. From grey to green with alpha based on completion %
@@ -121,11 +135,23 @@ class HomePage extends StatelessWidget {
         const Text("Recent collections studied"),
         _buildGridViewTwoColumns([
           _buildNavigationCardWithHeader(
-              context, "Collection 1", _buildCollectionProgress(87), '/1'),
+            context,
+            "Collection 1",
+            _buildCollectionProgress(87),
+            '/1',
+          ),
           _buildNavigationCardWithHeader(
-              context, "Collection 2", _buildCollectionProgress(12), '/2'),
+            context,
+            "Collection 2",
+            _buildCollectionProgress(12),
+            '/2',
+          ),
           _buildNavigationCardWithHeader(
-              context, "Collection 3", _buildCollectionProgress(45), '/3'),
+            context,
+            "Collection 3",
+            _buildCollectionProgress(45),
+            '/3',
+          ),
         ], childAspectRatio: 2.0),
       ],
     );
@@ -153,56 +179,61 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // ── Build ──────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MyAppBar(
         centerTitle: true,
-        title: Text(
-          'Home page',
-        ),
+        title: Text('Home page'),
         automaticallyImplyLeading: false, // Removes the back button
       ),
       body: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(8.0),
-          children: [
-            //_buildNavigationSection(context),
-            //_buildProgressSection(context),
-            //_buildIncompleteStashesSection(context),
-            //_buildFavoriteExercisesSection(context),
-            //_buildRecentCollectionsSection(context),
-          ]),
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(8.0),
+        children: [
+          //_buildNavigationSection(context),
+          //_buildProgressSection(context),
+          //_buildIncompleteStashesSection(context),
+          //_buildFavoriteExercisesSection(context),
+          //_buildRecentCollectionsSection(context),
+        ],
+      ),
       bottomNavigationBar: _buildBottomNavBar(context),
     );
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
+    final coordinator = context.watch<QuickPracticeCoordinator>();
     return BottomAppBar(
-        height: 68,
-        color: ContainerStyles.bottomNavBarColor(context),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MyBottomAppBarItem(
-                icon: Icons.add,
-                disabledIcon: Icons.add_outlined,
-                label: 'Add Word',
-                onTap: (() => {Navigator.pushNamed(context, '/wordeditor')})),
-            MyBottomAppBarItem(
-                icon: Icons.school,
-                disabledIcon: Icons.school_outlined,
-                label: 'Quick Practice',
-                onTap: (() =>
-                    {Navigator.pushNamed(context, '/exerciseselector')})),
-            MyBottomAppBarItem(
-                icon: Icons.list,
-                disabledIcon: Icons.list_outlined,
-                label: 'Collections',
-                onTap: (() =>
-                    {Navigator.pushNamed(context, '/wordcollections')})),
-          ],
-        ));
+      height: 68,
+      color: ContainerStyles.bottomNavBarColor(context),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MyBottomAppBarItem(
+            icon: Icons.add,
+            disabledIcon: Icons.add_outlined,
+            label: 'Add Word',
+            onTap: (() => {Navigator.pushNamed(context, '/wordeditor')}),
+          ),
+          MyBottomAppBarItem(
+            icon: coordinator.isLoading ? Icons.hourglass_top : Icons.school,
+            disabledIcon: Icons.school_outlined,
+            label: 'Quick Practice',
+            isEnabled: !coordinator.isLoading,
+            onTap: () => coordinator.startAsync(context),
+          ),
+          MyBottomAppBarItem(
+            icon: Icons.list,
+            disabledIcon: Icons.list_outlined,
+            label: 'Collections',
+            onTap: (() => {Navigator.pushNamed(context, '/wordcollections')}),
+          ),
+        ],
+      ),
+    );
   }
 }

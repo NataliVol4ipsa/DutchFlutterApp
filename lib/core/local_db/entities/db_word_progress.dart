@@ -16,6 +16,7 @@ class DbWordProgress {
   late ExerciseTypeDetailed exerciseType;
   DateTime? lastPracticed;
   late bool dontShowAgain = false;
+  @Index()
   late DateTime nextReviewDate = DateTime.now();
   // how easy is word
   late double easinessFactor = 2.5;

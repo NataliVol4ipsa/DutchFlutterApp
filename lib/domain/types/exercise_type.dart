@@ -1,3 +1,5 @@
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
+
 enum ExerciseType {
   flipCard,
   basicWrite,
@@ -9,6 +11,17 @@ enum ExerciseType {
 }
 
 extension ExerciseTypeExtension on ExerciseType {
+  List<ExerciseTypeDetailed> get detailedTypes {
+    switch (this) {
+      case ExerciseType.flipCard:
+        return [ExerciseTypeDetailed.flipCardDutchEnglish];
+      case ExerciseType.deHetPick:
+        return [ExerciseTypeDetailed.deHetPick];
+      default:
+        return [];
+    }
+  }
+
   String get label {
     switch (this) {
       case ExerciseType.flipCard:
