@@ -7,6 +7,7 @@ class BaseSessionStepLayout extends StatefulWidget {
   final bool enableBackButton;
   final VoidCallback? onBackPressed;
   final bool isSessionOver;
+  final Widget? progressBar;
 
   const BaseSessionStepLayout({
     required this.appBarText,
@@ -15,6 +16,7 @@ class BaseSessionStepLayout extends StatefulWidget {
     this.enableBackButton = false,
     this.onBackPressed,
     this.isSessionOver = false,
+    this.progressBar,
   });
 
   @override
@@ -43,7 +45,14 @@ class _BaseSessionStepLayoutState extends State<BaseSessionStepLayout> {
                 )
               : null,
         ),
-        body: widget.contentBuilder(context),
+        body: widget.progressBar != null
+            ? Column(
+                children: [
+                  widget.progressBar!,
+                  Expanded(child: widget.contentBuilder(context)),
+                ],
+              )
+            : widget.contentBuilder(context),
       ),
     );
   }

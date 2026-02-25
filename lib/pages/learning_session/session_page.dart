@@ -97,10 +97,29 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   }
 
   String _buildAppBarText() {
-    if (widget.flowManager.totalTasks > 0) {
-      return 'Exercises remaining: ${widget.flowManager.totalTasks}';
+    if (widget.flowManager.isSessionComplete) {
+      return 'Session complete';
     }
-    return "Session complete";
+    return 'Learning Session';
+  }
+
+  Widget _buildProgressBar() {
+    final int total = widget.flowManager.exercises.length;
+    final int remaining = widget.flowManager.totalTasks;
+    final int completed = (total - remaining).clamp(0, total);
+
+    if (total == 0) return const SizedBox.shrink();
+
+    final double progress = widget.flowManager.isSessionComplete
+        ? 1.0
+        : completed / total;
+
+    return LinearProgressIndicator(
+      value: progress,
+      minHeight: 10,
+      backgroundColor: Colors.grey.shade600,
+      valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+    );
   }
 
   void _handleBackPress(BuildContext context) {
@@ -121,6 +140,7 @@ class _LearningSessionPageState extends State<LearningSessionPage> {
   Widget build(BuildContext context) {
     return BaseSessionStepLayout(
       appBarText: _buildAppBarText(),
+      progressBar: _buildProgressBar(),
       contentBuilder: _buildContent,
       enableBackButton: !widget.flowManager.isSessionComplete,
       onBackPressed: () => _handleBackPress(context),
