@@ -7,11 +7,18 @@ import 'package:flutter/material.dart';
 class SettingsSection extends StatelessWidget {
   final List<Widget> children;
   final bool useShortDivider;
-  const SettingsSection(
-      {super.key, required this.children, this.useShortDivider = false});
+  final String? lockedHint;
+  const SettingsSection({
+    super.key,
+    required this.children,
+    this.useShortDivider = false,
+    this.lockedHint,
+  });
 
   List<Widget> _buildSectionChildrenWithDividers(
-      BuildContext context, List<Widget> widgets) {
+    BuildContext context,
+    List<Widget> widgets,
+  ) {
     if (widgets.isEmpty) return [];
 
     List<Widget> result = [];
@@ -63,7 +70,8 @@ class SettingsSection extends StatelessWidget {
 
   static Widget _divider(BuildContext context) {
     return const Divider(
-      thickness: 1, height: 1, // Remove extra vertical padding
+      thickness: 1,
+      height: 1, // Remove extra vertical padding
     );
   }
 
@@ -72,7 +80,30 @@ class SettingsSection extends StatelessWidget {
     return SectionContainer(
       color: ContainerStyles.sectionColor(context),
       child: Column(
-        children: _buildSectionChildrenWithDividers(context, children),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._buildSectionChildrenWithDividers(context, children),
+          if (lockedHint != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lock_outline,
+                    size: 13,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    lockedHint!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

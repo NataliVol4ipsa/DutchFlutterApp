@@ -17,7 +17,13 @@ class ThemeSettings {
 class SessionSettings {
   int newWordsPerSession;
   int repetitionsPerSession;
-  SessionSettings({int? newWordsPerSession, int? repetitionsPerSession})
-    : newWordsPerSession = newWordsPerSession ?? 5,
-      repetitionsPerSession = repetitionsPerSession ?? 20;
+  bool useAnkiMode;
+
+  SessionSettings({
+    int? newWordsPerSession,
+    int? repetitionsPerSession,
+    bool? useAnkiMode,
+  }) : newWordsPerSession = newWordsPerSession ?? 5,
+       repetitionsPerSession = repetitionsPerSession ?? 20,
+       useAnkiMode = useAnkiMode ?? false;
 }

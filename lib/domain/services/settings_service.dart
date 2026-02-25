@@ -24,6 +24,8 @@ class SettingsService {
         s.session.newWordsPerSession,
     SettingsNames.session.repetitionsPerSessionInt: (Settings s) =>
         s.session.repetitionsPerSession,
+    SettingsNames.session.useAnkiModeBool: (Settings s) =>
+        s.session.useAnkiMode,
   };
 
   Future<Settings> getSettingsAsync() async {
@@ -47,6 +49,7 @@ class SettingsService {
           keyValues,
           SettingsNames.session.repetitionsPerSessionInt,
         ),
+        useAnkiMode: _getBool(keyValues, SettingsNames.session.useAnkiModeBool),
       ),
     );
   }

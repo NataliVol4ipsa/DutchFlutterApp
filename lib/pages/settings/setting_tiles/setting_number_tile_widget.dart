@@ -10,6 +10,7 @@ class SettingsSliderTile extends StatefulWidget {
   final double initialValue;
   final double step;
   final ValueChanged<double>? onChanged;
+  final bool isLocked;
 
   const SettingsSliderTile({
     super.key,
@@ -19,6 +20,7 @@ class SettingsSliderTile extends StatefulWidget {
     required this.initialValue,
     this.step = 1,
     this.onChanged,
+    this.isLocked = false,
   });
 
   @override
@@ -84,13 +86,14 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
       max: widget.maximumValue,
       divisions: ((widget.maximumValue - widget.minimumValue) / widget.step)
           .round(),
-      onChanged: _onSliderChanged,
-      onChangeEnd: (newValue) {
-        widget.onChanged?.call(currentValue);
-      },
+      onChanged: widget.isLocked ? null : _onSliderChanged,
+      onChangeEnd: widget.isLocked
+          ? null
+          : (newValue) {
+              widget.onChanged?.call(currentValue);
+            },
       activeColor: Theme.of(context).colorScheme.secondary,
       inactiveColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
-      thumbColor: Theme.of(context).colorScheme.secondary,
     );
   }
 
@@ -138,6 +141,7 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
               controller: _textController,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
+              enabled: !widget.isLocked,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               maxLength: widget.maximumValue.toInt().toString().length,
               decoration: const InputDecoration(

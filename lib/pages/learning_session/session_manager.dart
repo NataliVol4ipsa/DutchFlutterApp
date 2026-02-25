@@ -14,6 +14,7 @@ class LearningSessionManager {
   final List<Word> words;
   final WordProgressService wordProgressService;
   final ExerciseAnsweredNotifier notifier;
+  final bool useAnkiMode;
 
   late List<BaseExercise> exercises;
   late Queue<BaseExercise> exercisesQueue;
@@ -25,9 +26,14 @@ class LearningSessionManager {
     this.exerciseTypes,
     this.words,
     this.wordProgressService,
-    this.notifier,
-  ) {
-    exercises = ExercisesGenerator(exerciseTypes, words).generateExcercises();
+    this.notifier, {
+    this.useAnkiMode = false,
+  }) {
+    exercises = ExercisesGenerator(
+      exerciseTypes,
+      words,
+      useAnkiMode,
+    ).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
     notifier.addListener(processExerciseAnswer);

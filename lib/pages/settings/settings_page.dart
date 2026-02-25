@@ -1,9 +1,11 @@
+import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/pages/settings/setting_tiles/setting_navigation_tile_widget.dart';
 import 'package:dutch_app/pages/settings/settings_pages/session_settings_page.dart';
 import 'package:dutch_app/pages/settings/settings_pages/theme_settings_page.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -26,8 +28,14 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _buildUiSettingsSection(BuildContext context) {
+    final isSessionActive = context
+        .read<PracticeSessionStatefulService>()
+        .isSessionActive;
     return SettingsSection(
       useShortDivider: true,
+      lockedHint: isSessionActive
+          ? "Session settings locked during active session"
+          : null,
       children: [
         SettingNavigationTile(
           icon: Icons.brightness_4,
@@ -39,6 +47,7 @@ class SettingsPage extends StatelessWidget {
         SettingNavigationTile(
           icon: Icons.school,
           name: SessionSettingsPage.name,
+          isLocked: isSessionActive,
           onTap: () {
             _goToPage(context, const SessionSettingsPage());
           },

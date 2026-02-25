@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
+import 'package:dutch_app/domain/types/anki_grade.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
@@ -64,25 +65,35 @@ class WordProgressService {
     ExerciseSummaryDetailed summary,
   ) {
     final now = DateTime.now();
-    final hasWrongAnswers = summary.totalWrongAnswers > 0;
-    final quality = hasWrongAnswers
-        ? 2
-        : 5; // only for know/dont know type of answers
+
+    // Anki-mode: use the explicit grade quality (1, 2, 4, 5)
+    // Simplified mode: map know/don't-know to quality 5 / 2
+    final int quality;
+    final bool isMistake;
+
+    if (summary.ankiGrade != null) {
+      quality = summary.ankiGrade!.quality;
+      isMistake = summary.ankiGrade!.isMistake;
+    } else {
+      isMistake = summary.totalWrongAnswers > 0;
+      quality = isMistake ? 2 : 5;
+    }
 
     final updatedEasinessFactor = _calculateNewEasinessFactor(
       progress.easinessFactor,
       quality,
     );
 
-    final updatedConsequetiveCorrectAnswers = hasWrongAnswers
+    final updatedConsequetiveCorrectAnswers = isMistake
         ? 0
         : progress.consequetiveCorrectAnswers + 1;
 
     final updatedIntervalDays = _calculateNewIntervalDays(
-      hasWrongAnswers,
+      isMistake,
       updatedConsequetiveCorrectAnswers,
       updatedEasinessFactor,
       progress.intervalDays,
+      isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
     );
 
     progress.lastPracticed = now;
@@ -107,12 +118,13 @@ class WordProgressService {
   }
 
   int _calculateNewIntervalDays(
-    bool hasWrongAnswers,
+    bool isMistake,
     int updatedConsequetiveCorrectAnswers,
     double updatedEasinessFactor,
-    int currentIntervalDays,
-  ) {
-    if (hasWrongAnswers) {
+    int currentIntervalDays, {
+    bool isAnkiEasy = false,
+  }) {
+    if (isMistake) {
       return 1;
     }
     if (updatedConsequetiveCorrectAnswers == 1) {
@@ -121,6 +133,9 @@ class WordProgressService {
     if (updatedConsequetiveCorrectAnswers == 2) {
       return 6;
     }
-    return (currentIntervalDays * updatedEasinessFactor).round();
+    final multiplier = isAnkiEasy
+        ? updatedEasinessFactor * 1.3
+        : updatedEasinessFactor;
+    return (currentIntervalDays * multiplier).round().clamp(1, 365);
   }
 }

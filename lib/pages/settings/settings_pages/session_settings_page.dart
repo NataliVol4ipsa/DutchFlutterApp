@@ -1,7 +1,9 @@
 import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/notifiers/dark_theme_toggled_notifier.dart';
+import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/pages/settings/setting_tiles/setting_number_tile_widget.dart';
+import 'package:dutch_app/pages/settings/setting_tiles/setting_switch_tile_widget.dart';
 import 'package:dutch_app/pages/settings/settings_section_widget.dart';
 import 'package:dutch_app/styles/container_styles.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class SessionSettingsPage extends StatefulWidget {
 
 class _SessionettingsPageState extends State<SessionSettingsPage> {
   bool isLoading = true;
+  bool isSessionActive = false;
 
   late SettingsService settingService;
   late Settings settings;
@@ -33,6 +36,9 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
       context,
       listen: false,
     );
+    isSessionActive = context
+        .read<PracticeSessionStatefulService>()
+        .isSessionActive;
     _loadSettingsAsync();
   }
 
@@ -57,6 +63,13 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
     settingService.updateSettingsAsync(settings);
   }
 
+  void _onUseAnkiModeChanged(bool value) {
+    setState(() {
+      settings.session.useAnkiMode = value;
+    });
+    settingService.updateSettingsAsync(settings);
+  }
+
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [_buildThemeSettings(context)];
 
@@ -76,6 +89,9 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
 
   Widget _buildThemeSettings(BuildContext context) {
     return SettingsSection(
+      lockedHint: isSessionActive
+          ? "Cannot be changed during an active session"
+          : null,
       children: [
         SettingsSliderTile(
           name: "New words per session",
@@ -83,6 +99,7 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
           maximumValue: 10,
           initialValue: settings.session.newWordsPerSession.toDouble(),
           step: 1,
+          isLocked: isSessionActive,
           onChanged: _onNewWordsPerSessionChanged,
         ),
         SettingsSliderTile(
@@ -91,7 +108,14 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
           maximumValue: 30,
           initialValue: settings.session.repetitionsPerSession.toDouble(),
           step: 1,
+          isLocked: isSessionActive,
           onChanged: _onRepetitionsPerSessionChanged,
+        ),
+        SettingsSwitchTile(
+          name: "Anki-style grading",
+          isInitiallyEnabled: settings.session.useAnkiMode,
+          isLocked: isSessionActive,
+          onChanged: _onUseAnkiModeChanged,
         ),
       ],
     );

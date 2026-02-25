@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
+import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
@@ -22,6 +23,7 @@ Widget customPadding() => const SizedBox(height: 10);
 
 class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   late WordsRepository wordsRepository;
+  late SettingsService settingsService;
 
   List<ExerciseType> learningModes = ExerciseType.values.toList();
   final Set<ExerciseType> selectedModes = {};
@@ -30,24 +32,31 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
   void initState() {
     super.initState();
     wordsRepository = context.read<WordsRepository>();
+    settingsService = context.read<SettingsService>();
   }
 
-  void onStartButtonClick() {
-    var service = context.read<PracticeSessionStatefulService>();
-    List<Word> words = service.words;
-    var wordProgressService = Provider.of<WordProgressService>(
+  Future<void> onStartButtonClick() async {
+    final settings = await settingsService.getSettingsAsync();
+    final useAnkiMode = settings.session.useAnkiMode;
+    if (!mounted) return;
+
+    final service = context.read<PracticeSessionStatefulService>();
+    final List<Word> words = service.words;
+    final wordProgressService = Provider.of<WordProgressService>(
       context,
       listen: false,
     );
-    var notifier = Provider.of<ExerciseAnsweredNotifier>(
+    final notifier = Provider.of<ExerciseAnsweredNotifier>(
       context,
       listen: false,
     );
-    var flowManager = LearningSessionManager(
+
+    final flowManager = LearningSessionManager(
       selectedModes.toList(),
       words,
       wordProgressService,
       notifier,
+      useAnkiMode: useAnkiMode,
     );
     if (!mounted) return;
     navigateToLearningTaskPage(context, flowManager);

@@ -8,12 +8,14 @@ class SettingTile extends StatelessWidget {
   final String name;
   final Widget actionWidget;
   final IconData? icon;
+  final String? subtitle;
 
   const SettingTile({
     super.key,
     required this.name,
     required this.actionWidget,
     this.icon,
+    this.subtitle,
   });
 
   Widget _buildIconSection(context) {
@@ -21,8 +23,9 @@ class SettingTile extends StatelessWidget {
     return Expanded(
       flex: SettingsTileConfig.settingIconFlex,
       child: Align(
-          alignment: Alignment.centerLeft,
-          child: Icon(icon, color: IconStyles.defaultColor(context))),
+        alignment: Alignment.centerLeft,
+        child: Icon(icon, color: IconStyles.defaultColor(context)),
+      ),
     );
   }
 
@@ -37,11 +40,28 @@ class SettingTile extends StatelessWidget {
           _buildIconSection(context),
           Expanded(
             flex: SettingsTileConfig.settingNameFlex,
-            child: Text(name,
-                maxLines: 2,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyles.settingsTitleStyle),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  name,
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyles.settingsTitleStyle,
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+              ],
+            ),
           ),
           Expanded(
             flex: SettingsTileConfig.settingActionFlex,

@@ -6,11 +6,14 @@ class SettingNavigationTile extends StatelessWidget {
   final IconData icon;
   final String name;
   final GestureTapCallback onTap;
+  final bool isLocked;
+
   const SettingNavigationTile({
     super.key,
     required this.icon,
     required this.name,
     required this.onTap,
+    this.isLocked = false,
   });
 
   @override
@@ -25,7 +28,16 @@ class SettingNavigationTile extends StatelessWidget {
         child: SettingTile(
           icon: icon,
           name: name,
-          actionWidget: const Center(child: Text(">")),
+          subtitle: isLocked ? "Not editable during session" : null,
+          actionWidget: isLocked
+              ? Center(
+                  child: Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                )
+              : const Center(child: Text(">")),
         ),
       ),
     );

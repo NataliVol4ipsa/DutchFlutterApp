@@ -11,4 +11,5 @@ class ThemeSettingsNames {
 class SessionSettingsNames {
   final String newWordsPerSessionInt = "newWordsPerSession";
   final String repetitionsPerSessionInt = "repetitionsPerSession";
+  final String useAnkiModeBool = "useAnkiMode";
 }

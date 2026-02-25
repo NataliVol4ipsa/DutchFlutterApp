@@ -2,6 +2,7 @@ import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_ex
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
+import 'package:dutch_app/pages/learning_session/exercises/flip_card/anki_flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/write/write_exercise.dart';
@@ -9,8 +10,9 @@ import 'package:dutch_app/pages/learning_session/exercises/write/write_exercise.
 class ExercisesGenerator {
   final List<ExerciseType> exerciseTypes;
   final List<Word> words;
+  final bool useAnkiMode;
 
-  ExercisesGenerator(this.exerciseTypes, this.words);
+  ExercisesGenerator(this.exerciseTypes, this.words, this.useAnkiMode);
 
   List<BaseExercise> generateExcercises() {
     var result = <BaseExercise>[
@@ -26,10 +28,12 @@ class ExercisesGenerator {
   List<BaseExercise> generateDeHetExcercises() {
     if (!exerciseTypes.contains(ExerciseType.deHetPick)) return [];
 
-    List<Word> supportedWords =
-        words.where((w) => DeHetPickExercise.isSupportedWord(w)).toList();
-    var exercises =
-        supportedWords.map((word) => DeHetPickExercise(word)).toList();
+    List<Word> supportedWords = words
+        .where((w) => DeHetPickExercise.isSupportedWord(w))
+        .toList();
+    var exercises = supportedWords
+        .map((word) => DeHetPickExercise(word))
+        .toList();
 
     return exercises;
   }
@@ -37,19 +41,23 @@ class ExercisesGenerator {
   List<BaseExercise> generateFlipCardExcercises() {
     if (!exerciseTypes.contains(ExerciseType.flipCard)) return [];
 
-    List<Word> supportedWords =
-        words.where((w) => FlipCardExercise.isSupportedWord(w)).toList();
-    var exercises =
-        supportedWords.map((word) => FlipCardExercise(word)).toList();
+    List<Word> supportedWords = words
+        .where((w) => FlipCardExercise.isSupportedWord(w))
+        .toList();
 
-    return exercises;
+    if (useAnkiMode) {
+      return supportedWords.map((word) => AnkiFlipCardExercise(word)).toList();
+    }
+
+    return supportedWords.map((word) => FlipCardExercise(word)).toList();
   }
 
   List<BaseExercise> generateManyToManyExcercises() {
     if (!exerciseTypes.contains(ExerciseType.manyToMany)) return [];
 
-    List<Word> supportedWords =
-        words.where((w) => ManyToManyExercise.isSupportedWord(w)).toList();
+    List<Word> supportedWords = words
+        .where((w) => ManyToManyExercise.isSupportedWord(w))
+        .toList();
 
     if (supportedWords.length < 2) return [];
 
@@ -60,8 +68,10 @@ class ExercisesGenerator {
     int startIndex = 0;
 
     for (int chunkId = 0; chunkId < quantities.length; chunkId++) {
-      List<Word> wordsChunk =
-          supportedWords.sublist(startIndex, startIndex + quantities[chunkId]);
+      List<Word> wordsChunk = supportedWords.sublist(
+        startIndex,
+        startIndex + quantities[chunkId],
+      );
       exercises.add(ManyToManyExercise(wordsChunk));
       startIndex += quantities[chunkId];
     }
@@ -79,7 +89,9 @@ class ExercisesGenerator {
   static List<int> _calculateChunkQuantities(int numOfWords) {
     int numOfChunks = (numOfWords / ManyToManyExercise.requiredWords).ceil();
     var result = List<int>.generate(
-        numOfChunks, (index) => ManyToManyExercise.requiredWords);
+      numOfChunks,
+      (index) => ManyToManyExercise.requiredWords,
+    );
 
     int div = numOfWords % ManyToManyExercise.requiredWords;
 
@@ -97,8 +109,9 @@ class ExercisesGenerator {
   List<BaseExercise> generateWritingExcercises() {
     if (!exerciseTypes.contains(ExerciseType.basicWrite)) return [];
 
-    List<Word> supportedWords =
-        words.where((w) => WriteExercise.isSupportedWord(w)).toList();
+    List<Word> supportedWords = words
+        .where((w) => WriteExercise.isSupportedWord(w))
+        .toList();
     var exercises = supportedWords.map((word) => WriteExercise(word)).toList();
 
     return exercises;
