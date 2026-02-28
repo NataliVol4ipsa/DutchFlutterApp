@@ -198,7 +198,7 @@ class WordsRepository {
       oldDutchWord.words.remove(word);
       await oldDutchWord.words.save();
       if (oldDutchWord.audioCode == null && oldDutchWord.words.isEmpty) {
-        DbContext.isar.dbWords.delete(oldDutchWordId);
+        DbContext.isar.dbDutchWords.delete(oldDutchWordId);
       }
     }
   }

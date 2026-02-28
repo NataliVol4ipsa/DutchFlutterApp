@@ -49,12 +49,12 @@ class VerbPresentTenseTab extends StatelessWidget {
         ),
         VerbConjugationRowData(
           pronoun: 'jij',
-          controller: presentTenseIkController,
+          controller: presentTenseJijController,
           suffix: '.',
         ),
         VerbConjugationRowData(
           pronoun: 'u',
-          controller: presentTenseJijController,
+          controller: presentTenseUController,
           suffix: '.',
         ),
         VerbConjugationRowData(
