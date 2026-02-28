@@ -23,6 +23,7 @@ import 'package:dutch_app/styles/container_styles.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dutch_app/pages/quick_practice/quick_practice_coordinator.dart';
 import 'package:dutch_app/pages/word_collections/empty_search_result_widget.dart';
 
 class WordCollectionsListPage extends StatefulWidget {
@@ -464,18 +465,11 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
             onTap: (() => {_handleOnPracticeActionTap(context)}),
           ),
           MyBottomAppBarItem(
-            icon: Icons.drive_file_move,
-            disabledIcon: Icons.drive_file_move_outlined,
+            icon: Icons.bolt,
+            disabledIcon: Icons.bolt_outlined,
             isEnabled: _shouldEnableMultiselectButtons(),
-            label: 'Move',
-            onTap: (() => {print('Tapped Move!')}),
-          ),
-          MyBottomAppBarItem(
-            icon: Icons.file_copy,
-            disabledIcon: Icons.file_copy_outlined,
-            isEnabled: _shouldEnableMultiselectButtons(),
-            label: 'Copy',
-            onTap: (() => {print('Tapped Copy!')}),
+            label: 'Quick Practice',
+            onTap: (() => {_handleOnQuickPracticeActionTap(context)}),
           ),
           MyBottomAppBarItem(
             icon: Icons.upload_file_rounded,
@@ -495,6 +489,12 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
     var service = context.read<PracticeSessionStatefulService>();
     service.initializeWords(dataManager.getAllSelectedWords());
     Navigator.pushNamed(context, '/exerciseselector');
+  }
+
+  void _handleOnQuickPracticeActionTap(BuildContext context) {
+    if (!dataManager.containsAtLeastOneSelectedWord()) return;
+    final coordinator = context.read<QuickPracticeCoordinator>();
+    coordinator.startWithWordsAsync(context, dataManager.getAllSelectedWords());
   }
 
   void _handleOnExportActionTap(BuildContext context) {
@@ -528,6 +528,20 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
 
   List<Widget> _buildMoreActions(BuildContext context) {
     return [
+      MyPopupMenuItem(
+        icon: Icons.drive_file_move,
+        label: "Move",
+        onPressed: _shouldEnableMultiselectButtons()
+            ? () => print('Tapped Move!')
+            : null,
+      ),
+      MyPopupMenuItem(
+        icon: Icons.file_copy,
+        label: "Copy",
+        onPressed: _shouldEnableMultiselectButtons()
+            ? () => print('Tapped Copy!')
+            : null,
+      ),
       MyPopupMenuItem(
         icon: Icons.delete,
         label: "Delete Words",

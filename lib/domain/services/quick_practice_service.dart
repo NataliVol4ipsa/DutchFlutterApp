@@ -151,4 +151,54 @@ class QuickPracticeService {
         return false;
     }
   }
+
+  Future<QuickPracticeSession> buildSessionFromWordsAsync({
+    required List<Word> words,
+    required WordProgressService wordProgressService,
+    required ExerciseAnsweredNotifier notifier,
+  }) async {
+    final settings = await settingsService.getSettingsAsync();
+    final sessionSettings = settings.session;
+    final activeTypes = quota.activeTypes;
+
+    final supportedWords = words
+        .where((w) => _isSupportedByAnyType(activeTypes, w))
+        .toList();
+
+    final wordIds = supportedWords.map((w) => w.id).toList();
+    final practicedIds = await wordProgressService.getPracticedWordIdsAsync(
+      wordIds,
+    );
+
+    final newWords = supportedWords
+        .where((w) => !practicedIds.contains(w.id))
+        .take(sessionSettings.newWordsPerSession)
+        .toList();
+
+    final reviewWords = supportedWords
+        .where((w) => practicedIds.contains(w.id))
+        .take(sessionSettings.repetitionsPerSession)
+        .toList();
+
+    final practiceableWords = [...newWords, ...reviewWords];
+
+    if (practiceableWords.isEmpty) {
+      throw Exception(
+        'None of the selected words can be used for practice with the current exercise settings.',
+      );
+    }
+
+    final flowManager = LearningSessionManager(
+      activeTypes,
+      practiceableWords,
+      wordProgressService,
+      notifier,
+      useAnkiMode: sessionSettings.useAnkiMode,
+    );
+
+    return QuickPracticeSession(
+      flowManager: flowManager,
+      showPreSessionWordList: sessionSettings.showPreSessionWordList,
+    );
+  }
 }

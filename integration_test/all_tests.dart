@@ -16,8 +16,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'create_verb_flow_test.dart' as create_verb_flow;
 import 'session_settings_flow_test.dart' as session_settings_flow;
+import 'word_list_quick_practice_test.dart' as word_list_quick_practice;
 
 void main() {
   group('create_verb_flow_test', create_verb_flow.main);
   group('session_settings_flow_test', session_settings_flow.main);
+  group('word_list_quick_practice_test', word_list_quick_practice.main);
 }

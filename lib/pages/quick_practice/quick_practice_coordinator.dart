@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
@@ -69,6 +70,57 @@ class QuickPracticeCoordinator extends ChangeNotifier {
     } finally {
       // Always unlock settings – whether the session completed normally,
       // was abandoned from the pre-session word list, or threw an exception.
+      practiceService.cleanup();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> startWithWordsAsync(
+    BuildContext context,
+    List<Word> words,
+  ) async {
+    if (_isLoading) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    final practiceService = context.read<PracticeSessionStatefulService>();
+
+    try {
+      final session = await _quickPracticeService.buildSessionFromWordsAsync(
+        words: words,
+        wordProgressService: _wordProgressService,
+        notifier: _exerciseAnsweredNotifier,
+      );
+
+      if (!context.mounted) return;
+
+      practiceService.initializeWords(session.flowManager.words);
+
+      if (session.showPreSessionWordList) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                PreSessionWordListPage(flowManager: session.flowManager),
+          ),
+        );
+      } else {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                LearningSessionPage(flowManager: session.flowManager),
+          ),
+        );
+      }
+    } on Exception catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+      );
+    } finally {
       practiceService.cleanup();
       _isLoading = false;
       notifyListeners();
