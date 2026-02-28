@@ -1,9 +1,11 @@
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
 import 'package:dutch_app/pages/learning_session/pre_session_word_list_page.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
 import 'package:dutch_app/pages/learning_session/word_progress_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class QuickPracticeCoordinator extends ChangeNotifier {
   final QuickPracticeService _quickPracticeService;
@@ -28,6 +30,9 @@ class QuickPracticeCoordinator extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+    // Capture before any await so the reference stays valid throughout.
+    final practiceService = context.read<PracticeSessionStatefulService>();
+
     try {
       final session = await _quickPracticeService.buildSessionAsync(
         wordProgressService: _wordProgressService,
@@ -35,6 +40,9 @@ class QuickPracticeCoordinator extends ChangeNotifier {
       );
 
       if (!context.mounted) return;
+
+      // Lock session settings for the duration of this practice session.
+      practiceService.initializeWords(session.flowManager.words);
 
       if (session.showPreSessionWordList) {
         await Navigator.push(
@@ -59,6 +67,9 @@ class QuickPracticeCoordinator extends ChangeNotifier {
         SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
       );
     } finally {
+      // Always unlock settings – whether the session completed normally,
+      // was abandoned from the pre-session word list, or threw an exception.
+      practiceService.cleanup();
       _isLoading = false;
       notifyListeners();
     }

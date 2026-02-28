@@ -147,7 +147,7 @@ void main() {
         DbWordVerbDetailsSchema,
       ],
       directory: tempDir.path,
-      name: 'test_isar',
+      name: 'create_verb_isar',
     );
     // The default "General" collection must exist before any word can be saved.
     await DbDefaultCollectionSeed.seedAsync();

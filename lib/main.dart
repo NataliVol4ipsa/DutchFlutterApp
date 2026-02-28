@@ -24,6 +24,8 @@ import 'pages/home_page.dart';
 // flutter pub add xxx - install package xxx
 // flutter pub run build_runner build - generate db tables .g.dart
 // ctrl + shift + u: open bottom panel with output, debug console etc
+// flutter test - to run unit/widget tests
+// flutter test integration_test/all_tests.dart -d windows - run all ITs (Windows)
 
 //todo is notifier for db changes really needed?
 
