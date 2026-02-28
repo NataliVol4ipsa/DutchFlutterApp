@@ -18,6 +18,6 @@ import 'create_verb_flow_test.dart' as create_verb_flow;
 import 'session_settings_flow_test.dart' as session_settings_flow;
 
 void main() {
-  group('create_verb_flow', create_verb_flow.main);
-  group('session_settings_flow', session_settings_flow.main);
+  group('create_verb_flow_test', create_verb_flow.main);
+  group('session_settings_flow_test', session_settings_flow.main);
 }

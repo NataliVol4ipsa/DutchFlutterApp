@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
+import 'package:dutch_app/domain/services/spaced_repetition_algorithm.dart';
 import 'package:dutch_app/domain/types/anki_grade.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
@@ -90,63 +91,29 @@ class WordProgressService {
       quality = isMistake ? 2 : 5;
     }
 
-    final updatedEasinessFactor = _calculateNewEasinessFactor(
-      progress.easinessFactor,
-      quality,
-    );
+    final updatedEasinessFactor =
+        SpacedRepetitionAlgorithm.calculateNewEasinessFactor(
+          progress.easinessFactor,
+          quality,
+        );
 
     final updatedConsequetiveCorrectAnswers = isMistake
         ? 0
         : progress.consequetiveCorrectAnswers + 1;
 
-    final updatedIntervalDays = _calculateNewIntervalDays(
-      isMistake,
-      updatedConsequetiveCorrectAnswers,
-      updatedEasinessFactor,
-      progress.intervalDays,
-      isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
-    );
+    final updatedIntervalDays =
+        SpacedRepetitionAlgorithm.calculateNewIntervalDays(
+          isMistake,
+          updatedConsequetiveCorrectAnswers,
+          updatedEasinessFactor,
+          progress.intervalDays,
+          isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
+        );
 
     progress.lastPracticed = now;
     progress.consequetiveCorrectAnswers = updatedConsequetiveCorrectAnswers;
     progress.intervalDays = updatedIntervalDays;
     progress.easinessFactor = updatedEasinessFactor;
     progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
-  }
-
-  double _calculateNewEasinessFactor(
-    double currentEasinessFactor,
-    int quality,
-  ) {
-    final easinessFactorDelta =
-        (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-    var newEasinessFactor = currentEasinessFactor + easinessFactorDelta;
-
-    if (newEasinessFactor < 1.3) newEasinessFactor = 1.3;
-    if (newEasinessFactor > 2.5) newEasinessFactor = 2.5;
-
-    return newEasinessFactor;
-  }
-
-  int _calculateNewIntervalDays(
-    bool isMistake,
-    int updatedConsequetiveCorrectAnswers,
-    double updatedEasinessFactor,
-    int currentIntervalDays, {
-    bool isAnkiEasy = false,
-  }) {
-    if (isMistake) {
-      return 1;
-    }
-    if (updatedConsequetiveCorrectAnswers == 1) {
-      return 1;
-    }
-    if (updatedConsequetiveCorrectAnswers == 2) {
-      return 6;
-    }
-    final multiplier = isAnkiEasy
-        ? updatedEasinessFactor * 1.3
-        : updatedEasinessFactor;
-    return (currentIntervalDays * multiplier).round().clamp(1, 365);
   }
 }
