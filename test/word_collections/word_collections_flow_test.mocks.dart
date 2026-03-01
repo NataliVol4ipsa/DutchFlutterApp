@@ -165,11 +165,18 @@ class MockBatchWordOperationsService extends _i1.Mock
       ) as _i4.BatchRepository);
 
   @override
-  _i6.Future<void> storeInDatabaseAsync(_i9.ExportPackageV1? package) =>
+  _i6.Future<void> storeInDatabaseAsync(
+    _i9.ExportPackageV1? package, {
+    void Function(
+      int,
+      int,
+    )? onProgress,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #storeInDatabaseAsync,
           [package],
+          {#onProgress: onProgress},
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),

@@ -1,5 +1,4 @@
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
-import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widget.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:dutch_app/pages/learning_session/summary/exercise_total_cards_builder.dart';
@@ -42,7 +41,7 @@ class SessionSummaryWidget extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            summary.exerciseType.label,
+            summary.displayLabel,
             style: TextStyles.sessionSummaryTitleTextStyle,
           ),
           Row(
@@ -123,7 +122,7 @@ class SessionSummaryWidget extends StatelessWidget {
         text: TextSpan(
           style: TextStyles.sessionSummaryCardtitleTextStyle(context),
           children: <TextSpan>[
-            TextSpan(text: summary.correctAnswer),
+            TextSpan(text: summary.word.toDutchWordString()),
             const TextSpan(text: " ("),
             TextSpan(
               text: summary.totalWrongAnswers.toString(),

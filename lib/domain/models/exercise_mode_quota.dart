@@ -18,6 +18,7 @@ class ExerciseModeQuota {
 
   static const ExerciseModeQuota flipCardAndWriting = ExerciseModeQuota({
     ExerciseType.flipCard: 1.0,
+    ExerciseType.flipCardReverse: 1.0,
     ExerciseType.basicWrite: 1.0,
   });
 }

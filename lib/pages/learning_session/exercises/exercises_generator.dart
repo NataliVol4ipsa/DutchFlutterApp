@@ -1,8 +1,11 @@
+import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/anki_flip_card_exercise.dart';
+import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_english_dutch_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/write/write_exercise.dart';
@@ -13,17 +16,30 @@ class ExercisesGenerator {
   final bool useAnkiMode;
   final bool includePhrasesInWriting;
 
+  /// Optional per-word unlock map produced by [ExerciseTypeOrder.unlockedTypesForWord].
+  /// When non-null, a word only receives an exercise for a detailed type if
+  /// that type appears in its unlocked set.  When null, no restriction applies
+  /// (backwards-compatible default).
+  final Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById;
+
   ExercisesGenerator(
     this.exerciseTypes,
     this.words,
     this.useAnkiMode, {
     this.includePhrasesInWriting = false,
+    this.unlockedTypesById,
   });
+
+  bool _isUnlocked(int wordId, ExerciseTypeDetailed dt) {
+    if (unlockedTypesById == null) return true;
+    return unlockedTypesById![wordId]?.contains(dt) ?? false;
+  }
 
   List<BaseExercise> generateExcercises() {
     var result = <BaseExercise>[
       ...generateDeHetExcercises(),
       ...generateFlipCardExcercises(),
+      ...generateFlipCardReverseExcercises(),
       ...generateManyToManyExcercises(),
       ...generateWritingExcercises(),
     ];
@@ -49,7 +65,11 @@ class ExercisesGenerator {
     if (!exerciseTypes.contains(ExerciseType.flipCard)) return [];
 
     List<Word> supportedWords = words
-        .where((w) => FlipCardExercise.isSupportedWord(w))
+        .where(
+          (w) =>
+              FlipCardExercise.isSupportedWord(w) &&
+              _isUnlocked(w.id!, ExerciseTypeDetailed.flipCardDutchEnglish),
+        )
         .toList();
 
     if (useAnkiMode) {
@@ -57,6 +77,22 @@ class ExercisesGenerator {
     }
 
     return supportedWords.map((word) => FlipCardExercise(word)).toList();
+  }
+
+  List<BaseExercise> generateFlipCardReverseExcercises() {
+    if (!exerciseTypes.contains(ExerciseType.flipCardReverse)) return [];
+
+    List<Word> supportedWords = words
+        .where(
+          (w) =>
+              FlipCardEnglishDutchExercise.isSupportedWord(w) &&
+              _isUnlocked(w.id!, ExerciseTypeDetailed.flipCardEnglishDutch),
+        )
+        .toList();
+
+    return supportedWords
+        .map((word) => FlipCardEnglishDutchExercise(word))
+        .toList();
   }
 
   List<BaseExercise> generateManyToManyExcercises() {
@@ -118,10 +154,12 @@ class ExercisesGenerator {
 
     List<Word> supportedWords = words
         .where(
-          (w) => WriteExercise.isSupportedWord(
-            w,
-            includePhrasesInWriting: includePhrasesInWriting,
-          ),
+          (w) =>
+              WriteExercise.isSupportedWord(
+                w,
+                includePhrasesInWriting: includePhrasesInWriting,
+              ) &&
+              _isUnlocked(w.id!, ExerciseTypeDetailed.basicWrite),
         )
         .toList();
     var exercises = supportedWords.map((word) => WriteExercise(word)).toList();

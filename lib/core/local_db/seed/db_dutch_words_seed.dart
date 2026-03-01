@@ -5,6 +5,8 @@ import 'package:dutch_app/core/local_db/mapping/dutch_word_mapper.dart';
 import 'package:isar/isar.dart';
 
 class DbDutchWordsSeed {
+  static const int _batchSize = 500;
+
   static Future<void> seedAsync() async {
     var isar = DbContext.isar;
 
@@ -14,9 +16,15 @@ class DbDutchWordsSeed {
     }
 
     final assets = await WordsAudioReader().readCsvFile();
-    final newItems = DutchWordMapper.mapToEntityList(assets);
 
-    await DbContext.isar
-        .writeTxn(() => DbContext.isar.dbDutchWords.putAll(newItems));
+    for (var i = 0; i < assets.length; i += _batchSize) {
+      final end = (i + _batchSize < assets.length)
+          ? i + _batchSize
+          : assets.length;
+      final batch = DutchWordMapper.mapToEntityList(assets.sublist(i, end));
+      await DbContext.isar.writeTxn(
+        () => DbContext.isar.dbDutchWords.putAll(batch),
+      );
+    }
   }
 }

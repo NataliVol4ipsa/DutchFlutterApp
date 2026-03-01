@@ -2,6 +2,7 @@ import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
+import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
@@ -9,6 +10,7 @@ import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
+import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_english_dutch_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/write/write_exercise.dart';
@@ -65,12 +67,21 @@ class QuickPracticeService {
       );
     }
 
+    final allIds = practiceableWords.map((w) => w.id!).toList();
+    final progressByWordId = await wordProgressRepository
+        .getProgressByWordIdAsync(allIds);
+    final unlockedTypesById = computeUnlockedTypesPerWord(
+      allIds,
+      progressByWordId,
+    );
+
     return _createSession(
       words: practiceableWords,
       activeTypes: activeTypes,
       sessionSettings: sessionSettings,
       wordProgressService: wordProgressService,
       notifier: notifier,
+      unlockedTypesById: unlockedTypesById,
     );
   }
 
@@ -219,6 +230,8 @@ class QuickPracticeService {
     switch (type) {
       case ExerciseType.flipCard:
         return FlipCardExercise.isSupportedWord(word);
+      case ExerciseType.flipCardReverse:
+        return FlipCardEnglishDutchExercise.isSupportedWord(word);
       case ExerciseType.deHetPick:
         return DeHetPickExercise.isSupportedWord(word);
       case ExerciseType.manyToMany:
@@ -267,12 +280,21 @@ class QuickPracticeService {
       );
     }
 
+    final allIds = practiceableWords.map((w) => w.id!).toList();
+    final progressByWordId = await wordProgressRepository
+        .getProgressByWordIdAsync(allIds);
+    final unlockedTypesById = computeUnlockedTypesPerWord(
+      allIds,
+      progressByWordId,
+    );
+
     return _createSession(
       words: practiceableWords,
       activeTypes: activeTypes,
       sessionSettings: sessionSettings,
       wordProgressService: wordProgressService,
       notifier: notifier,
+      unlockedTypesById: unlockedTypesById,
     );
   }
 
@@ -478,12 +500,32 @@ class QuickPracticeService {
     }
   }
 
+  /// Computes which [ExerciseTypeDetailed] are currently unlocked for each
+  /// word in [wordIds] based on their existing progress records.
+  ///
+  /// Words with no progress records only unlock types that have no
+  /// prerequisite (e.g. [ExerciseTypeDetailed.flipCardDutchEnglish]).
+  @visibleForTesting
+  static Map<int, Set<ExerciseTypeDetailed>> computeUnlockedTypesPerWord(
+    List<int> wordIds,
+    Map<int, List<DbWordProgress>> progressByWordId,
+  ) {
+    return {
+      for (final id in wordIds)
+        id: ExerciseTypeOrder.unlockedTypesForWord({
+          for (final p in (progressByWordId[id] ?? []))
+            p.exerciseType: p.consequetiveCorrectAnswers,
+        }),
+    };
+  }
+
   QuickPracticeSession _createSession({
     required List<Word> words,
     required List<ExerciseType> activeTypes,
     required SessionSettings sessionSettings,
     required WordProgressService wordProgressService,
     required ExerciseAnsweredNotifier notifier,
+    Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById,
   }) {
     final flowManager = LearningSessionManager(
       activeTypes,
@@ -492,6 +534,7 @@ class QuickPracticeService {
       notifier,
       useAnkiMode: sessionSettings.useAnkiMode,
       includePhrasesInWriting: sessionSettings.includePhrasesInWriting,
+      unlockedTypesById: unlockedTypesById,
     );
 
     return QuickPracticeSession(

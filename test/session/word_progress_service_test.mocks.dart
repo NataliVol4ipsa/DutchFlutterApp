@@ -94,6 +94,18 @@ class MockWordProgressBatchRepository extends _i1.Mock
       ) as _i4.Future<List<_i6.DbWordProgress>>);
 
   @override
+  _i4.Future<Map<int, List<_i6.DbWordProgress>>> getProgressByWordIdAsync(
+          List<int>? wordIds) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getProgressByWordIdAsync,
+          [wordIds],
+        ),
+        returnValue: _i4.Future<Map<int, List<_i6.DbWordProgress>>>.value(
+            <int, List<_i6.DbWordProgress>>{}),
+      ) as _i4.Future<Map<int, List<_i6.DbWordProgress>>>);
+
+  @override
   _i4.Future<List<_i6.DbWordProgress>> getDueProgressAsync(
     _i7.ExerciseTypeDetailed? exerciseType,
     int? limit,

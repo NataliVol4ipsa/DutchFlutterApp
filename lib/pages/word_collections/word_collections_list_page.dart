@@ -3,11 +3,11 @@ import 'package:dutch_app/domain/notifiers/word_created_notifier.dart';
 import 'package:dutch_app/domain/services/batch_word_operations_service.dart';
 import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
-import 'package:dutch_app/core/io/v1/models/export_package_v1.dart';
 import 'package:dutch_app/core/io/v1/words_io_json_service_v1.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/add_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/delete_words_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/export_data_dialog.dart';
+import 'package:dutch_app/pages/word_collections/dialogs/import_progress_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/edit_collection_dialog.dart';
 import 'package:dutch_app/pages/word_collections/dialogs/word_details_dialog.dart';
 import 'package:dutch_app/pages/word_collections/popup_menu_item_widget.dart';
@@ -277,19 +277,42 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
       return;
     }
 
-    ExportPackageV1 importPackage = await WordsIoJsonServiceV1().importAsync(
+    final importPackage = await WordsIoJsonServiceV1().importAsync(
       File(result.files.first.path!),
     );
 
-    await wordsStorageService.storeInDatabaseAsync(importPackage);
     final totalWords = importPackage.collections.fold<int>(
       0,
       (sum, collection) => sum + collection.words.length,
     );
 
-    await _loadDataWithSnackBar(
-      "Succesfully imported ${importPackage.collections.length} collection(s) with $totalWords words",
+    final progressNotifier = ValueNotifier<(int, int)>((0, totalWords));
+
+    final importFuture = wordsStorageService.storeInDatabaseAsync(
+      importPackage,
+      onProgress: (processed, total) {
+        progressNotifier.value = (processed, total);
+      },
     );
+
+    if (!context.mounted) return;
+
+    final success = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => ImportProgressDialog(
+        importFuture: importFuture,
+        progressNotifier: progressNotifier,
+      ),
+    );
+
+    progressNotifier.dispose();
+
+    if (success == true) {
+      await _loadDataWithSnackBar(
+        "Successfully imported ${importPackage.collections.length} collection(s) with $totalWords words",
+      );
+    }
   }
 
   void _onSearchPressed() {

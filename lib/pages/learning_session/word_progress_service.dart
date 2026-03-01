@@ -19,6 +19,8 @@ class WordProgressService {
     switch (exerciseType) {
       case ExerciseType.flipCard:
         return ExerciseTypeDetailed.flipCardDutchEnglish;
+      case ExerciseType.flipCardReverse:
+        return ExerciseTypeDetailed.flipCardEnglishDutch;
       case ExerciseType.deHetPick:
         return ExerciseTypeDetailed.deHetPick;
       case ExerciseType.basicWrite:
@@ -62,43 +64,32 @@ class WordProgressService {
     );
 
     final updatedProgress = <DbWordProgress>[];
-    final nextTypeKeys = <WordProgressKey>[];
+    final nextTypeKeys = <WordProgressKey>{};
 
     for (final summary in detailedSummaries) {
-      final key = WordProgressKey(
-        summary.wordId,
-        _mapToDetailedExerciseType(summary.exerciseType),
-      );
+      final detailedType = _mapToDetailedExerciseType(summary.exerciseType);
+      final key = WordProgressKey(summary.wordId, detailedType);
       final progress = progressByKey[key];
       if (progress == null) continue;
 
       _applySessionOutcome(progress, summary);
       updatedProgress.add(progress);
 
-      if (_isMastered(progress)) {
-        final nextType = ExerciseTypeOrder.nextType(summary.exerciseType);
-        if (nextType != null) {
-          nextTypeKeys.add(
-            WordProgressKey(
-              summary.wordId,
-              _mapToDetailedExerciseType(nextType),
-            ),
-          );
-        }
+      final unlocked = ExerciseTypeOrder.getNewlyUnlockedTypes(
+        detailedType,
+        progress.consequetiveCorrectAnswers,
+      );
+      for (final unlockedType in unlocked) {
+        nextTypeKeys.add(WordProgressKey(summary.wordId, unlockedType));
       }
     }
 
     await wordProgressRepository.saveAllAsync(updatedProgress);
 
-    // Idempotently create progress records for newly unlocked exercise types.
     if (nextTypeKeys.isNotEmpty) {
-      await wordProgressRepository.getOrCreateManyAsync(nextTypeKeys);
+      await wordProgressRepository.getOrCreateManyAsync(nextTypeKeys.toList());
     }
   }
-
-  bool _isMastered(DbWordProgress progress) =>
-      progress.consequetiveCorrectAnswers >=
-      ExerciseTypeOrder.masteryConsecutiveCorrect;
 
   //
   // Scheduling policy

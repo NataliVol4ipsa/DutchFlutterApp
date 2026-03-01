@@ -8,21 +8,28 @@ class BatchWordOperationsService {
   final WordsImportRepository importRepository;
   final BatchRepository batchRepository;
 
-  BatchWordOperationsService(
-      {required this.batchRepository, required this.importRepository});
+  BatchWordOperationsService({
+    required this.batchRepository,
+    required this.importRepository,
+  });
 
-//todo progress bar for import
-//todo logs
-//todo track files and do not import them twice? hash?
-  Future<void> storeInDatabaseAsync(ExportPackageV1 package) async {
-    List<NewWordCollection> newCollections =
-        WordsIoMapper.toNewCollectionList(package);
+  //todo logs
+  //todo track files and do not import them twice? hash?
+  Future<void> storeInDatabaseAsync(
+    ExportPackageV1 package, {
+    void Function(int processed, int total)? onProgress,
+  }) async {
+    List<NewWordCollection> newCollections = WordsIoMapper.toNewCollectionList(
+      package,
+    );
 
-    await importRepository.importAsync(newCollections);
+    await importRepository.importAsync(newCollections, onProgress: onProgress);
   }
 
-  Future<void> deleteAsync(
-      {required List<int> wordIds, required List<int> collectionIds}) async {
+  Future<void> deleteAsync({
+    required List<int> wordIds,
+    required List<int> collectionIds,
+  }) async {
     await batchRepository.deleteAsync(wordIds, collectionIds);
   }
 }

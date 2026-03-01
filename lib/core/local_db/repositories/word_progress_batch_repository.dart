@@ -91,6 +91,22 @@ class WordProgressBatchRepository {
     return result;
   }
 
+  /// Returns progress records grouped by word id, one list per word.
+  /// Words with no progress records are included with an empty list.
+  Future<Map<int, List<DbWordProgress>>> getProgressByWordIdAsync(
+    List<int> wordIds,
+  ) async {
+    final result = <int, List<DbWordProgress>>{};
+    for (final id in wordIds) {
+      final progress = await DbContext.isar.dbWordProgress
+          .filter()
+          .word((q) => q.idEqualTo(id))
+          .findAll();
+      result[id] = progress;
+    }
+    return result;
+  }
+
   Future<List<DbWordProgress>> getDueProgressAsync(
     ExerciseTypeDetailed exerciseType,
     int limit,

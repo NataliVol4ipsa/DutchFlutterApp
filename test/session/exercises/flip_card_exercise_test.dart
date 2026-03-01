@@ -4,6 +4,7 @@ import 'package:dutch_app/domain/types/anki_grade.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/anki_flip_card_exercise.dart';
+import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_english_dutch_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -114,6 +115,104 @@ void main() {
       expect(summaries.first.ankiGrade, AnkiGrade.good);
       expect(summaries.first.exerciseType, ExerciseType.flipCard);
       expect(summaries.first.totalCorrectAnswers, 1);
+    });
+  });
+
+  // ── FlipCardEnglishDutchExercise ────────────────────────────────────────────
+  group('FlipCardEnglishDutchExercise', () {
+    test('inputWord is the English translation', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      expect(exercise.inputWord, 'dog');
+    });
+
+    test('correctAnswer is the Dutch word', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      expect(exercise.correctAnswer, 'hond');
+    });
+
+    test('exerciseType is flipCardReverse', () {
+      expect(FlipCardEnglishDutchExercise.type, ExerciseType.flipCardReverse);
+    });
+
+    test('hint reflects part of speech', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      expect(exercise.hint, PartOfSpeech.noun.name);
+    });
+
+    test('hint is null for unspecified part of speech', () {
+      final unspecifiedWord = Word(
+        2,
+        'rennen',
+        ['to run'],
+        PartOfSpeech.unspecified,
+        nounDetails: null,
+        verbDetails: null,
+      );
+      final exercise = FlipCardEnglishDutchExercise(unspecifiedWord);
+      expect(exercise.hint, isNull);
+    });
+
+    test('processAnswer(true) increments correctAnswers', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      exercise.processAnswer(true);
+      expect(exercise.answerSummary.totalCorrectAnswers, 1);
+      expect(exercise.answerSummary.totalWrongAnswers, 0);
+    });
+
+    test('processAnswer(false) increments wrongAnswers', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      exercise.processAnswer(false);
+      expect(exercise.answerSummary.totalWrongAnswers, 1);
+      expect(exercise.answerSummary.totalCorrectAnswers, 0);
+    });
+
+    test('isAnswered() returns false before any answer', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      expect(exercise.isAnswered(), isFalse);
+    });
+
+    test('isAnswered() returns true after correct answer', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      exercise.processAnswer(true);
+      expect(exercise.isAnswered(), isTrue);
+    });
+
+    test('isAnswered() returns true after wrong answer', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      exercise.processAnswer(false);
+      expect(exercise.isAnswered(), isTrue);
+    });
+
+    test(
+      'generateSummaries() returns one summary with flipCardReverse type',
+      () {
+        final exercise = FlipCardEnglishDutchExercise(_word());
+        exercise.processAnswer(true);
+        final summaries = exercise.generateSummaries();
+        expect(summaries.length, 1);
+        expect(summaries.first.exerciseType, ExerciseType.flipCardReverse);
+        expect(summaries.first.totalCorrectAnswers, 1);
+        expect(summaries.first.totalWrongAnswers, 0);
+      },
+    );
+
+    test('generateSummaries() reflects wrong answers', () {
+      final exercise = FlipCardEnglishDutchExercise(_word());
+      exercise.processAnswer(false);
+      final summaries = exercise.generateSummaries();
+      expect(summaries.first.totalWrongAnswers, 1);
+      expect(summaries.first.totalCorrectAnswers, 0);
+    });
+
+    test('generateSummaries().word is the original word', () {
+      final w = _word();
+      final exercise = FlipCardEnglishDutchExercise(w);
+      exercise.processAnswer(true);
+      expect(exercise.generateSummaries().first.word, w);
+    });
+
+    test('isSupportedWord returns true for any word', () {
+      expect(FlipCardEnglishDutchExercise.isSupportedWord(_word()), isTrue);
     });
   });
 }

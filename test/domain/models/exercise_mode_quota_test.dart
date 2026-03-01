@@ -14,13 +14,20 @@ void main() {
       ]);
     });
 
-    test('flipCardAndWriting contains flipCard and basicWrite', () {
-      expect(
-        ExerciseModeQuota.flipCardAndWriting.activeTypes,
-        containsAll([ExerciseType.flipCard, ExerciseType.basicWrite]),
-      );
-      expect(ExerciseModeQuota.flipCardAndWriting.activeTypes.length, 2);
-    });
+    test(
+      'flipCardAndWriting contains flipCard, flipCardReverse, and basicWrite',
+      () {
+        expect(
+          ExerciseModeQuota.flipCardAndWriting.activeTypes,
+          containsAll([
+            ExerciseType.flipCard,
+            ExerciseType.flipCardReverse,
+            ExerciseType.basicWrite,
+          ]),
+        );
+        expect(ExerciseModeQuota.flipCardAndWriting.activeTypes.length, 3);
+      },
+    );
 
     test('zero-weight type is excluded from activeTypes', () {
       const quota = ExerciseModeQuota({
@@ -44,7 +51,7 @@ void main() {
     });
 
     test(
-      'flipCardAndWriting → contains both flipCardDutchEnglish and basicWrite',
+      'flipCardAndWriting → contains flipCardDutchEnglish, flipCardEnglishDutch, and basicWrite',
       () {
         final detailed =
             ExerciseModeQuota.flipCardAndWriting.activeDetailedTypes;
@@ -52,6 +59,7 @@ void main() {
           detailed,
           containsAll([
             ExerciseTypeDetailed.flipCardDutchEnglish,
+            ExerciseTypeDetailed.flipCardEnglishDutch,
             ExerciseTypeDetailed.basicWrite,
           ]),
         );

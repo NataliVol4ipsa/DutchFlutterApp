@@ -2,6 +2,7 @@ import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 
 enum ExerciseType {
   flipCard,
+  flipCardReverse,
   basicWrite,
   deHetPick,
   pluralFormPick,
@@ -15,6 +16,8 @@ extension ExerciseTypeExtension on ExerciseType {
     switch (this) {
       case ExerciseType.flipCard:
         return [ExerciseTypeDetailed.flipCardDutchEnglish];
+      case ExerciseType.flipCardReverse:
+        return [ExerciseTypeDetailed.flipCardEnglishDutch];
       case ExerciseType.deHetPick:
         return [ExerciseTypeDetailed.deHetPick];
       case ExerciseType.basicWrite:
@@ -28,6 +31,8 @@ extension ExerciseTypeExtension on ExerciseType {
     switch (this) {
       case ExerciseType.flipCard:
         return 'FlipCard Translation';
+      case ExerciseType.flipCardReverse:
+        return 'FlipCard English-Dutch';
       case ExerciseType.basicWrite:
         return 'Translation Writing';
       case ExerciseType.deHetPick:
@@ -46,7 +51,9 @@ extension ExerciseTypeExtension on ExerciseType {
   String get explanation {
     switch (this) {
       case ExerciseType.flipCard:
-        return 'Simple mode where you flip the card and see whether your answer is correct';
+        return 'Simple mode where you flip the card and see whether your answer is correct. Dutch to English';
+      case ExerciseType.flipCardReverse:
+        return 'Simple mode where you flip the card and see whether your answer is correct. English to Dutch';
       case ExerciseType.basicWrite:
         return 'Write Dutch translation of English word. (Phrases not included by default)';
       case ExerciseType.deHetPick:

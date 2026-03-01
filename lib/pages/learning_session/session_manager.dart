@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
@@ -31,12 +32,14 @@ class LearningSessionManager {
     this.notifier, {
     this.useAnkiMode = false,
     this.includePhrasesInWriting = false,
+    Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById,
   }) {
     exercises = ExercisesGenerator(
       exerciseTypes,
       words,
       useAnkiMode,
       includePhrasesInWriting: includePhrasesInWriting,
+      unlockedTypesById: unlockedTypesById,
     ).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);

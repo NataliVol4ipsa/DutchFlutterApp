@@ -1,10 +1,8 @@
-import 'package:dutch_app/core/local_db/entities/db_dutch_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_english_word.dart';
 import 'package:dutch_app/core/local_db/repositories/dutch_words_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/english_words_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/word_noun_details_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/word_verb_details_repository.dart';
-import 'package:dutch_app/domain/models/new_word.dart';
 import 'package:dutch_app/domain/models/new_word_collection.dart';
 import 'package:dutch_app/domain/services/collection_permission_service.dart';
 import 'package:dutch_app/core/local_db/db_context.dart';
@@ -19,128 +17,105 @@ class WordsImportRepository {
   final WordNounDetailsRepository nounDetailsRepository;
   final WordVerbDetailsRepository verbDetailsRepository;
 
-  WordsImportRepository(this.englishWordsRepository, this.dutchWordsRepository,
-      this.nounDetailsRepository, this.verbDetailsRepository);
+  WordsImportRepository(
+    this.englishWordsRepository,
+    this.dutchWordsRepository,
+    this.nounDetailsRepository,
+    this.verbDetailsRepository,
+  );
 
-  Future<void> importAsync(List<NewWordCollection> newCollections) async {
+  Future<void> importAsync(
+    List<NewWordCollection> newCollections, {
+    void Function(int processed, int total)? onProgress,
+  }) async {
+    final totalWords = newCollections.fold(0, (s, c) => s + c.words.length);
+
+    final allDutchWords = newCollections
+        .expand((c) => c.words.map((w) => w.dutchWord.toLowerCase().trim()))
+        .toSet()
+        .toList();
+    final allEnglishWords = newCollections
+        .expand(
+          (c) => c.words.expand(
+            (w) => w.englishWords.map((e) => e.toLowerCase().trim()),
+          ),
+        )
+        .toSet()
+        .toList();
+
+    final dutchMap = await DbContext.isar.writeTxn(() async {
+      final entities = await dutchWordsRepository.getOrCreateRawListAsync(
+        allDutchWords,
+      );
+      return {
+        for (var i = 0; i < allDutchWords.length; i++)
+          allDutchWords[i]: entities[i],
+      };
+    });
+
+    final englishMap = await DbContext.isar.writeTxn(() async {
+      final entities = await englishWordsRepository.getOrCreateRawListAsync(
+        allEnglishWords,
+      );
+      return {
+        for (var i = 0; i < allEnglishWords.length; i++)
+          allEnglishWords[i]: entities[i],
+      };
+    });
+
+    int processed = 0;
     await DbContext.isar.writeTxn(() async {
-      Map<String, DbDutchWord> duMaps =
-          await _createDutchWordsMap(newCollections);
-      Map<String, DbEnglishWord> enMaps =
-          await _createEnglishWordsMap(newCollections);
+      for (final collection in newCollections) {
+        final isDefault = CollectionPermissionService.isDefaultCollectionName(
+          collection.name,
+        );
 
-      for (int i = 0; i < newCollections.length; i++) {
-        if (CollectionPermissionService.isDefaultCollectionName(
-            newCollections[i].name)) {
-          await _importDefaultCollectionAsync(
-              newCollections[i], enMaps, duMaps);
+        late DbWordCollection dbCol;
+        if (isDefault) {
+          final existing = await DbContext.isar.dbWordCollections.get(
+            CollectionPermissionService.defaultCollectionId,
+          );
+          if (existing == null) throw Exception('Default collection not found');
+          dbCol = existing;
         } else {
-          await _importCollectionAsync(newCollections[i], enMaps, duMaps);
+          dbCol = WordCollectionsMapper.mapToEntity(collection);
+          await DbContext.isar.dbWordCollections.put(dbCol);
         }
+        await dbCol.words.load();
+
+        for (final word in collection.words) {
+          final dbWord = WordsMapper.mapToEntity(word);
+          await DbContext.isar.dbWords.put(dbWord);
+
+          final dutchKey = word.dutchWord.toLowerCase().trim();
+          final dutchWordLink = dutchMap[dutchKey];
+          if (dutchWordLink == null) {
+            throw Exception('No dutch word record for "$dutchKey"');
+          }
+          dutchWordLink.words.add(dbWord);
+          await dutchWordLink.words.save();
+
+          dbWord.englishWordLinks.reset();
+          dbWord.englishWordLinks.addAll(
+            word.englishWords
+                .map((e) => englishMap[e.toLowerCase().trim()])
+                .whereType<DbEnglishWord>(),
+          );
+          await dbWord.englishWordLinks.save();
+
+          await nounDetailsRepository.maybeCreateNounDetailsAsync(word, dbWord);
+          await verbDetailsRepository.maybeCreateVerbDetailsAsync(word, dbWord);
+
+          dbCol.words.add(dbWord);
+
+          processed++;
+          onProgress?.call(processed, totalWords);
+        }
+
+        dbCol.lastUpdated = DateTime.now();
+        await dbCol.words.save();
+        await DbContext.isar.dbWordCollections.put(dbCol);
       }
     });
-  }
-
-  Future<Map<String, DbEnglishWord>> _createEnglishWordsMap(
-      List<NewWordCollection> newCollections) async {
-    var englishWords = newCollections
-        .expand((col) => col.words.expand(
-            (word) => word.englishWords.map((e) => e.toLowerCase().trim())))
-        .toSet()
-        .toList();
-    final enMaps = <String, DbEnglishWord>{};
-    var enEntities =
-        await englishWordsRepository.getOrCreateRawListAsync(englishWords);
-    for (int i = 0; i < englishWords.length; i++) {
-      enMaps[englishWords[i]] = enEntities[i];
-    }
-    return enMaps;
-  }
-
-  Future<Map<String, DbDutchWord>> _createDutchWordsMap(
-      List<NewWordCollection> newCollections) async {
-    var dutchWords = newCollections
-        .expand((col) =>
-            col.words.map((word) => word.dutchWord.toLowerCase().trim()))
-        .toSet()
-        .toList();
-    final duMaps = <String, DbDutchWord>{};
-    var duEntities =
-        await dutchWordsRepository.getOrCreateRawListAsync(dutchWords);
-    for (int i = 0; i < dutchWords.length; i++) {
-      duMaps[dutchWords[i]] = duEntities[i];
-    }
-    return duMaps;
-  }
-
-  Future<void> _importCollectionAsync(
-      NewWordCollection wordCollection,
-      Map<String, DbEnglishWord> enMaps,
-      Map<String, DbDutchWord> duMaps) async {
-    final newCollection = WordCollectionsMapper.mapToEntity(wordCollection);
-    await DbContext.isar.dbWordCollections.put(newCollection);
-
-    await _putWordsIntoCollection(
-        wordCollection.words, newCollection, enMaps, duMaps);
-  }
-
-  Future<void> _importDefaultCollectionAsync(
-      NewWordCollection wordCollection,
-      Map<String, DbEnglishWord> enMaps,
-      Map<String, DbDutchWord> duMaps) async {
-    final defaultCollection = await DbContext.isar.dbWordCollections
-        .get(CollectionPermissionService.defaultCollectionId);
-    if (defaultCollection == null) {
-      throw Exception("Could not find default collection");
-    }
-
-    await _putWordsIntoCollection(
-        wordCollection.words, defaultCollection, enMaps, duMaps);
-  }
-
-  Future<void> _putWordsIntoCollection(
-      List<NewWord> words,
-      DbWordCollection collection,
-      Map<String, DbEnglishWord> enMaps,
-      Map<String, DbDutchWord> duMaps) async {
-    final newWords =
-        await Future.wait(words.map((word) => _putWord(word, enMaps, duMaps)));
-
-    collection.words.addAll(newWords);
-    collection.lastUpdated = DateTime.now();
-
-    await collection.words.save();
-    await DbContext.isar.dbWordCollections.put(collection);
-  }
-
-  Future<DbWord> _putWord(NewWord word, Map<String, DbEnglishWord> enMaps,
-      Map<String, DbDutchWord> duMaps) async {
-    final newWord = WordsMapper.mapToEntity(word);
-    await DbContext.isar.dbWords.put(newWord);
-    await _updateWordDutchLinkAsync(duMaps, newWord, word.dutchWord);
-    await _updateWordEnglishLinksAsync(enMaps, newWord, word.englishWords);
-    await nounDetailsRepository.maybeCreateNounDetailsAsync(word, newWord);
-    await verbDetailsRepository.maybeCreateVerbDetailsAsync(word, newWord);
-
-    return newWord;
-  }
-
-  Future<void> _updateWordDutchLinkAsync(Map<String, DbDutchWord> duMaps,
-      DbWord dbWord, String originalWord) async {
-    final dutchWordLink = duMaps[originalWord];
-    if (dutchWordLink == null) {
-      throw Exception("inner exception. No dutch word in map");
-    }
-    dutchWordLink.words.add(dbWord);
-    await dutchWordLink.words.save();
-  }
-
-  Future<void> _updateWordEnglishLinksAsync(Map<String, DbEnglishWord> enMaps,
-      DbWord dbWord, List<String> originalWords) async {
-    dbWord.englishWordLinks.reset();
-    final englishWordLinks =
-        originalWords.map((w) => enMaps[w]).whereType<DbEnglishWord>();
-    dbWord.englishWordLinks.addAll(englishWordLinks);
-    await dbWord.englishWordLinks.save();
   }
 }

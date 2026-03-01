@@ -1,4 +1,3 @@
-import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
@@ -303,11 +302,11 @@ void main() {
       });
     });
 
-    // ── mastery scheduling ──────────────────────────────────────────────────
-    group('mastery scheduling –', () {
-      /// Builds a mock stub that captures every call to [getOrCreateManyAsync],
-      /// returning [progress] the first time and an empty map for subsequent
-      /// calls (the return value of the scheduling call is unused).
+    // ── trigger-based unlock scheduling ────────────────────────────────────
+    group('trigger-based unlock scheduling –', () {
+      /// Builds a stub that captures every call to [getOrCreateManyAsync],
+      /// returning [progress] the first time and empty for subsequent calls
+      /// (the scheduling call's return value is ignored by the service).
       List<List<WordProgressKey>> _captureGetOrCreate(
         Word word,
         DbWordProgress progress,
@@ -327,53 +326,82 @@ void main() {
         return captured;
       }
 
+      test('Dutch-English: 0 → 1 correct unlocks English-Dutch only', () async {
+        final word = _word();
+        final progress = _freshProgress(consecutive: 0);
+        final captured = _captureGetOrCreate(word, progress);
+
+        await service.processSessionResults([_simplified(word)]);
+
+        // Two getOrCreate calls: initial fetch + unlock call
+        expect(captured.length, 2);
+        // Second call requests English-Dutch (threshold = 1)
+        expect(
+          captured.last.any(
+            (k) => k.exerciseType == ExerciseTypeDetailed.flipCardEnglishDutch,
+          ),
+          isTrue,
+          reason: 'Should unlock flipCardEnglishDutch after 1 correct',
+        );
+        // Writing is NOT yet unlocked (needs 3)
+        expect(
+          captured.last.any(
+            (k) => k.exerciseType == ExerciseTypeDetailed.basicWrite,
+          ),
+          isFalse,
+        );
+      });
+
       test(
-        'flipCard reaching mastery schedules basicWrite (getOrCreate called twice)',
+        'Dutch-English: 2 → 3 correct unlocks both English-Dutch and basicWrite',
         () async {
           final word = _word();
-          // consecutive = masteryThreshold - 1 → after correct = threshold → mastery
-          final progress = _freshProgress(
-            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect - 1,
-            interval: 1,
-          );
+          // consecutive 2 → after correct = 3 → both thresholds met
+          final progress = _freshProgress(consecutive: 2, interval: 1);
           final captured = _captureGetOrCreate(word, progress);
 
           await service.processSessionResults([_simplified(word)]);
 
           expect(captured.length, 2);
+          // Second call must contain both unlocked types
+          final unlockKeys = captured.last;
           expect(
-            captured.last.any(
+            unlockKeys.any(
+              (k) =>
+                  k.exerciseType == ExerciseTypeDetailed.flipCardEnglishDutch,
+            ),
+            isTrue,
+            reason: 'Should unlock English-Dutch (threshold 1 already met)',
+          );
+          expect(
+            unlockKeys.any(
               (k) => k.exerciseType == ExerciseTypeDetailed.basicWrite,
             ),
             isTrue,
-            reason: 'Second call should request basicWrite progress creation',
+            reason: 'Should unlock basicWrite at 3 correct',
           );
         },
       );
 
       test(
-        'flipCard below mastery threshold does not schedule next type',
+        'Dutch-English mistake: consecutive resets, nothing unlocked',
         () async {
           final word = _word();
-          // consecutive 0 → 1: still below mastery (threshold = 2)
-          final progress = _freshProgress(consecutive: 0);
+          final progress = _freshProgress(consecutive: 2);
           stubRepo(word, progress);
 
-          await service.processSessionResults([_simplified(word)]);
+          await service.processSessionResults([_simplified(word, wrong: 1)]);
 
-          // Only first call (for current type); no second call for next type
+          // Consecutive resets to 0 → no thresholds met → only 1 getOrCreate call
           verify(mockRepo.getOrCreateManyAsync(any)).called(1);
         },
       );
 
       test(
-        'basicWrite at mastery has no next type – getOrCreate called once',
+        'English-Dutch and basicWrite correct answers do not trigger any unlock',
         () async {
           final word = _word();
-          final progress = _freshProgress(
-            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect - 1,
-            interval: 1,
-          );
+          final progress = _freshProgress(consecutive: 10, interval: 1);
           progress.exerciseType = ExerciseTypeDetailed.basicWrite;
 
           final basicWriteKey = WordProgressKey(
@@ -394,25 +422,22 @@ void main() {
           );
           await service.processSessionResults([summary]);
 
-          // basicWrite is the last type → no second scheduling call
+          // basicWrite has no downstream trigger → only one getOrCreate call
           verify(mockRepo.getOrCreateManyAsync(any)).called(1);
         },
       );
 
       test(
-        'already mastered word still re-schedules next type idempotently',
+        'already above threshold: getOrCreate called twice idempotently',
         () async {
           final word = _word();
-          // consecutive already above threshold; after correct it increments further
-          final progress = _freshProgress(
-            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect,
-            interval: 6,
-          );
+          // consecutive already at 3 (both thresholds met)
+          final progress = _freshProgress(consecutive: 3, interval: 6);
           stubRepo(word, progress);
 
           await service.processSessionResults([_simplified(word)]);
 
-          // getOrCreate called twice (idempotent: DB handles already-existing records)
+          // getOrCreate called twice (initial + unlock idempotent call)
           verify(mockRepo.getOrCreateManyAsync(any)).called(2);
         },
       );
