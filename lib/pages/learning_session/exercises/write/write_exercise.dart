@@ -15,11 +15,15 @@ class WriteExercise extends BaseExercise {
   final Word word;
 
   late final String englishPrompt;
+  late final String? hint;
 
   bool _isAnswered = false;
 
   WriteExercise(this.word) : super(requiredWords, type) {
     englishPrompt = SemicolonWordsConverter.toSingleString(word.englishWords);
+    hint = word.partOfSpeech != PartOfSpeech.unspecified
+        ? word.partOfSpeech.name
+        : null;
   }
 
   static bool isSupportedWord(

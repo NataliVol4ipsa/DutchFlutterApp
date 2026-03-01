@@ -5,6 +5,7 @@ import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
+import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -531,6 +532,172 @@ void main() {
       );
 
       expect(result.length, lessThanOrEqualTo(10));
+    });
+  });
+
+  // ── fetchAcrossDetailedTypes (regression: writing exercises in extra practice)
+  // When quota is flipCardOnly the service only queries flipCardDutchEnglish
+  // detailed type during extra-practice. Writing progress records are never
+  // fetched → zero writing exercises. The fix is to use flipCardAndWriting
+  // quota so that basicWrite detailed type is also queried.
+  // ─────────────────────────────────────────────────────────────────────────
+  group('fetchAcrossDetailedTypes', () {
+    test('returns records from a single detailed type', () async {
+      final progress = [_progress(1), _progress(2)];
+
+      final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+        detailedTypes: [ExerciseTypeDetailed.flipCardDutchEnglish],
+        limit: 10,
+        fetchByType: (_, __) async => progress,
+      );
+
+      expect(result.length, 2);
+    });
+
+    test(
+      'merges records from two detailed types, deduplicating by word id',
+      () async {
+        // ids 1-3 have flipCard progress; ids 4-6 have write progress; no overlap
+        final flipProgress = [_progress(1), _progress(2), _progress(3)];
+        final writeProgress = [_progress(4), _progress(5), _progress(6)];
+
+        final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+          detailedTypes: [
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+            ExerciseTypeDetailed.basicWrite,
+          ],
+          limit: 10,
+          fetchByType: (type, _) async {
+            if (type == ExerciseTypeDetailed.flipCardDutchEnglish) {
+              return flipProgress;
+            }
+            if (type == ExerciseTypeDetailed.basicWrite) return writeProgress;
+            return [];
+          },
+        );
+
+        final ids = result.map((p) => p.word.value!.id).toSet();
+        expect(ids, {1, 2, 3, 4, 5, 6});
+      },
+    );
+
+    test(
+      // Regression: with flipCardOnly quota detailedTypes = [flipCardDutchEnglish].
+      // Writing progress records (basicWrite) are NEVER fetched → 0 writing exercises.
+      'with only flipCardDutchEnglish, basicWrite records are NOT fetched',
+      () async {
+        // Writing-only progress pool (ids 10-12) – only returned for basicWrite type
+        final writeProgress = [_progress(10), _progress(11), _progress(12)];
+
+        final queried = <ExerciseTypeDetailed>[];
+
+        final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+          detailedTypes: [
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+          ], // flipCardOnly
+          limit: 10,
+          fetchByType: (type, _) async {
+            queried.add(type);
+            if (type == ExerciseTypeDetailed.basicWrite) return writeProgress;
+            return []; // flipCard finds nothing
+          },
+        );
+
+        expect(queried, [ExerciseTypeDetailed.flipCardDutchEnglish]);
+        expect(result, isEmpty); // writing words never fetched → empty session
+      },
+    );
+
+    test(
+      // Fix: with flipCardAndWriting quota detailedTypes = [flipCardDutchEnglish, basicWrite].
+      // Writing progress is fetched → writing exercises appear in session.
+      'with flipCardDutchEnglish + basicWrite, writing records ARE fetched',
+      () async {
+        final writeProgress = [_progress(10), _progress(11), _progress(12)];
+
+        final queried = <ExerciseTypeDetailed>[];
+
+        final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+          detailedTypes: [
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+            ExerciseTypeDetailed
+                .basicWrite, // included by flipCardAndWriting quota
+          ],
+          limit: 10,
+          fetchByType: (type, _) async {
+            queried.add(type);
+            if (type == ExerciseTypeDetailed.basicWrite) return writeProgress;
+            return []; // flipCard finds nothing this time
+          },
+        );
+
+        expect(
+          queried,
+          containsAll([
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+            ExerciseTypeDetailed.basicWrite,
+          ]),
+        );
+        // Writing words are now returned
+        final ids = result.map((p) => p.word.value!.id).toSet();
+        expect(ids, {10, 11, 12});
+      },
+    );
+
+    test('deduplicates word ids returned across detailed types', () async {
+      // Same word id=1 appears in both flipCard and basicWrite progress
+      final sharedProgress = [_progress(1)];
+
+      final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+        detailedTypes: [
+          ExerciseTypeDetailed.flipCardDutchEnglish,
+          ExerciseTypeDetailed.basicWrite,
+        ],
+        limit: 10,
+        fetchByType: (_, __) async => sharedProgress,
+      );
+
+      // id=1 should appear only once
+      expect(result.length, 1);
+    });
+
+    test('respects the limit across merged types', () async {
+      final manyRecords = List.generate(10, (i) => _progress(i + 1));
+
+      final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+        detailedTypes: [
+          ExerciseTypeDetailed.flipCardDutchEnglish,
+          ExerciseTypeDetailed.basicWrite,
+        ],
+        limit: 4,
+        fetchByType: (_, __) async => manyRecords,
+      );
+
+      expect(result.length, lessThanOrEqualTo(4));
+    });
+
+    test('returns empty when detailedTypes list is empty', () async {
+      final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+        detailedTypes: [],
+        limit: 10,
+        fetchByType: (_, __) async => [_progress(1)],
+      );
+
+      expect(result, isEmpty);
+    });
+
+    test('null word.value records are skipped', () async {
+      final nullProgress = DbWordProgress(); // word.value is null
+      final validProgress = _progress(1);
+
+      final result = await QuickPracticeService.fetchAcrossDetailedTypes(
+        detailedTypes: [ExerciseTypeDetailed.flipCardDutchEnglish],
+        limit: 10,
+        fetchByType: (_, __) async => [nullProgress, validProgress],
+      );
+
+      expect(result.length, 1);
+      expect(result.first.word.value!.id, 1);
     });
   });
 }

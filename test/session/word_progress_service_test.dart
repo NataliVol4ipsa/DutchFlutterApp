@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
@@ -300,6 +301,121 @@ void main() {
         // saveAllAsync should still be called but with an empty list
         verify(mockRepo.saveAllAsync([])).called(1);
       });
+    });
+
+    // ── mastery scheduling ──────────────────────────────────────────────────
+    group('mastery scheduling –', () {
+      /// Builds a mock stub that captures every call to [getOrCreateManyAsync],
+      /// returning [progress] the first time and an empty map for subsequent
+      /// calls (the return value of the scheduling call is unused).
+      List<List<WordProgressKey>> _captureGetOrCreate(
+        Word word,
+        DbWordProgress progress,
+      ) {
+        final captured = <List<WordProgressKey>>[];
+        when(mockRepo.getOrCreateManyAsync(any)).thenAnswer((inv) async {
+          captured.add(
+            (inv.positionalArguments[0] as List).cast<WordProgressKey>(),
+          );
+          final key = WordProgressKey(
+            word.id,
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+          );
+          return captured.length == 1 ? {key: progress} : {};
+        });
+        when(mockRepo.saveAllAsync(any)).thenAnswer((_) async {});
+        return captured;
+      }
+
+      test(
+        'flipCard reaching mastery schedules basicWrite (getOrCreate called twice)',
+        () async {
+          final word = _word();
+          // consecutive = masteryThreshold - 1 → after correct = threshold → mastery
+          final progress = _freshProgress(
+            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect - 1,
+            interval: 1,
+          );
+          final captured = _captureGetOrCreate(word, progress);
+
+          await service.processSessionResults([_simplified(word)]);
+
+          expect(captured.length, 2);
+          expect(
+            captured.last.any(
+              (k) => k.exerciseType == ExerciseTypeDetailed.basicWrite,
+            ),
+            isTrue,
+            reason: 'Second call should request basicWrite progress creation',
+          );
+        },
+      );
+
+      test(
+        'flipCard below mastery threshold does not schedule next type',
+        () async {
+          final word = _word();
+          // consecutive 0 → 1: still below mastery (threshold = 2)
+          final progress = _freshProgress(consecutive: 0);
+          stubRepo(word, progress);
+
+          await service.processSessionResults([_simplified(word)]);
+
+          // Only first call (for current type); no second call for next type
+          verify(mockRepo.getOrCreateManyAsync(any)).called(1);
+        },
+      );
+
+      test(
+        'basicWrite at mastery has no next type – getOrCreate called once',
+        () async {
+          final word = _word();
+          final progress = _freshProgress(
+            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect - 1,
+            interval: 1,
+          );
+          progress.exerciseType = ExerciseTypeDetailed.basicWrite;
+
+          final basicWriteKey = WordProgressKey(
+            word.id,
+            ExerciseTypeDetailed.basicWrite,
+          );
+          when(
+            mockRepo.getOrCreateManyAsync(any),
+          ).thenAnswer((_) async => {basicWriteKey: progress});
+          when(mockRepo.saveAllAsync(any)).thenAnswer((_) async {});
+
+          final summary = ExerciseSummaryDetailed(
+            word: word,
+            exerciseType: ExerciseType.basicWrite,
+            totalCorrectAnswers: 1,
+            totalWrongAnswers: 0,
+            correctAnswer: 'hond',
+          );
+          await service.processSessionResults([summary]);
+
+          // basicWrite is the last type → no second scheduling call
+          verify(mockRepo.getOrCreateManyAsync(any)).called(1);
+        },
+      );
+
+      test(
+        'already mastered word still re-schedules next type idempotently',
+        () async {
+          final word = _word();
+          // consecutive already above threshold; after correct it increments further
+          final progress = _freshProgress(
+            consecutive: ExerciseTypeOrder.masteryConsecutiveCorrect,
+            interval: 6,
+          );
+          stubRepo(word, progress);
+
+          await service.processSessionResults([_simplified(word)]);
+
+          // getOrCreate called twice (idempotent: DB handles already-existing records)
+          verify(mockRepo.getOrCreateManyAsync(any)).called(2);
+        },
+      );
     });
   });
 

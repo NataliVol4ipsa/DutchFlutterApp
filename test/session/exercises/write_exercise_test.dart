@@ -1,7 +1,28 @@
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/types/part_of_speech.dart';
 import 'package:dutch_app/pages/learning_session/exercises/write/write_exercise.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// ── helpers ───────────────────────────────────────────────────────────────────
+
+Word _wordWithPos(PartOfSpeech pos) =>
+    Word(1, 'hond', ['dog'], pos, nounDetails: null, verbDetails: null);
+
 void main() {
+  // ── hint (part of speech display) ─────────────────────────────────────────
+  group('WriteExercise.hint', () {
+    test('hint is null when partOfSpeech is unspecified', () {
+      final exercise = WriteExercise(_wordWithPos(PartOfSpeech.unspecified));
+      expect(exercise.hint, isNull);
+    });
+
+    test('hint equals partOfSpeech.name for noun', () {
+      final exercise = WriteExercise(_wordWithPos(PartOfSpeech.noun));
+      expect(exercise.hint, PartOfSpeech.noun.name);
+    });
+  });
+
+  // ── levenshteinDistance ───────────────────────────────────────────────────
   group('WriteExercise.levenshteinDistance', () {
     // ── boundary cases ────────────────────────────────────────────────────────
 

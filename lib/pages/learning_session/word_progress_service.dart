@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
+import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/domain/services/spaced_repetition_algorithm.dart';
 import 'package:dutch_app/domain/types/anki_grade.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
@@ -61,6 +62,8 @@ class WordProgressService {
     );
 
     final updatedProgress = <DbWordProgress>[];
+    final nextTypeKeys = <WordProgressKey>[];
+
     for (final summary in detailedSummaries) {
       final key = WordProgressKey(
         summary.wordId,
@@ -71,10 +74,31 @@ class WordProgressService {
 
       _applySessionOutcome(progress, summary);
       updatedProgress.add(progress);
+
+      if (_isMastered(progress)) {
+        final nextType = ExerciseTypeOrder.nextType(summary.exerciseType);
+        if (nextType != null) {
+          nextTypeKeys.add(
+            WordProgressKey(
+              summary.wordId,
+              _mapToDetailedExerciseType(nextType),
+            ),
+          );
+        }
+      }
     }
 
     await wordProgressRepository.saveAllAsync(updatedProgress);
+
+    // Idempotently create progress records for newly unlocked exercise types.
+    if (nextTypeKeys.isNotEmpty) {
+      await wordProgressRepository.getOrCreateManyAsync(nextTypeKeys);
+    }
   }
+
+  bool _isMastered(DbWordProgress progress) =>
+      progress.consequetiveCorrectAnswers >=
+      ExerciseTypeOrder.masteryConsecutiveCorrect;
 
   //
   // Scheduling policy

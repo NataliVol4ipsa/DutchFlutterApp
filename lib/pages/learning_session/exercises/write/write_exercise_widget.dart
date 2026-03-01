@@ -88,11 +88,22 @@ class _WriteExerciseWidgetState extends State<WriteExerciseWidget> {
   Widget _buildInputData(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        widget.exercise.englishPrompt,
-        key: const ValueKey('write_exercise_word'),
-        style: TextStyles.exerciseInputDataStyle(context),
-        textAlign: TextAlign.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            widget.exercise.englishPrompt,
+            key: const ValueKey('write_exercise_word'),
+            style: TextStyles.exerciseInputDataStyle(context),
+            textAlign: TextAlign.center,
+          ),
+          if (widget.exercise.hint != null)
+            Text(
+              widget.exercise.hint!,
+              style: TextStyles.exerciseInputDataHintStyle(context),
+              textAlign: TextAlign.center,
+            ),
+        ],
       ),
     );
   }

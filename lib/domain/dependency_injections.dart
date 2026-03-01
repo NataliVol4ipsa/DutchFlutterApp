@@ -1,6 +1,7 @@
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
@@ -36,6 +37,7 @@ List<Provider> serviceProviders() {
         wordsRepository: context.read<WordsRepository>(),
         wordProgressRepository: context.read<WordProgressBatchRepository>(),
         settingsService: context.read<SettingsService>(),
+        quota: ExerciseModeQuota.flipCardAndWriting,
       ),
     ),
   ];

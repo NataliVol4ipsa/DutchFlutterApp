@@ -47,7 +47,6 @@ class QuickPracticeService {
     final activeTypes = quota.activeTypes;
 
     final reviewWords = await _fetchReviewWordsAsync(
-      activeTypes,
       sessionSettings.repetitionsPerSession,
     );
     final reviewWordIds = reviewWords.map((w) => w.id).toSet();
@@ -75,40 +74,124 @@ class QuickPracticeService {
     );
   }
 
-  Future<List<Word>> _fetchReviewWordsAsync(
-    List<ExerciseType> activeTypes,
+  /// Fetches review words using per-type proportional quotas from [quota].
+  /// Delegates to [selectReviewWordsForQuickSession] so the logic is fully
+  /// testable without a database.
+  Future<List<Word>> _fetchReviewWordsAsync(int limit) async {
+    return selectReviewWordsForQuickSession(
+      quotaByType: quota.quotaByType,
+      totalWords: limit,
+      fetchDueProgress: _fetchDueProgressForTypeAsync,
+      fetchWord: wordsRepository.getWordAsync,
+      isWordSupportedForType: _isSupportedByType,
+    );
+  }
+
+  /// Fetches due progress records for a single [ExerciseType], aggregating
+  /// across all its [ExerciseTypeDetailed] variants and deduplicating by
+  /// word id.
+  Future<List<DbWordProgress>> _fetchDueProgressForTypeAsync(
+    ExerciseType type,
     int limit,
   ) async {
-    final detailedTypes = activeTypes
-        .expand((t) => t.detailedTypes)
-        .toSet()
-        .toList();
-
-    final allDueProgress = <DbWordProgress>[];
-    for (final type in detailedTypes) {
-      allDueProgress.addAll(
-        await wordProgressRepository.getDueProgressAsync(type, limit),
+    final result = <DbWordProgress>[];
+    final seenWordIds = <int>{};
+    for (final dt in type.detailedTypes) {
+      if (result.length >= limit) break;
+      final records = await wordProgressRepository.getDueProgressAsync(
+        dt,
+        limit,
       );
-    }
-    if (detailedTypes.length > 1) {
-      allDueProgress.sort(
-        (a, b) => a.nextReviewDate.compareTo(b.nextReviewDate),
-      );
-    }
-
-    final words = <Word>[];
-    final seenIds = <int>{};
-    for (final progress in allDueProgress.take(limit)) {
-      final wordId = progress.word.value?.id;
-      if (wordId == null || seenIds.contains(wordId)) continue;
-      final word = await wordsRepository.getWordAsync(wordId);
-      if (word != null && _isSupportedByAnyType(activeTypes, word)) {
-        words.add(word);
-        seenIds.add(wordId);
-        if (words.length >= limit) break;
+      for (final r in records) {
+        if (result.length >= limit) break;
+        final wId = r.word.value?.id;
+        if (wId != null && seenWordIds.add(wId)) {
+          result.add(r);
+        }
       }
     }
-    return words;
+    return result;
+  }
+
+  /// Selects review words for a quick-practice session.
+  ///
+  /// Each exercise type in [quotaByType] gets a proportional share of
+  /// [totalWords] (normalised from the raw quota values). Words that appear
+  /// in multiple types are deduplicated so the total never exceeds
+  /// [totalWords]. A backfill pass fills any gap caused by cross-type
+  /// duplicates.
+  ///
+  /// The method is `@visibleForTesting` so unit tests can drive it directly
+  /// with in-memory callbacks, with zero DB involvement.
+  @visibleForTesting
+  static Future<List<Word>> selectReviewWordsForQuickSession({
+    required Map<ExerciseType, double> quotaByType,
+    required int totalWords,
+    required Future<List<DbWordProgress>> Function(ExerciseType, int)
+    fetchDueProgress,
+    required Future<Word?> Function(int wordId) fetchWord,
+    required bool Function(ExerciseType, Word) isWordSupportedForType,
+  }) async {
+    final activeEntries = quotaByType.entries
+        .where((e) => e.value > 0)
+        .toList();
+    if (activeEntries.isEmpty || totalWords <= 0) return [];
+
+    final totalWeight = activeEntries.fold(0.0, (s, e) => s + e.value);
+    final normalizedWeights = <ExerciseType, double>{
+      for (final e in activeEntries) e.key: e.value / totalWeight,
+    };
+
+    final seenIds = <int>{};
+    final result = <Word>[];
+
+    // ── First pass: proportional per-type quotas ──────────────────────────
+    for (final entry in normalizedWeights.entries) {
+      final type = entry.key;
+      final targetCount = (totalWords * entry.value).round().clamp(
+        1,
+        totalWords,
+      );
+
+      final progressRecords = await fetchDueProgress(type, targetCount * 2);
+
+      int added = 0;
+      for (final progress in progressRecords) {
+        if (added >= targetCount) break;
+        final wordId = progress.word.value?.id;
+        if (wordId == null || seenIds.contains(wordId)) continue;
+        final word = await fetchWord(wordId);
+        if (word != null && isWordSupportedForType(type, word)) {
+          result.add(word);
+          seenIds.add(wordId);
+          added++;
+        }
+      }
+    }
+
+    // ── Backfill pass: fill gaps from cross-type duplicates ───────────────
+    if (result.length < totalWords) {
+      for (final type in normalizedWeights.keys) {
+        if (result.length >= totalWords) break;
+        final needed = totalWords - result.length;
+        final fetchLimit = seenIds.length + needed * 2;
+
+        final progressRecords = await fetchDueProgress(type, fetchLimit);
+
+        for (final progress in progressRecords) {
+          if (result.length >= totalWords) break;
+          final wordId = progress.word.value?.id;
+          if (wordId == null || seenIds.contains(wordId)) continue;
+          final word = await fetchWord(wordId);
+          if (word != null && isWordSupportedForType(type, word)) {
+            result.add(word);
+            seenIds.add(wordId);
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   Future<List<Word>> _fetchNewWordsAsync(
@@ -333,22 +416,35 @@ class QuickPracticeService {
     List<ExerciseTypeDetailed> detailedTypes,
     int limit,
   ) async {
+    return fetchAcrossDetailedTypes(
+      detailedTypes: detailedTypes,
+      limit: limit,
+      fetchByType: (dt, lim) => _fetchBucketProgressAsync(bucket, dt, lim),
+    );
+  }
+
+  @visibleForTesting
+  static Future<List<DbWordProgress>> fetchAcrossDetailedTypes({
+    required List<ExerciseTypeDetailed> detailedTypes,
+    required int limit,
+    required Future<List<DbWordProgress>> Function(
+      ExerciseTypeDetailed type,
+      int limit,
+    )
+    fetchByType,
+  }) async {
     final progressRecords = <DbWordProgress>[];
-    final seenProgressIds = <int>{};
+    final seenWordIds = <int>{};
     for (final detailedType in detailedTypes) {
-      final records = await _fetchBucketProgressAsync(
-        bucket,
-        detailedType,
-        limit,
-      );
+      if (progressRecords.length >= limit) break;
+      final records = await fetchByType(detailedType, limit);
       for (final r in records) {
         if (progressRecords.length >= limit) break;
         final wordId = r.word.value?.id;
-        if (wordId != null && seenProgressIds.add(wordId)) {
+        if (wordId != null && seenWordIds.add(wordId)) {
           progressRecords.add(r);
         }
       }
-      if (progressRecords.length >= limit) break;
     }
     return progressRecords;
   }
@@ -382,14 +478,6 @@ class QuickPracticeService {
     }
   }
 
-  List<ExerciseType> _buildExerciseTypes(List<ExerciseType> activeTypes) {
-    return [
-      ...activeTypes,
-      if (!activeTypes.contains(ExerciseType.basicWrite))
-        ExerciseType.basicWrite,
-    ];
-  }
-
   QuickPracticeSession _createSession({
     required List<Word> words,
     required List<ExerciseType> activeTypes,
@@ -398,7 +486,7 @@ class QuickPracticeService {
     required ExerciseAnsweredNotifier notifier,
   }) {
     final flowManager = LearningSessionManager(
-      _buildExerciseTypes(activeTypes),
+      activeTypes,
       words,
       wordProgressService,
       notifier,
