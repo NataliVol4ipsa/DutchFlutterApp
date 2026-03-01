@@ -13,4 +13,5 @@ class SessionSettingsNames {
   final String repetitionsPerSessionInt = "repetitionsPerSession";
   final String useAnkiModeBool = "useAnkiMode";
   final String showPreSessionWordListBool = "showPreSessionWordList";
+  final String includePhrasesInWritingBool = "includePhrasesInWriting";
 }

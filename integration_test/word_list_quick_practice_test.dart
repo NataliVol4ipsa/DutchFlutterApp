@@ -32,6 +32,7 @@
 ///   session with 40 words instead of the expected 25 (5 new + 20 review).
 ///   The test therefore fails on the 'words' / 'new' / 'review' chip
 ///   assertions until the quota is applied in buildSessionFromWordsAsync.
+library;
 // ignore_for_file: avoid_relative_lib_imports
 
 import 'dart:io';

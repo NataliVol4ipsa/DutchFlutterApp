@@ -2,6 +2,7 @@ enum ExerciseTypeDetailed {
   flipCardDutchEnglish,
   flipCardEnglishDutch,
   deHetPick,
+  basicWrite,
 }
 
 extension ExerciseTypeDetailedExtension on ExerciseTypeDetailed {
@@ -13,6 +14,8 @@ extension ExerciseTypeDetailedExtension on ExerciseTypeDetailed {
         return 'FlipCard English-Dutch';
       case ExerciseTypeDetailed.deHetPick:
         return 'De or Het?';
+      case ExerciseTypeDetailed.basicWrite:
+        return 'Translation Writing';
     }
   }
 
@@ -24,6 +27,8 @@ extension ExerciseTypeDetailedExtension on ExerciseTypeDetailed {
         return 'Simple mode where you flip the card and see whether your answer is correct. English to Dutch';
       case ExerciseTypeDetailed.deHetPick:
         return 'For Dutch noun, choose whether word has de or her article';
+      case ExerciseTypeDetailed.basicWrite:
+        return 'Write the Dutch translation for the English word shown';
     }
   }
 }

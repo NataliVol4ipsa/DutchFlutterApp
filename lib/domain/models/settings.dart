@@ -19,14 +19,17 @@ class SessionSettings {
   int repetitionsPerSession;
   bool useAnkiMode;
   bool showPreSessionWordList;
+  bool includePhrasesInWriting;
 
   SessionSettings({
     int? newWordsPerSession,
     int? repetitionsPerSession,
     bool? useAnkiMode,
     bool? showPreSessionWordList,
+    bool? includePhrasesInWriting,
   }) : newWordsPerSession = newWordsPerSession ?? 5,
        repetitionsPerSession = repetitionsPerSession ?? 20,
        useAnkiMode = useAnkiMode ?? false,
-       showPreSessionWordList = showPreSessionWordList ?? true;
+       showPreSessionWordList = showPreSessionWordList ?? true,
+       includePhrasesInWriting = includePhrasesInWriting ?? false;
 }

@@ -47,6 +47,7 @@
 ///   New words  = DbWord with NO DbWordProgress (getNewWordsAsync filter: progressIsEmpty).
 ///   Due words  = DbWord WITH DbWordProgress (exerciseType=flipCardDutchEnglish,
 ///                nextReviewDate < now, lastPracticed != null).
+library;
 // ignore_for_file: avoid_relative_lib_imports
 
 import 'dart:io';
@@ -318,15 +319,42 @@ void main() {
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      // ── Step 5: Complete all 5 exercises correctly ─────────────────────────
-      // Default useAnkiMode=false → FlipCardExerciseWidget: "Show translation"
-      // → "Know" / "Don't know" buttons.
-      for (var i = 0; i < 5; i++) {
-        expect(find.text('Show translation'), findsOneWidget);
-        await tester.tap(find.text('Show translation'));
+      // ── Step 5: Complete all exercises (flip card and writing) ───────────
+      // Default useAnkiMode=false → flip card shows "Show translation" → "Know".
+      // Writing exercises show TextField → enter correct Dutch word → "Check" → "Next".
+      // Words seeded as ('woord$i', 'word$i'): derive Dutch from English via
+      // english.replaceFirst('word', 'woord').
+      while (find.text('Session complete').evaluate().isEmpty) {
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Know'));
-        await tester.pumpAndSettle();
+        if (find.text('Show translation').evaluate().isNotEmpty) {
+          await tester.tap(find.text('Show translation'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Know'));
+          await tester.pumpAndSettle();
+        } else {
+          final wordFinder = find.byKey(const ValueKey('write_exercise_word'));
+          if (wordFinder.evaluate().isNotEmpty) {
+            final english = (tester.widget(wordFinder) as Text).data ?? '';
+            final dutch = english.replaceFirst('word', 'woord');
+            await tester.enterText(
+              find.byKey(const ValueKey('write_exercise_text_field')),
+              dutch,
+            );
+            await tester.pumpAndSettle();
+            await tester.tap(
+              find.byKey(const ValueKey('write_exercise_check_button')),
+            );
+            await tester.pumpAndSettle();
+            if (find.text('Next').evaluate().isNotEmpty) {
+              await tester.tap(find.text('Next'));
+            } else {
+              await tester.tap(find.text('Finish'));
+            }
+            await tester.pumpAndSettle();
+          } else {
+            break; // Unexpected state – stop to avoid infinite loop.
+          }
+        }
       }
 
       // Session finished.
@@ -518,33 +546,67 @@ void main() {
       expect(find.text("Today's Words"), findsNothing);
       expect(find.text('Learning Session'), findsOneWidget);
 
-      // ── Step 2: Verify anki flip-card UI ──────────────────────────────────
-      // First look: only "Show translation" button is visible.
-      expect(find.text('Show translation'), findsOneWidget);
+      // ── Step 2-4: Loop through all exercises ──────────────────────────────
+      // The session has a mix of Anki flip-card exercises ("Show translation"
+      // → 4 grade buttons) and writing exercises (TextField). We verify that
+      // at least one flip-card exercise appears, shows all 4 Anki grade
+      // buttons, and registers one "Again" error.  All writing exercises are
+      // completed correctly.  Remaining flip cards are finished with "Good".
+      // Words seeded as ('anki$i', 'ankien$i'): dutch = english.replaceFirst('ankien', 'anki').
+      bool errorRegistered = false;
 
-      await tester.tap(find.text('Show translation'));
-      await tester.pumpAndSettle();
-
-      // After tapping, all four Anki grade buttons must appear.
-      expect(find.text('Again'), findsOneWidget);
-      expect(find.text('Hard'), findsOneWidget);
-      expect(find.text('Good'), findsOneWidget);
-      expect(find.text('Easy'), findsOneWidget);
-
-      // ── Step 3: Register an error on the first exercise ───────────────────
-      // Grading "Again" increments totalWrongAnswers for that exercise and
-      // re-queues it (totalCorrectAnswers=0 < numOfRequiredWords=1).
-      await tester.tap(find.text('Again'));
-      await tester.pumpAndSettle();
-
-      // ── Step 4: Complete remaining exercises (including the re-queued one) ─
-      // Loop until "Show translation" is no longer visible (session done).
-      while (find.text('Show translation').evaluate().isNotEmpty) {
-        await tester.tap(find.text('Show translation'));
+      while (find.text('Session complete').evaluate().isEmpty) {
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Good'));
-        await tester.pumpAndSettle();
+        if (find.text('Show translation').evaluate().isNotEmpty) {
+          // Anki flip-card exercise.
+          await tester.tap(find.text('Show translation'));
+          await tester.pumpAndSettle();
+
+          if (!errorRegistered) {
+            // First flip-card: verify all 4 Anki grade buttons and tap "Again".
+            expect(find.text('Again'), findsOneWidget);
+            expect(find.text('Hard'), findsOneWidget);
+            expect(find.text('Good'), findsOneWidget);
+            expect(find.text('Easy'), findsOneWidget);
+            await tester.tap(find.text('Again'));
+            errorRegistered = true;
+          } else {
+            await tester.tap(find.text('Good'));
+          }
+          await tester.pumpAndSettle();
+        } else {
+          // Writing exercise.
+          final wordFinder = find.byKey(const ValueKey('write_exercise_word'));
+          if (wordFinder.evaluate().isNotEmpty) {
+            final english = (tester.widget(wordFinder) as Text).data ?? '';
+            final dutch = english.replaceFirst('ankien', 'anki');
+            await tester.enterText(
+              find.byKey(const ValueKey('write_exercise_text_field')),
+              dutch,
+            );
+            await tester.pumpAndSettle();
+            await tester.tap(
+              find.byKey(const ValueKey('write_exercise_check_button')),
+            );
+            await tester.pumpAndSettle();
+            if (find.text('Next').evaluate().isNotEmpty) {
+              await tester.tap(find.text('Next'));
+            } else {
+              await tester.tap(find.text('Finish'));
+            }
+            await tester.pumpAndSettle();
+          } else {
+            break; // Unexpected state – stop to avoid infinite loop.
+          }
+        }
       }
+
+      // The Anki flip-card UI (4 grade buttons) must have been verified.
+      expect(
+        errorRegistered,
+        isTrue,
+        reason: 'At least one Anki flip-card exercise must have appeared',
+      );
 
       // ── Step 5: Verify summary shows errors ───────────────────────────────
       expect(find.text('Session complete'), findsOneWidget);

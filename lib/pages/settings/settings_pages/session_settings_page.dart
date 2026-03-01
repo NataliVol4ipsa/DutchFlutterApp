@@ -77,6 +77,13 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
     settingService.updateSettingsAsync(settings);
   }
 
+  void _onIncludePhrasesInWritingChanged(bool value) {
+    setState(() {
+      settings.session.includePhrasesInWriting = value;
+    });
+    settingService.updateSettingsAsync(settings);
+  }
+
   Widget _buildSettings(BuildContext context) {
     final List<Widget> sections = [_buildThemeSettings(context)];
 
@@ -129,6 +136,12 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
           isInitiallyEnabled: settings.session.showPreSessionWordList,
           isLocked: false,
           onChanged: _onShowPreSessionWordListChanged,
+        ),
+        SettingsSwitchTile(
+          name: "Include phrases in writing exercises",
+          isInitiallyEnabled: settings.session.includePhrasesInWriting,
+          isLocked: false,
+          onChanged: _onIncludePhrasesInWritingChanged,
         ),
       ],
     );

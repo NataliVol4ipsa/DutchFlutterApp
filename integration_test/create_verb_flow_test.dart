@@ -32,6 +32,7 @@
 /// ## Verb data used
 ///   Dutch: "werken"  English (input): "to work" → stored/shown as "work"
 ///   (SemicolonWordsConverter strips the "to " infinitive prefix automatically)
+library;
 // ignore_for_file: avoid_relative_lib_imports
 
 import 'dart:io';

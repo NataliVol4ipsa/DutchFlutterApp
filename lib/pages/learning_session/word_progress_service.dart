@@ -20,6 +20,8 @@ class WordProgressService {
         return ExerciseTypeDetailed.flipCardDutchEnglish;
       case ExerciseType.deHetPick:
         return ExerciseTypeDetailed.deHetPick;
+      case ExerciseType.basicWrite:
+        return ExerciseTypeDetailed.basicWrite;
       default:
         throw Exception('Unsupported exercise type: $exerciseType');
     }

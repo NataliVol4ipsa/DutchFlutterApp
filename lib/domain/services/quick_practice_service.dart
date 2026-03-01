@@ -2,6 +2,7 @@ import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
+import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
@@ -40,8 +41,7 @@ class QuickPracticeService {
     required WordProgressService wordProgressService,
     required ExerciseAnsweredNotifier notifier,
   }) async {
-    final settings = await settingsService.getSettingsAsync();
-    final sessionSettings = settings.session;
+    final sessionSettings = await _fetchSessionSettingsAsync();
     final activeTypes = quota.activeTypes;
 
     final reviewWords = await _fetchReviewWordsAsync(
@@ -64,17 +64,12 @@ class QuickPracticeService {
       );
     }
 
-    final flowManager = LearningSessionManager(
-      activeTypes,
-      practiceableWords,
-      wordProgressService,
-      notifier,
-      useAnkiMode: sessionSettings.useAnkiMode,
-    );
-
-    return QuickPracticeSession(
-      flowManager: flowManager,
-      showPreSessionWordList: sessionSettings.showPreSessionWordList,
+    return _createSession(
+      words: practiceableWords,
+      activeTypes: activeTypes,
+      sessionSettings: sessionSettings,
+      wordProgressService: wordProgressService,
+      notifier: notifier,
     );
   }
 
@@ -157,8 +152,7 @@ class QuickPracticeService {
     required WordProgressService wordProgressService,
     required ExerciseAnsweredNotifier notifier,
   }) async {
-    final settings = await settingsService.getSettingsAsync();
-    final sessionSettings = settings.session;
+    final sessionSettings = await _fetchSessionSettingsAsync();
     final activeTypes = quota.activeTypes;
 
     final supportedWords = words
@@ -188,12 +182,42 @@ class QuickPracticeService {
       );
     }
 
+    return _createSession(
+      words: practiceableWords,
+      activeTypes: activeTypes,
+      sessionSettings: sessionSettings,
+      wordProgressService: wordProgressService,
+      notifier: notifier,
+    );
+  }
+
+  Future<SessionSettings> _fetchSessionSettingsAsync() async {
+    final settings = await settingsService.getSettingsAsync();
+    return settings.session;
+  }
+
+  List<ExerciseType> _buildExerciseTypes(List<ExerciseType> activeTypes) {
+    return [
+      ...activeTypes,
+      if (!activeTypes.contains(ExerciseType.basicWrite))
+        ExerciseType.basicWrite,
+    ];
+  }
+
+  QuickPracticeSession _createSession({
+    required List<Word> words,
+    required List<ExerciseType> activeTypes,
+    required SessionSettings sessionSettings,
+    required WordProgressService wordProgressService,
+    required ExerciseAnsweredNotifier notifier,
+  }) {
     final flowManager = LearningSessionManager(
-      activeTypes,
-      practiceableWords,
+      _buildExerciseTypes(activeTypes),
+      words,
       wordProgressService,
       notifier,
       useAnkiMode: sessionSettings.useAnkiMode,
+      includePhrasesInWriting: sessionSettings.includePhrasesInWriting,
     );
 
     return QuickPracticeSession(

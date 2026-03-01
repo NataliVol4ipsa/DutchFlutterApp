@@ -17,6 +17,8 @@ extension ExerciseTypeExtension on ExerciseType {
         return [ExerciseTypeDetailed.flipCardDutchEnglish];
       case ExerciseType.deHetPick:
         return [ExerciseTypeDetailed.deHetPick];
+      case ExerciseType.basicWrite:
+        return [ExerciseTypeDetailed.basicWrite];
       default:
         return [];
     }

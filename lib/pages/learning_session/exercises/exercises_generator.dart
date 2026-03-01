@@ -11,14 +11,21 @@ class ExercisesGenerator {
   final List<ExerciseType> exerciseTypes;
   final List<Word> words;
   final bool useAnkiMode;
+  final bool includePhrasesInWriting;
 
-  ExercisesGenerator(this.exerciseTypes, this.words, this.useAnkiMode);
+  ExercisesGenerator(
+    this.exerciseTypes,
+    this.words,
+    this.useAnkiMode, {
+    this.includePhrasesInWriting = false,
+  });
 
   List<BaseExercise> generateExcercises() {
     var result = <BaseExercise>[
       ...generateDeHetExcercises(),
       ...generateFlipCardExcercises(),
       ...generateManyToManyExcercises(),
+      ...generateWritingExcercises(),
     ];
     result.shuffle();
 
@@ -110,7 +117,12 @@ class ExercisesGenerator {
     if (!exerciseTypes.contains(ExerciseType.basicWrite)) return [];
 
     List<Word> supportedWords = words
-        .where((w) => WriteExercise.isSupportedWord(w))
+        .where(
+          (w) => WriteExercise.isSupportedWord(
+            w,
+            includePhrasesInWriting: includePhrasesInWriting,
+          ),
+        )
         .toList();
     var exercises = supportedWords.map((word) => WriteExercise(word)).toList();
 

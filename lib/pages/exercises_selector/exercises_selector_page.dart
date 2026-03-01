@@ -40,6 +40,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
     final settings = await settingsService.getSettingsAsync();
     final useAnkiMode = settings.session.useAnkiMode;
     final showPreSessionWordList = settings.session.showPreSessionWordList;
+    final includePhrasesInWriting = settings.session.includePhrasesInWriting;
     if (!mounted) return;
 
     final service = context.read<PracticeSessionStatefulService>();
@@ -59,6 +60,7 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
       wordProgressService,
       notifier,
       useAnkiMode: useAnkiMode,
+      includePhrasesInWriting: includePhrasesInWriting,
     );
     if (!mounted) return;
     if (showPreSessionWordList) {

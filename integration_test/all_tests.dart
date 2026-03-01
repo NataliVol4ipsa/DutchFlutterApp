@@ -10,6 +10,7 @@
 ///
 /// Usage:
 ///   flutter test integration_test/all_tests.dart -d windows
+library;
 // ignore_for_file: avoid_relative_lib_imports
 
 import 'package:flutter_test/flutter_test.dart';

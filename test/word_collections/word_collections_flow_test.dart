@@ -15,6 +15,7 @@
 /// IMPORTANT – before the first run you must generate the mock classes:
 ///   flutter pub run build_runner build --delete-conflicting-outputs
 /// (or just `dart run build_runner build`)
+library;
 // ignore_for_file: avoid_relative_lib_imports
 
 import 'package:dutch_app/core/local_db/repositories/word_collections_repository.dart';

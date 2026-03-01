@@ -28,6 +28,8 @@ class SettingsService {
         s.session.useAnkiMode,
     SettingsNames.session.showPreSessionWordListBool: (Settings s) =>
         s.session.showPreSessionWordList,
+    SettingsNames.session.includePhrasesInWritingBool: (Settings s) =>
+        s.session.includePhrasesInWriting,
   };
 
   Future<Settings> getSettingsAsync() async {
@@ -55,6 +57,10 @@ class SettingsService {
         showPreSessionWordList: _getBool(
           keyValues,
           SettingsNames.session.showPreSessionWordListBool,
+        ),
+        includePhrasesInWriting: _getBool(
+          keyValues,
+          SettingsNames.session.includePhrasesInWritingBool,
         ),
       ),
     );

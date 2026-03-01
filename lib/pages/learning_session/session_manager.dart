@@ -22,17 +22,21 @@ class LearningSessionManager {
   List<ExerciseSummaryDetailed>? detailedSummaries;
   SessionSummary? sessionSummary;
 
+  final bool includePhrasesInWriting;
+
   LearningSessionManager(
     this.exerciseTypes,
     this.words,
     this.wordProgressService,
     this.notifier, {
     this.useAnkiMode = false,
+    this.includePhrasesInWriting = false,
   }) {
     exercises = ExercisesGenerator(
       exerciseTypes,
       words,
       useAnkiMode,
+      includePhrasesInWriting: includePhrasesInWriting,
     ).generateExcercises();
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
