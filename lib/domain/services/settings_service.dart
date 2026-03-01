@@ -30,6 +30,14 @@ class SettingsService {
         s.session.showPreSessionWordList,
     SettingsNames.session.includePhrasesInWritingBool: (Settings s) =>
         s.session.includePhrasesInWriting,
+    SettingsNames.extraPractice.useWeakestWordsBool: (Settings s) =>
+        s.extraPractice.useWeakestWords,
+    SettingsNames.extraPractice.useTomorrowsWordsBool: (Settings s) =>
+        s.extraPractice.useTomorrowsWords,
+    SettingsNames.extraPractice.useRecentlyLearnedBool: (Settings s) =>
+        s.extraPractice.useRecentlyLearned,
+    SettingsNames.extraPractice.useRandomWordsBool: (Settings s) =>
+        s.extraPractice.useRandomWords,
   };
 
   Future<Settings> getSettingsAsync() async {
@@ -61,6 +69,24 @@ class SettingsService {
         includePhrasesInWriting: _getBool(
           keyValues,
           SettingsNames.session.includePhrasesInWritingBool,
+        ),
+      ),
+      extraPractice: ExtraPracticeSettings(
+        useWeakestWords: _getBool(
+          keyValues,
+          SettingsNames.extraPractice.useWeakestWordsBool,
+        ),
+        useTomorrowsWords: _getBool(
+          keyValues,
+          SettingsNames.extraPractice.useTomorrowsWordsBool,
+        ),
+        useRecentlyLearned: _getBool(
+          keyValues,
+          SettingsNames.extraPractice.useRecentlyLearnedBool,
+        ),
+        useRandomWords: _getBool(
+          keyValues,
+          SettingsNames.extraPractice.useRandomWordsBool,
         ),
       ),
     );

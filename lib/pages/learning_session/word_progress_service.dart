@@ -38,6 +38,10 @@ class WordProgressService {
         .toSet();
   }
 
+  /// Returns true if the user has practiced any word today.
+  Future<bool> practicedTodayAsync() =>
+      wordProgressRepository.practicedTodayExistsAsync();
+
   Future<void> processSessionResults(
     List<ExerciseSummaryDetailed> detailedSummaries,
   ) async {
@@ -72,16 +76,25 @@ class WordProgressService {
     await wordProgressRepository.saveAllAsync(updatedProgress);
   }
 
-  //todo do not update repetition date if answered correctly today already
-  //todo handle other cases of out-of-schedule user practice outcomes
+  //
+  // Scheduling policy
+  // -----------------
+  // 1. First-ever practice (lastPracticed == null):
+  //      Apply SM-2 and start scheduling immediately.
+  // 2. Due / overdue (now >= nextReviewDate):
+  //      Normal scheduled review – apply SM-2, advance nextReviewDate.
+  // 3. Within early window (future, but close to due):
+  //      Count as review, but anchor nextReviewDate to the *original* due date
+  //      so early review doesn't shorten the intended spacing.
+  //      earlyWindow = min(12 h, intervalDays * 20 %).
+  // 4. Far in the future (beyond early window):
+  //      Practice-only: record lastPracticed, do NOT touch the schedule.
   void _applySessionOutcome(
     DbWordProgress progress,
     ExerciseSummaryDetailed summary,
   ) {
     final now = DateTime.now();
 
-    // Anki-mode: use the explicit grade quality (1, 2, 4, 5)
-    // Simplified mode: map know/don't-know to quality 5 / 2
     final int quality;
     final bool isMistake;
 
@@ -93,29 +106,66 @@ class WordProgressService {
       quality = isMistake ? 2 : 5;
     }
 
-    final updatedEasinessFactor =
-        SpacedRepetitionAlgorithm.calculateNewEasinessFactor(
-          progress.easinessFactor,
-          quality,
-        );
-
-    final updatedConsequetiveCorrectAnswers = isMistake
-        ? 0
-        : progress.consequetiveCorrectAnswers + 1;
-
-    final updatedIntervalDays =
-        SpacedRepetitionAlgorithm.calculateNewIntervalDays(
-          isMistake,
-          updatedConsequetiveCorrectAnswers,
-          updatedEasinessFactor,
-          progress.intervalDays,
-          isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
-        );
-
+    // Always stamp lastPracticed regardless of scheduling outcome.
     progress.lastPracticed = now;
-    progress.consequetiveCorrectAnswers = updatedConsequetiveCorrectAnswers;
-    progress.intervalDays = updatedIntervalDays;
-    progress.easinessFactor = updatedEasinessFactor;
-    progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
+
+    // ── Determine scheduling mode ───────────────────────────────────────────
+    final bool isFirstEverPractice =
+        progress.lastReviewDate == null &&
+        progress.intervalDays == 0 &&
+        progress.consequetiveCorrectAnswers == 0;
+    final bool isDue =
+        now.isAfter(progress.nextReviewDate) ||
+        now.isAtSameMomentAs(progress.nextReviewDate);
+
+    final Duration earlyWindow = _earlyWindow(progress.intervalDays);
+    final Duration timeUntilDue = progress.nextReviewDate.difference(now);
+    final bool isWithinEarlyWindow = !isDue && timeUntilDue <= earlyWindow;
+
+    if (isFirstEverPractice || isDue || isWithinEarlyWindow) {
+      // ── Real review ──────────────────────────────────────────────────────
+      final updatedEasinessFactor =
+          SpacedRepetitionAlgorithm.calculateNewEasinessFactor(
+            progress.easinessFactor,
+            quality,
+          );
+      final updatedConsecutiveCorrect = isMistake
+          ? 0
+          : progress.consequetiveCorrectAnswers + 1;
+      final updatedIntervalDays =
+          SpacedRepetitionAlgorithm.calculateNewIntervalDays(
+            isMistake,
+            updatedConsecutiveCorrect,
+            updatedEasinessFactor,
+            progress.intervalDays,
+            isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
+          );
+
+      progress.easinessFactor = updatedEasinessFactor;
+      progress.consequetiveCorrectAnswers = updatedConsecutiveCorrect;
+      progress.intervalDays = updatedIntervalDays;
+      progress.lastReviewDate = now;
+
+      if (isWithinEarlyWindow) {
+        // Anchor to original due date so we don't shorten the spacing.
+        //   e.g. due March 10, practiced March 8 → next = March 10 + interval
+        progress.nextReviewDate = progress.nextReviewDate.add(
+          Duration(days: updatedIntervalDays),
+        );
+      } else {
+        progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
+      }
+    }
+    // else: practice-only – lastPracticed was already stamped above; nothing else changes.
+  }
+
+  /// Early window = min(12 h, 20 % of the current interval).
+  Duration _earlyWindow(int intervalDays) {
+    if (intervalDays <= 0) return const Duration(hours: 12);
+    final twentyPercent = Duration(
+      minutes: (intervalDays * 0.20 * 24 * 60).round(),
+    );
+    const cap = Duration(hours: 12);
+    return twentyPercent < cap ? twentyPercent : cap;
   }
 }

@@ -4,7 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i6;
-import 'dart:ui' as _i12;
+import 'dart:ui' as _i13;
 
 import 'package:dutch_app/core/io/v1/models/export_package_v1.dart' as _i9;
 import 'package:dutch_app/core/local_db/repositories/batch_repository.dart'
@@ -14,6 +14,7 @@ import 'package:dutch_app/core/local_db/repositories/word_collections_repository
 import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart'
     as _i3;
 import 'package:dutch_app/domain/models/new_word_collection.dart' as _i7;
+import 'package:dutch_app/domain/models/word.dart' as _i12;
 import 'package:dutch_app/domain/models/word_collection.dart' as _i2;
 import 'package:dutch_app/domain/services/batch_word_operations_service.dart'
     as _i8;
@@ -226,7 +227,24 @@ class MockQuickPracticeCoordinator extends _i1.Mock
       ) as _i6.Future<void>);
 
   @override
-  void addListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+  _i6.Future<void> startWithWordsAsync(
+    _i11.BuildContext? context,
+    List<_i12.Word>? words,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #startWithWordsAsync,
+          [
+            context,
+            words,
+          ],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  void addListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -235,7 +253,7 @@ class MockQuickPracticeCoordinator extends _i1.Mock
       );
 
   @override
-  void removeListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i13.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

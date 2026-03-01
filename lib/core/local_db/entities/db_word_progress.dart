@@ -14,7 +14,13 @@ class DbWordProgress {
   final word = IsarLink<DbWord>();
   @enumerated
   late ExerciseTypeDetailed exerciseType;
+
+  /// Updated on every practice attempt (scheduled or extra).
   DateTime? lastPracticed;
+
+  /// Updated only when the practice counted as a real scheduled review
+  /// (word was due/overdue, or within the early window).
+  DateTime? lastReviewDate;
   late bool dontShowAgain = false;
   @Index()
   late DateTime nextReviewDate = DateTime.now();

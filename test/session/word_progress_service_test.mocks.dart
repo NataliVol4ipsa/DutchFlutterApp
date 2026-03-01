@@ -30,8 +30,13 @@ import 'package:mockito/mockito.dart' as _i1;
 
 class _FakeWordProgressRepository_0 extends _i1.SmartFake
     implements _i2.WordProgressRepository {
-  _FakeWordProgressRepository_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWordProgressRepository_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 /// A class which mocks [WordProgressBatchRepository].
@@ -44,49 +49,49 @@ class MockWordProgressBatchRepository extends _i1.Mock
   }
 
   @override
-  _i2.WordProgressRepository get wordProgressRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#wordProgressRepository),
-            returnValue: _FakeWordProgressRepository_0(
-              this,
-              Invocation.getter(#wordProgressRepository),
-            ),
-          )
-          as _i2.WordProgressRepository);
+  _i2.WordProgressRepository get wordProgressRepository => (super.noSuchMethod(
+        Invocation.getter(#wordProgressRepository),
+        returnValue: _FakeWordProgressRepository_0(
+          this,
+          Invocation.getter(#wordProgressRepository),
+        ),
+      ) as _i2.WordProgressRepository);
 
   @override
   _i4.Future<Map<_i5.WordProgressKey, _i6.DbWordProgress>> getOrCreateManyAsync(
-    List<_i5.WordProgressKey>? keys,
-  ) =>
+          List<_i5.WordProgressKey>? keys) =>
       (super.noSuchMethod(
-            Invocation.method(#getOrCreateManyAsync, [keys]),
-            returnValue:
-                _i4.Future<Map<_i5.WordProgressKey, _i6.DbWordProgress>>.value(
-                  <_i5.WordProgressKey, _i6.DbWordProgress>{},
-                ),
-          )
-          as _i4.Future<Map<_i5.WordProgressKey, _i6.DbWordProgress>>);
+        Invocation.method(
+          #getOrCreateManyAsync,
+          [keys],
+        ),
+        returnValue:
+            _i4.Future<Map<_i5.WordProgressKey, _i6.DbWordProgress>>.value(
+                <_i5.WordProgressKey, _i6.DbWordProgress>{}),
+      ) as _i4.Future<Map<_i5.WordProgressKey, _i6.DbWordProgress>>);
 
   @override
   _i4.Future<void> saveAllAsync(List<_i6.DbWordProgress>? progressList) =>
       (super.noSuchMethod(
-            Invocation.method(#saveAllAsync, [progressList]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
+        Invocation.method(
+          #saveAllAsync,
+          [progressList],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
   _i4.Future<List<_i6.DbWordProgress>> getProgressForWordsAsync(
-    List<int>? wordIds,
-  ) =>
+          List<int>? wordIds) =>
       (super.noSuchMethod(
-            Invocation.method(#getProgressForWordsAsync, [wordIds]),
-            returnValue: _i4.Future<List<_i6.DbWordProgress>>.value(
-              <_i6.DbWordProgress>[],
-            ),
-          )
-          as _i4.Future<List<_i6.DbWordProgress>>);
+        Invocation.method(
+          #getProgressForWordsAsync,
+          [wordIds],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
 
   @override
   _i4.Future<List<_i6.DbWordProgress>> getDueProgressAsync(
@@ -94,10 +99,91 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getDueProgressAsync, [exerciseType, limit]),
-            returnValue: _i4.Future<List<_i6.DbWordProgress>>.value(
-              <_i6.DbWordProgress>[],
-            ),
-          )
-          as _i4.Future<List<_i6.DbWordProgress>>);
+        Invocation.method(
+          #getDueProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
+
+  @override
+  _i4.Future<List<_i6.DbWordProgress>> getTomorrowProgressAsync(
+    _i7.ExerciseTypeDetailed? exerciseType,
+    int? limit,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTomorrowProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
+
+  @override
+  _i4.Future<List<_i6.DbWordProgress>> getRecentlyLearnedProgressAsync(
+    _i7.ExerciseTypeDetailed? exerciseType,
+    int? limit,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getRecentlyLearnedProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
+
+  @override
+  _i4.Future<List<_i6.DbWordProgress>> getRandomProgressAsync(
+    _i7.ExerciseTypeDetailed? exerciseType,
+    int? limit,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getRandomProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
+
+  @override
+  _i4.Future<List<_i6.DbWordProgress>> getWeakestProgressAsync(
+    _i7.ExerciseTypeDetailed? exerciseType,
+    int? limit,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getWeakestProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.DbWordProgress>>.value(<_i6.DbWordProgress>[]),
+      ) as _i4.Future<List<_i6.DbWordProgress>>);
+
+  @override
+  _i4.Future<bool> practicedTodayExistsAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #practicedTodayExistsAsync,
+          [],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 }

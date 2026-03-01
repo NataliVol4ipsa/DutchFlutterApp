@@ -1,4 +1,5 @@
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
+import 'dart:math';
 import 'package:dutch_app/core/local_db/db_context.dart';
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
@@ -114,5 +115,118 @@ class WordProgressBatchRepository {
     }
 
     return records;
+  }
+
+  Future<List<DbWordProgress>> getTomorrowProgressAsync(
+    ExerciseTypeDetailed exerciseType,
+    int limit,
+  ) async {
+    if (limit <= 0) return [];
+    final now = DateTime.now();
+    final tomorrow = now.add(const Duration(hours: 24));
+
+    final records = await DbContext.isar.dbWordProgress
+        .where()
+        .nextReviewDateBetween(now, tomorrow)
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .limit(limit)
+        .findAll();
+
+    for (final r in records) {
+      await r.word.load();
+    }
+    return records;
+  }
+
+  Future<List<DbWordProgress>> getRecentlyLearnedProgressAsync(
+    ExerciseTypeDetailed exerciseType,
+    int limit,
+  ) async {
+    if (limit <= 0) return [];
+
+    final records = await DbContext.isar.dbWordProgress
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .and()
+        .lastReviewDateIsNotNull()
+        .findAll();
+
+    records.sort((a, b) {
+      final aDate = a.lastReviewDate!;
+      final bDate = b.lastReviewDate!;
+      return bDate.compareTo(aDate); // DESC
+    });
+
+    final top = records.take(limit).toList();
+    for (final r in top) {
+      await r.word.load();
+    }
+    return top;
+  }
+
+  Future<List<DbWordProgress>> getRandomProgressAsync(
+    ExerciseTypeDetailed exerciseType,
+    int limit,
+  ) async {
+    if (limit <= 0) return [];
+
+    final records = await DbContext.isar.dbWordProgress
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .and()
+        .lastPracticedIsNotNull()
+        .findAll();
+
+    final today = DateTime.now();
+    final seed = today.year * 10000 + today.month * 100 + today.day;
+    final rng = Random(seed);
+    records.shuffle(rng);
+
+    final top = records.take(limit).toList();
+    for (final r in top) {
+      await r.word.load();
+    }
+    return top;
+  }
+
+  Future<List<DbWordProgress>> getWeakestProgressAsync(
+    ExerciseTypeDetailed exerciseType,
+    int limit,
+  ) async {
+    if (limit <= 0) return [];
+
+    final records = await DbContext.isar.dbWordProgress
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .and()
+        .lastPracticedIsNotNull()
+        .findAll();
+
+    records.sort((a, b) {
+      // Primary: lowest ease
+      final easeCompare = a.easinessFactor.compareTo(b.easinessFactor);
+      if (easeCompare != 0) return easeCompare;
+      // Secondary: lowest interval (less-known words)
+      return a.intervalDays.compareTo(b.intervalDays);
+    });
+
+    final top = records.take(limit).toList();
+    for (final r in top) {
+      await r.word.load();
+    }
+    return top;
+  }
+
+  Future<bool> practicedTodayExistsAsync() async {
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    final count = await DbContext.isar.dbWordProgress
+        .filter()
+        .lastPracticedBetween(startOfDay, endOfDay)
+        .count();
+    return count > 0;
   }
 }
