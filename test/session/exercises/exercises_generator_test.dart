@@ -30,7 +30,9 @@ DbWordProgress _progress(
 }) {
   final p = DbWordProgress();
   p.exerciseType = type;
-  p.consequetiveCorrectAnswers = consecutiveCorrect;
+  // Use the scheduled-review track; exercises_generator checks the sum of both
+  // tracks via ExerciseTypeOrder.unlockedTypesForWord.
+  p.scheduledPracticeCorrectAnswerStreak = consecutiveCorrect;
   return p;
 }
 

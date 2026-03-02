@@ -28,5 +28,6 @@ class DbWordProgress {
   late double easinessFactor = 2.5;
   // how many days should current interval last
   late int intervalDays = 0;
-  late int consequetiveCorrectAnswers = 0;
+  late int scheduledPracticeCorrectAnswerStreak = 0;
+  late int customPracticeCorrectAnswerStreak = 0;
 }

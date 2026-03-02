@@ -133,14 +133,14 @@ class WordProgressService {
       quality = isMistake ? 2 : 5;
     }
 
+    // Capture before stamping – the only reliable "never practiced" signal now
+    // that scheduledPracticeCorrectAnswerStreak is gated to real reviews.
+    final bool isFirstEverPractice = progress.lastPracticed == null;
+
     // Always stamp lastPracticed regardless of scheduling outcome.
     progress.lastPracticed = now;
 
     // ── Determine scheduling mode ───────────────────────────────────────────
-    final bool isFirstEverPractice =
-        progress.lastReviewDate == null &&
-        progress.intervalDays == 0 &&
-        progress.consequetiveCorrectAnswers == 0;
     final bool isDue =
         now.isAfter(progress.nextReviewDate) ||
         now.isAtSameMomentAs(progress.nextReviewDate);
@@ -149,18 +149,15 @@ class WordProgressService {
     final Duration timeUntilDue = progress.nextReviewDate.difference(now);
     final bool isWithinEarlyWindow = !isDue && timeUntilDue <= earlyWindow;
 
-    // ── Always update consecutive count (used for unlock tracking) ───────────
-    // This runs for every practice attempt – scheduled reviews AND extra
-    // practice – so that a user can unlock new exercise types by repeating
-    // a word several times on the same day even if the word is not yet due.
-    // The SM-2 scheduling block below remains gated on real reviews only, so
-    // extra practice never advances nextReviewDate.
-    progress.consequetiveCorrectAnswers = isMistake
-        ? 0
-        : progress.consequetiveCorrectAnswers + 1;
-
     if (isFirstEverPractice || isDue || isWithinEarlyWindow) {
-      // ── Real review ──────────────────────────────────────────────────────
+      // ── Real review: update SM-2 fields + scheduled unlock streak ─────────
+      // scheduledPracticeCorrectAnswerStreak is gated to real scheduled reviews.
+      // It drives both SM-2 scheduling (interval calculation) and unlock
+      // threshold checks — no separate field needed.
+      progress.scheduledPracticeCorrectAnswerStreak = isMistake
+          ? 0
+          : progress.scheduledPracticeCorrectAnswerStreak + 1;
+
       final updatedEasinessFactor =
           SpacedRepetitionAlgorithm.calculateNewEasinessFactor(
             progress.easinessFactor,
@@ -169,7 +166,7 @@ class WordProgressService {
       final updatedIntervalDays =
           SpacedRepetitionAlgorithm.calculateNewIntervalDays(
             isMistake,
-            progress.consequetiveCorrectAnswers,
+            progress.scheduledPracticeCorrectAnswerStreak,
             updatedEasinessFactor,
             progress.intervalDays,
             isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
@@ -181,16 +178,21 @@ class WordProgressService {
 
       if (isWithinEarlyWindow) {
         // Anchor to original due date so we don't shorten the spacing.
-        //   e.g. due March 10, practiced March 8 → next = March 10 + interval
+        //   e.g. due March 10, practiced March 8 -> next = March 10 + interval
         progress.nextReviewDate = progress.nextReviewDate.add(
           Duration(days: updatedIntervalDays),
         );
       } else {
         progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
       }
+    } else {
+      // ── Custom / collection practice: update custom unlock streak ──────────
+      // SM-2 schedule (nextReviewDate, intervalDays,
+      // scheduledPracticeCorrectAnswerStreak) is left completely unchanged.
+      progress.customPracticeCorrectAnswerStreak = isMistake
+          ? 0
+          : progress.customPracticeCorrectAnswerStreak + 1;
     }
-    // else: practice-only – lastPracticed stamped and consecutive count updated;
-    //       SM-2 schedule (nextReviewDate / intervalDays) is left unchanged.
   }
 
   /// Early window = min(12 h, 20 % of the current interval).

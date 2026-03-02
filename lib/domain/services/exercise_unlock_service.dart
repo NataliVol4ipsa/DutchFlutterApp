@@ -58,7 +58,9 @@ class ExerciseUnlockService {
       for (final id in wordIds)
         id: ExerciseTypeOrder.unlockedTypesForWord({
           for (final p in (progressByWordId[id] ?? []))
-            p.exerciseType: p.consequetiveCorrectAnswers,
+            p.exerciseType:
+                p.scheduledPracticeCorrectAnswerStreak +
+                p.customPracticeCorrectAnswerStreak,
         }),
     };
   }

@@ -52,55 +52,100 @@ import 'package:mockito/mockito.dart' as _i1;
 
 class _FakeSettingsRepository_0 extends _i1.SmartFake
     implements _i2.SettingsRepository {
-  _FakeSettingsRepository_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSettingsRepository_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeSettings_1 extends _i1.SmartFake implements _i3.Settings {
-  _FakeSettings_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSettings_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeWordProgressRepository_2 extends _i1.SmartFake
     implements _i4.WordProgressRepository {
-  _FakeWordProgressRepository_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWordProgressRepository_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeDutchWordsRepository_3 extends _i1.SmartFake
     implements _i5.DutchWordsRepository {
-  _FakeDutchWordsRepository_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeDutchWordsRepository_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeEnglishWordsRepository_4 extends _i1.SmartFake
     implements _i6.EnglishWordsRepository {
-  _FakeEnglishWordsRepository_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeEnglishWordsRepository_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeWordNounDetailsRepository_5 extends _i1.SmartFake
     implements _i7.WordNounDetailsRepository {
-  _FakeWordNounDetailsRepository_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWordNounDetailsRepository_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeWordVerbDetailsRepository_6 extends _i1.SmartFake
     implements _i8.WordVerbDetailsRepository {
-  _FakeWordVerbDetailsRepository_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWordVerbDetailsRepository_6(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeWordProgressBatchRepository_7 extends _i1.SmartFake
     implements _i9.WordProgressBatchRepository {
-  _FakeWordProgressBatchRepository_7(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeWordProgressBatchRepository_7(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeExerciseUnlockService_8 extends _i1.SmartFake
     implements _i10.ExerciseUnlockService {
-  _FakeExerciseUnlockService_8(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeExerciseUnlockService_8(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 /// A class which mocks [SettingsService].
@@ -112,38 +157,44 @@ class MockSettingsService extends _i1.Mock implements _i11.SettingsService {
   }
 
   @override
-  _i2.SettingsRepository get settingsRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#settingsRepository),
-            returnValue: _FakeSettingsRepository_0(
-              this,
-              Invocation.getter(#settingsRepository),
-            ),
-          )
-          as _i2.SettingsRepository);
+  _i2.SettingsRepository get settingsRepository => (super.noSuchMethod(
+        Invocation.getter(#settingsRepository),
+        returnValue: _FakeSettingsRepository_0(
+          this,
+          Invocation.getter(#settingsRepository),
+        ),
+      ) as _i2.SettingsRepository);
 
   @override
-  _i12.Future<_i3.Settings> getSettingsAsync() =>
-      (super.noSuchMethod(
-            Invocation.method(#getSettingsAsync, []),
-            returnValue: _i12.Future<_i3.Settings>.value(
-              _FakeSettings_1(this, Invocation.method(#getSettingsAsync, [])),
-            ),
-          )
-          as _i12.Future<_i3.Settings>);
+  _i12.Future<_i3.Settings> getSettingsAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #getSettingsAsync,
+          [],
+        ),
+        returnValue: _i12.Future<_i3.Settings>.value(_FakeSettings_1(
+          this,
+          Invocation.method(
+            #getSettingsAsync,
+            [],
+          ),
+        )),
+      ) as _i12.Future<_i3.Settings>);
 
   @override
   _i12.Future<_i3.Settings> updateSettingsAsync(_i3.Settings? newSettings) =>
       (super.noSuchMethod(
-            Invocation.method(#updateSettingsAsync, [newSettings]),
-            returnValue: _i12.Future<_i3.Settings>.value(
-              _FakeSettings_1(
-                this,
-                Invocation.method(#updateSettingsAsync, [newSettings]),
-              ),
-            ),
-          )
-          as _i12.Future<_i3.Settings>);
+        Invocation.method(
+          #updateSettingsAsync,
+          [newSettings],
+        ),
+        returnValue: _i12.Future<_i3.Settings>.value(_FakeSettings_1(
+          this,
+          Invocation.method(
+            #updateSettingsAsync,
+            [newSettings],
+          ),
+        )),
+      ) as _i12.Future<_i3.Settings>);
 }
 
 /// A class which mocks [WordProgressBatchRepository].
@@ -156,60 +207,61 @@ class MockWordProgressBatchRepository extends _i1.Mock
   }
 
   @override
-  _i4.WordProgressRepository get wordProgressRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#wordProgressRepository),
-            returnValue: _FakeWordProgressRepository_2(
-              this,
-              Invocation.getter(#wordProgressRepository),
-            ),
-          )
-          as _i4.WordProgressRepository);
+  _i4.WordProgressRepository get wordProgressRepository => (super.noSuchMethod(
+        Invocation.getter(#wordProgressRepository),
+        returnValue: _FakeWordProgressRepository_2(
+          this,
+          Invocation.getter(#wordProgressRepository),
+        ),
+      ) as _i4.WordProgressRepository);
 
   @override
   _i12.Future<Map<_i13.WordProgressKey, _i14.DbWordProgress>>
-  getOrCreateManyAsync(List<_i13.WordProgressKey>? keys) =>
-      (super.noSuchMethod(
-            Invocation.method(#getOrCreateManyAsync, [keys]),
-            returnValue:
-                _i12.Future<
-                  Map<_i13.WordProgressKey, _i14.DbWordProgress>
-                >.value(<_i13.WordProgressKey, _i14.DbWordProgress>{}),
-          )
-          as _i12.Future<Map<_i13.WordProgressKey, _i14.DbWordProgress>>);
+      getOrCreateManyAsync(List<_i13.WordProgressKey>? keys) =>
+          (super.noSuchMethod(
+            Invocation.method(
+              #getOrCreateManyAsync,
+              [keys],
+            ),
+            returnValue: _i12
+                .Future<Map<_i13.WordProgressKey, _i14.DbWordProgress>>.value(
+                <_i13.WordProgressKey, _i14.DbWordProgress>{}),
+          ) as _i12.Future<Map<_i13.WordProgressKey, _i14.DbWordProgress>>);
 
   @override
   _i12.Future<void> saveAllAsync(List<_i14.DbWordProgress>? progressList) =>
       (super.noSuchMethod(
-            Invocation.method(#saveAllAsync, [progressList]),
-            returnValue: _i12.Future<void>.value(),
-            returnValueForMissingStub: _i12.Future<void>.value(),
-          )
-          as _i12.Future<void>);
+        Invocation.method(
+          #saveAllAsync,
+          [progressList],
+        ),
+        returnValue: _i12.Future<void>.value(),
+        returnValueForMissingStub: _i12.Future<void>.value(),
+      ) as _i12.Future<void>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getProgressForWordsAsync(
-    List<int>? wordIds,
-  ) =>
+          List<int>? wordIds) =>
       (super.noSuchMethod(
-            Invocation.method(#getProgressForWordsAsync, [wordIds]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getProgressForWordsAsync,
+          [wordIds],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
   _i12.Future<Map<int, List<_i14.DbWordProgress>>> getProgressByWordIdAsync(
-    List<int>? wordIds,
-  ) =>
+          List<int>? wordIds) =>
       (super.noSuchMethod(
-            Invocation.method(#getProgressByWordIdAsync, [wordIds]),
-            returnValue: _i12.Future<Map<int, List<_i14.DbWordProgress>>>.value(
-              <int, List<_i14.DbWordProgress>>{},
-            ),
-          )
-          as _i12.Future<Map<int, List<_i14.DbWordProgress>>>);
+        Invocation.method(
+          #getProgressByWordIdAsync,
+          [wordIds],
+        ),
+        returnValue: _i12.Future<Map<int, List<_i14.DbWordProgress>>>.value(
+            <int, List<_i14.DbWordProgress>>{}),
+      ) as _i12.Future<Map<int, List<_i14.DbWordProgress>>>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getDueProgressAsync(
@@ -217,12 +269,16 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getDueProgressAsync, [exerciseType, limit]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getDueProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getTomorrowProgressAsync(
@@ -230,12 +286,16 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getTomorrowProgressAsync, [exerciseType, limit]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getTomorrowProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getRecentlyLearnedProgressAsync(
@@ -243,15 +303,16 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getRecentlyLearnedProgressAsync, [
-              exerciseType,
-              limit,
-            ]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getRecentlyLearnedProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getRandomProgressAsync(
@@ -259,12 +320,16 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getRandomProgressAsync, [exerciseType, limit]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getRandomProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
   _i12.Future<List<_i14.DbWordProgress>> getWeakestProgressAsync(
@@ -272,28 +337,34 @@ class MockWordProgressBatchRepository extends _i1.Mock
     int? limit,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getWeakestProgressAsync, [exerciseType, limit]),
-            returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
-              <_i14.DbWordProgress>[],
-            ),
-          )
-          as _i12.Future<List<_i14.DbWordProgress>>);
+        Invocation.method(
+          #getWeakestProgressAsync,
+          [
+            exerciseType,
+            limit,
+          ],
+        ),
+        returnValue: _i12.Future<List<_i14.DbWordProgress>>.value(
+            <_i14.DbWordProgress>[]),
+      ) as _i12.Future<List<_i14.DbWordProgress>>);
 
   @override
-  _i12.Future<int> countNewWordsIntroducedTodayAsync() =>
-      (super.noSuchMethod(
-            Invocation.method(#countNewWordsIntroducedTodayAsync, []),
-            returnValue: _i12.Future<int>.value(0),
-          )
-          as _i12.Future<int>);
+  _i12.Future<int> countNewWordsIntroducedTodayAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #countNewWordsIntroducedTodayAsync,
+          [],
+        ),
+        returnValue: _i12.Future<int>.value(0),
+      ) as _i12.Future<int>);
 
   @override
-  _i12.Future<bool> practicedTodayExistsAsync() =>
-      (super.noSuchMethod(
-            Invocation.method(#practicedTodayExistsAsync, []),
-            returnValue: _i12.Future<bool>.value(false),
-          )
-          as _i12.Future<bool>);
+  _i12.Future<bool> practicedTodayExistsAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #practicedTodayExistsAsync,
+          [],
+        ),
+        returnValue: _i12.Future<bool>.value(false),
+      ) as _i12.Future<bool>);
 }
 
 /// A class which mocks [WordsRepository].
@@ -305,80 +376,79 @@ class MockWordsRepository extends _i1.Mock implements _i16.WordsRepository {
   }
 
   @override
-  _i5.DutchWordsRepository get dutchWordsRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#dutchWordsRepository),
-            returnValue: _FakeDutchWordsRepository_3(
-              this,
-              Invocation.getter(#dutchWordsRepository),
-            ),
-          )
-          as _i5.DutchWordsRepository);
+  _i5.DutchWordsRepository get dutchWordsRepository => (super.noSuchMethod(
+        Invocation.getter(#dutchWordsRepository),
+        returnValue: _FakeDutchWordsRepository_3(
+          this,
+          Invocation.getter(#dutchWordsRepository),
+        ),
+      ) as _i5.DutchWordsRepository);
 
   @override
-  _i6.EnglishWordsRepository get englishWordsRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#englishWordsRepository),
-            returnValue: _FakeEnglishWordsRepository_4(
-              this,
-              Invocation.getter(#englishWordsRepository),
-            ),
-          )
-          as _i6.EnglishWordsRepository);
+  _i6.EnglishWordsRepository get englishWordsRepository => (super.noSuchMethod(
+        Invocation.getter(#englishWordsRepository),
+        returnValue: _FakeEnglishWordsRepository_4(
+          this,
+          Invocation.getter(#englishWordsRepository),
+        ),
+      ) as _i6.EnglishWordsRepository);
 
   @override
   _i7.WordNounDetailsRepository get nounDetailsRepository =>
       (super.noSuchMethod(
-            Invocation.getter(#nounDetailsRepository),
-            returnValue: _FakeWordNounDetailsRepository_5(
-              this,
-              Invocation.getter(#nounDetailsRepository),
-            ),
-          )
-          as _i7.WordNounDetailsRepository);
+        Invocation.getter(#nounDetailsRepository),
+        returnValue: _FakeWordNounDetailsRepository_5(
+          this,
+          Invocation.getter(#nounDetailsRepository),
+        ),
+      ) as _i7.WordNounDetailsRepository);
 
   @override
   _i8.WordVerbDetailsRepository get verbDetailsRepository =>
       (super.noSuchMethod(
-            Invocation.getter(#verbDetailsRepository),
-            returnValue: _FakeWordVerbDetailsRepository_6(
-              this,
-              Invocation.getter(#verbDetailsRepository),
-            ),
-          )
-          as _i8.WordVerbDetailsRepository);
+        Invocation.getter(#verbDetailsRepository),
+        returnValue: _FakeWordVerbDetailsRepository_6(
+          this,
+          Invocation.getter(#verbDetailsRepository),
+        ),
+      ) as _i8.WordVerbDetailsRepository);
 
   @override
-  _i12.Future<int> addAsync(_i17.NewWord? word) =>
-      (super.noSuchMethod(
-            Invocation.method(#addAsync, [word]),
-            returnValue: _i12.Future<int>.value(0),
-          )
-          as _i12.Future<int>);
+  _i12.Future<int> addAsync(_i17.NewWord? word) => (super.noSuchMethod(
+        Invocation.method(
+          #addAsync,
+          [word],
+        ),
+        returnValue: _i12.Future<int>.value(0),
+      ) as _i12.Future<int>);
 
   @override
-  _i12.Future<_i18.Word?> getWordAsync(int? wordId) =>
-      (super.noSuchMethod(
-            Invocation.method(#getWordAsync, [wordId]),
-            returnValue: _i12.Future<_i18.Word?>.value(),
-          )
-          as _i12.Future<_i18.Word?>);
+  _i12.Future<_i18.Word?> getWordAsync(int? wordId) => (super.noSuchMethod(
+        Invocation.method(
+          #getWordAsync,
+          [wordId],
+        ),
+        returnValue: _i12.Future<_i18.Word?>.value(),
+      ) as _i12.Future<_i18.Word?>);
 
   @override
   _i12.Future<List<_i18.Word>> getNewWordsAsync(int? limit) =>
       (super.noSuchMethod(
-            Invocation.method(#getNewWordsAsync, [limit]),
-            returnValue: _i12.Future<List<_i18.Word>>.value(<_i18.Word>[]),
-          )
-          as _i12.Future<List<_i18.Word>>);
+        Invocation.method(
+          #getNewWordsAsync,
+          [limit],
+        ),
+        returnValue: _i12.Future<List<_i18.Word>>.value(<_i18.Word>[]),
+      ) as _i12.Future<List<_i18.Word>>);
 
   @override
-  _i12.Future<bool> updateAsync(_i18.Word? updatedWord) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateAsync, [updatedWord]),
-            returnValue: _i12.Future<bool>.value(false),
-          )
-          as _i12.Future<bool>);
+  _i12.Future<bool> updateAsync(_i18.Word? updatedWord) => (super.noSuchMethod(
+        Invocation.method(
+          #updateAsync,
+          [updatedWord],
+        ),
+        returnValue: _i12.Future<bool>.value(false),
+      ) as _i12.Future<bool>);
 }
 
 /// A class which mocks [WordProgressService].
@@ -393,50 +463,50 @@ class MockWordProgressService extends _i1.Mock
   @override
   _i9.WordProgressBatchRepository get wordProgressRepository =>
       (super.noSuchMethod(
-            Invocation.getter(#wordProgressRepository),
-            returnValue: _FakeWordProgressBatchRepository_7(
-              this,
-              Invocation.getter(#wordProgressRepository),
-            ),
-          )
-          as _i9.WordProgressBatchRepository);
+        Invocation.getter(#wordProgressRepository),
+        returnValue: _FakeWordProgressBatchRepository_7(
+          this,
+          Invocation.getter(#wordProgressRepository),
+        ),
+      ) as _i9.WordProgressBatchRepository);
 
   @override
-  _i10.ExerciseUnlockService get unlockService =>
-      (super.noSuchMethod(
-            Invocation.getter(#unlockService),
-            returnValue: _FakeExerciseUnlockService_8(
-              this,
-              Invocation.getter(#unlockService),
-            ),
-          )
-          as _i10.ExerciseUnlockService);
+  _i10.ExerciseUnlockService get unlockService => (super.noSuchMethod(
+        Invocation.getter(#unlockService),
+        returnValue: _FakeExerciseUnlockService_8(
+          this,
+          Invocation.getter(#unlockService),
+        ),
+      ) as _i10.ExerciseUnlockService);
 
   @override
   _i12.Future<Set<int>> getPracticedWordIdsAsync(List<int>? wordIds) =>
       (super.noSuchMethod(
-            Invocation.method(#getPracticedWordIdsAsync, [wordIds]),
-            returnValue: _i12.Future<Set<int>>.value(<int>{}),
-          )
-          as _i12.Future<Set<int>>);
+        Invocation.method(
+          #getPracticedWordIdsAsync,
+          [wordIds],
+        ),
+        returnValue: _i12.Future<Set<int>>.value(<int>{}),
+      ) as _i12.Future<Set<int>>);
 
   @override
-  _i12.Future<bool> practicedTodayAsync() =>
-      (super.noSuchMethod(
-            Invocation.method(#practicedTodayAsync, []),
-            returnValue: _i12.Future<bool>.value(false),
-          )
-          as _i12.Future<bool>);
+  _i12.Future<bool> practicedTodayAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #practicedTodayAsync,
+          [],
+        ),
+        returnValue: _i12.Future<bool>.value(false),
+      ) as _i12.Future<bool>);
 
   @override
   _i12.Future<List<_i20.WordExercisesToUnlock>> processSessionResults(
-    List<_i21.ExerciseSummaryDetailed>? detailedSummaries,
-  ) =>
+          List<_i21.ExerciseSummaryDetailed>? detailedSummaries) =>
       (super.noSuchMethod(
-            Invocation.method(#processSessionResults, [detailedSummaries]),
-            returnValue: _i12.Future<List<_i20.WordExercisesToUnlock>>.value(
-              <_i20.WordExercisesToUnlock>[],
-            ),
-          )
-          as _i12.Future<List<_i20.WordExercisesToUnlock>>);
+        Invocation.method(
+          #processSessionResults,
+          [detailedSummaries],
+        ),
+        returnValue: _i12.Future<List<_i20.WordExercisesToUnlock>>.value(
+            <_i20.WordExercisesToUnlock>[]),
+      ) as _i12.Future<List<_i20.WordExercisesToUnlock>>);
 }

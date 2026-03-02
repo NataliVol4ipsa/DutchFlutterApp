@@ -57,12 +57,10 @@ class WordProgressRepository {
     DateTime nextReviewDate,
     double easinessFactor,
     int intervalDays,
-    int consequetiveCorrectAnswers,
   ) async {
     final wordProgress = await _getOrCreateAsync(wordId, exerciseType);
 
     wordProgress.lastPracticed = DateTime.now();
-    wordProgress.consequetiveCorrectAnswers = consequetiveCorrectAnswers;
     wordProgress.nextReviewDate = nextReviewDate;
     wordProgress.easinessFactor = easinessFactor;
     wordProgress.intervalDays = intervalDays;

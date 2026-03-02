@@ -3,7 +3,7 @@ import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/domain/notifiers/session_completed_notifier.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
-import 'package:dutch_app/pages/learning_session/summary/session_summary_widget.dart';
+import 'package:dutch_app/pages/learning_session/summary/widgets/session_summary_widget.dart';
 import 'package:dutch_app/pages/learning_session/dialogs/quit_session_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

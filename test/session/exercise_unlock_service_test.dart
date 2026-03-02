@@ -26,13 +26,18 @@ void main() {
   );
 
   /// Builds a [DbWordProgress] suitable for pure-dart tests (no Isar link).
+  /// Builds a progress record where [scheduledStreak] and [customStreak] set
+  /// the two independent unlock-streak fields. The sum is what
+  /// [ExerciseTypeOrder.unlockedTypesForWord] uses for threshold checks.
   DbWordProgress _progress(
     ExerciseTypeDetailed type, {
-    int consecutiveCorrect = 0,
+    int scheduledStreak = 0,
+    int customStreak = 0,
   }) {
     final p = DbWordProgress();
     p.exerciseType = type;
-    p.consequetiveCorrectAnswers = consecutiveCorrect;
+    p.scheduledPracticeCorrectAnswerStreak = scheduledStreak;
+    p.customPracticeCorrectAnswerStreak = customStreak;
     return p;
   }
 
@@ -68,7 +73,7 @@ void main() {
             1: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 1,
+                scheduledStreak: 1,
               ),
             ],
           },
@@ -93,7 +98,7 @@ void main() {
           1: [
             _progress(
               ExerciseTypeDetailed.flipCardDutchEnglish,
-              consecutiveCorrect: 3,
+              scheduledStreak: 3,
             ),
           ],
         },
@@ -135,7 +140,7 @@ void main() {
           1: [
             _progress(
               ExerciseTypeDetailed.flipCardDutchEnglish,
-              consecutiveCorrect: 0,
+              scheduledStreak: 0,
             ),
           ],
         },
@@ -160,7 +165,7 @@ void main() {
           1: [
             _progress(
               ExerciseTypeDetailed.flipCardDutchEnglish,
-              consecutiveCorrect: 1,
+              scheduledStreak: 1,
             ),
           ],
         },
@@ -195,7 +200,7 @@ void main() {
           1: [
             _progress(
               ExerciseTypeDetailed.flipCardDutchEnglish,
-              consecutiveCorrect: 3,
+              scheduledStreak: 3,
             ),
           ],
         },
@@ -227,7 +232,7 @@ void main() {
           1: [
             _progress(
               ExerciseTypeDetailed.flipCardDutchEnglish,
-              consecutiveCorrect: 4,
+              scheduledStreak: 4,
             ),
           ],
         },
@@ -266,19 +271,19 @@ void main() {
             1: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 1,
+                scheduledStreak: 1,
               ),
             ],
             2: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
             ],
             3: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 3,
+                scheduledStreak: 3,
               ),
             ],
           },
@@ -320,7 +325,7 @@ void main() {
             1: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
             ],
           },
@@ -347,12 +352,12 @@ void main() {
             1: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
               // Record for flipCardEnglishDutch exists → stays unlocked.
               _progress(
                 ExerciseTypeDetailed.flipCardEnglishDutch,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
             ],
           },
@@ -380,13 +385,13 @@ void main() {
             1: [
               _progress(
                 ExerciseTypeDetailed.flipCardDutchEnglish,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
               _progress(
                 ExerciseTypeDetailed.flipCardEnglishDutch,
-                consecutiveCorrect: 0,
+                scheduledStreak: 0,
               ),
-              _progress(ExerciseTypeDetailed.basicWrite, consecutiveCorrect: 0),
+              _progress(ExerciseTypeDetailed.basicWrite, scheduledStreak: 0),
             ],
           },
         );

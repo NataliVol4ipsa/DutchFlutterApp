@@ -39,7 +39,7 @@ DbWordProgress _freshProgress({
   p.exerciseType = ExerciseTypeDetailed.flipCardDutchEnglish;
   p.easinessFactor = ef;
   p.intervalDays = interval;
-  p.consequetiveCorrectAnswers = consecutive;
+  p.scheduledPracticeCorrectAnswerStreak = consecutive;
   return p;
 }
 
@@ -127,7 +127,7 @@ void main() {
           await service.processSessionResults([_simplified(word)]);
 
           // consecutive 0→1, which forces interval=1 (first correct answer rule)
-          expect(progress.consequetiveCorrectAnswers, 1);
+          expect(progress.scheduledPracticeCorrectAnswerStreak, 1);
           expect(progress.intervalDays, 1);
           // quality=5 → delta=+0.1 → 2.0+0.1=2.1
           expect(progress.easinessFactor, closeTo(2.1, 0.0001));
@@ -142,7 +142,7 @@ void main() {
 
         await service.processSessionResults([_simplified(word)]);
 
-        expect(progress.consequetiveCorrectAnswers, 2);
+        expect(progress.scheduledPracticeCorrectAnswerStreak, 2);
         expect(progress.intervalDays, 6);
       });
 
@@ -154,7 +154,7 @@ void main() {
 
         await service.processSessionResults([_simplified(word)]);
 
-        expect(progress.consequetiveCorrectAnswers, 3);
+        expect(progress.scheduledPracticeCorrectAnswerStreak, 3);
         // new EF = 2.0+0.1 = 2.1; interval = round(6 × 2.1) = round(12.6) = 13
         expect(progress.intervalDays, 13);
         expect(progress.easinessFactor, closeTo(2.1, 0.0001));
@@ -173,7 +173,7 @@ void main() {
 
           await service.processSessionResults([_simplified(word, wrong: 1)]);
 
-          expect(progress.consequetiveCorrectAnswers, 0);
+          expect(progress.scheduledPracticeCorrectAnswerStreak, 0);
           expect(progress.intervalDays, 1);
           // quality=2 → delta = 0.1-(5-2)*(0.08+(5-2)*0.02) = 0.1-3*(0.08+0.06)
           //           = 0.1 - 3*0.14 = 0.1 - 0.42 = -0.32
@@ -214,7 +214,7 @@ void main() {
 
           await service.processSessionResults([_anki(word, AnkiGrade.again)]);
 
-          expect(progress.consequetiveCorrectAnswers, 0);
+          expect(progress.scheduledPracticeCorrectAnswerStreak, 0);
           expect(progress.intervalDays, 1);
           // quality=1 → delta = 0.1-(5-1)*(0.08+(5-1)*0.02) = 0.1-4*(0.08+0.08)
           //           = 0.1-4*0.16 = 0.1-0.64 = -0.54 → 2.0-0.54=1.46
@@ -235,7 +235,10 @@ void main() {
 
           await service.processSessionResults([_anki(word, AnkiGrade.hard)]);
 
-          expect(progress.consequetiveCorrectAnswers, 0); // hard is a mistake
+          expect(
+            progress.scheduledPracticeCorrectAnswerStreak,
+            0,
+          ); // hard is a mistake
           expect(progress.intervalDays, 1);
           expect(progress.easinessFactor, lessThan(2.0));
         },
@@ -250,7 +253,7 @@ void main() {
 
           await service.processSessionResults([_anki(word, AnkiGrade.good)]);
 
-          expect(progress.consequetiveCorrectAnswers, 3);
+          expect(progress.scheduledPracticeCorrectAnswerStreak, 3);
           // quality=4 → delta=0.1-(5-4)*(0.08+(5-4)*0.02)=0.1-1*(0.1)=0
           // new EF = 2.0 (unchanged)
           expect(progress.easinessFactor, closeTo(2.0, 0.0001));
@@ -331,16 +334,21 @@ void main() {
       }) {
         final p = DbWordProgress();
         p.exerciseType = ExerciseTypeDetailed.flipCardDutchEnglish;
-        p.consequetiveCorrectAnswers = consecutive;
+        p.scheduledPracticeCorrectAnswerStreak = consecutive;
         p.intervalDays = interval;
-        p.lastReviewDate = DateTime.now().subtract(const Duration(days: 5));
-        // Far future â†’ not due, not in early window
+        p.lastReviewDate = DateTime.now().subtract(
+          const Duration(days: 5),
+        ); // Set lastPracticed so isFirstEverPractice = false; otherwise the word
+        // would be treated as a brand-new scheduled review instead of extra practice.
+        p.lastPracticed = DateTime.now().subtract(
+          const Duration(days: 5),
+        ); // Far future â†’ not due, not in early window
         p.nextReviewDate = DateTime.now().add(const Duration(days: 25));
         return p;
       }
 
       test(
-        'correct answer increments consecutive count even in extra practice',
+        'correct answer increments customPracticeCorrectAnswerStreak in extra practice',
         () async {
           final word = _word();
           final progress = extraPracticeProgress(consecutive: 1);
@@ -349,11 +357,17 @@ void main() {
           await service.processSessionResults([_simplified(word)]);
 
           expect(
-            progress.consequetiveCorrectAnswers,
-            2,
+            progress.customPracticeCorrectAnswerStreak,
+            1,
             reason:
-                'consecutive count must update in every practice attempt '
-                'so unlocks work after repeating a word',
+                'customPracticeCorrectAnswerStreak must increment on a correct '
+                'extra-practice answer so unlocks work after repeating a word',
+          );
+          expect(
+            progress.scheduledPracticeCorrectAnswerStreak,
+            1,
+            reason:
+                'scheduledPracticeCorrectAnswerStreak must not change during extra practice',
           );
           // SM-2 schedule is unchanged
           expect(
@@ -371,21 +385,32 @@ void main() {
         },
       );
 
-      test('mistake resets consecutive count even in extra practice', () async {
-        final word = _word();
-        final progress = extraPracticeProgress(consecutive: 2);
-        stubRepo(word, progress);
+      test(
+        'mistake resets customPracticeCorrectAnswerStreak in extra practice',
+        () async {
+          final word = _word();
+          final progress = extraPracticeProgress(consecutive: 2);
+          // Pre-set a custom streak to verify it resets on mistake.
+          progress.customPracticeCorrectAnswerStreak = 2;
+          stubRepo(word, progress);
 
-        await service.processSessionResults([_simplified(word, wrong: 1)]);
+          await service.processSessionResults([_simplified(word, wrong: 1)]);
 
-        expect(
-          progress.consequetiveCorrectAnswers,
-          0,
-          reason: 'mistake must reset consecutive count',
-        );
-        // SM-2 schedule is still unchanged in practice-only mode
-        expect(progress.intervalDays, 30);
-      });
+          expect(
+            progress.customPracticeCorrectAnswerStreak,
+            0,
+            reason: 'mistake must reset customPracticeCorrectAnswerStreak',
+          );
+          expect(
+            progress.scheduledPracticeCorrectAnswerStreak,
+            2,
+            reason:
+                'scheduledPracticeCorrectAnswerStreak must not change during extra practice',
+          );
+          // SM-2 schedule is still unchanged in practice-only mode
+          expect(progress.intervalDays, 30);
+        },
+      );
 
       test('extra practice does not change nextReviewDate', () async {
         final word = _word();
@@ -427,8 +452,8 @@ void main() {
         // With new design, processSessionResults only calls getOrCreateManyAsync
         // once (for session keys). Unlock persistence is in ExerciseUnlockService.
         verify(mockRepo.getOrCreateManyAsync(any)).called(1);
-        // consecutive 0â†’1
-        expect(progress.consequetiveCorrectAnswers, 1);
+        // consecutive 0→1
+        expect(progress.scheduledPracticeCorrectAnswerStreak, 1);
         expect(
           true,
           isTrue,
