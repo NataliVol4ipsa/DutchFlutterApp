@@ -2,6 +2,7 @@ import 'package:dutch_app/core/local_db/repositories/word_progress_batch_reposit
 import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
+import 'package:dutch_app/domain/services/exercise_unlock_service.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
@@ -30,6 +31,9 @@ List<Provider> serviceProviders() {
     Provider<WordProgressService>(
       create: (context) => WordProgressService(
         wordProgressRepository: context.read<WordProgressBatchRepository>(),
+        unlockService: ExerciseUnlockService(
+          repository: context.read<WordProgressBatchRepository>(),
+        ),
       ),
     ),
     Provider<QuickPracticeService>(

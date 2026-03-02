@@ -67,7 +67,7 @@ class QuickPracticeService {
       );
     }
 
-    final allIds = practiceableWords.map((w) => w.id!).toList();
+    final allIds = practiceableWords.map((w) => w.id).toList();
     final progressByWordId = await wordProgressRepository
         .getProgressByWordIdAsync(allIds);
     final unlockedTypesById = computeUnlockedTypesPerWord(
@@ -257,6 +257,15 @@ class QuickPracticeService {
         .where((w) => _isSupportedByAnyType(activeTypes, w))
         .toList();
 
+    // Compute remaining daily new-word quota to share with the auto session.
+    final alreadyNewToday = await wordProgressRepository
+        .countNewWordsIntroducedTodayAsync();
+    final remainingNewQuota =
+        (sessionSettings.newWordsPerSession - alreadyNewToday).clamp(
+          0,
+          sessionSettings.newWordsPerSession,
+        );
+
     final wordIds = supportedWords.map((w) => w.id).toList();
     final practicedIds = await wordProgressService.getPracticedWordIdsAsync(
       wordIds,
@@ -264,7 +273,7 @@ class QuickPracticeService {
 
     final newWords = supportedWords
         .where((w) => !practicedIds.contains(w.id))
-        .take(sessionSettings.newWordsPerSession)
+        .take(remainingNewQuota)
         .toList();
 
     final reviewWords = supportedWords
@@ -280,7 +289,7 @@ class QuickPracticeService {
       );
     }
 
-    final allIds = practiceableWords.map((w) => w.id!).toList();
+    final allIds = practiceableWords.map((w) => w.id).toList();
     final progressByWordId = await wordProgressRepository
         .getProgressByWordIdAsync(allIds);
     final unlockedTypesById = computeUnlockedTypesPerWord(

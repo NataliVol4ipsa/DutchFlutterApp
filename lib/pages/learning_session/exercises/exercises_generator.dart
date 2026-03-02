@@ -68,7 +68,7 @@ class ExercisesGenerator {
         .where(
           (w) =>
               FlipCardExercise.isSupportedWord(w) &&
-              _isUnlocked(w.id!, ExerciseTypeDetailed.flipCardDutchEnglish),
+              _isUnlocked(w.id, ExerciseTypeDetailed.flipCardDutchEnglish),
         )
         .toList();
 
@@ -86,7 +86,7 @@ class ExercisesGenerator {
         .where(
           (w) =>
               FlipCardEnglishDutchExercise.isSupportedWord(w) &&
-              _isUnlocked(w.id!, ExerciseTypeDetailed.flipCardEnglishDutch),
+              _isUnlocked(w.id, ExerciseTypeDetailed.flipCardEnglishDutch),
         )
         .toList();
 
@@ -159,7 +159,7 @@ class ExercisesGenerator {
                 w,
                 includePhrasesInWriting: includePhrasesInWriting,
               ) &&
-              _isUnlocked(w.id!, ExerciseTypeDetailed.basicWrite),
+              _isUnlocked(w.id, ExerciseTypeDetailed.basicWrite),
         )
         .toList();
     var exercises = supportedWords.map((word) => WriteExercise(word)).toList();

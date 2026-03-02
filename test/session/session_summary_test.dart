@@ -251,4 +251,87 @@ void main() {
       expect(single.displayLabel, 'FlipCard Translation');
     });
   });
+
+  // ── zero-word group filtering ───────────────────────────────────────────────
+  group('zero-word group filtering', () {
+    test(
+      'active basicWrite type with no matching summaries is omitted from summariesPerExercise',
+      () {
+        // Only flipCard details; basicWrite appears in exerciseTypes but had
+        // no words actually practiced.
+        final summaries = [
+          _detail(0, exerciseType: ExerciseType.flipCard),
+          _detail(1, exerciseType: ExerciseType.flipCard),
+        ];
+        final session = SessionSummary(
+          totalWords: 2,
+          totalExercises: 2,
+          exerciseTypes: [ExerciseType.flipCard, ExerciseType.basicWrite],
+          detailedSummaries: summaries,
+        );
+
+        expect(session.summariesPerExercise.length, 1);
+        expect(
+          session.summariesPerExercise.first.exerciseType,
+          ExerciseType.flipCard,
+        );
+      },
+    );
+
+    test(
+      'totalExerciseTypes counts only groups that had at least one word',
+      () {
+        final summaries = [_detail(0, exerciseType: ExerciseType.flipCard)];
+        final session = SessionSummary(
+          totalWords: 1,
+          totalExercises: 1,
+          exerciseTypes: [ExerciseType.flipCard, ExerciseType.basicWrite],
+          detailedSummaries: summaries,
+        );
+
+        // basicWrite had 0 words, so it should not count towards exercise types
+        expect(session.totalExerciseTypes, 1);
+      },
+    );
+
+    test(
+      'flipCard + flipCardReverse + basicWrite: write group omitted when write had 0 words',
+      () {
+        final summaries = [
+          _detail(0, exerciseType: ExerciseType.flipCard),
+          _detail(1, exerciseType: ExerciseType.flipCardReverse),
+        ];
+        final session = SessionSummary(
+          totalWords: 2,
+          totalExercises: 2,
+          exerciseTypes: [
+            ExerciseType.flipCard,
+            ExerciseType.flipCardReverse,
+            ExerciseType.basicWrite,
+          ],
+          detailedSummaries: summaries,
+        );
+
+        // The two flipcard types merge into one group; write group is absent
+        expect(session.summariesPerExercise.length, 1);
+        expect(session.totalExerciseTypes, 1);
+      },
+    );
+
+    test('all exercise types have words → all groups retained', () {
+      final summaries = [
+        _detail(0, exerciseType: ExerciseType.flipCard),
+        _detail(1, exerciseType: ExerciseType.basicWrite),
+      ];
+      final session = SessionSummary(
+        totalWords: 2,
+        totalExercises: 2,
+        exerciseTypes: [ExerciseType.flipCard, ExerciseType.basicWrite],
+        detailedSummaries: summaries,
+      );
+
+      expect(session.summariesPerExercise.length, 2);
+      expect(session.totalExerciseTypes, 2);
+    });
+  });
 }

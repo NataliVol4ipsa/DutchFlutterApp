@@ -60,7 +60,7 @@ class FlipCardEnglishDutchExercise extends BaseExercise {
         exerciseType: ExerciseType.flipCardReverse,
         totalCorrectAnswers: answerSummary.totalCorrectAnswers,
         totalWrongAnswers: answerSummary.totalWrongAnswers,
-        correctAnswer: '${inputWord} → ${correctAnswer}',
+        correctAnswer: '$inputWord → $correctAnswer',
       ),
     ];
   }

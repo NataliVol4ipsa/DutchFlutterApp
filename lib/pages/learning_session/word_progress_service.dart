@@ -1,7 +1,9 @@
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
 import 'package:dutch_app/core/local_db/repositories/tools/word_progress_key.dart';
 import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
-import 'package:dutch_app/domain/models/exercise_type_order.dart';
+import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/models/word_exercises_to_unlock.dart';
+import 'package:dutch_app/domain/services/exercise_unlock_service.dart';
 import 'package:dutch_app/domain/services/spaced_repetition_algorithm.dart';
 import 'package:dutch_app/domain/types/anki_grade.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
@@ -11,8 +13,12 @@ import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summa
 // Main spaced repetition logic calculation
 class WordProgressService {
   final WordProgressBatchRepository wordProgressRepository;
+  final ExerciseUnlockService unlockService;
 
-  WordProgressService({required this.wordProgressRepository});
+  WordProgressService({
+    required this.wordProgressRepository,
+    required this.unlockService,
+  });
 
   //todo rewrite with proper ex type
   ExerciseTypeDetailed _mapToDetailedExerciseType(ExerciseType exerciseType) {
@@ -45,10 +51,23 @@ class WordProgressService {
   Future<bool> practicedTodayAsync() =>
       wordProgressRepository.practicedTodayExistsAsync();
 
-  Future<void> processSessionResults(
+  /// Processes session results, updates word progress, detects newly unlocked
+  /// exercise types and persists their DB records.
+  Future<List<WordExercisesToUnlock>> processSessionResults(
     List<ExerciseSummaryDetailed> detailedSummaries,
   ) async {
-    if (detailedSummaries.isEmpty) return;
+    if (detailedSummaries.isEmpty) return const [];
+
+    // Collect unique words from summaries for unlock tracking.
+    final wordsById = <int, Word>{};
+    for (final s in detailedSummaries) {
+      wordsById[s.wordId] = s.word;
+    }
+    final words = wordsById.values.toList();
+    final wordIds = words.map((w) => w.id).toList();
+
+    // Snapshot unlock state BEFORE applying the session so we can diff later.
+    final preUnlocked = await unlockService.snapshotUnlockedTypesAsync(wordIds);
 
     final keys = detailedSummaries
         .map(
@@ -64,7 +83,6 @@ class WordProgressService {
     );
 
     final updatedProgress = <DbWordProgress>[];
-    final nextTypeKeys = <WordProgressKey>{};
 
     for (final summary in detailedSummaries) {
       final detailedType = _mapToDetailedExerciseType(summary.exerciseType);
@@ -74,21 +92,15 @@ class WordProgressService {
 
       _applySessionOutcome(progress, summary);
       updatedProgress.add(progress);
-
-      final unlocked = ExerciseTypeOrder.getNewlyUnlockedTypes(
-        detailedType,
-        progress.consequetiveCorrectAnswers,
-      );
-      for (final unlockedType in unlocked) {
-        nextTypeKeys.add(WordProgressKey(summary.wordId, unlockedType));
-      }
     }
 
     await wordProgressRepository.saveAllAsync(updatedProgress);
 
-    if (nextTypeKeys.isNotEmpty) {
-      await wordProgressRepository.getOrCreateManyAsync(nextTypeKeys.toList());
-    }
+    // Compute newly unlocked types, persist their records, and return results.
+    return unlockService.computeAndPersistNewUnlocksAsync(
+      words: words,
+      preSessionUnlocked: preUnlocked,
+    );
   }
 
   //
@@ -137,6 +149,16 @@ class WordProgressService {
     final Duration timeUntilDue = progress.nextReviewDate.difference(now);
     final bool isWithinEarlyWindow = !isDue && timeUntilDue <= earlyWindow;
 
+    // ── Always update consecutive count (used for unlock tracking) ───────────
+    // This runs for every practice attempt – scheduled reviews AND extra
+    // practice – so that a user can unlock new exercise types by repeating
+    // a word several times on the same day even if the word is not yet due.
+    // The SM-2 scheduling block below remains gated on real reviews only, so
+    // extra practice never advances nextReviewDate.
+    progress.consequetiveCorrectAnswers = isMistake
+        ? 0
+        : progress.consequetiveCorrectAnswers + 1;
+
     if (isFirstEverPractice || isDue || isWithinEarlyWindow) {
       // ── Real review ──────────────────────────────────────────────────────
       final updatedEasinessFactor =
@@ -144,20 +166,16 @@ class WordProgressService {
             progress.easinessFactor,
             quality,
           );
-      final updatedConsecutiveCorrect = isMistake
-          ? 0
-          : progress.consequetiveCorrectAnswers + 1;
       final updatedIntervalDays =
           SpacedRepetitionAlgorithm.calculateNewIntervalDays(
             isMistake,
-            updatedConsecutiveCorrect,
+            progress.consequetiveCorrectAnswers,
             updatedEasinessFactor,
             progress.intervalDays,
             isAnkiEasy: summary.ankiGrade == AnkiGrade.easy,
           );
 
       progress.easinessFactor = updatedEasinessFactor;
-      progress.consequetiveCorrectAnswers = updatedConsecutiveCorrect;
       progress.intervalDays = updatedIntervalDays;
       progress.lastReviewDate = now;
 
@@ -171,7 +189,8 @@ class WordProgressService {
         progress.nextReviewDate = now.add(Duration(days: updatedIntervalDays));
       }
     }
-    // else: practice-only – lastPracticed was already stamped above; nothing else changes.
+    // else: practice-only – lastPracticed stamped and consecutive count updated;
+    //       SM-2 schedule (nextReviewDate / intervalDays) is left unchanged.
   }
 
   /// Early window = min(12 h, 20 % of the current interval).

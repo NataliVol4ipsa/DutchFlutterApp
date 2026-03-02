@@ -105,6 +105,42 @@ void main() {
         expect(unlocked, isNot(contains(ExerciseTypeDetailed.basicWrite)));
       },
     );
+
+    test(
+      'consecutive reset to 0 but type record exists → type stays unlocked',
+      () {
+        // Simulates a mistake after unlock: consecutive resets, but the DB
+        // record for flipCardEnglishDutch and basicWrite both exist.
+        final unlocked = ExerciseTypeOrder.unlockedTypesForWord({
+          ExerciseTypeDetailed.flipCardDutchEnglish: 0,
+          // Records exist for these types → they stay unlocked.
+          ExerciseTypeDetailed.flipCardEnglishDutch: 0,
+          ExerciseTypeDetailed.basicWrite: 0,
+        });
+        expect(
+          unlocked,
+          containsAll([
+            ExerciseTypeDetailed.flipCardDutchEnglish,
+            ExerciseTypeDetailed.flipCardEnglishDutch,
+            ExerciseTypeDetailed.basicWrite,
+          ]),
+          reason: 'established types must not be re-locked after a mistake',
+        );
+      },
+    );
+
+    test(
+      'flipCardEnglishDutch record exists but consecutive 0 → stays unlocked',
+      () {
+        final unlocked = ExerciseTypeOrder.unlockedTypesForWord({
+          ExerciseTypeDetailed.flipCardDutchEnglish: 0,
+          ExerciseTypeDetailed.flipCardEnglishDutch: 0,
+        });
+        expect(unlocked, contains(ExerciseTypeDetailed.flipCardEnglishDutch));
+        // basicWrite has no record and prerequisite count 0 → still locked.
+        expect(unlocked, isNot(contains(ExerciseTypeDetailed.basicWrite)));
+      },
+    );
   });
 
   // ── QuickPracticeService.computeUnlockedTypesPerWord ───────────────────────

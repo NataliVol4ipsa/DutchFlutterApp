@@ -234,6 +234,48 @@ class WordProgressBatchRepository {
     return top;
   }
 
+  /// Counts distinct words that were introduced (practiced for the FIRST time)
+  /// today. A word counts as "introduced today" when it has at least one
+  /// progress record with [lastPracticed] today but NO record with
+  /// [lastPracticed] before today (i.e. today was the very first practice).
+  Future<int> countNewWordsIntroducedTodayAsync() async {
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    // All progress records that were last practiced today.
+    final todayRecords = await DbContext.isar.dbWordProgress
+        .filter()
+        .lastPracticedBetween(startOfDay, endOfDay)
+        .findAll();
+
+    if (todayRecords.isEmpty) return 0;
+
+    for (final r in todayRecords) {
+      await r.word.load();
+    }
+
+    final todayWordIds = todayRecords
+        .map((r) => r.word.value?.id)
+        .whereType<int>()
+        .toSet();
+
+    // A word is "new today" when none of its progress records carry a
+    // lastPracticed date from before today.
+    int count = 0;
+    for (final wordId in todayWordIds) {
+      final hasOlderRecord =
+          await DbContext.isar.dbWordProgress
+              .filter()
+              .word((q) => q.idEqualTo(wordId))
+              .lastPracticedLessThan(startOfDay)
+              .count() >
+          0;
+      if (!hasOlderRecord) count++;
+    }
+    return count;
+  }
+
   Future<bool> practicedTodayExistsAsync() async {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);

@@ -3,7 +3,8 @@ import 'package:dutch_app/pages/learning_session/base/base_exercise_layout_widge
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 import 'package:dutch_app/pages/learning_session/summary/exercise_total_cards_builder.dart';
 import 'package:dutch_app/pages/learning_session/summary/session_summary.dart';
-import 'package:dutch_app/pages/learning_session/summary/summary_totals_widget.dart';
+import 'package:dutch_app/pages/learning_session/summary/widgets/summary_totals_widget.dart';
+import 'package:dutch_app/pages/learning_session/summary/widgets/unlocked_exercises_widget.dart';
 import 'package:dutch_app/reusable_widgets/section_container_widget.dart';
 import 'package:dutch_app/styles/border_styles.dart';
 import 'package:dutch_app/styles/button_styles.dart';
@@ -144,6 +145,8 @@ class SessionSummaryWidget extends StatelessWidget {
     final List<Widget> contentSections = [
       SummaryTotals(summary: summary),
       ..._buildSummaryPerExercise(context),
+      if (summary.newlyUnlockedExercises.isNotEmpty)
+        UnlockedExercisesCard(newUnlocks: summary.newlyUnlockedExercises),
     ];
 
     return BaseExerciseLayout(

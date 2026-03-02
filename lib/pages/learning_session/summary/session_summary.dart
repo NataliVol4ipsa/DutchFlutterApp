@@ -1,3 +1,4 @@
+import 'package:dutch_app/domain/models/word_exercises_to_unlock.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/pages/learning_session/exercises/shared/exercise_summary_detailed.dart';
 
@@ -8,6 +9,7 @@ class SessionSummary {
   final int totalExercises;
   final List<ExerciseType> exerciseTypes;
   final List<ExerciseSummaryDetailed> detailedSummaries;
+  final List<WordExercisesToUnlock> newlyUnlockedExercises;
 
   late int totalExerciseTypes;
   late int totalMistakes;
@@ -20,8 +22,14 @@ class SessionSummary {
     required this.totalExercises,
     required this.exerciseTypes,
     required this.detailedSummaries,
+    this.newlyUnlockedExercises = const [],
   }) {
-    totalExerciseTypes = exerciseTypes.length;
+    summariesPerExercise = _buildSummariesPerExercise(
+      exerciseTypes,
+      detailedSummaries,
+    );
+
+    totalExerciseTypes = summariesPerExercise.length;
 
     totalMistakes = detailedSummaries.fold(
       0,
@@ -32,11 +40,6 @@ class SessionSummary {
         ? (totalMistakes * 100 / totalAttempts)
         : 0;
     successRatePercent = 100 - mistakeRatePercent;
-
-    summariesPerExercise = _buildSummariesPerExercise(
-      exerciseTypes,
-      detailedSummaries,
-    );
   }
 
   static List<SingleExerciseTypeSummary> _buildSummariesPerExercise(
@@ -65,6 +68,7 @@ class SessionSummary {
             detailedSummaries: detailedSummaries,
           ),
         )
+        .where((s) => s.totalWords > 0)
         .toList();
   }
 }

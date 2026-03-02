@@ -40,12 +40,6 @@ class ExerciseTypeOrder {
         .toList();
   }
 
-  /// Returns the set of [ExerciseTypeDetailed] that are currently unlocked for
-  /// a word given its existing progress records.
-  ///
-  /// [progressByType] maps each tracked exercise type to the word's current
-  /// consecutiveCorrectAnswers count for that type.  Types with no progress
-  /// record are implicitly 0.
   static Set<ExerciseTypeDetailed> unlockedTypesForWord(
     Map<ExerciseTypeDetailed, int> progressByType,
   ) {
@@ -54,7 +48,9 @@ class ExerciseTypeOrder {
       final type = entry.key;
       final trigger = entry.value;
       if (trigger == null) {
-        // No prerequisite – always available.
+        result.add(type);
+      } else if (progressByType.containsKey(type)) {
+        // A DB record for this type already exists - it was unlocked before;
         result.add(type);
       } else if ((progressByType[trigger.prerequisite] ?? 0) >=
           trigger.requiredCorrectAnswers) {

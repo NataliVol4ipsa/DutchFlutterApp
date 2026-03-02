@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:dutch_app/domain/models/word_exercises_to_unlock.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
@@ -22,6 +23,7 @@ class LearningSessionManager {
 
   List<ExerciseSummaryDetailed>? detailedSummaries;
   SessionSummary? sessionSummary;
+  List<WordExercisesToUnlock> unlockResults = const [];
 
   final bool includePhrasesInWriting;
 
@@ -74,7 +76,9 @@ class LearningSessionManager {
         .expand((ex) => ex.generateSummaries())
         .toList();
 
-    await wordProgressService.processSessionResults(detailedSummaries!);
+    unlockResults = await wordProgressService.processSessionResults(
+      detailedSummaries!,
+    );
     _generateSummary();
   }
 
@@ -84,6 +88,7 @@ class LearningSessionManager {
       totalExercises: exercises.length,
       exerciseTypes: exerciseTypes,
       detailedSummaries: detailedSummaries!,
+      newlyUnlockedExercises: unlockResults,
     );
   }
 
