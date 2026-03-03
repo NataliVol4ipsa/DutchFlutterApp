@@ -223,10 +223,10 @@ class MockQuickPracticeCoordinator extends _i1.Mock
       ) as bool);
 
   @override
-  _i6.Future<void> startAsync(_i11.BuildContext? context) =>
+  _i6.Future<void> startQuickPracticeAsync(_i11.BuildContext? context) =>
       (super.noSuchMethod(
         Invocation.method(
-          #startAsync,
+          #startQuickPracticeAsync,
           [context],
         ),
         returnValue: _i6.Future<void>.value(),
@@ -234,13 +234,13 @@ class MockQuickPracticeCoordinator extends _i1.Mock
       ) as _i6.Future<void>);
 
   @override
-  _i6.Future<void> startWithWordsAsync(
+  _i6.Future<void> startQuickPracticeFromWordsAsync(
     _i11.BuildContext? context,
     List<_i12.Word>? words,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
-          #startWithWordsAsync,
+          #startQuickPracticeFromWordsAsync,
           [
             context,
             words,

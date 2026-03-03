@@ -2,16 +2,32 @@
 
 import 'package:dutch_app/core/local_db/entities/db_word.dart';
 import 'package:dutch_app/core/local_db/entities/db_word_progress.dart';
+import 'package:dutch_app/core/local_db/repositories/word_progress_batch_repository.dart';
+import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
+import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
 import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
+import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
 import 'package:dutch_app/domain/types/part_of_speech.dart';
+import 'package:dutch_app/pages/learning_session/word_progress_service.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+import 'extra_practice_session_test.mocks.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Settings with a given repetitionsPerSession (used in service-level tests).
+Settings _serviceSettings({int repetitions = 10}) => Settings(
+  theme: ThemeSettings(),
+  session: SessionSettings(repetitionsPerSession: repetitions),
+);
 
 /// Minimal [Word] with a given id. FlipCard supports all words, so this
 /// passes the supported-word filter whenever [ExerciseModeQuota.flipCardOnly]
@@ -54,6 +70,12 @@ bool _allSupported(Word _) => true;
 // Tests for QuickPracticeService.selectWordsForExtraPractice
 // ─────────────────────────────────────────────────────────────────────────────
 
+@GenerateMocks([
+  SettingsService,
+  WordProgressBatchRepository,
+  WordsRepository,
+  WordProgressService,
+])
 void main() {
   // ── Empty selection ────────────────────────────────────────────────────────
   group('selectWordsForExtraPractice – empty selection', () {
@@ -699,5 +721,345 @@ void main() {
       expect(result.length, 1);
       expect(result.first.word.value!.id, 1);
     });
+  });
+
+  // ── buildExtraPracticeSessionAsync – allowedWordIds collection filter ──────
+  //
+  // Word seed: 20 words per bucket ensures plenty of non-allowed candidates,
+  // so tests can distinguish "allowed words were chosen" from "all words were
+  // chosen" and prove the filter is actually applied.
+  //
+  // Quota: flipCardOnly → only ExerciseTypeDetailed.flipCardDutchEnglish is
+  // queried. FlipCardExercise.isSupportedWord returns true for every word, so
+  // every word in the pool passes the exercise-type gate and only
+  // allowedWordIds narrows the result.
+  // ──────────────────────────────────────────────────────────────────────────
+  group('buildExtraPracticeSessionAsync – allowedWordIds collection filter', () {
+    late MockSettingsService mockSettings;
+    late MockWordProgressBatchRepository mockRepo;
+    late MockWordsRepository mockWordsRepo;
+    late MockWordProgressService mockWPS;
+    late ExerciseAnsweredNotifier notifier;
+    late QuickPracticeService service;
+
+    // Rich pool: words 1..20 in the weakest bucket, 21..40 in tomorrow,
+    // 41..60 in recentlyLearned, 61..80 in random.
+    final weakestPool = List.generate(20, (i) => _progress(i + 1));
+    final tomorrowPool = List.generate(20, (i) => _progress(i + 21));
+    final recentPool = List.generate(20, (i) => _progress(i + 41));
+    final randomPool = List.generate(20, (i) => _progress(i + 61));
+
+    // All 80 words available from wordsRepository.getWordAsync.
+    final allWords = {for (int i = 1; i <= 80; i++) i: _word(i)};
+
+    setUp(() {
+      mockSettings = MockSettingsService();
+      mockRepo = MockWordProgressBatchRepository();
+      mockWordsRepo = MockWordsRepository();
+      mockWPS = MockWordProgressService();
+      notifier = ExerciseAnsweredNotifier();
+
+      service = QuickPracticeService(
+        wordsRepository: mockWordsRepo,
+        wordProgressRepository: mockRepo,
+        settingsService: mockSettings,
+        quota: ExerciseModeQuota.flipCardOnly,
+      );
+
+      // Default: fetch all repetitions (10) per session.
+      when(
+        mockSettings.getSettingsAsync(),
+      ).thenAnswer((_) async => _serviceSettings(repetitions: 10));
+
+      // Default: all bucket methods return empty list.
+      when(
+        mockRepo.getWeakestProgressAsync(any, any),
+      ).thenAnswer((_) async => []);
+      when(
+        mockRepo.getTomorrowProgressAsync(any, any),
+      ).thenAnswer((_) async => []);
+      when(
+        mockRepo.getRecentlyLearnedProgressAsync(any, any),
+      ).thenAnswer((_) async => []);
+      when(
+        mockRepo.getRandomProgressAsync(any, any),
+      ).thenAnswer((_) async => []);
+
+      // Word lookup drives the allWords map (returns null for unknown IDs).
+      when(mockWordsRepo.getWordAsync(any)).thenAnswer(
+        (inv) async => allWords[inv.positionalArguments.first as int],
+      );
+    });
+
+    tearDown(() => notifier.dispose());
+
+    // ── Helper that returns progress sliced by the requested limit ──────────
+    void stubWeakest(List<DbWordProgress> pool) {
+      when(mockRepo.getWeakestProgressAsync(any, any)).thenAnswer((inv) async {
+        final limit = inv.positionalArguments[1] as int;
+        return pool.take(limit).toList();
+      });
+    }
+
+    void stubTomorrow(List<DbWordProgress> pool) {
+      when(mockRepo.getTomorrowProgressAsync(any, any)).thenAnswer((inv) async {
+        final limit = inv.positionalArguments[1] as int;
+        return pool.take(limit).toList();
+      });
+    }
+
+    void stubRecentlyLearned(List<DbWordProgress> pool) {
+      when(mockRepo.getRecentlyLearnedProgressAsync(any, any)).thenAnswer((
+        inv,
+      ) async {
+        final limit = inv.positionalArguments[1] as int;
+        return pool.take(limit).toList();
+      });
+    }
+
+    void stubRandom(List<DbWordProgress> pool) {
+      when(mockRepo.getRandomProgressAsync(any, any)).thenAnswer((inv) async {
+        final limit = inv.positionalArguments[1] as int;
+        return pool.take(limit).toList();
+      });
+    }
+
+    // ── Tests ────────────────────────────────────────────────────────────────
+
+    test(
+      'allowedWordIds restricts session to only words in the collection',
+      () async {
+        // Bucket returns words 1..20; collection only contains {1, 3, 5, 7, 9}.
+        stubWeakest(weakestPool);
+        final allowed = {1, 3, 5, 7, 9};
+
+        final session = await service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: true,
+            useTomorrowsWords: false,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          allowedWordIds: allowed,
+        );
+
+        final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+        expect(
+          resultIds,
+          everyElement(
+            anyOf(equals(1), equals(3), equals(5), equals(7), equals(9)),
+          ),
+          reason: 'session must contain only words from the collection',
+        );
+        expect(resultIds.every(allowed.contains), isTrue);
+      },
+    );
+
+    test(
+      'words outside allowedWordIds are excluded even though bucket returns them',
+      () async {
+        // Bucket returns words 1..20; collection contains only the upper half.
+        stubWeakest(weakestPool); // words 1..20
+        final allowed = {11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+
+        final session = await service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: true,
+            useTomorrowsWords: false,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          allowedWordIds: allowed,
+        );
+
+        final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+        expect(
+          resultIds.any((id) => id < 11),
+          isFalse,
+          reason: 'words with IDs 1-10 are not in the collection',
+        );
+        expect(resultIds.every(allowed.contains), isTrue);
+      },
+    );
+
+    test(
+      'without allowedWordIds any bucket word can appear in the session',
+      () async {
+        // Bucket returns words 1..20; no filter → all are eligible.
+        stubWeakest(weakestPool);
+
+        final session = await service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: true,
+            useTomorrowsWords: false,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          // allowedWordIds omitted → global mode, no restriction
+        );
+
+        // Should fill up to repetitionsPerSession (10) from the 20-word pool.
+        expect(session.flowManager.words.length, 10);
+        final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+        // At least some words with IDs > 5 should appear (proving the full
+        // pool is available and not silently capped to a small subset).
+        expect(resultIds.any((id) => id > 5), isTrue);
+      },
+    );
+
+    test('throws when all bucket words fall outside allowedWordIds', () async {
+      // Bucket returns words 1..20; collection allows only {100, 200}.
+      stubWeakest(weakestPool);
+
+      expect(
+        () => service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: true,
+            useTomorrowsWords: false,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          allowedWordIds: {100, 200},
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test(
+      'tomorrow bucket respects allowedWordIds (words 21-40 → allowed subset)',
+      () async {
+        // Tomorrow bucket returns words 21..40; collection is {22, 24, 26}.
+        stubTomorrow(tomorrowPool);
+        final allowed = {22, 24, 26};
+
+        final session = await service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: false,
+            useTomorrowsWords: true,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          allowedWordIds: allowed,
+        );
+
+        final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+        expect(resultIds.every(allowed.contains), isTrue);
+      },
+    );
+
+    test('recentlyLearned bucket respects allowedWordIds', () async {
+      // RecentlyLearned bucket returns words 41..60; collection is {42, 44, 46, 48}.
+      stubRecentlyLearned(recentPool);
+      final allowed = {42, 44, 46, 48};
+
+      final session = await service.buildExtraPracticeSessionAsync(
+        extraPracticeSettings: ExtraPracticeSettings(
+          useWeakestWords: false,
+          useTomorrowsWords: false,
+          useRecentlyLearned: true,
+          useRandomWords: false,
+        ),
+        wordProgressService: mockWPS,
+        notifier: notifier,
+        allowedWordIds: allowed,
+      );
+
+      final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+      expect(resultIds.every(allowed.contains), isTrue);
+    });
+
+    test('random bucket respects allowedWordIds', () async {
+      // Random bucket returns words 61..80; collection is {62, 64, 66, 68, 70}.
+      stubRandom(randomPool);
+      final allowed = {62, 64, 66, 68, 70};
+
+      final session = await service.buildExtraPracticeSessionAsync(
+        extraPracticeSettings: ExtraPracticeSettings(
+          useWeakestWords: false,
+          useTomorrowsWords: false,
+          useRecentlyLearned: false,
+          useRandomWords: true,
+        ),
+        wordProgressService: mockWPS,
+        notifier: notifier,
+        allowedWordIds: allowed,
+      );
+
+      final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+      expect(resultIds.every(allowed.contains), isTrue);
+    });
+
+    test('all four buckets enabled: allowedWordIds spanning each bucket returns '
+        'only collection words from every bucket', () async {
+      // Each bucket has 20 unique words; collection picks 3 from each = 12 total.
+      // Session cap is 10, so exactly 10 should be returned.
+      stubWeakest(weakestPool); // 1..20
+      stubTomorrow(tomorrowPool); // 21..40
+      stubRecentlyLearned(recentPool); // 41..60
+      stubRandom(randomPool); // 61..80
+
+      // Allowed: 3 from each bucket band.
+      final allowed = {3, 7, 11, 23, 27, 31, 43, 47, 51, 63, 67, 71};
+
+      final session = await service.buildExtraPracticeSessionAsync(
+        extraPracticeSettings: ExtraPracticeSettings(
+          useWeakestWords: true,
+          useTomorrowsWords: true,
+          useRecentlyLearned: true,
+          useRandomWords: true,
+        ),
+        wordProgressService: mockWPS,
+        notifier: notifier,
+        allowedWordIds: allowed,
+      );
+
+      final resultIds = session.flowManager.words.map((w) => w.id).toSet();
+      // Every returned word must be in the allowed set.
+      expect(
+        resultIds.every(allowed.contains),
+        isTrue,
+        reason: 'session must only contain words from the collection',
+      );
+      // No duplicates.
+      expect(resultIds.length, session.flowManager.words.length);
+      // At most repetitionsPerSession words.
+      expect(session.flowManager.words.length, lessThanOrEqualTo(10));
+    });
+
+    test(
+      'session has no duplicates when bucket pools overlap with allowedWordIds spanning both',
+      () async {
+        // Weakest and tomorrow share words 10..20; allowed = {10, 11, 12}.
+        final overlap = List.generate(15, (i) => _progress(i + 6)); // 6..20
+        stubWeakest(overlap);
+        stubTomorrow(overlap);
+
+        final session = await service.buildExtraPracticeSessionAsync(
+          extraPracticeSettings: ExtraPracticeSettings(
+            useWeakestWords: true,
+            useTomorrowsWords: true,
+            useRecentlyLearned: false,
+            useRandomWords: false,
+          ),
+          wordProgressService: mockWPS,
+          notifier: notifier,
+          allowedWordIds: {10, 11, 12},
+        );
+
+        final ids = session.flowManager.words.map((w) => w.id).toList();
+        expect(ids.toSet().length, ids.length, reason: 'no duplicate words');
+        expect(ids.toSet().every({10, 11, 12}.contains), isTrue);
+      },
+    );
   });
 }

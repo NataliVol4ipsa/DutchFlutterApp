@@ -315,10 +315,14 @@ class QuickPracticeService {
   /// Builds a session for an optional extra-practice run (user already practiced
   /// today). Words are drawn from the buckets enabled in [extraPracticeSettings]
   /// with normalized weights. The session size equals [repetitionsPerSession].
+  ///
+  /// When [allowedWordIds] is provided (word-collection mode) only words whose
+  /// IDs are in that set are eligible candidates.
   Future<QuickPracticeSession> buildExtraPracticeSessionAsync({
     required ExtraPracticeSettings extraPracticeSettings,
     required WordProgressService wordProgressService,
     required ExerciseAnsweredNotifier notifier,
+    Set<int>? allowedWordIds,
   }) async {
     final sessionSettings = await _fetchSessionSettingsAsync();
     final activeTypes = quota.activeTypes;
@@ -333,7 +337,9 @@ class QuickPracticeService {
       fetchProgress: (bucket, limit) =>
           _fetchAcrossDetailedTypesAsync(bucket, detailedTypes, limit),
       fetchWord: wordsRepository.getWordAsync,
-      isWordSupported: (w) => _isSupportedByAnyType(activeTypes, w),
+      isWordSupported: (w) =>
+          _isSupportedByAnyType(activeTypes, w) &&
+          (allowedWordIds == null || allowedWordIds.contains(w.id)),
     );
 
     if (allBucketWords.isEmpty) {

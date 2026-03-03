@@ -28,7 +28,21 @@ class QuickPracticeCoordinator extends ChangeNotifier {
        _wordProgressService = wordProgressService,
        _exerciseAnsweredNotifier = exerciseAnsweredNotifier;
 
-  Future<void> startAsync(BuildContext context) async {
+  Future<void> startQuickPracticeAsync(BuildContext context) async {
+    await _startAsync(context, words: null);
+  }
+
+  Future<void> startQuickPracticeFromWordsAsync(
+    BuildContext context,
+    List<Word> words,
+  ) async {
+    await _startAsync(context, words: words);
+  }
+
+  Future<void> _startAsync(
+    BuildContext context, {
+    required List<Word>? words,
+  }) async {
     if (_isLoading) return;
 
     _isLoading = true;
@@ -45,6 +59,8 @@ class QuickPracticeCoordinator extends ChangeNotifier {
 
       if (alreadyPracticedToday) {
         // ── User already practiced today → offer extra practice ────────────
+        // This gate applies to both the global and word-collection modes so
+        // that completing one counts as "practiced" for the other.
         _isLoading = false;
         notifyListeners();
 
@@ -74,10 +90,15 @@ class QuickPracticeCoordinator extends ChangeNotifier {
           context,
           practiceService,
           chosenSettings,
+          words: words,
         );
       } else {
         // ── Normal scheduled session ───────────────────────────────────────
-        await _runRegularSession(context, practiceService);
+        if (words != null) {
+          await _runSessionFromWords(context, practiceService, words);
+        } else {
+          await _runRegularSession(context, practiceService);
+        }
       }
     } on Exception catch (e) {
       if (!context.mounted) return;
@@ -106,15 +127,34 @@ class QuickPracticeCoordinator extends ChangeNotifier {
     await _navigateToSession(context, session);
   }
 
+  Future<void> _runSessionFromWords(
+    BuildContext context,
+    PracticeSessionStatefulService practiceService,
+    List<Word> words,
+  ) async {
+    final session = await _quickPracticeService.buildSessionFromWordsAsync(
+      words: words,
+      wordProgressService: _wordProgressService,
+      notifier: _exerciseAnsweredNotifier,
+    );
+
+    if (!context.mounted) return;
+
+    practiceService.initializeWords(session.flowManager.words);
+    await _navigateToSession(context, session);
+  }
+
   Future<void> _runExtraPracticeSession(
     BuildContext context,
     PracticeSessionStatefulService practiceService,
-    ExtraPracticeSettings settings,
-  ) async {
+    ExtraPracticeSettings settings, {
+    List<Word>? words,
+  }) async {
     final session = await _quickPracticeService.buildExtraPracticeSessionAsync(
       extraPracticeSettings: settings,
       wordProgressService: _wordProgressService,
       notifier: _exerciseAnsweredNotifier,
+      allowedWordIds: words?.map((w) => w.id).toSet(),
     );
 
     if (!context.mounted) return;
@@ -142,40 +182,6 @@ class QuickPracticeCoordinator extends ChangeNotifier {
           builder: (_) => LearningSessionPage(flowManager: session.flowManager),
         ),
       );
-    }
-  }
-
-  Future<void> startWithWordsAsync(
-    BuildContext context,
-    List<Word> words,
-  ) async {
-    if (_isLoading) return;
-
-    _isLoading = true;
-    notifyListeners();
-
-    final practiceService = context.read<PracticeSessionStatefulService>();
-
-    try {
-      final session = await _quickPracticeService.buildSessionFromWordsAsync(
-        words: words,
-        wordProgressService: _wordProgressService,
-        notifier: _exerciseAnsweredNotifier,
-      );
-
-      if (!context.mounted) return;
-
-      practiceService.initializeWords(session.flowManager.words);
-      await _navigateToSession(context, session);
-    } on Exception catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
-    } finally {
-      practiceService.cleanup();
-      _isLoading = false;
-      notifyListeners();
     }
   }
 }

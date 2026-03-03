@@ -517,7 +517,10 @@ class _WordCollectionsListPageState extends State<WordCollectionsListPage> {
   void _handleOnQuickPracticeActionTap(BuildContext context) {
     if (!dataManager.containsAtLeastOneSelectedWord()) return;
     final coordinator = context.read<QuickPracticeCoordinator>();
-    coordinator.startWithWordsAsync(context, dataManager.getAllSelectedWords());
+    coordinator.startQuickPracticeFromWordsAsync(
+      context,
+      dataManager.getAllSelectedWords(),
+    );
   }
 
   void _handleOnExportActionTap(BuildContext context) {

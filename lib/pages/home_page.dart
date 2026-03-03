@@ -224,7 +224,7 @@ class HomePage extends StatelessWidget {
             disabledIcon: Icons.school_outlined,
             label: 'Quick Practice',
             isEnabled: !coordinator.isLoading,
-            onTap: () => coordinator.startAsync(context),
+            onTap: () => coordinator.startQuickPracticeAsync(context),
           ),
           MyBottomAppBarItem(
             icon: Icons.list,
