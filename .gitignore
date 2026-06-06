@@ -1,3 +1,6 @@
+# Developer secrets (injected via --dart-define-from-file)
+secrets.json
+
 # Miscellaneous
 *.class
 *.log

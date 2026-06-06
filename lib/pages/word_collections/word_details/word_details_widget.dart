@@ -114,14 +114,21 @@ class WordDetails extends StatelessWidget {
               ),
             ),
           ),
-          if (word.audioCode != null)
-            IconButton(
-              icon: const FormInputIcon(Icons.volume_up),
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                playCachedOrUrl(word.dutchWord, word.audioCode!);
-              },
-            ),
+          FutureBuilder<bool>(
+            future: WordAudioService.hasCachedAudio(word.dutchWord),
+            builder: (context, snapshot) {
+              if (snapshot.data != true) {
+                return const SizedBox.shrink();
+              }
+              return IconButton(
+                icon: const FormInputIcon(Icons.volume_up),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  WordAudioService.playCachedOrUrl(word.dutchWord);
+                },
+              );
+            },
+          ),
         ],
       ),
     );

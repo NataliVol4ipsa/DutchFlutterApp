@@ -11,16 +11,18 @@ class BaseWord {
   final String? contextExample;
   final String? contextExampleTranslation;
   final String? userNote;
-  final String? audioCode;
   final WordNounDetails? nounDetails;
   final WordVerbDetails? verbDetails;
 
-  BaseWord(this.dutchWord, this.englishWords, this.partOfSpeech,
-      {this.collection,
-      this.contextExample,
-      this.contextExampleTranslation,
-      this.userNote,
-      this.audioCode,
-      required this.nounDetails,
-      required this.verbDetails});
+  BaseWord(
+    this.dutchWord,
+    this.englishWords,
+    this.partOfSpeech, {
+    this.collection,
+    this.contextExample,
+    this.contextExampleTranslation,
+    this.userNote,
+    required this.nounDetails,
+    required this.verbDetails,
+  });
 }

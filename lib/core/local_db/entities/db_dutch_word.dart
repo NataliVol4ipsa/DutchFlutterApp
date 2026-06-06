@@ -11,7 +11,6 @@ class DbDutchWord {
 
   @Index(type: IndexType.hash, unique: true)
   late String word;
-  late String? audioCode;
 
   @Backlink(to: 'dutchWordLink')
   final words = IsarLinks<DbWord>();

@@ -30,7 +30,7 @@ class WordsMapper {
       return null;
     }
 
-//todo semicolon into array
+    //todo semicolon into array
     return Word(
       dbWord.id!,
       dbWord.dutchWordLink.value?.word ?? "ERROR",
@@ -40,7 +40,6 @@ class WordsMapper {
       contextExample: dbWord.contextExample,
       contextExampleTranslation: dbWord.contextExampleTranslation,
       userNote: dbWord.userNote,
-      audioCode: dbWord.dutchWordLink.value?.audioCode,
       nounDetails: _mapNounDetailsToDomain(dbWord.nounDetailsLink.value),
       verbDetails: _mapVerbDetailsToDomain(dbWord.verbDetailsLink.value),
     );
@@ -49,9 +48,10 @@ class WordsMapper {
   static WordNounDetails? _mapNounDetailsToDomain(DbWordNounDetails? details) {
     if (details == null) return null;
     return WordNounDetails(
-        deHetType: details.deHet,
-        diminutive: details.diminutiveWordLink.value?.word,
-        pluralForm: details.pluralFormWordLink.value?.word);
+      deHetType: details.deHet,
+      diminutive: details.diminutiveWordLink.value?.word,
+      pluralForm: details.pluralFormWordLink.value?.word,
+    );
   }
 
   static WordVerbDetails? _mapVerbDetailsToDomain(DbWordVerbDetails? details) {
@@ -100,8 +100,10 @@ class WordsMapper {
   }
 
   static Future<List<Word>> mapWithCollectionToDomainListAsync(
-      List<DbWord> words) {
+    List<DbWord> words,
+  ) {
     return Future.wait(
-        words.map((word) => mapWithCollectionToDomainAsync(word)));
+      words.map((word) => mapWithCollectionToDomainAsync(word)),
+    );
   }
 }

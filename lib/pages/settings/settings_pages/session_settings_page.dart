@@ -85,7 +85,7 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
   }
 
   Widget _buildSettings(BuildContext context) {
-    final List<Widget> sections = [_buildThemeSettings(context)];
+    final List<Widget> sections = [_buildSessionSettings(context)];
 
     return Container(
       color: ContainerStyles.defaultColor(context),
@@ -101,7 +101,7 @@ class _SessionettingsPageState extends State<SessionSettingsPage> {
     );
   }
 
-  Widget _buildThemeSettings(BuildContext context) {
+  Widget _buildSessionSettings(BuildContext context) {
     return SettingsSection(
       lockedHint: isSessionActive
           ? "Cannot be changed during an active session"

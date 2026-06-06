@@ -15,11 +15,8 @@ class OnlineWordSearchPage extends StatefulWidget {
   final String word;
   final PartOfSpeech? selectedWordType;
 
-  OnlineWordSearchPage({
-    super.key,
-    required String word,
-    this.selectedWordType,
-  }) : word = word.trim();
+  OnlineWordSearchPage({super.key, required String word, this.selectedWordType})
+    : word = word.trim();
 
   @override
   State<OnlineWordSearchPage> createState() => _OnlineWordSearchPageState();
@@ -31,14 +28,14 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
   TranslationsSearchResult? onlineTranslationOptions;
 
   late OnlineTranslationSearchSuggestionSelectedNotifier
-      _onlineTranslationSelectedNotifier;
+  _onlineTranslationSelectedNotifier;
 
   @override
   void initState() {
     super.initState();
 
-    _onlineTranslationSelectedNotifier =
-        context.read<OnlineTranslationSearchSuggestionSelectedNotifier>();
+    _onlineTranslationSelectedNotifier = context
+        .read<OnlineTranslationSearchSuggestionSelectedNotifier>();
 
     _loadDataAsync();
   }
@@ -57,14 +54,14 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
 
     if (!mounted) return;
 
-    final translationOptionsResponse =
-        await VertalenNuClient().findDutchToEnglishAsync(context, wordToLookup);
+    final translationOptionsResponse = await VertalenNuClient()
+        .findDutchToEnglishAsync(context, wordToLookup);
 
     final mappedSearchResponse =
         OnlineTranslationListMappingService.mapToResult(
-            translationOptionsResponse, grammarOptionsResponse);
-
-    await addAudioCodesAsync(mappedSearchResponse);
+          translationOptionsResponse,
+          grammarOptionsResponse,
+        );
 
     setState(() {
       grammarOptions = grammarOptionsResponse?.onlineWords;
@@ -72,12 +69,6 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
       isLoading = false;
     });
     _onlineTranslationSelectedNotifier.setGrammarOptions(grammarOptions);
-  }
-
-  Future<void> addAudioCodesAsync(
-      TranslationsSearchResult? mappedSearchResponse) async {
-    // todo think whether to store audio code or wordAudioId.
-    // think how to cache audio
   }
 
   @override
@@ -106,7 +97,7 @@ class _OnlineWordSearchPageState extends State<OnlineWordSearchPage> {
                 return OnlineTranslationCardV2(translation: translation);
               },
             ),
-          }
+          },
         ],
       ),
     );

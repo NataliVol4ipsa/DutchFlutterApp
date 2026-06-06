@@ -432,6 +432,15 @@ class MockWordsRepository extends _i1.Mock implements _i16.WordsRepository {
       ) as _i12.Future<_i18.Word?>);
 
   @override
+  _i12.Future<List<String>> getAllAddedDutchWordsAsync() => (super.noSuchMethod(
+        Invocation.method(
+          #getAllAddedDutchWordsAsync,
+          [],
+        ),
+        returnValue: _i12.Future<List<String>>.value(<String>[]),
+      ) as _i12.Future<List<String>>);
+
+  @override
   _i12.Future<List<_i18.Word>> getNewWordsAsync(int? limit) =>
       (super.noSuchMethod(
         Invocation.method(

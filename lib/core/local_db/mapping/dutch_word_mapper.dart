@@ -5,7 +5,6 @@ import 'package:dutch_app/domain/models/dutch_word.dart';
 class DutchWordMapper {
   static DbDutchWord mapToEntity(DutchWordAsset asset) {
     var dbWord = DbDutchWord();
-    dbWord.audioCode = asset.audioCode;
     dbWord.word = asset.word.toLowerCase();
     return dbWord;
   }
@@ -17,7 +16,6 @@ class DutchWordMapper {
   static DutchWord mapToDomain(DbDutchWord dbWordAudio) {
     var dbWord = DutchWord(dbWordAudio.word.toLowerCase());
     dbWord.id = dbWordAudio.id;
-    dbWord.audioCode = dbWordAudio.audioCode;
     return dbWord;
   }
 

@@ -107,9 +107,7 @@ Widget _buildApp() {
 Future<void> _seedNewWord(String dutch, String english) async {
   final isar = DbContext.isar;
 
-  final dbDutch = DbDutchWord()
-    ..word = dutch
-    ..audioCode = null;
+  final dbDutch = DbDutchWord()..word = dutch;
   final dbEnglish = DbEnglishWord()..word = english;
   final dbWord = DbWord()
     ..type = PartOfSpeech.unspecified
@@ -144,9 +142,7 @@ Future<void> _seedNewWord(String dutch, String english) async {
 Future<void> _seedPracticedWord(String dutch, String english) async {
   final isar = DbContext.isar;
 
-  final dbDutch = DbDutchWord()
-    ..word = dutch
-    ..audioCode = null;
+  final dbDutch = DbDutchWord()..word = dutch;
   final dbEnglish = DbEnglishWord()..word = english;
   final dbWord = DbWord()
     ..type = PartOfSpeech.unspecified

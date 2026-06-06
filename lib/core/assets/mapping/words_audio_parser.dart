@@ -5,15 +5,13 @@ class WordsAudioParser {
     final seen = <String>{};
     final result = <DutchWordAsset>[];
 
-    rawInput.split(RegExp(r'\r?\n')).forEach((line) {
-      if (!line.contains(';')) return;
-      final parts = line.split(';');
-      final word = parts[1].toLowerCase();
+    for (final line in rawInput.split(RegExp(r'\r?\n'))) {
+      final word = line.trim().toLowerCase();
+      if (word.isEmpty) continue;
       if (seen.add(word)) {
-        result
-            .add(DutchWordAsset(audioCode: parts[0].toLowerCase(), word: word));
+        result.add(DutchWordAsset(word: word));
       }
-    });
+    }
 
     return result;
   }

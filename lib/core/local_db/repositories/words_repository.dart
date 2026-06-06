@@ -115,6 +115,22 @@ class WordsRepository {
     return word;
   }
 
+  Future<List<String>> getAllAddedDutchWordsAsync() async {
+    final dbWords = await DbContext.isar.dbWords.where().findAll();
+
+    final dutchWords = <String>{};
+    for (final dbWord in dbWords) {
+      await dbWord.dutchWordLink.load();
+      final word = dbWord.dutchWordLink.value?.word;
+      if (word != null && word.trim().isNotEmpty) {
+        dutchWords.add(word.trim().toLowerCase());
+      }
+    }
+
+    final result = dutchWords.toList()..sort();
+    return result;
+  }
+
   Future<List<Word>> getNewWordsAsync(int limit) async {
     if (limit <= 0) return [];
 
@@ -197,7 +213,7 @@ class WordsRepository {
     if (oldDutchWord != null) {
       oldDutchWord.words.remove(word);
       await oldDutchWord.words.save();
-      if (oldDutchWord.audioCode == null && oldDutchWord.words.isEmpty) {
+      if (oldDutchWord.words.isEmpty) {
         DbContext.isar.dbDutchWords.delete(oldDutchWordId);
       }
     }

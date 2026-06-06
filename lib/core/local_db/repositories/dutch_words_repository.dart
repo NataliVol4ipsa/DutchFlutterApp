@@ -5,19 +5,15 @@ import 'package:dutch_app/domain/models/dutch_word.dart';
 import 'package:isar/isar.dart';
 
 class DutchWordsRepository {
-  // Future<List<int>> addBatchAsync(List<DutchWordAsset> words) async {
-  //   final newWords = DutchWordMapper.mapToEntityList(words);
-
-  //   final List<int> ids = await DbContext.isar
-  //       .writeTxn(() => DbContext.isar.dbDutchWords.putAll(newWords));
-
-  //   return ids;
-  // }
-
   Future<List<DutchWord>> getBatchAsync(List<String> words) async {
-    final audios = await Future.wait(words.map((word) {
-      return DbContext.isar.dbDutchWords.where().wordEqualTo(word).findFirst();
-    }));
+    final audios = await Future.wait(
+      words.map((word) {
+        return DbContext.isar.dbDutchWords
+            .where()
+            .wordEqualTo(word)
+            .findFirst();
+      }),
+    );
 
     final dbAudios = audios.whereType<DbDutchWord>().toList();
     List<DutchWord> wordAudios = DutchWordMapper.mapToDomainList(dbAudios);
@@ -26,11 +22,10 @@ class DutchWordsRepository {
   }
 
   Future<List<DbDutchWord>> getOrCreateRawListAsync(
-      List<String> dutchWords) async {
+    List<String> dutchWords,
+  ) async {
     return await Future.wait(
-      dutchWords.map(
-        (word) => getOrCreateRawAsync(word),
-      ),
+      dutchWords.map((word) => getOrCreateRawAsync(word)),
     );
   }
 
@@ -44,9 +39,7 @@ class DutchWordsRepository {
   }
 
   Future<DbDutchWord> _createRawAsync(String newDutchWord) async {
-    var entity = DbDutchWord()
-      ..word = newDutchWord
-      ..audioCode = null;
+    var entity = DbDutchWord()..word = newDutchWord;
 
     await DbContext.isar.dbDutchWords.put(entity);
 

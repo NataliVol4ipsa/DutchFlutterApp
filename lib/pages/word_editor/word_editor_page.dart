@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dutch_app/core/audio/word_audio_service.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/notifiers/notifier_tools.dart';
@@ -468,6 +471,9 @@ class _WordEditorPageState extends State<WordEditorPage>
       verb: _verbControllers,
     );
     await _wordsRepository.addAsync(newWord);
+
+    // Fetch the word's audio in the background so it is cached for later use.
+    unawaited(WordAudioService.downloadAudio(newWord.dutchWord));
   }
 
   Future<void> updateWordAsync() async {
