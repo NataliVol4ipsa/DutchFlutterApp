@@ -6,6 +6,9 @@ conventions and code style when generating or modifying code.
 
 > Companion file: [Widget Catalog](./widgets.md). Before building any UI, consult it and
 > **reuse existing widgets instead of creating new ones**.
+>
+> Companion file: [Adding a New Learning Mode](./adding-learning-mode.md). Follow it end-to-end
+> when adding a new exercise/learning mode (enums, DB regeneration, scheduling, unlock, summary).
 
 ---
 
