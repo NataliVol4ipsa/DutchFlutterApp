@@ -12,32 +12,41 @@ class ButtonStyles {
   static final double largeButtonFontSize = 20;
   static final double mediumButtonFontSize = 16;
 
-  static ButtonStyle _baseButtonStyle(double fontSize,
-      {double? horizontalPadding,
-      double? verticalPadding,
-      FontWeight? fontWeight = FontWeight.normal,
-      double? bodrerRadius}) {
+  static ButtonStyle _baseButtonStyle(
+    double fontSize, {
+    double? horizontalPadding,
+    double? verticalPadding,
+    FontWeight? fontWeight = FontWeight.normal,
+    double? bodrerRadius,
+  }) {
     //recommended button height per font is 8 + fontSize * 2
-    horizontalPadding ??= max(minimalButtonVerticalPadding(fontSize),
-        ((8 + fontSize * 2) - fontSize) / 2);
-    verticalPadding ??= max(minimalButtonVerticalPadding(fontSize),
-        ((8 + fontSize * 2) - fontSize) / 2);
+    horizontalPadding ??= max(
+      minimalButtonVerticalPadding(fontSize),
+      ((8 + fontSize * 2) - fontSize) / 2,
+    );
+    verticalPadding ??= max(
+      minimalButtonVerticalPadding(fontSize),
+      ((8 + fontSize * 2) - fontSize) / 2,
+    );
 
     return ButtonStyle(
-        padding: WidgetStateProperty.all(
-          EdgeInsets.symmetric(
-              horizontal: horizontalPadding, vertical: verticalPadding),
+      padding: WidgetStateProperty.all(
+        EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
         ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-              borderRadius: bodrerRadius != null
-                  ? BorderRadius.circular(bodrerRadius)
-                  : BorderStyles.defaultBorderRadius),
+      ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: bodrerRadius != null
+              ? BorderRadius.circular(bodrerRadius)
+              : BorderStyles.defaultBorderRadius,
         ),
-        textStyle: WidgetStateProperty.all(TextStyle(
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-        )));
+      ),
+      textStyle: WidgetStateProperty.all(
+        TextStyle(fontSize: fontSize, fontWeight: fontWeight),
+      ),
+    );
   }
 
   static Color primaryButtonColor(BuildContext context) =>
@@ -59,40 +68,68 @@ class ButtonStyles {
   static Color tertiaryButtonBorderColor(BuildContext context) =>
       BaseStyles.getColorScheme(context).outline;
 
-  static ButtonStyle largePrimaryButtonStyle(BuildContext context,
-      {FontWeight? fontWeight}) {
-    return _baseButtonStyle(largeButtonFontSize, fontWeight: fontWeight)
-        .copyWith(
+  static ButtonStyle largePrimaryButtonStyle(
+    BuildContext context, {
+    FontWeight? fontWeight,
+  }) {
+    return _baseButtonStyle(
+      largeButtonFontSize,
+      fontWeight: fontWeight,
+    ).copyWith(
       backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
       foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
     );
   }
 
   static ButtonStyle largeWidePrimaryButtonStyle(BuildContext context) {
-    return _baseButtonStyle(largeButtonFontSize,
-            verticalPadding: 20, fontWeight: FontWeight.bold)
-        .copyWith(
+    return _baseButtonStyle(
+      largeButtonFontSize,
+      verticalPadding: 20,
+      fontWeight: FontWeight.bold,
+    ).copyWith(
       backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
       foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
     );
   }
 
-  static ButtonStyle mediumPrimaryButtonStyle(BuildContext context,
-      {FontWeight? fontWeight}) {
-    return _baseButtonStyle(mediumButtonFontSize, fontWeight: fontWeight)
-        .copyWith(
-      backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
-      foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
-    );
-  }
-
-  static ButtonStyle mediumSecondaryButtonStyle(BuildContext context,
-      {FontWeight? fontWeight}) {
-    return _baseButtonStyle(mediumButtonFontSize, fontWeight: fontWeight)
-        .copyWith(
+  static ButtonStyle largeWideSecondaryButtonStyle(BuildContext context) {
+    return _baseButtonStyle(
+      largeButtonFontSize,
+      verticalPadding: 20,
+      fontWeight: FontWeight.bold,
+    ).copyWith(
       backgroundColor: createButtonStyleColor(secondaryButtonColor(context)),
-      foregroundColor:
-          createButtonStyleColor(secondaryButtonColorText(context)),
+      foregroundColor: createButtonStyleColor(
+        secondaryButtonColorText(context),
+      ),
+    );
+  }
+
+  static ButtonStyle mediumPrimaryButtonStyle(
+    BuildContext context, {
+    FontWeight? fontWeight,
+  }) {
+    return _baseButtonStyle(
+      mediumButtonFontSize,
+      fontWeight: fontWeight,
+    ).copyWith(
+      backgroundColor: createButtonStyleColor(primaryButtonColor(context)),
+      foregroundColor: createButtonStyleColor(primaryButtonColorText(context)),
+    );
+  }
+
+  static ButtonStyle mediumSecondaryButtonStyle(
+    BuildContext context, {
+    FontWeight? fontWeight,
+  }) {
+    return _baseButtonStyle(
+      mediumButtonFontSize,
+      fontWeight: fontWeight,
+    ).copyWith(
+      backgroundColor: createButtonStyleColor(secondaryButtonColor(context)),
+      foregroundColor: createButtonStyleColor(
+        secondaryButtonColorText(context),
+      ),
     );
   }
 
@@ -107,8 +144,10 @@ class ButtonStyles {
     });
   }
 
-  static WidgetStateProperty<BorderSide> createButtonStyleBorder(Color color,
-      {double width = 1}) {
+  static WidgetStateProperty<BorderSide> createButtonStyleBorder(
+    Color color, {
+    double width = 1,
+  }) {
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.disabled)) {
         return BorderSide(color: color.withAlpha(20), width: width);
@@ -120,19 +159,28 @@ class ButtonStyles {
   // Custom
 
   static ButtonStyle manyToManyOptionButtonStyle(
-      BuildContext context, bool isSelected,
-      {bool? useCorrectAnswerSplash}) {
+    BuildContext context,
+    bool isSelected, {
+    bool? useCorrectAnswerSplash,
+  }) {
     double fontSize = 18;
     return _baseButtonStyle(fontSize, fontWeight: FontWeight.normal).copyWith(
       side: isSelected
-          ? createButtonStyleBorder(secondaryButtonBorderColor(context),
-              width: 2)
-          : createButtonStyleBorder(tertiaryButtonBorderColor(context),
-              width: 2),
-      shape: WidgetStateProperty.all(RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-            Radius.circular(BorderStyles.bigBorderRadiusValue)),
-      )),
+          ? createButtonStyleBorder(
+              secondaryButtonBorderColor(context),
+              width: 2,
+            )
+          : createButtonStyleBorder(
+              tertiaryButtonBorderColor(context),
+              width: 2,
+            ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(BorderStyles.bigBorderRadiusValue),
+          ),
+        ),
+      ),
       backgroundColor: isSelected
           ? createButtonStyleColor(secondaryButtonColor(context))
           : createButtonStyleColor(tertiaryButtonColor(context)),
@@ -142,8 +190,8 @@ class ButtonStyles {
       overlayColor: useCorrectAnswerSplash == null
           ? createButtonStyleColor(BaseStyles.getColorScheme(context).tertiary)
           : useCorrectAnswerSplash == true
-              ? createButtonStyleColor(Colors.green)
-              : createButtonStyleColor(Colors.red),
+          ? createButtonStyleColor(Colors.green)
+          : createButtonStyleColor(Colors.red),
     );
   }
 }

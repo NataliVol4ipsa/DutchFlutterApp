@@ -1,4 +1,5 @@
 import 'package:dutch_app/domain/models/exercise_type_order.dart';
+import 'package:dutch_app/pages/learning_session/exercises/audio_dictation/audio_dictation_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
@@ -22,12 +23,18 @@ class ExercisesGenerator {
   /// (backwards-compatible default).
   final Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById;
 
+  /// Ids of words that currently have a cached audio file. Audio-dictation
+  /// exercises are only generated for words in this set. When null, no audio
+  /// exercises are produced (the eligibility could not be determined).
+  final Set<int>? audioEligibleWordIds;
+
   ExercisesGenerator(
     this.exerciseTypes,
     this.words,
     this.useAnkiMode, {
     this.includePhrasesInWriting = false,
     this.unlockedTypesById,
+    this.audioEligibleWordIds,
   });
 
   bool _isUnlocked(int wordId, ExerciseTypeDetailed dt) {
@@ -42,6 +49,7 @@ class ExercisesGenerator {
       ...generateFlipCardReverseExcercises(),
       ...generateManyToManyExcercises(),
       ...generateWritingExcercises(),
+      ...generateAudioDictationExcercises(),
     ];
     result.shuffle();
 
@@ -165,5 +173,25 @@ class ExercisesGenerator {
     var exercises = supportedWords.map((word) => WriteExercise(word)).toList();
 
     return exercises;
+  }
+
+  List<BaseExercise> generateAudioDictationExcercises() {
+    if (!exerciseTypes.contains(ExerciseType.audioDictation)) return [];
+
+    // Audio dictation requires a cached audio file. Without a resolved
+    // eligible-id set we cannot guarantee playback, so generate nothing.
+    final eligibleIds = audioEligibleWordIds;
+    if (eligibleIds == null) return [];
+
+    List<Word> supportedWords = words
+        .where(
+          (w) =>
+              AudioDictationExercise.isSupportedWord(w) &&
+              eligibleIds.contains(w.id) &&
+              _isUnlocked(w.id, ExerciseTypeDetailed.audioDictation),
+        )
+        .toList();
+
+    return supportedWords.map((word) => AudioDictationExercise(word)).toList();
   }
 }

@@ -1,7 +1,5 @@
 import 'dart:collection';
 import 'package:dutch_app/domain/models/word_exercises_to_unlock.dart';
-import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
-import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/base/base_exercise.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
@@ -16,33 +14,21 @@ class LearningSessionManager {
   final List<Word> words;
   final WordProgressService wordProgressService;
   final ExerciseAnsweredNotifier notifier;
-  final bool useAnkiMode;
 
-  late List<BaseExercise> exercises;
+  final List<BaseExercise> exercises;
   late Queue<BaseExercise> exercisesQueue;
 
   List<ExerciseSummaryDetailed>? detailedSummaries;
   SessionSummary? sessionSummary;
   List<WordExercisesToUnlock> unlockResults = const [];
 
-  final bool includePhrasesInWriting;
-
   LearningSessionManager(
     this.exerciseTypes,
     this.words,
+    this.exercises,
     this.wordProgressService,
-    this.notifier, {
-    this.useAnkiMode = false,
-    this.includePhrasesInWriting = false,
-    Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById,
-  }) {
-    exercises = ExercisesGenerator(
-      exerciseTypes,
-      words,
-      useAnkiMode,
-      includePhrasesInWriting: includePhrasesInWriting,
-      unlockedTypesById: unlockedTypesById,
-    ).generateExcercises();
+    this.notifier,
+  ) {
     exercisesQueue = Queue<BaseExercise>();
     exercisesQueue.addAll(exercises);
     notifier.addListener(processExerciseAnswer);

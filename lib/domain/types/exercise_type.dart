@@ -9,6 +9,7 @@ enum ExerciseType {
   pluralFormWrite,
   basicOnePick,
   manyToMany,
+  audioDictation,
 }
 
 extension ExerciseTypeExtension on ExerciseType {
@@ -22,6 +23,8 @@ extension ExerciseTypeExtension on ExerciseType {
         return [ExerciseTypeDetailed.deHetPick];
       case ExerciseType.basicWrite:
         return [ExerciseTypeDetailed.basicWrite];
+      case ExerciseType.audioDictation:
+        return [ExerciseTypeDetailed.audioDictation];
       default:
         return [];
     }
@@ -45,6 +48,8 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'Pick Translation';
       case ExerciseType.manyToMany:
         return 'Match Translations';
+      case ExerciseType.audioDictation:
+        return 'Audio Dictation';
     }
   }
 
@@ -66,6 +71,8 @@ extension ExerciseTypeExtension on ExerciseType {
         return 'Pick translation of word on screen from list of options';
       case ExerciseType.manyToMany:
         return 'Match two lists of words according to their translations';
+      case ExerciseType.audioDictation:
+        return 'Listen to the Dutch word and write down what you hear. Only words with downloaded audio are included';
     }
   }
 }

@@ -184,12 +184,14 @@ const _DbWordProgressexerciseTypeEnumValueMap = {
   'flipCardEnglishDutch': 1,
   'deHetPick': 2,
   'basicWrite': 3,
+  'audioDictation': 4,
 };
 const _DbWordProgressexerciseTypeValueEnumMap = {
   0: ExerciseTypeDetailed.flipCardDutchEnglish,
   1: ExerciseTypeDetailed.flipCardEnglishDutch,
   2: ExerciseTypeDetailed.deHetPick,
   3: ExerciseTypeDetailed.basicWrite,
+  4: ExerciseTypeDetailed.audioDictation,
 };
 
 Id _dbWordProgressGetId(DbWordProgress object) {

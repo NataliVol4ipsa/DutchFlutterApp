@@ -1,9 +1,11 @@
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/word.dart';
+import 'package:dutch_app/domain/services/audio_dictation_service.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/pre_session_word_list_page.dart';
 import 'package:dutch_app/pages/learning_session/session_manager.dart';
 import 'package:dutch_app/pages/learning_session/session_page.dart';
@@ -54,13 +56,30 @@ class _ExercisesSelectorPageState extends State<ExercisesSelectorPage> {
       listen: false,
     );
 
+    Set<int>? audioEligibleWordIds;
+    if (selectedModes.contains(ExerciseType.audioDictation)) {
+      final audioDictationService = context.read<AudioDictationService>();
+      await audioDictationService.pruneStaleSchedulesAsync();
+      audioEligibleWordIds = await audioDictationService.eligibleWordIdsAsync(
+        words,
+      );
+      if (!mounted) return;
+    }
+
+    final exercises = ExercisesGenerator(
+      selectedModes.toList(),
+      words,
+      useAnkiMode,
+      includePhrasesInWriting: includePhrasesInWriting,
+      audioEligibleWordIds: audioEligibleWordIds,
+    ).generateExcercises();
+
     final flowManager = LearningSessionManager(
       selectedModes.toList(),
       words,
+      exercises,
       wordProgressService,
       notifier,
-      useAnkiMode: useAnkiMode,
-      includePhrasesInWriting: includePhrasesInWriting,
     );
     if (!mounted) return;
     if (showPreSessionWordList) {

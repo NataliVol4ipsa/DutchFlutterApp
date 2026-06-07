@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   // ── triggers map ───────────────────────────────────────────────────────────
   group('ExerciseTypeOrder.triggers', () {
-    test('contains exactly three tracked types', () {
-      expect(ExerciseTypeOrder.triggers.length, 3);
+    test('contains exactly four tracked types', () {
+      expect(ExerciseTypeOrder.triggers.length, 4);
     });
 
     test('flipCardDutchEnglish has no prerequisite (null trigger)', () {
@@ -32,6 +32,13 @@ void main() {
       final trigger =
           ExerciseTypeOrder.triggers[ExerciseTypeDetailed.basicWrite]!;
       expect(trigger.prerequisite, ExerciseTypeDetailed.flipCardDutchEnglish);
+      expect(trigger.requiredCorrectAnswers, 3);
+    });
+
+    test('audioDictation trigger requires 3 correct in basicWrite', () {
+      final trigger =
+          ExerciseTypeOrder.triggers[ExerciseTypeDetailed.audioDictation]!;
+      expect(trigger.prerequisite, ExerciseTypeDetailed.basicWrite);
       expect(trigger.requiredCorrectAnswers, 3);
     });
   });
@@ -131,10 +138,18 @@ void main() {
       expect(unlocked, isEmpty);
     });
 
-    test('correct answers in basicWrite do not unlock anything', () {
+    test('3+ correct in basicWrite unlocks audioDictation', () {
       final unlocked = ExerciseTypeOrder.getNewlyUnlockedTypes(
         ExerciseTypeDetailed.basicWrite,
         10,
+      );
+      expect(unlocked, [ExerciseTypeDetailed.audioDictation]);
+    });
+
+    test('fewer than 3 correct in basicWrite do not unlock anything', () {
+      final unlocked = ExerciseTypeOrder.getNewlyUnlockedTypes(
+        ExerciseTypeDetailed.basicWrite,
+        2,
       );
       expect(unlocked, isEmpty);
     });

@@ -31,6 +31,8 @@ class WordProgressService {
         return ExerciseTypeDetailed.deHetPick;
       case ExerciseType.basicWrite:
         return ExerciseTypeDetailed.basicWrite;
+      case ExerciseType.audioDictation:
+        return ExerciseTypeDetailed.audioDictation;
       default:
         throw Exception('Unsupported exercise type: $exerciseType');
     }

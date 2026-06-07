@@ -2,6 +2,7 @@ import 'package:dutch_app/core/local_db/repositories/word_progress_batch_reposit
 import 'package:dutch_app/core/local_db/repositories/words_import_repository.dart';
 import 'package:dutch_app/core/local_db/repositories/words_repository.dart';
 import 'package:dutch_app/domain/models/exercise_mode_quota.dart';
+import 'package:dutch_app/domain/services/audio_dictation_service.dart';
 import 'package:dutch_app/domain/services/exercise_unlock_service.dart';
 import 'package:dutch_app/domain/services/practice_session_stateful_service.dart';
 import 'package:dutch_app/domain/services/quick_practice_service.dart';
@@ -36,12 +37,18 @@ List<Provider> serviceProviders() {
         ),
       ),
     ),
+    Provider<AudioDictationService>(
+      create: (context) => AudioDictationService(
+        wordProgressRepository: context.read<WordProgressBatchRepository>(),
+      ),
+    ),
     Provider<QuickPracticeService>(
       create: (context) => QuickPracticeService(
         wordsRepository: context.read<WordsRepository>(),
         wordProgressRepository: context.read<WordProgressBatchRepository>(),
         settingsService: context.read<SettingsService>(),
-        quota: ExerciseModeQuota.flipCardAndWriting,
+        quota: ExerciseModeQuota.allModesQuota,
+        audioDictationService: context.read<AudioDictationService>(),
       ),
     ),
   ];

@@ -21,6 +21,10 @@ class ExerciseTypeOrder {
       prerequisite: ExerciseTypeDetailed.flipCardDutchEnglish,
       requiredCorrectAnswers: 3,
     ),
+    ExerciseTypeDetailed.audioDictation: ExerciseTypeTrigger(
+      prerequisite: ExerciseTypeDetailed.basicWrite,
+      requiredCorrectAnswers: 3,
+    ),
   };
 
   static bool isTracked(ExerciseTypeDetailed type) =>

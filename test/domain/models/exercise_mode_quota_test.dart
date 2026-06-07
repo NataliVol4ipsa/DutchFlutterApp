@@ -15,17 +15,18 @@ void main() {
     });
 
     test(
-      'flipCardAndWriting contains flipCard, flipCardReverse, and basicWrite',
+      'allModesQuota contains flipCard, flipCardReverse, basicWrite, and audioDictation',
       () {
         expect(
-          ExerciseModeQuota.flipCardAndWriting.activeTypes,
+          ExerciseModeQuota.allModesQuota.activeTypes,
           containsAll([
             ExerciseType.flipCard,
             ExerciseType.flipCardReverse,
             ExerciseType.basicWrite,
+            ExerciseType.audioDictation,
           ]),
         );
-        expect(ExerciseModeQuota.flipCardAndWriting.activeTypes.length, 3);
+        expect(ExerciseModeQuota.allModesQuota.activeTypes.length, 4);
       },
     );
 
@@ -51,23 +52,23 @@ void main() {
     });
 
     test(
-      'flipCardAndWriting → contains flipCardDutchEnglish, flipCardEnglishDutch, and basicWrite',
+      'allModesQuota → contains flipCardDutchEnglish, flipCardEnglishDutch, basicWrite, and audioDictation',
       () {
-        final detailed =
-            ExerciseModeQuota.flipCardAndWriting.activeDetailedTypes;
+        final detailed = ExerciseModeQuota.allModesQuota.activeDetailedTypes;
         expect(
           detailed,
           containsAll([
             ExerciseTypeDetailed.flipCardDutchEnglish,
             ExerciseTypeDetailed.flipCardEnglishDutch,
             ExerciseTypeDetailed.basicWrite,
+            ExerciseTypeDetailed.audioDictation,
           ]),
         );
       },
     );
 
     test('no duplicates in activeDetailedTypes', () {
-      final detailed = ExerciseModeQuota.flipCardAndWriting.activeDetailedTypes;
+      final detailed = ExerciseModeQuota.allModesQuota.activeDetailedTypes;
       expect(detailed.toSet().length, detailed.length);
     });
 

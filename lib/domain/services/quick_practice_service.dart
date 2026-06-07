@@ -6,10 +6,13 @@ import 'package:dutch_app/domain/models/exercise_type_order.dart';
 import 'package:dutch_app/domain/models/settings.dart';
 import 'package:dutch_app/domain/models/word.dart';
 import 'package:dutch_app/domain/notifiers/exercise_answered_notifier.dart';
+import 'package:dutch_app/domain/services/audio_dictation_service.dart';
 import 'package:dutch_app/domain/services/settings_service.dart';
 import 'package:dutch_app/domain/types/exercise_type.dart';
 import 'package:dutch_app/domain/types/exercise_type_detailed.dart';
+import 'package:dutch_app/pages/learning_session/exercises/audio_dictation/audio_dictation_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/de_het/de_het_pick_exercise.dart';
+import 'package:dutch_app/pages/learning_session/exercises/exercises_generator.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_english_dutch_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/flip_card/flip_card_exercise.dart';
 import 'package:dutch_app/pages/learning_session/exercises/many_to_many/many_to_many_exercise.dart';
@@ -34,11 +37,17 @@ class QuickPracticeService {
   final SettingsService settingsService;
   final ExerciseModeQuota quota;
 
+  /// Optional. When provided, audio-dictation eligibility is resolved (only
+  /// words with cached audio get audio exercises) and stale schedules are
+  /// pruned. When null (e.g. in unit tests) audio dictation is simply skipped.
+  final AudioDictationService? audioDictationService;
+
   QuickPracticeService({
     required this.wordsRepository,
     required this.wordProgressRepository,
     required this.settingsService,
     ExerciseModeQuota? quota,
+    this.audioDictationService,
   }) : quota = quota ?? ExerciseModeQuota.flipCardOnly;
 
   Future<QuickPracticeSession> buildSessionAsync({
@@ -238,6 +247,8 @@ class QuickPracticeService {
         return ManyToManyExercise.isSupportedWord(word);
       case ExerciseType.basicWrite:
         return WriteExercise.isSupportedWord(word);
+      case ExerciseType.audioDictation:
+        return AudioDictationExercise.isSupportedWord(word);
       case ExerciseType.pluralFormPick:
       case ExerciseType.pluralFormWrite:
       case ExerciseType.basicOnePick:
@@ -536,27 +547,55 @@ class QuickPracticeService {
     };
   }
 
-  QuickPracticeSession _createSession({
+  Future<QuickPracticeSession> _createSession({
     required List<Word> words,
     required List<ExerciseType> activeTypes,
     required SessionSettings sessionSettings,
     required WordProgressService wordProgressService,
     required ExerciseAnsweredNotifier notifier,
     Map<int, Set<ExerciseTypeDetailed>>? unlockedTypesById,
-  }) {
+  }) async {
+    final audioEligibleWordIds = await _resolveAudioEligibilityAsync(
+      words,
+      activeTypes,
+    );
+
+    final exercises = ExercisesGenerator(
+      activeTypes,
+      words,
+      sessionSettings.useAnkiMode,
+      includePhrasesInWriting: sessionSettings.includePhrasesInWriting,
+      unlockedTypesById: unlockedTypesById,
+      audioEligibleWordIds: audioEligibleWordIds,
+    ).generateExcercises();
+
     final flowManager = LearningSessionManager(
       activeTypes,
       words,
+      exercises,
       wordProgressService,
       notifier,
-      useAnkiMode: sessionSettings.useAnkiMode,
-      includePhrasesInWriting: sessionSettings.includePhrasesInWriting,
-      unlockedTypesById: unlockedTypesById,
     );
 
     return QuickPracticeSession(
       flowManager: flowManager,
       showPreSessionWordList: sessionSettings.showPreSessionWordList,
     );
+  }
+
+  /// Resolves which of [words] may receive audio-dictation exercises. Returns
+  /// null when audio dictation is not active or no audio service is wired up
+  /// (so the generator produces no audio exercises). Also prunes long-stale
+  /// audio-dictation schedules whose words no longer have cached audio.
+  Future<Set<int>?> _resolveAudioEligibilityAsync(
+    List<Word> words,
+    List<ExerciseType> activeTypes,
+  ) async {
+    final service = audioDictationService;
+    if (service == null || !activeTypes.contains(ExerciseType.audioDictation)) {
+      return null;
+    }
+    await service.pruneStaleSchedulesAsync();
+    return service.eligibleWordIdsAsync(words);
   }
 }

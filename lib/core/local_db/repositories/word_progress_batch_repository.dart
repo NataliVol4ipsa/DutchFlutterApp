@@ -107,6 +107,24 @@ class WordProgressBatchRepository {
     return result;
   }
 
+  /// Returns all progress records for a given detailed [exerciseType], with the
+  /// linked word (and its Dutch-word link) loaded. Used by maintenance routines
+  /// that need to inspect every scheduled record of a type (e.g. pruning
+  /// audio-dictation schedules).
+  Future<List<DbWordProgress>> getAllByTypeAsync(
+    ExerciseTypeDetailed exerciseType,
+  ) async {
+    final records = await DbContext.isar.dbWordProgress
+        .filter()
+        .exerciseTypeEqualTo(exerciseType)
+        .findAll();
+    for (final r in records) {
+      await r.word.load();
+      await r.word.value?.dutchWordLink.load();
+    }
+    return records;
+  }
+
   Future<List<DbWordProgress>> getDueProgressAsync(
     ExerciseTypeDetailed exerciseType,
     int limit,
@@ -123,6 +141,8 @@ class WordProgressBatchRepository {
         .exerciseTypeEqualTo(exerciseType)
         .and()
         .lastPracticedIsNotNull()
+        .and()
+        .dontShowAgainEqualTo(false)
         .limit(limit)
         .findAll();
 
